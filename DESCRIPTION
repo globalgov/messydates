@@ -1,15 +1,23 @@
 Package: messydates
-Title: What the Package Does (One Line, Title Case)
+Title: A broader date class for messy date information
+Description: Contains a set of tools for constructing and coercing
+  into and from the 'messydt' class. This date class allows regular
+  dates to be annotated to express unspecified date components,
+  approximate or uncertain date components, date ranges,
+  and sets of dates. This is broadly useful for historical analysis
+  where dates can be imprecise, at best.
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    c(person(given = "James",
+             family = "Hollway",
+             role = c("cre", "aut", "ctb"),
+             email = "james.hollway@graduateinstitute.ch",
+             comment = c("IHEID", ORCID = "0000-0002-8361-9647")),
+      person(given = "Henrique",
+             family = "Sposito",
+             role = "ctb",
+             comment = c("IHEID", ORCID = "0000-0003-3420-6085")))
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

@@ -1,3 +1,8 @@
+S3method(as_messydate,Date)
+S3method(as_messydate,POSIXct)
+S3method(as_messydate,POSIXlt)
+S3method(as_messydate,character)
 S3method(print,messydt)
+export(as_messydate)
 export(new_messydate)
 export(validate_messydate)

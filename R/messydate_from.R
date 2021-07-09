@@ -1,25 +1,39 @@
 #' Coercion to messydate
+#'
+#' These functions coerce different data classes into messydate.
 #' @export
 as_messydate <- function(x) UseMethod("as_messydate")
 
+#' Coerce from date class to messydate
+#'
+#' @param x date class object
 #' @export
 as_messydate.Date <- function(x){
   x <- as.character(x)
   new_messydate(x)
 }
 
+#' Coerce from POSIXct class to messydate
+#'
+#' @param x POSIXct class object
 #' @export
 as_messydate.POSIXct <- function(x){
   x <- as.character(x)
   new_messydate(x)
 }
 
+#' Coerce from POSIXlt class to messydate
+#'
+#' @param x POSIXlt class object
 #' @export
 as_messydate.POSIXlt <- function(x){
   x <- as.character(x)
   new_messydate(x)
 }
 
+#' Coerce character date objects to messydate
+#'
+#' @param x character date object
 #' @export
 as_messydate.character <- function(x){
 

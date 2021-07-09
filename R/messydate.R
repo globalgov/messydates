@@ -1,10 +1,10 @@
 #' A broader date class for messy dates
-#' 
+#'
 #' These functions introduce ISO 8601-2_2019 to R.
 #' These recent extensions to standardised date notation
-#' create space for unspecified, uncertain, and approximate dates, 
+#' create space for unspecified, uncertain, and approximate dates,
 #' as well as succinct representation of date ranges.
-#' 
+#'
 #' Unspecified date components, such as when the day is unknown,
 #' can be represented by one or more "X"s in place of the digits.
 #' The modifier "*" is recommended to indicate that the entire
@@ -14,20 +14,20 @@
 #' e.g. "XXXX-03-03" expresses 3rd March in some unspecified year,
 #' whereas "2003-XX-03" expresses the 3rd of some month in 2003.
 #' If time components are not given, they are expanded to this.
-#' 
+#'
 #' Approximate date components, modified by "~",
-#' represent an estimate whose value is asserted 
+#' represent an estimate whose value is asserted
 #' to be possibly correct.
 #' For example, "2003~-03-03"
-#' The degree of confidence in approximation 
+#' The degree of confidence in approximation
 #' depends on the application.
-#' 
+#'
 #' Uncertain date components, modified by "?",
 #' represent a date component whose source is considered
 #' to be dubious and therefore not to be relied upon.
 #' An additional modifier, "%", is used to indicate
 #' a value that is both uncertain and approximate.
-#' 
+#'
 #' These functions also introduce standard notation
 #' for ranges of dates.
 #' Rather than the typical R notation for ranges,
@@ -40,7 +40,7 @@
 #' e.g. "..2019-01-01",
 #' or indicating "on or after" if used as a suffix,
 #' e.g. "2009-01-01..".
-#' 
+#'
 #' And lastly, notation for sets of dates is also included.
 #' Here braces, "{}", are used to mean "all members of the set",
 #' while brackets, "[]", are used to mean "one member of the set".
@@ -53,7 +53,7 @@ new_messydate <- function(x = character()){
 #' @export
 validate_messydate <- function(x){
   values <- unclass(x)
-  
+
   if (any(grepl("[A-WYZa-z]", values))) {
     stop(
       "The only alpha character allowed in messy dates is 'X' for unspecified time components",
@@ -67,9 +67,9 @@ validate_messydate <- function(x){
       call. = FALSE
     )
     }
-  
+
   # can only consist of numbers and some special symbols: []{}..X%?~"
-  
+
   x
 }
 

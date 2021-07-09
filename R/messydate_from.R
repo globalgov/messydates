@@ -22,15 +22,15 @@ as_messydate.POSIXlt <- function(x){
 
 #' @export
 as_messydate.character <- function(x){
-  
+
   d <- x
   d <- standardise_date_separators(d)
   d <- standardise_date_order(d)
   d <- standardise_unspecifieds(d)
   d <- standardise_widths(d)
-  
+
   d <- remove_imprecision(d)
-  
+
   new_messydate(d)
 }
 
@@ -77,7 +77,7 @@ remove_imprecision <- function(dates){
 }
 
 standardise_date_input <- function(dates) {
-  
+
   as_bc_dates <- function(dates) {
     dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
     # remove before christ letters
@@ -92,4 +92,3 @@ standardise_date_input <- function(dates) {
   dates <- stringr::str_trim(dates, side = "both")
   # removes trailing white spaces
 }
-

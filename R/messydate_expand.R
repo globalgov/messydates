@@ -52,4 +52,3 @@ expand_ranges <- function(dates){
   })
   dates
 }
-

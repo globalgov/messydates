@@ -1,15 +1,25 @@
+#' Expand Dates
+#'
+#' These functions exapand on unspecified dates, ranges and on sets of dates.
+#' Uncertain dates may include several possible dates.
+#' The function "opens" these values to include all the possible dates
+#' contained in uncertain dates.
 #' @export
 expand <- function(x) UseMethod("expand")
 
+#' @param x messydt object
+#' @example
+#' d <- "2014-01-01..2014-01-31"
+#' expand.messydt(d)
 #' @export
 expand.messydt <- function(x){
-  
+
   x <- remove_qualifiers(x)
-  
+
   x <- expand_unspecified(x)
   # x <- expand_sets(x)
   x <- expand_ranges(x)
-  
+
   x
 }
 

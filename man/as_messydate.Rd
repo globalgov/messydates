@@ -7,5 +7,5 @@
 as_messydate(x)
 }
 \description{
-Coercion to messydate
+These functions coerce different data classes into messydt class
 }

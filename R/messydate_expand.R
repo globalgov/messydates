@@ -11,6 +11,7 @@ expand <- function(x) UseMethod("expand")
 #' @example
 #' d <- "2014-01-01..2014-01-31"
 #' expand.messydt(d)
+#' @importFrom stringr str_replace_all str_split
 #' @export
 expand.messydt <- function(x){
 

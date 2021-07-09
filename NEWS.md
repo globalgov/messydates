@@ -40,4 +40,3 @@
   * Added `median.messydt()` to get median value from expanded range
   * Added `mean.messydt()` to get mean value from expanded range
   * Added `modal.messydt()` to get mode value from expanded range
-

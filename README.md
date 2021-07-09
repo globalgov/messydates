@@ -4,55 +4,40 @@
 # messydates
 
 <!-- badges: start -->
+
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+![GitHub release (latest by
+date)](https://img.shields.io/github/v/release/globalgov/messydates)
+![GitHub Release
+Date](https://img.shields.io/github/release-date/globalgov/messydates)
+![GitHub
+issues](https://img.shields.io/github/issues-raw/globalgov/messydates)
+<!-- [![HitCount](http://hits.dwyl.com/globalgov/qData.svg)](http://hits.dwyl.com/globalgov/messydates) -->
+[![Codecov test
+coverage](https://codecov.io/gh/globalgov/messydates/branch/main/graph/badge.svg)](https://codecov.io/gh/globalgov/qCreate?branch=main)
+[![CodeFactor](https://www.codefactor.io/repository/github/globalgov/messydates/badge)](https://www.codefactor.io/repository/github/globalgov/messydates)
 <!-- badges: end -->
 
-The goal of `{messydates}` is to make available the extended annotation
-standard for dates outlined in ISO 8601-2\_2019(E).
+Dates are not always exact. Rather, dates are often aproximations for
+days, months or years. This is especially true for historical dates.
+This can present issues for researchers dealing with uncertain dates in
+R. The goal of `{messydates}` is to make available the extended
+annotation standard for dates outlined in ISO 8601-2\_2019(E) to R.
+These recent extensions to standardised date notation create space for
+unspecified, uncertain, and approximate dates, as well as succinct
+representation of date ranges.
 
 ## Installation
 
-You can install the released version of messydates from
-[CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("messydates")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the the development version of messydates from
+[GitHub](https://github.com/).
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("globalgov/messydates")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(messydates)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/master/examples>.
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+Please see [the website](https://globalgov.github.io/messydates) for
+more information about how to use `{messydates}`. For more information
+on the Geneva Global Governance Observatory, please see [the
+website](https://github.com/globalgov).

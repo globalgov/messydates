@@ -8,7 +8,7 @@ test_that("Resolve dates works properly for date ranges", {
 })
 
 test_that("Resolve dates works properly for unspecified dates", {
-  unespecified<- "1999"
+  unespecified <- "1999"
   expect_equal(as.character(min.messydt(as_messydate(unspecified))), "1999-01-01")
   expect_equal(as.character(max.messydt(as_messydate(unspecified))), "1999-12-31")
   expect_equal(as.character(median.messydt(as_messydate(unspecified))), "1999-07-02")

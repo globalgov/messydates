@@ -15,7 +15,7 @@ as.Date.messydt <- function(x,
   if(resolve == "min") x <- min(x)
   if(resolve == "max") x <- max(x)
   if(resolve == "mean") x <- mean(x)
-  if(resolve == "median") x <- median(x)
+  if(resolve == "median") x <- stats::median(x)
 
   as.Date(x)
 }
@@ -37,7 +37,7 @@ as.POSIXct.messydt <- function(x,
   if(resolve == "min") x <- min(x)
   if(resolve == "max") x <- max(x)
   if(resolve == "mean") x <- mean(x)
-  if(resolve == "median") x <- median(x)
+  if(resolve == "median") x <- stats::median(x)
 
   as.POSIXct(x)
 }
@@ -59,7 +59,7 @@ as.POSIXlt.messydt <- function(x,
   if(resolve == "min") x <- min(x)
   if(resolve == "max") x <- max(x)
   if(resolve == "mean") x <- mean(x)
-  if(resolve == "median") x <- median(x)
+  if(resolve == "median") x <- stats::median(x)
 
   as.POSIXlt(x)
 }

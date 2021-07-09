@@ -6,7 +6,7 @@ Description: Contains a set of tools for constructing and coercing
   approximate or uncertain date components, date ranges,
   and sets of dates. This is broadly useful for historical analysis
   where dates can be imprecise, at best.
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",

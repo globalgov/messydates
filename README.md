@@ -25,7 +25,12 @@ R. The goal of `{messydates}` is to make available the extended
 annotation standard for dates outlined in ISO 8601-2\_2019(E) to R.
 These recent extensions to standardised date notation create space for
 unspecified, uncertain, and approximate dates, as well as succinct
-representation of date ranges.
+representation of date ranges. `{messydates}` contains a set of tools
+for constructing and coercing into and from the ‘messydt’ class. This
+date class allows regular dates to be annotated to express unspecified
+date components, approximate or uncertain date components, date ranges,
+and sets of dates. This is broadly useful for historical analysis where
+dates can be imprecise, at best.
 
 ## Installation
 

@@ -15,14 +15,6 @@ max.messydt <- function(..., na.rm = TRUE){
 }
 
 #' @export
-max.messydt <- function(..., na.rm = TRUE){
-  x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(x) as.character(max(x, na.rm = na.rm)))
-  y
-}
-
-#' @export
 median.messydt <- function(..., na.rm = TRUE){
   x <- list(...)
   y <- expand(x[[1]])
@@ -37,7 +29,7 @@ mean.messydt <- function(..., na.rm = TRUE){
   y <- sapply(y, function(x){
     if(length(x)>1) x <- as.character(mean(x, na.rm = na.rm))
     x
-  }) 
+  })
   y
 }
 
@@ -55,7 +47,7 @@ modal.messydt <- function(..., na.rm = TRUE){
   y <- sapply(y, function(x){
     if(length(x)>1) x <- as.character(getmode(x))
     x
-  }) 
+  })
   y
 }
 

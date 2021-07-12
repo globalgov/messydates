@@ -1,39 +1,42 @@
-#' Coercion to messydate
+#' Coercion to messy dates
 #'
-#' These functions coerce different data classes into messydt class
+#' These functions coerce different data classes into `messydt` class
+#' @param x A scalar or vector of a class that can be coerced into a Date,
+#' such as Date, POSIXct, POSIXlt, or character.
+#' @examples
+#' as_messydate("2021")
+#' as_messydate("2021-02")
+#' as_messydate("2021-02-01")
+#' as_messydate("2021-02-01?")
+#' as_messydate("2021-02-01~")
+#' as_messydate("2021-02-01%")
+#' as_messydate("2021-02-01..2021-02-28")
+#' as_messydate("{2021-02-01,2021-02-28}")
 #' @export
 as_messydate <- function(x) UseMethod("as_messydate")
 
-#' Coerce from date class to messydt class
-#'
-#' @param x date class object
+#' @describeIn as_messydate Coerce from `Date` to `messydt` class
 #' @export
 as_messydate.Date <- function(x){
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' Coerce from POSIXct to messydt class
-#'
-#' @param x POSIXct class object
+#' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
 #' @export
 as_messydate.POSIXct <- function(x){
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' Coerce from POSIXlt to messydt class
-#'
-#' @param x POSIXlt class object
+#' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
 #' @export
 as_messydate.POSIXlt <- function(x){
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' Coerce character date objectsto messydt class
-#'
-#' @param x character date object
+#' @describeIn as_messydate Coerce character date objects to `messydt` class
 #' @export
 as_messydate.character <- function(x){
 
@@ -42,12 +45,13 @@ as_messydate.character <- function(x){
   d <- standardise_date_order(d)
   d <- standardise_unspecifieds(d)
   d <- standardise_widths(d)
-  d <- standardise_ranges(d)
+
   d <- remove_imprecision(d)
 
   new_messydate(d)
 }
 
+# Helper functions
 standardise_date_separators <- function(dates){
   dates <- stringr::str_replace_all(dates, "([:digit:]{4})([:digit:]{2})([:digit:]{2})", "\\1-\\2-\\3")
   dates <- stringr::str_replace_all(dates, "(?<=[:digit:])\\.(?=[:digit:])", "-")

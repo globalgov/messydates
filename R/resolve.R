@@ -1,12 +1,27 @@
-#' Resolves for minimum values
+#' Resolves messy dates into a single value
 #'
-#' Gets minimum values from expanded date ranges,
-#' unspecified dates or sets of dates.
+#' This collection of S3 methods 'resolve' messy dates into a single date
+#' according to some explicit bias,
+#' such as returning the minimum or maximum date,
+#' the mean, median, or modal date,
+#' or a random date from among the possible resolutions for each messy date.
+#' If the date is not 'messy' (i.e. has no annotations)
+#' then just that precise date is returned.
+#' This can be useful for various descriptive or inferential projects.
 #' @param ... a messydt object
 #' @param na.rm Should NAs be removed? True by default.
-#' @example
-#' d <- "2014-01-01..2014-01-31"
-#' min.messydt(as_messydate(d))
+#' @examples
+#' d <- as_messydate("2014-01-01..2014-01-31")
+#' d
+#' min(d)
+#' max(d)
+#' mean(d)
+#' median(d)
+#' modal(d)
+NULL
+#> NULL
+
+#' @rdname resolve
 #' @export
 min.messydt <- function(..., na.rm = TRUE){
   x <- list(...)
@@ -15,15 +30,7 @@ min.messydt <- function(..., na.rm = TRUE){
   y
 }
 
-#' Resolves for maximum values
-#'
-#' Gets maximum values from expanded date ranges,
-#' unspecified dates or sets of dates.
-#' @param ... a messydt object
-#' @param na.rm Should NAs be removed? True by default.
-#' @example
-#' d <- "2014-01-01..2014-01-31"
-#' max.messydt(as_messydate(d))
+#' @rdname resolve
 #' @export
 max.messydt <- function(..., na.rm = TRUE){
   x <- list(...)
@@ -32,15 +39,7 @@ max.messydt <- function(..., na.rm = TRUE){
   y
 }
 
-#' Resolve for median values
-#'
-#' Gets median values from expanded date ranges,
-#' unspecified dates or sets of dates.
-#' @param ... a messydt object
-#' @param na.rm Should NAs be removed? True by default.
-#' @example
-#' d <- "2014-01-01..2014-01-31"
-#' median.messydt(as_messydate(d))
+#' @rdname resolve
 #' @export
 median.messydt <- function(..., na.rm = TRUE){
   x <- list(...)
@@ -49,15 +48,7 @@ median.messydt <- function(..., na.rm = TRUE){
   y
 }
 
-#' Resolve for mean values
-#'
-#' Gets mean values from expanded date ranges,
-#' unspecified dates or sets of dates.
-#' @param ... a messydt object
-#' @param na.rm Should NAs be removed? True by default.
-#' @example
-#' d <- "2014-01-01..2014-01-31"
-#' mean.messydt(as_messydate(d))
+#' @rdname resolve
 #' @export
 mean.messydt <- function(..., na.rm = TRUE){
   x <- list(...)
@@ -72,15 +63,7 @@ mean.messydt <- function(..., na.rm = TRUE){
 #' @export
 modal <- function(..., na.rm = FALSE) UseMethod("modal")
 
-#' Resolve for modal values
-#'
-#' Gets modal values from expanded date ranges,
-#' unspecified dates or sets of dates.
-#' @param ... a messydt object
-#' @param na.rm Should NAs be removed? True by default.
-#' @example
-#' d <- "2014-01-01..2014-01-31"
-#' modal.messydt(as_messydate(d))
+#' @rdname resolve
 #' @export
 modal.messydt <- function(..., na.rm = TRUE){
   x <- list(...)

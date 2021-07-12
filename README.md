@@ -31,9 +31,10 @@ However, this can create issues for inference in which sequence, or
 timing, is important. The goal of `{messydates}` is to help with this
 problem by retaining and working with various kinds of date imprecision.
 
-`{messydates}` implements the extended annotation standard for dates
-outlined in ISO 8601-2\_2019(E) for R. These include standardised
-notation for:
+`{messydates}` implements the extended annotation standard for dates,
+the Extended Date/Time Format (EDTF), outlined in [ISO
+8601-2\_2019(E)](https://www.iso.org/standard/70908.html) for R. These
+include standardised notation for:
 
 -   unspecified date( component)s
 -   approximate date( component)s
@@ -52,8 +53,8 @@ You can install the the development version of messydates from
 [GitHub](https://github.com/).
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("globalgov/messydates")
+# install.packages("remotes")
+remotes::install_github("globalgov/messydates")
 ```
 
 Please see [the messydates
@@ -61,4 +62,4 @@ website](https://globalgov.github.io/messydates) for more information
 about how to use `{messydates}`. For more information on the Geneva
 Global Governance Observatory and our current projects, please see [our
 website](https://panarchic.ch) or [our Github
-pafe](https://github.com/globalgov).
+page](https://github.com/globalgov).

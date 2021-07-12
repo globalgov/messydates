@@ -39,7 +39,8 @@ However, this can create issues for inference in which sequence, or timing, is i
 The goal of `{messydates}` is to help with this problem by retaining and working
 with various kinds of date imprecision.
 
-`{messydates}` implements the extended annotation standard for dates outlined in ISO 8601-2_2019(E) for R.
+`{messydates}` implements the extended annotation standard for dates,
+the Extended Date/Time Format (EDTF), outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) for R.
 These include standardised notation for:
 
 - unspecified date( component)s

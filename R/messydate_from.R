@@ -42,7 +42,7 @@ as_messydate.character <- function(x){
   d <- standardise_date_order(d)
   d <- standardise_unspecifieds(d)
   d <- standardise_widths(d)
-
+  d <- standardise_ranges(d)
   d <- remove_imprecision(d)
 
   new_messydate(d)

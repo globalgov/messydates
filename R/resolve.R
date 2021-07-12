@@ -18,6 +18,8 @@
 #' mean(d)
 #' median(d)
 #' modal(d)
+#' random(d)
+#' @name resolve
 NULL
 #> NULL
 
@@ -78,3 +80,22 @@ modal.messydt <- function(..., na.rm = TRUE){
   })
   y
 }
+
+#' @export
+random <- function(..., na.rm = FALSE) UseMethod("random")
+
+#' @rdname resolve
+#' @export
+random.messydt <- function(x,
+                           size,
+                           replace = FALSE,
+                           prob = NULL){
+  y <- expand(x)
+  y <- sapply(y, function(x){
+    if(length(x)>1) x <- as.character(sample(x, size = 1))
+    x
+  })
+  y
+
+}
+

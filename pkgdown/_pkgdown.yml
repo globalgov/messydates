@@ -1,0 +1,55 @@
+url: https://globalgov.github.io/messydates/
+development:
+    mode: auto
+template:
+  params:
+    bootswatch: flatly
+authors:
+  James Hollway:
+    href: https://jameshollway.com
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: News
+      href: news/index.html
+reference:
+  - title: "Construction"
+    desc: "These functions create and print the `messydt` class:"
+    contents:
+      - starts_with("new_")
+      - starts_with("validate_")
+  - title: "Coercion"
+    desc: "These functions coerce classes to and from the `messydt` class:"
+    contents:
+      - starts_with("as_")
+      - starts_with("as.")
+  - title: "Manipulation"
+    desc: "These functions expand objects of `messydt` class into a list of dates or contract from a list of dates to a `messydt` class:"
+    contents:
+      - starts_with("expand")
+      - starts_with("contract")
+  - title: "Resolution"
+    desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
+    contents:
+      - starts_with("max")
+      - starts_with("min")
+      - starts_with("mean")
+      - starts_with("median")
+      - starts_with("modal")
+      - starts_with("sample")
+

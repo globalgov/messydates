@@ -44,6 +44,12 @@ reference:
     contents:
       - starts_with("expand")
       - starts_with("contract")
+  - title: "Operations"
+    desc: "These methods extend set, logical, and arithmetic operations to objects of `messydt` class:"
+    contents:
+      - set
+      - logical
+      - extract
   - title: "Resolution"
     desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
     contents:

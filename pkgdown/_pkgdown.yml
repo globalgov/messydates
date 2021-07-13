@@ -33,6 +33,7 @@ reference:
     contents:
       - starts_with("new_")
       - starts_with("validate_")
+      - starts_with("make_")
   - title: "Coercion"
     desc: "These functions coerce classes to and from the `messydt` class:"
     contents:

@@ -2,7 +2,7 @@
 % Please edit documentation in R/messydate_make.R
 \name{make_messydate}
 \alias{make_messydate}
-\title{Make Messydates from Multiple Variables}
+\title{Make messy dates from multiple variables}
 \usage{
 make_messydate(...)
 }

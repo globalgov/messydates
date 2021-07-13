@@ -1,4 +1,4 @@
-#' Make Messydates from Multiple Variables
+#' Make messy dates from multiple variables
 #'
 #' Transforms multiple date inputs contained in different columns into one.
 #' @param ... One (ymd) or three (yyyy, mm, dd) variables
@@ -16,5 +16,5 @@ make_messydate <- function(...) {
     dots <- purrr::map(dots, as.character)
     dates <- unlist(purrr::pmap_chr(dots, paste, sep = "-"))
   } else stop("Either you need to pass make_messydate() one variable (i.e. 'yyyy-mm-dd' three (yyyy, mm, dd).")
-  dates
+  new_messydate(dates)
 }

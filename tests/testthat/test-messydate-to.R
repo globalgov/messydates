@@ -4,7 +4,7 @@ test_that("Coercion from other date classes into messydt works", {
   POSIXlt <- as.POSIXlt("2010-10-15 CEST")
   character <- "2010-10-10"
   messy <- as_messydate("2010-10-10..2010-10-20")
-  expect_equal(as.Date(messy, resolve = "min"), date)
-  expect_equal(as.POSIXct(messy, resolve = "max"), POSIXct)
-  expect_equal(as.POSIXlt(messy, resolve = "median"), POSIXlt)
+  expect_equal(as.Date(messy, min), date)
+  expect_equal(as.POSIXct(messy, max), POSIXct)
+  expect_equal(as.POSIXlt(messy, median), POSIXlt)
 })

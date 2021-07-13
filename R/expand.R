@@ -11,7 +11,8 @@ expand <- function(x) UseMethod("expand")
 #' @describeIn expand Expanding messydates
 #' @importFrom stringr str_replace_all str_split
 #' @examples
-#' d <- as_messydate(c("2001-01-01", "2001-01", "2001", "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}"))
+#' d <- as_messydate(c("2001-01-01", "2001-01", "2001", "2001-01-01..2001-02-02",
+#'         "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}"))
 #' expand(d)
 #' @export
 expand.messydt <- function(x){

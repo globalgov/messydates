@@ -7,19 +7,20 @@
 \alias{as.POSIXlt.messydt}
 \title{Coercion from messy dates}
 \usage{
-\method{as.Date}{messydt}(x, FUN)
+\method{as.Date}{messydt}(x, ..., FUN)
 
-\method{as.POSIXct}{messydt}(x, FUN)
+\method{as.POSIXct}{messydt}(x, ..., FUN)
 
-\method{as.POSIXlt}{messydt}(x, FUN)
+\method{as.POSIXlt}{messydt}(x, ..., FUN)
 }
 \arguments{
-\item{x}{a messydt object}
+\item{x}{A messydt object}
 
-\item{resolve}{How do you want the date ranges to be resolved?
-Before coercing dates, one should chose how to resolve ranges
-so that dates can be coerced to other date classes.
-Choices are "min","max","median", or "mean".}
+\item{...}{Arguments passed on to the S3 generics.}
+
+\item{FUN}{A function that can be used to resolve expanded messy dates
+into a single date.
+For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()}, \code{modal()}, and \code{random()}.}
 }
 \description{
 Coerces from messydt class to date class

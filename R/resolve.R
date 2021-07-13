@@ -42,6 +42,7 @@ max.messydt <- function(..., na.rm = TRUE){
 }
 
 #' @rdname resolve
+#' @importFrom stats median
 #' @export
 median.messydt <- function(..., na.rm = TRUE){
   x <- list(...)
@@ -51,6 +52,9 @@ median.messydt <- function(..., na.rm = TRUE){
 }
 
 #' @rdname resolve
+#' @param trim the fraction (0 to 0.5) of observations to be trimmed
+#' from each end of x before the mean is computed.
+#' Values of trim outside that range are taken as the nearest endpoint.
 #' @export
 mean.messydt <- function(..., trim = 0, na.rm = TRUE){
   x <- list(...)
@@ -62,6 +66,7 @@ mean.messydt <- function(..., trim = 0, na.rm = TRUE){
   y
 }
 
+#' @rdname resolve
 #' @export
 modal <- function(..., na.rm = FALSE) UseMethod("modal")
 
@@ -81,16 +86,24 @@ modal.messydt <- function(..., na.rm = TRUE){
   y
 }
 
+#' @rdname resolve
+#' @param size a non-negative integer giving the number of items to choose.
+#' @param replace should sampling be with replacement?
+#' @param prob a vector of probability weights
+#' for obtaining the elements of the vector being sampled.
 #' @export
-random <- function(..., na.rm = FALSE) UseMethod("random")
+random <- function(..., size,
+                   replace = FALSE,
+                   prob = NULL) UseMethod("random")
 
 #' @rdname resolve
 #' @export
-random.messydt <- function(x,
+random.messydt <- function(...,
                            size,
                            replace = FALSE,
                            prob = NULL){
-  y <- expand(x)
+  x <- list(...)
+  y <- expand(x[[1]])
   y <- sapply(y, function(x){
     if(length(x)>1) x <- as.character(sample(x, size = 1))
     x

@@ -6,7 +6,9 @@
 \alias{max.messydt}
 \alias{median.messydt}
 \alias{mean.messydt}
+\alias{modal}
 \alias{modal.messydt}
+\alias{random}
 \alias{random.messydt}
 \title{Resolves messy dates into a single value}
 \usage{
@@ -18,14 +20,29 @@
 
 \method{mean}{messydt}(..., trim = 0, na.rm = TRUE)
 
+modal(..., na.rm = FALSE)
+
 \method{modal}{messydt}(..., na.rm = TRUE)
 
-\method{random}{messydt}(x, size, replace = FALSE, prob = NULL)
+random(..., size, replace = FALSE, prob = NULL)
+
+\method{random}{messydt}(..., size, replace = FALSE, prob = NULL)
 }
 \arguments{
 \item{...}{a messydt object}
 
 \item{na.rm}{Should NAs be removed? True by default.}
+
+\item{trim}{the fraction (0 to 0.5) of observations to be trimmed
+from each end of x before the mean is computed.
+Values of trim outside that range are taken as the nearest endpoint.}
+
+\item{size}{a non-negative integer giving the number of items to choose.}
+
+\item{replace}{should sampling be with replacement?}
+
+\item{prob}{a vector of probability weights
+for obtaining the elements of the vector being sampled.}
 }
 \description{
 This collection of S3 methods 'resolve' messy dates into a single date

@@ -5,19 +5,34 @@
 \alias{year}
 \alias{month}
 \alias{day}
+\alias{precision}
 \title{Extracting components from messy dates}
 \usage{
-year(x)
+year(md)
 
-month(x)
+month(md)
 
-day(x)
+day(md)
+
+precision(md)
+}
+\arguments{
+\item{md}{A messy date object}
+}
+\value{
+\code{year()}, \code{month()}, and \code{day()} extraction return the integer
+for the requested date component.
+\code{precision()} returns the level of greatest precision for each date.
 }
 \description{
-Extracting components from messy dates
+These functions allow the extraction of particular date components
+from messy dates, such as the \code{year()}, \code{month()}, and \code{day()}.
+\code{precision()} allows for the identification of the greatest level of
+precision in (currently) the first element of each date.
 }
 \examples{
 year(as_messydate(c("2012-02-03","2012","2012-02")))
 month(as_messydate(c("2012-02-03","2012","2012-02")))
 day(as_messydate(c("2012-02-03","2012","2012-02")))
+precision(as_messydate(c("2012-02-03","2012","2012-02")))
 }

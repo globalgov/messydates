@@ -11,46 +11,29 @@ NULL
 #> NULL
 
 #' @rdname from_messydate
+#' @examples
+#' as.Date(as_messydate("2012-01"), min)
+#' as.Date(as_messydate("2012-01"), mean)
+#' as.Date(as_messydate("2012-01"), max)
+#' as.Date(as_messydate("2012-01"), median)
+#' as.Date(as_messydate("2012-01"), modal)
+#' as.Date(as_messydate("2012-01"), random)
 #' @export
-as.Date.messydt <- function(x,
-                            resolve = c("min","max","median","mean")){
-
-  resolve <- match.arg(resolve)
-
-  if(resolve == "min") x <- min(x)
-  if(resolve == "max") x <- max(x)
-  if(resolve == "mean") x <- mean(x)
-  if(resolve == "median") x <- stats::median(x)
-
+as.Date.messydt <- function(x, FUN){
+  x <- FUN(x)
   as.Date(x)
 }
 
 #' @rdname from_messydate
 #' @export
-as.POSIXct.messydt <- function(x,
-                               resolve = c("min","max","median","mean")){
-
-  resolve <- match.arg(resolve)
-
-  if(resolve == "min") x <- min(x)
-  if(resolve == "max") x <- max(x)
-  if(resolve == "mean") x <- mean(x)
-  if(resolve == "median") x <- stats::median(x)
-
+as.POSIXct.messydt <- function(x, FUN){
+  x <- FUN(x)
   as.POSIXct(x)
 }
 
 #' @rdname from_messydate
 #' @export
-as.POSIXlt.messydt <- function(x,
-                               resolve = c("min","max","median","mean")){
-
-  resolve <- match.arg(resolve)
-
-  if(resolve == "min") x <- min(x)
-  if(resolve == "max") x <- max(x)
-  if(resolve == "mean") x <- mean(x)
-  if(resolve == "median") x <- stats::median(x)
-
+as.POSIXlt.messydt <- function(x, FUN){
+  x <- FUN(x)
   as.POSIXlt(x)
 }

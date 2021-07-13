@@ -7,11 +7,11 @@
 \alias{as.POSIXlt.messydt}
 \title{Coercion from messy dates}
 \usage{
-\method{as.Date}{messydt}(x, resolve = c("min", "max", "median", "mean"))
+\method{as.Date}{messydt}(x, FUN)
 
-\method{as.POSIXct}{messydt}(x, resolve = c("min", "max", "median", "mean"))
+\method{as.POSIXct}{messydt}(x, FUN)
 
-\method{as.POSIXlt}{messydt}(x, resolve = c("min", "max", "median", "mean"))
+\method{as.POSIXlt}{messydt}(x, FUN)
 }
 \arguments{
 \item{x}{a messydt object}
@@ -23,4 +23,12 @@ Choices are "min","max","median", or "mean".}
 }
 \description{
 Coerces from messydt class to date class
+}
+\examples{
+as.Date(as_messydate("2012-01"), min)
+as.Date(as_messydate("2012-01"), mean)
+as.Date(as_messydate("2012-01"), max)
+as.Date(as_messydate("2012-01"), median)
+as.Date(as_messydate("2012-01"), modal)
+as.Date(as_messydate("2012-01"), random)
 }

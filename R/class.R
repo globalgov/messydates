@@ -10,7 +10,7 @@
 #' @details
 #' # Date annotations
 #'
-#' Unspecified date components, such as when the day is unknown,
+#' _Unspecified date components_, such as when the day is unknown,
 #' can be represented by one or more `X`s in place of the digits.
 #' The modifier `*` is recommended to indicate that the entire
 #' time scale component value is unspecified, e.g. `X*-03-03`,
@@ -20,14 +20,14 @@
 #' whereas `2003-XX-03` expresses the 3rd of some month in 2003.
 #' If time components are not given, they are expanded to this.
 #'
-#' Approximate date components, modified by `~`,
+#' _Approximate date components_, modified by `~`,
 #' represent an estimate whose value is asserted
 #' to be possibly correct.
 #' For example, `2003~-03-03`
 #' The degree of confidence in approximation
 #' depends on the application.
 #'
-#' Uncertain date components, modified by `?`,
+#' _Uncertain date components_, modified by `?`,
 #' represent a date component whose source is considered
 #' to be dubious and therefore not to be relied upon.
 #' An additional modifier, `%`, is used to indicate
@@ -54,15 +54,19 @@
 #' @param x A character scalar or vector in the expected "yyyy-mm-dd" format
 #' annotated, as necessary, according to ISO 8601-2_2019(E).
 #' @return Object of class `messydt`
+#' @name class
 #' @seealso as_messydate
+NULL
+#> NULL
+
+#' @rdname class
 #' @export
 new_messydate <- function(x = character()){
   stopifnot(is.character(x))
   structure(x, class = c("messydt"))
 }
 
-#' @describeIn new_messydate A function for validating messy date objects.
-#' Mostly just for internal use, but exported in case of additional utility.
+#' @rdname class
 #' @export
 validate_messydate <- function(x){
   values <- unclass(x)

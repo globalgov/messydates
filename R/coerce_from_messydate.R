@@ -1,11 +1,11 @@
 #' Coercion from messy dates
 #'
 #' Coerces from messydt class to date class
-#' @param x a messydt object
-#' @param resolve How do you want the date ranges to be resolved?
-#' Before coercing dates, one should chose how to resolve ranges
-#' so that dates can be coerced to other date classes.
-#' Choices are "min","max","median", or "mean".
+#' @param x A messydt object
+#' @param ... Arguments passed on to the S3 generics.
+#' @param FUN A function that can be used to resolve expanded messy dates
+#' into a single date.
+#' For example, `min()`, `max()`, `mean()`, `median()`, `modal()`, and `random()`.
 #' @name from_messydate
 NULL
 #> NULL
@@ -19,21 +19,24 @@ NULL
 #' as.Date(as_messydate("2012-01"), modal)
 #' as.Date(as_messydate("2012-01"), random)
 #' @export
-as.Date.messydt <- function(x, FUN){
+as.Date.messydt <- function(x, ..., FUN){
+  if(missing(FUN) & length(list(...))>0) FUN <- list(...)[[1]]
   x <- FUN(x)
   as.Date(x)
 }
 
 #' @rdname from_messydate
 #' @export
-as.POSIXct.messydt <- function(x, FUN){
+as.POSIXct.messydt <- function(x, ..., FUN){
+  if(missing(FUN) & length(list(...))>0) FUN <- list(...)[[1]]
   x <- FUN(x)
   as.POSIXct(x)
 }
 
 #' @rdname from_messydate
 #' @export
-as.POSIXlt.messydt <- function(x, FUN){
+as.POSIXlt.messydt <- function(x, ..., FUN){
+  if(missing(FUN) & length(list(...))>0) FUN <- list(...)[[1]]
   x <- FUN(x)
   as.POSIXlt(x)
 }

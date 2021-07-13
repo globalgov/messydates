@@ -92,17 +92,12 @@ validate_messydate <- function(x){
     )
   }
 
-  suppressWarnings(if (class(values) != "character" & class(values) != "Date" & class(values) == "POSIXct" & class(values) == "POSIXlt") {
-    stop(
-      "Messy dates accept only character, Date, POSIXct or POSIXlt class objects",
-      call. = FALSE
-    )
-  })
   x
 }
 
+#' @importFrom utils str
 #' @export
-print.messydt <- function(x){
+print.messydt <- function(x, ...){
   str(x)
 }
 

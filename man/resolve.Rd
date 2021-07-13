@@ -16,7 +16,7 @@
 
 \method{median}{messydt}(..., na.rm = TRUE)
 
-\method{mean}{messydt}(..., na.rm = TRUE)
+\method{mean}{messydt}(..., trim = 0, na.rm = TRUE)
 
 \method{modal}{messydt}(..., na.rm = TRUE)
 

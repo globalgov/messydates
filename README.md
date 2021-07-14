@@ -1,8 +1,7 @@
 
+# messydates <img src="man/figures/messydates_hexlogo.png" align="right" width="220"/>
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# messydates
-
 <!-- badges: start -->
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)

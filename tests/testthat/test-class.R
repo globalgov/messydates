@@ -29,6 +29,3 @@ test_that("ranges work", {
   expect_equal(unclass(as_messydate("2012-01-01..2014-01-01")), "2012-01-01..2014-01-01")
   expect_equal(unclass(as_messydate("2012-01-01_2014-01-01")), "2012-01-01..2014-01-01")
 })
-
-# test_that("sets work", {
-# })

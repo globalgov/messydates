@@ -101,4 +101,5 @@ print.messydt <- function(x, ...){
   str(x)
 }
 
-
+#' @export
+NA_messydt_ <- structure(NA_real_, class = "messydt")

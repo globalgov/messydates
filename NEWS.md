@@ -63,3 +63,13 @@
   * Added `is_intersecting()` to test if dates intersect
   * Added `is_element()` to test for multiple elements in dates 
   * Added `is_similar()` to test for similarities in dates
+* Added tests for new functions
+  * Added tests for messydt class and `às_messydate()` function
+  * Added tests for coerce from messy dates functions
+  * Added tests for coerce to messy dates functions
+  * Added tests for `contract()` function
+  * Added tests for `expand()` function
+  * Added tests for extract functions
+  * Added tests for `make_messydate()` function
+  * Added tests for resolve functions
+  * Added tests for set functions

@@ -6,7 +6,8 @@
 #' please use `md_multiset`.
 #' @name set
 #' @param x,y,... Messy date or other class objects
-#' @return A vector of the same mode for `intersect`, or a common mode for union.
+#' @return A vector of the same mode for `intersect`,
+#' or a common mode for union.
 NULL
 #> NULL
 
@@ -14,7 +15,7 @@ NULL
 #' @examples
 #' md_intersect(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 #' @export
-md_intersect <- function(...){
+md_intersect <- function(...) {
   x <- list(...)[[1]]
   y <- list(...)[[2]]
   x <- as.character(expand(x)[[1]])
@@ -26,7 +27,7 @@ md_intersect <- function(...){
 #' @examples
 #' md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 #' @export
-md_union <- function(x, y){
+md_union <- function(x, y) {
   x <- as.character(expand(x)[[1]])
   y <- as.character(expand(y)[[1]])
   union(x, y)
@@ -36,9 +37,8 @@ md_union <- function(x, y){
 #' @examples
 #' md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 #' @export
-md_multiset <- function(x, y){
+md_multiset <- function(x, y) {
   x <- as.character(expand(x)[[1]])
   y <- as.character(expand(y)[[1]])
   c(x, y)
 }
-

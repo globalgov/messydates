@@ -16,8 +16,8 @@ NULL
 #' @examples
 #' year(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
-year <- function(md){
-  md <- sapply(md, function(x){
+year <- function(md) {
+  md <- sapply(md, function(x) {
     stringr::str_split(x, "-")[[1]][1]
   })
   as.integer(md)
@@ -27,8 +27,8 @@ year <- function(md){
 #' @examples
 #' month(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
-month <- function(md){
-  md <- sapply(md, function(x){
+month <- function(md) {
+  md <- sapply(md, function(x) {
     stringr::str_split(x, "-")[[1]][2]
   })
   as.integer(md)
@@ -38,8 +38,8 @@ month <- function(md){
 #' @examples
 #' day(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
-day <- function(md){
-  md <- sapply(md, function(x){
+day <- function(md) {
+  md <- sapply(md, function(x) {
     stringr::str_split(x, "-")[[1]][3]
   })
   as.integer(md)
@@ -50,13 +50,13 @@ day <- function(md){
 #' @examples
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
-precision <- function(md){
+precision <- function(md) {
   md <- as.character(md)
   md <- stringr::str_remove_all(md, "\\..*")
   md <- stringr::str_remove_all(md, ",.*")
   count <- stringr::str_count(md, "-")
 
-  out <- ifelse(count==2, "day",
-                ifelse(count==1, "month", "year"))
+  out <- ifelse(count == 2, "day",
+                ifelse(count == 1, "month", "year"))
   out
 }

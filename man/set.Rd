@@ -17,7 +17,8 @@ md_multiset(x, y)
 \item{x, y, ...}{Messy date or other class objects}
 }
 \value{
-A vector of the same mode for \code{intersect}, or a common mode for union.
+A vector of the same mode for \code{intersect},
+or a common mode for union.
 }
 \description{
 Performs intersection (\code{md_intersect()}) and union (\code{md_union()}) on,

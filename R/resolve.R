@@ -25,7 +25,7 @@ NULL
 
 #' @rdname resolve
 #' @export
-min.messydt <- function(..., na.rm = TRUE){
+min.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
   y <- sapply(y, function(x) as.character(min(x, na.rm = na.rm)))
@@ -34,7 +34,7 @@ min.messydt <- function(..., na.rm = TRUE){
 
 #' @rdname resolve
 #' @export
-max.messydt <- function(..., na.rm = TRUE){
+max.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
   y <- sapply(y, function(x) as.character(max(x, na.rm = na.rm)))
@@ -44,7 +44,7 @@ max.messydt <- function(..., na.rm = TRUE){
 #' @rdname resolve
 #' @importFrom stats median
 #' @export
-median.messydt <- function(..., na.rm = TRUE){
+median.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
   y <- sapply(y, function(x) as.character(stats::median(x, na.rm = na.rm)))
@@ -56,11 +56,12 @@ median.messydt <- function(..., na.rm = TRUE){
 #' from each end of x before the mean is computed.
 #' Values of trim outside that range are taken as the nearest endpoint.
 #' @export
-mean.messydt <- function(..., trim = 0, na.rm = TRUE){
+mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
-  y <- sapply(y, function(x){
-    if(length(x)>1) x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
+  y <- sapply(y, function(x) {
+    if (length(x) > 1) x <- as.character(mean(as.Date(x),
+                                              trim = 0, na.rm = TRUE))
     x
   })
   y
@@ -72,15 +73,15 @@ modal <- function(..., na.rm = FALSE) UseMethod("modal")
 
 #' @rdname resolve
 #' @export
-modal.messydt <- function(..., na.rm = TRUE){
+modal.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
   getmode <- function(v) {
     uniqv <- unique(v)
     uniqv[which.max(tabulate(match(v, uniqv)))]
   }
-  y <- sapply(y, function(x){
-    if(length(x)>1) x <- as.character(getmode(x))
+  y <- sapply(y, function(x) {
+    if (length(x) > 1) x <- as.character(getmode(x))
     x
   })
   y
@@ -101,14 +102,12 @@ random <- function(..., size,
 random.messydt <- function(...,
                            size,
                            replace = FALSE,
-                           prob = NULL){
+                           prob = NULL) {
   x <- list(...)
   y <- expand(x[[1]])
-  y <- sapply(y, function(x){
-    if(length(x)>1) x <- as.character(sample(x, size = 1))
+  y <- sapply(y, function(x) {
+    if (length(x) > 1) x <- as.character(sample(x, size = 1))
     x
   })
   y
-
 }
-

@@ -27,8 +27,8 @@ is_messydate <- function(x) inherits(x, "messydt")
 #' is_intersecting(as_messydate("2012-01"), as_messydate("2012-01-01..2012-02-22"))
 #' is_intersecting(as_messydate("2012-01"), as_messydate("2012-02-01..2012-02-22"))
 #' @export
-is_intersecting <- function(x, y){
-  length(intersect(x, y))>0
+is_intersecting <- function(x, y) {
+  length(intersect(x, y)) > 0
 }
 
 #' @rdname logical
@@ -36,9 +36,9 @@ is_intersecting <- function(x, y){
 #' is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
 #' is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
 #' @export
-is_element <- function(x, y){
+is_element <- function(x, y) {
   y <- as.character(expand(y)[[1]])
-  is.element(x,y)
+  is.element(x, y)
 }
 
 #' @rdname logical
@@ -46,7 +46,6 @@ is_element <- function(x, y){
 #' is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 #' is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 #' @export
-is_similar <- function(x, y){
-  year(x)==year(y) & month(x)==day(y) & day(x)==month(y)
+is_similar <- function(x, y) {
+  year(x) == year(y) & month(x) == day(y) & day(x) == month(y)
 }
-

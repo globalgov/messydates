@@ -18,8 +18,9 @@ It contracts a list of dates into the abbreviated annotation
 of messy dates.
 }
 \examples{
-d <- as_messydate(c("2001-01-01", "2001-01", "2001", "2001-01-01..2001-02-02",
-       "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}"))
+d <- as_messydate(c("2001-01-01", "2001-01", "2001",
+"2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+"{2001-01,2001-02-02}"))
 e <- expand(d)
 tibble::tibble(d,contract(e))
 }

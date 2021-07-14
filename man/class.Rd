@@ -26,7 +26,8 @@ Object of class \code{messydt}
 }
 \description{
 These functions create and validate a new date class for R
-consistent with \href{https://www.iso.org/standard/70908.html}{ISO 8601-2_2019(E)}.
+consistent with
+\href{https://www.iso.org/standard/70908.html}{ISO 8601-2_2019(E)}.
 These recent extensions to standardised date notation
 create space for unspecified, uncertain, and approximate dates,
 as well as succinct representation of date ranges.

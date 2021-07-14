@@ -2,7 +2,8 @@
 #'
 #' @description
 #' These functions create and validate a new date class for R
-#' consistent with [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
+#' consistent with
+#' [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
 #' These recent extensions to standardised date notation
 #' create space for unspecified, uncertain, and approximate dates,
 #' as well as succinct representation of date ranges.
@@ -61,14 +62,14 @@ NULL
 
 #' @rdname class
 #' @export
-new_messydate <- function(x = character()){
+new_messydate <- function(x = character()) {
   stopifnot(is.character(x))
   structure(x, class = c("messydt"))
 }
 
 #' @rdname class
 #' @export
-validate_messydate <- function(x){
+validate_messydate <- function(x) {
   values <- unclass(x)
 
   if (any(grepl("[A-WYZa-z]", values))) {
@@ -97,7 +98,7 @@ validate_messydate <- function(x){
 
 #' @importFrom utils str
 #' @export
-print.messydt <- function(x, ...){
+print.messydt <- function(x, ...) {
   str(x)
 }
 

@@ -20,7 +20,8 @@
 
 \item{FUN}{A function that can be used to resolve expanded messy dates
 into a single date.
-For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()}, \code{modal()}, and \code{random()}.}
+For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
+\code{modal()}, and \code{random()}.}
 }
 \description{
 Coerces from messydt class to date class

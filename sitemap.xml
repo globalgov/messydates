@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://globalgov.github.io/messydates//index.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/as_messydate.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/class.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/contract.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/expand.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/extract.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/from_messydate.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/logical.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/make_messydate.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/resolve.html</loc>
+  </url>
+  <url>
+    <loc>https://globalgov.github.io/messydates//reference/set.html</loc>
+  </url>
+</urlset>

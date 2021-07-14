@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 ```
 
 <!-- badges: start -->
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/globalgov/messydates)
 ![GitHub Release Date](https://img.shields.io/github/release-date/globalgov/messydates)
 ![GitHub issues](https://img.shields.io/github/issues-raw/globalgov/messydates)

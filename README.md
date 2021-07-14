@@ -4,7 +4,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 ![GitHub release (latest by
 date)](https://img.shields.io/github/v/release/globalgov/messydates)
 ![GitHub Release

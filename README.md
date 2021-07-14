@@ -33,15 +33,15 @@ timing, is important. The goal of `{messydates}` is to help with this
 problem by retaining and working with various kinds of date imprecision.
 
 `{messydates}` implements the extended annotation standard for dates,
-the Extended Date/Time Format (EDTF), outlined in
-[ISO 8601-2\_2019(E)](https://www.iso.org/standard/70908.html) for R.
-These include standardised notation for:
+the Extended Date/Time Format (EDTF), outlined in [ISO
+8601-2\_2019(E)](https://www.iso.org/standard/70908.html) for R. These
+include standardised notation for:
 
-  - unspecified date( component)s
-  - approximate date( component)s
-  - uncertain date( component)s
-  - sets of dates
-  - ranges of dates
+-   unspecified date( component)s
+-   approximate date( component)s
+-   uncertain date( component)s
+-   sets of dates
+-   ranges of dates
 
 `{messydates}` contains a set of tools for constructing and coercing
 into and from the ‘messydt’ class. This date class allows regular dates

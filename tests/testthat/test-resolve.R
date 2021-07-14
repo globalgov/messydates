@@ -1,0 +1,17 @@
+test_that("Resolve dates works properly for date ranges", {
+  range <- as_messydate("2014-01-01..2014-01-31")
+  expect_equal(as.character(min(range)), "2014-01-01")
+  expect_equal(as.character(max(range)), "2014-01-31")
+  expect_equal(as.character(median(range)), "2014-01-16")
+  # expect_equal(as.character(mean(range)), "2014-01-16")
+  expect_equal(as.character(modal(range)), "2014-01-01") # get the first when no mode?
+})
+
+test_that("Resolve dates works properly for unspecified dates", {
+  unespecified <- as_messydate("1999")
+  expect_equal(as.character(min(unespecified)), "1999-01-01")
+  expect_equal(as.character(max(unespecified)), "1999-12-31")
+  expect_equal(as.character(median(unespecified)), "1999-07-02")
+  # expect_equal(as.character(mean(unespecified)), "1999-07-02")
+  expect_equal(as.character(modal(unespecified)), "1999-01-01") # get the first when no mode?
+})

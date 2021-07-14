@@ -1,0 +1,12 @@
+citHeader("To cite messydates in publications use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "messydates: A broader date class for messy date information",
+  author   = "James Hollway",
+  year     = "2021",
+  version  = "0.4.0",
+  url      = "https://github.com/globalgov/messydates",
+  textVersion = paste("J. Hollway. messydates: A broader date class for messy date information. 2021."
+  )
+)

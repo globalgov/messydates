@@ -5,11 +5,13 @@
 #' The function "opens" these values to include all the possible dates
 #' contained in uncertain dates.
 #' @param x A `messydt` object
+#' @return Values of all possible dates contained in range
 #' @export
 expand <- function(x) UseMethod("expand")
 
 #' @describeIn expand Expanding messydates
 #' @importFrom stringr str_replace_all str_split
+#' @return Values of all possible dates contained in range
 #' @examples
 #' d <- as_messydate(c("2001-01-01", "2001-01", "2001", "2001-01-01..2001-02-02",
 #'         "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}"))

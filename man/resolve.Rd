@@ -44,6 +44,26 @@ Values of trim outside that range are taken as the nearest endpoint.}
 \item{prob}{a vector of probability weights
 for obtaining the elements of the vector being sampled.}
 }
+\value{
+The date values resolved according to min,
+max, mean, median, modal or random
+
+The minimum date values
+
+The maximum date values
+
+The median date values
+
+The mean date values
+
+The modal date values
+
+The modal date values
+
+A random date value from the range of dates
+
+A random date value from the range of dates
+}
 \description{
 This collection of S3 methods 'resolve' messy dates into a single date
 according to some explicit bias,

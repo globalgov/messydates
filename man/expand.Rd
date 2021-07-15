@@ -12,6 +12,11 @@ expand(x)
 \arguments{
 \item{x}{A \code{messydt} object}
 }
+\value{
+Values of all possible dates contained in range
+
+Values of all possible dates contained in range
+}
 \description{
 These functions expand on unspecified dates, ranges and on sets of dates.
 Uncertain dates may include several possible dates.

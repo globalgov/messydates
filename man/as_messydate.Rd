@@ -22,6 +22,17 @@ as_messydate(x)
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
 such as Date, POSIXct, POSIXlt, or character.}
 }
+\value{
+A messydt class object
+
+A messydt class object
+
+A messydt class object
+
+A messydt class object
+
+A messydt class object
+}
 \description{
 These functions coerce different data classes into \code{messydt} class
 }

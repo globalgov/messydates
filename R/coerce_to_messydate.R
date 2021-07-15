@@ -3,6 +3,7 @@
 #' These functions coerce different data classes into `messydt` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
 #' such as Date, POSIXct, POSIXlt, or character.
+#' @return A messydt class object
 #' @examples
 #' as_messydate("2021")
 #' as_messydate("2021-02")
@@ -16,6 +17,7 @@
 as_messydate <- function(x) UseMethod("as_messydate")
 
 #' @describeIn as_messydate Coerce from `Date` to `messydt` class
+#' @return A messydt class object
 #' @export
 as_messydate.Date <- function(x) {
   x <- as.character(x)
@@ -23,6 +25,7 @@ as_messydate.Date <- function(x) {
 }
 
 #' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
+#' @return A messydt class object
 #' @export
 as_messydate.POSIXct <- function(x) {
   x <- as.character(x)
@@ -30,6 +33,7 @@ as_messydate.POSIXct <- function(x) {
 }
 
 #' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
+#' @return A messydt class object
 #' @export
 as_messydate.POSIXlt <- function(x) {
   x <- as.character(x)
@@ -37,6 +41,7 @@ as_messydate.POSIXlt <- function(x) {
 }
 
 #' @describeIn as_messydate Coerce character date objects to `messydt` class
+#' @return A messydt class object
 #' @export
 as_messydate.character <- function(x) {
 

@@ -1,6 +1,22 @@
 #' Coercion from messy dates
 #'
-#' Coerces from messydt class to various date classes
+#' @description
+#' These functions coerce objects of `messydt` class to
+#' common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
+#' Since `messydt` objects can hold multiple individual dates,
+#' however, an additional function must be passed as an argument
+#' so that these functions know how to coerce resolve multiple dates
+#' into a single date.
+#'
+#' For example, one might wish to use the earliest possible date
+#' in any ranges of dates (`min`), the latest possible date (`max`),
+#' some notion of a central tendency (`mean`, `median`, or `modal`),
+#' or even a `random` selection from amongst the candidate dates.
+#'
+#' These functions then, building on `expand()` and the resolve functions,
+#' are particularly useful in converting back out of the `messydt` class
+#' for use with existing methods and models,
+#' especially for checking the robustness of results.
 #' @param x A `messydt` object
 #' @param ... Arguments passed on to the S3 generics.
 #' @param FUN A function that can be used to resolve expanded messy dates

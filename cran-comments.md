@@ -6,14 +6,12 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-* This is a new release.
-
-* The URL:https://globalgov.github.io/messydates was initialized properly and re-checked
+* The URL https://globalgov.github.io/messydates was initialized properly and re-checked
 * Updated some function documentations for missing Rd-tags
   * Added Rd: \value tag for `as_messydate()`
   * Added Rd: \value tag for `expand()`
   * Added Rd: \value tag for from_messydate family of functions
   * Added Rd: \value tag for resolve family of functions
-* Omited quotes from DESCRIPTION file 
+* Omitted quotes from DESCRIPTION file 

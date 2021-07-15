@@ -14,7 +14,7 @@
 \method{as.POSIXlt}{messydt}(x, ..., FUN)
 }
 \arguments{
-\item{x}{A messydt object}
+\item{x}{A \code{messydt} object}
 
 \item{...}{Arguments passed on to the S3 generics.}
 
@@ -24,10 +24,10 @@ For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
 \code{modal()}, and \code{random()}.}
 }
 \value{
-A date object of "Date", "POSIXct" or "POSIXlt" class
+A date object of \code{Date}, \code{POSIXct}, or \code{POSIXlt} class
 }
 \description{
-Coerces from messydt class to date class
+Coerces from messydt class to various date classes
 }
 \examples{
 as.Date(as_messydate("2012-01"), min)

@@ -1,13 +1,13 @@
 #' Coercion from messy dates
 #'
-#' Coerces from messydt class to date class
-#' @param x A messydt object
+#' Coerces from messydt class to various date classes
+#' @param x A `messydt` object
 #' @param ... Arguments passed on to the S3 generics.
 #' @param FUN A function that can be used to resolve expanded messy dates
 #' into a single date.
 #' For example, `min()`, `max()`, `mean()`, `median()`,
 #' `modal()`, and `random()`.
-#' @return A date object of "Date", "POSIXct" or "POSIXlt" class
+#' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
 #' @name from_messydate
 NULL
 #> NULL

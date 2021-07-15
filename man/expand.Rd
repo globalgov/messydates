@@ -10,10 +10,10 @@ expand(x)
 \method{expand}{messydt}(x)
 }
 \arguments{
-\item{x}{A \code{messydt} object}
+\item{x}{A \code{messydt} object.}
 }
 \value{
-Values of all possible dates contained in range
+A list of dates, including all dates in each range or set.
 }
 \description{
 These functions expand on unspecified dates, ranges and on sets of dates.

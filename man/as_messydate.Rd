@@ -20,10 +20,10 @@ as_messydate(x)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
-such as Date, POSIXct, POSIXlt, or character.}
+such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 }
 \value{
-A messydt class object
+A \code{messydt} class object
 }
 \description{
 These functions coerce different data classes into \code{messydt} class

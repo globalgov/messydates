@@ -10,8 +10,7 @@
 #' This can be useful for various descriptive or inferential projects.
 #' @param ... a messydt object
 #' @param na.rm Should NAs be removed? True by default.
-#' @return The date values resolved according to min,
-#' max, mean, median, modal or random
+#' @return A single scalar or vector of dates
 #' @examples
 #' d <- as_messydate("2014-01-01..2014-01-31")
 #' d

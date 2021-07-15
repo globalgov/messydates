@@ -24,14 +24,6 @@ such as Date, POSIXct, POSIXlt, or character.}
 }
 \value{
 A messydt class object
-
-A messydt class object
-
-A messydt class object
-
-A messydt class object
-
-A messydt class object
 }
 \description{
 These functions coerce different data classes into \code{messydt} class

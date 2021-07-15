@@ -25,12 +25,6 @@ For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
 }
 \value{
 A date object of "Date", "POSIXct" or "POSIXlt" class
-
-A date object of "Date" class
-
-A date object of "POSIXct" class
-
-A date object of POSIXlt" class
 }
 \description{
 Coerces from messydt class to date class

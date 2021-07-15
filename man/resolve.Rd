@@ -48,20 +48,6 @@ for obtaining the elements of the vector being sampled.}
 The date values resolved according to min,
 max, mean, median, modal or random
 
-The minimum date values
-
-The maximum date values
-
-The median date values
-
-The mean date values
-
-The modal date values
-
-The modal date values
-
-A random date value from the range of dates
-
 A random date value from the range of dates
 }
 \description{

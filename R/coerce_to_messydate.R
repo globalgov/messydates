@@ -17,7 +17,6 @@
 as_messydate <- function(x) UseMethod("as_messydate")
 
 #' @describeIn as_messydate Coerce from `Date` to `messydt` class
-#' @return A messydt class object
 #' @export
 as_messydate.Date <- function(x) {
   x <- as.character(x)
@@ -25,7 +24,6 @@ as_messydate.Date <- function(x) {
 }
 
 #' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
-#' @return A messydt class object
 #' @export
 as_messydate.POSIXct <- function(x) {
   x <- as.character(x)
@@ -33,7 +31,6 @@ as_messydate.POSIXct <- function(x) {
 }
 
 #' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
-#' @return A messydt class object
 #' @export
 as_messydate.POSIXlt <- function(x) {
   x <- as.character(x)
@@ -41,7 +38,6 @@ as_messydate.POSIXlt <- function(x) {
 }
 
 #' @describeIn as_messydate Coerce character date objects to `messydt` class
-#' @return A messydt class object
 #' @export
 as_messydate.character <- function(x) {
 

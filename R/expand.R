@@ -4,7 +4,8 @@
 #' Uncertain dates may include several possible dates.
 #' The function "opens" these values to include all the possible dates
 #' contained in uncertain dates.
-#' @param x A `messydt` object
+#' @param x A `messydt` object.
+#' @return A list of dates, including all dates in each range or set.
 #' @export
 expand <- function(x) UseMethod("expand")
 

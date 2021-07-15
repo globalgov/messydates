@@ -44,6 +44,9 @@ Values of trim outside that range are taken as the nearest endpoint.}
 \item{prob}{a vector of probability weights
 for obtaining the elements of the vector being sampled.}
 }
+\value{
+A single scalar or vector of dates
+}
 \description{
 This collection of S3 methods 'resolve' messy dates into a single date
 according to some explicit bias,

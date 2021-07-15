@@ -14,7 +14,7 @@
 \method{as.POSIXlt}{messydt}(x, ..., FUN)
 }
 \arguments{
-\item{x}{A messydt object}
+\item{x}{A \code{messydt} object}
 
 \item{...}{Arguments passed on to the S3 generics.}
 
@@ -23,8 +23,26 @@ into a single date.
 For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
 \code{modal()}, and \code{random()}.}
 }
+\value{
+A date object of \code{Date}, \code{POSIXct}, or \code{POSIXlt} class
+}
 \description{
-Coerces from messydt class to date class
+These functions coerce objects of \code{messydt} class to
+common date classes such as \code{Date}, \code{POSIXct}, and \code{POSIXlt}.
+Since \code{messydt} objects can hold multiple individual dates,
+however, an additional function must be passed as an argument
+so that these functions know how to coerce resolve multiple dates
+into a single date.
+
+For example, one might wish to use the earliest possible date
+in any ranges of dates (\code{min}), the latest possible date (\code{max}),
+some notion of a central tendency (\code{mean}, \code{median}, or \code{modal}),
+or even a \code{random} selection from amongst the candidate dates.
+
+These functions then, building on \code{expand()} and the resolve functions,
+are particularly useful in converting back out of the \code{messydt} class
+for use with existing methods and models,
+especially for checking the robustness of results.
 }
 \examples{
 as.Date(as_messydate("2012-01"), min)

@@ -1,3 +1,17 @@
+# messydates 0.1.0
+
+## Package
+
+* Updated call to `messydt` class in DESCRIPTION file
+
+## Functions
+
+* Updated documentation for `as_messydate()` functions
+* Updated documentation for `expand()` function
+* Updated documentation for resolve family of functions
+* Updated documentation for coerce from family of functions
+* Updated documentation for coerce to family of functions
+
 # messydates 0.0.1
 
 ## Package

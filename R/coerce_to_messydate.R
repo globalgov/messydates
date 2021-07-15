@@ -2,7 +2,8 @@
 #'
 #' These functions coerce different data classes into `messydt` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
-#' such as Date, POSIXct, POSIXlt, or character.
+#' such as `Date`, `POSIXct`, `POSIXlt`, or character.
+#' @return A `messydt` class object
 #' @examples
 #' as_messydate("2021")
 #' as_messydate("2021-02")

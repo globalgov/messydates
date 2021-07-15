@@ -10,6 +10,8 @@
 #' This can be useful for various descriptive or inferential projects.
 #' @param ... a messydt object
 #' @param na.rm Should NAs be removed? True by default.
+#' @return The date values resolved according to min,
+#' max, mean, median, modal or random
 #' @examples
 #' d <- as_messydate("2014-01-01..2014-01-31")
 #' d
@@ -24,6 +26,7 @@ NULL
 #> NULL
 
 #' @rdname resolve
+#' @return The minimum date values
 #' @export
 min.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
@@ -33,6 +36,7 @@ min.messydt <- function(..., na.rm = TRUE) {
 }
 
 #' @rdname resolve
+#' @return The maximum date values
 #' @export
 max.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
@@ -42,6 +46,7 @@ max.messydt <- function(..., na.rm = TRUE) {
 }
 
 #' @rdname resolve
+#' @return The median date values
 #' @importFrom stats median
 #' @export
 median.messydt <- function(..., na.rm = TRUE) {
@@ -52,6 +57,7 @@ median.messydt <- function(..., na.rm = TRUE) {
 }
 
 #' @rdname resolve
+#' @return The mean date values
 #' @param trim the fraction (0 to 0.5) of observations to be trimmed
 #' from each end of x before the mean is computed.
 #' Values of trim outside that range are taken as the nearest endpoint.
@@ -68,10 +74,12 @@ mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
 }
 
 #' @rdname resolve
+#' @return The modal date values
 #' @export
 modal <- function(..., na.rm = FALSE) UseMethod("modal")
 
 #' @rdname resolve
+#' @return The modal date values
 #' @export
 modal.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
@@ -92,12 +100,14 @@ modal.messydt <- function(..., na.rm = TRUE) {
 #' @param replace should sampling be with replacement?
 #' @param prob a vector of probability weights
 #' for obtaining the elements of the vector being sampled.
+#' @return A random date value from the range of dates
 #' @export
 random <- function(..., size,
                    replace = FALSE,
                    prob = NULL) UseMethod("random")
 
 #' @rdname resolve
+#' @return A random date value from the range of dates
 #' @export
 random.messydt <- function(...,
                            size,

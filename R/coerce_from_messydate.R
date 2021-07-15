@@ -7,11 +7,13 @@
 #' into a single date.
 #' For example, `min()`, `max()`, `mean()`, `median()`,
 #' `modal()`, and `random()`.
+#' @return A date object of "Date", "POSIXct" or "POSIXlt" class
 #' @name from_messydate
 NULL
 #> NULL
 
 #' @rdname from_messydate
+#' @return A date object of "Date" class
 #' @examples
 #' as.Date(as_messydate("2012-01"), min)
 #' as.Date(as_messydate("2012-01"), mean)
@@ -27,6 +29,7 @@ as.Date.messydt <- function(x, ..., FUN) {
 }
 
 #' @rdname from_messydate
+#' @return A date object of "POSIXct" class
 #' @export
 as.POSIXct.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
@@ -35,6 +38,7 @@ as.POSIXct.messydt <- function(x, ..., FUN) {
 }
 
 #' @rdname from_messydate
+#' @return A date object of POSIXlt" class
 #' @export
 as.POSIXlt.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]

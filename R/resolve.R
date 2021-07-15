@@ -100,7 +100,6 @@ random <- function(..., size,
                    prob = NULL) UseMethod("random")
 
 #' @rdname resolve
-#' @return A random date value from the range of dates
 #' @export
 random.messydt <- function(...,
                            size,

@@ -47,8 +47,6 @@ for obtaining the elements of the vector being sampled.}
 \value{
 The date values resolved according to min,
 max, mean, median, modal or random
-
-A random date value from the range of dates
 }
 \description{
 This collection of S3 methods 'resolve' messy dates into a single date

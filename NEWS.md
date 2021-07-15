@@ -2,7 +2,7 @@
 
 ## Package
 
-* Updated call to messydt class in DESCRIPTION file
+* Updated call to `messydt` class in DESCRIPTION file
 
 ## Functions
 

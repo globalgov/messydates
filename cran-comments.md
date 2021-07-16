@@ -8,10 +8,6 @@
 
 0 errors | 0 warnings | 0 notes
 
-* The URL https://globalgov.github.io/messydates was initialized properly and re-checked
-* Updated some function documentations for missing Rd-tags
-  * Added Rd: \value tag for `as_messydate()`
-  * Added Rd: \value tag for `expand()`
-  * Added Rd: \value tag for from_messydate family of functions
-  * Added Rd: \value tag for resolve family of functions
-* Omitted quotes from DESCRIPTION file 
+* Updated README with some more explanation about what the package does/offers
+* The URL https://globalgov.github.io/messydates was changed to https://globalgov.github.io/messydates/
+* The ISO publication that provides the basis for the new class does not have a DOI

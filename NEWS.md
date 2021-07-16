@@ -1,3 +1,10 @@
+# messydates 0.1.1
+
+## Package
+
+* Updated README with some more explanation about what the package does/offers
+* Fixed URL to the package website
+
 # messydates 0.1.0
 
 ## Package

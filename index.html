@@ -14,7 +14,8 @@
 <script src="pkgdown.js"></script><meta property="og:title" content="A Flexible Class for Messy Dates">
 <meta property="og:description" content="Contains a set of tools for constructing and coercing
   into and from the messydt class. 
-  This date class allows regular dates to be annotated 
+  This date class implements ISO 8601-2:2019(E) and
+  allows regular dates to be annotated 
   to express unspecified date components,
   approximate or uncertain date components, 
   date ranges, and sets of dates. 
@@ -38,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -76,25 +77,42 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-<p>Dates are often messy. Whether historical (or ancient), future, or even recent, we often only know approximately when an event occurred, there may be some uncertainty about the date due to the source being unreliable, or there are multiple, competing dates.</p>
-<p>Too often researchers recognise this but force a nonexistent precision on data so they can move forward with analysis. For example, if we only know something happened in a given month or year, we might just opt for the start of that month (e.g. 2021-07-01) or year (2021-01-01), assuming that to err on the earlier (or later) side is a justifiable bias. However, this can create issues for inference in which sequence, or timing, is important. The goal of <code>{messydates}</code> is to help with this problem by retaining and working with various kinds of date imprecision.</p>
+<div id="why-this-package" class="section level2">
+<h2 class="hasAnchor">
+<a href="#why-this-package" class="anchor"></a>Why this package?</h2>
+<p>Dates are often messy. Whether historical (or ancient), future, or even recent, we often only know approximately when an event occurred, that it happened within a particular period, an unreliable source means a date should be flagged as uncertain, or sources offer multiple, competing dates.</p>
+<p>As researchers, we often recognise this messiness but are forced to force nonexistent precision on data to we can proceed with analysis. For example, if we only know something happened in a given month or year, we might just opt for the start of that month (e.g. 2021-07-01) or year (2021-01-01), assuming that to err on the earlier (or later) side is a justifiable bias. However, this can create issues for inference in which sequence or timing is important. The goal of <code>{messydates}</code> is to help with this problem by retaining and working with various kinds of date imprecision.</p>
+</div>
+<div id="a-quick-overview" class="section level2">
+<h2 class="hasAnchor">
+<a href="#a-quick-overview" class="anchor"></a>A quick overview</h2>
 <p><code>{messydates}</code> implements the extended annotation standard for dates, the Extended Date/Time Format (EDTF), outlined in <a href="https://www.iso.org/standard/70908.html">ISO 8601-2_2019(E)</a> for R. These include standardised notation for:</p>
 <ul>
-<li>unspecified date( component)s</li>
-<li>approximate date( component)s</li>
-<li>uncertain date( component)s</li>
-<li>sets of dates</li>
-<li>ranges of dates</li>
+<li>unspecified date( component)s, e.g. <code>2012-XX-01</code> for the first of some unknown month in 2012 or <code>2012-01</code> for some unknown day in January 2012</li>
+<li>approximate date( component)s, e.g. <code>2012-01-12~</code> for approximately the 12th of January 2012</li>
+<li>uncertain date( component)s, e.g. <code>2012-01-12?</code> where this data point is based on an unreliable source</li>
+<li>sets of dates, e.g. <code>[2012-01-01,2012-01-12]</code> where the date is either 1 January 2012 or 12 January 2012</li>
+<li>ranges of dates, e.g. <code>2012-01-01..2012-01-12</code> for all dates between the 1 January 2012 and 12 January 2012 inclusive</li>
 </ul>
 <p><code>{messydates}</code> contains a set of tools for constructing and coercing into and from the ‘messydt’ class. This date class allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.</p>
+<p>Importantly, the package also includes a function for unpacking or expanding sets or ranges of dates into all dates consistent with how the date or set of dates is specified or annotated. Methods are also offered that can be used to make explicit how researchers convert date imprecision into precise dates for analysis, such as getting the <code><a href="https://rdrr.io/r/base/Extremes.html">min()</a></code>, <code><a href="https://rdrr.io/r/base/Extremes.html">max()</a></code>, or even a <code><a href="reference/resolve.html">random()</a></code> date from among the dates consistent with a set or range of dates. This greatly facilitates research transparency as well as robustness checks.</p>
+</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the the development version of messydates from <a href="https://github.com/">GitHub</a>.</p>
+<p>The easiest way to install <code>{messydates}</code> is directly from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"messydates"</span><span class="op">)</span></code></pre></div>
+<p>However, you may also install the development version from <a href="https://github.com/">GitHub</a>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"globalgov/messydates"</span><span class="op">)</span></code></pre></div>
-<p>Please see <a href="https://globalgov.github.io/messydates">the messydates website</a> for more information about how to use <code>{messydates}</code>. For more information on the Geneva Global Governance Observatory and our current projects, please see <a href="https://panarchic.ch">our website</a> or <a href="https://github.com/globalgov">our Github page</a>.</p>
+<p>Please see <a href="https://globalgov.github.io/messydates/">the messydates website</a> for more information about how to use <code>{messydates}</code>. For more information on the Geneva Global Governance Observatory and our current projects, please see <a href="https://panarchic.ch">our website</a> or <a href="https://github.com/globalgov">our Github page</a>.</p>
+</div>
+<div id="relationship-to-other-packages" class="section level2">
+<h2 class="hasAnchor">
+<a href="#relationship-to-other-packages" class="anchor"></a>Relationship to other packages</h2>
+<p><code>{messydates}</code> offers a new date class, but one that comes with methods for converting from and into common date classes such as <code>Date</code>, <code>POSIXct</code>, and <code>POSIXlt</code>. It is thus fully compatible with packages such as <a href="https://lubridate.tidyverse.org">lubridate</a> and <code>{anydate}</code>. It is also compatible with <code>{unstruwwel}</code>, which also parses historic dates in R, though the emphasis of our package is on working with these dates.</p>
 </div>
 </div>
   </div>

@@ -2,6 +2,7 @@
 # messydates <img src="man/figures/messydates_hexlogo.png" align="right" width="220"/>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start -->
 
 ![GitHub release (latest by
@@ -38,20 +39,20 @@ imprecision.
 ## A quick overview
 
 `{messydates}` implements the extended annotation standard for dates,
-the Extended Date/Time Format (EDTF), outlined in [ISO
-8601-2\_2019(E)](https://www.iso.org/standard/70908.html) for R. These
-include standardised notation for:
+the Extended Date/Time Format (EDTF), outlined in
+[ISO 8601-2\_2019(E)](https://www.iso.org/standard/70908.html) for R.
+These include standardised notation for:
 
--   unspecified date( component)s, e.g. `2012-XX-01` for the first of
+  - unspecified date( component)s, e.g. `2012-XX-01` for the first of
     some unknown month in 2012 or `2012-01` for some unknown day in
     January 2012
--   approximate date( component)s, e.g. `2012-01-12~` for approximately
+  - approximate date( component)s, e.g. `2012-01-12~` for approximately
     the 12th of January 2012
--   uncertain date( component)s, e.g. `2012-01-12?` where this data
+  - uncertain date( component)s, e.g. `2012-01-12?` where this data
     point is based on an unreliable source
--   sets of dates, e.g. `[2012-01-01,2012-01-12]` where the date is
+  - sets of dates, e.g. `[2012-01-01,2012-01-12]` where the date is
     either 1 January 2012 or 12 January 2012
--   ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between
+  - ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between
     the 1 January 2012 and 12 January 2012 inclusive
 
 `{messydates}` contains a set of tools for constructing and coercing
@@ -86,8 +87,13 @@ remotes::install_github("globalgov/messydates")
 
 Please see [the messydates
 website](https://globalgov.github.io/messydates/) for more information
-about how to use `{messydates}`. For more information on the Geneva
-Global Governance Observatory and our current projects, please see [our
+about how to use `{messydates}`. The package was developed as part of
+the PANARCHIC project, which studies the effects of network and power on
+how quickly states join, reform, or create international institutions by
+examining the historical dynamics of institutional networks from
+different domains. The PANARCHIC project is funded by the Swiss National
+Science Foundation (SNSF). For more information on the Geneva Global
+Governance Observatory and our current projects, please see [our
 website](https://panarchic.ch) or [our Github
 page](https://github.com/globalgov).
 

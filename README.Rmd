@@ -85,6 +85,10 @@ remotes::install_github("globalgov/messydates")
 
 Please see [the messydates website](https://globalgov.github.io/messydates/) for more information about 
 how to use `{messydates}`.
+The package was developed as part of the PANARCHIC project, which studies the effects of network and
+power on how quickly states join, reform, or create international institutions by examining the historical
+dynamics of institutional networks from different domains.
+The PANARCHIC project is funded by the Swiss National Science Foundation (SNSF).
 For more information on the Geneva Global Governance Observatory and our current projects, 
 please see [our website](https://panarchic.ch) or [our Github page](https://github.com/globalgov).
 

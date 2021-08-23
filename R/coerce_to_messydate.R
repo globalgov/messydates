@@ -44,6 +44,7 @@ as_messydate.character <- function(x) {
   d <- x
   d <- standardise_date_separators(d)
   d <- standardise_date_order(d)
+  d <- standardise_date_input(d)
   d <- standardise_unspecifieds(d)
   d <- standardise_widths(d)
   d <- standardise_ranges(d)

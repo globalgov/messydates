@@ -23,7 +23,7 @@
 #' specified date value in variable are annotated.
 #' @param level Should the annotation be on the "year", "month", or "day"?
 #' Optional. If unspecified annotation will be added to before the date.
-#' @return A varaible vector with annotated date(s)
+#' @return A messydt object with annotated date(s)
 #' @examples
 #' data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
 #' End = c("1816-12-31", "1916-12-31", "2016-12-31"))
@@ -49,6 +49,7 @@ on_or_before <- function(data, var = NULL, date = NULL) {
   }
 
 d <- ifelse(data[[var]] <= date, paste0("..", data[[var]]), data[[var]])
+d <- as_messydate(d)
 d
 }
 
@@ -69,6 +70,7 @@ on_or_after <- function(data, var = NULL, date = NULL) {
   }
 
   d <- ifelse(data[[var]] >= date, paste0(data[[var]], ".."), data[[var]])
+  d <- as_messydate(d)
   d
 }
 
@@ -108,7 +110,9 @@ add_approximation <- function(data, var = NULL, date = NULL, level = NULL) {
       d <- ifelse(data[[var]] == date, paste0(year, "~", "-", month, "-", day), data[[var]])
     }
   }
-d
+
+  d <- as_messydate(d)
+  d
 }
 
 #' @rdname annotate
@@ -147,5 +151,7 @@ add_uncertainty <- function(data, var = NULL, date = NULL, level = NULL) {
       d <- ifelse(data[[var]] == date, paste0(year, "?", "-", month, "-", day), data[[var]])
     }
   }
+
+  d <- as_messydate(d)
   d
 }

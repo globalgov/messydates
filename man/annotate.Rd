@@ -31,7 +31,7 @@ specified date value in variable are annotated.}
 Optional. If unspecified annotation will be added to before the date.}
 }
 \value{
-A varaible vector with annotated date(s)
+A messydt object with annotated date(s)
 }
 \description{
 Some datasets have an arbitrary cut off point

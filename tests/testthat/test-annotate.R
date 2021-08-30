@@ -21,4 +21,6 @@ test_that("Annotate functions work properly", {
                c("1816-12-31", "1916-12?-31", "2016-12-31"))
   expect_equal(as.character(add_uncertainty(data, "End", "1916-12-31", "day")),
                c("1816-12-31", "1916-12-31?", "2016-12-31"))
+  d <- on_or_before(data, "Beg", "1816-01-01")
+  expect_equal(as.character(class(d)), "messydt")
 })

@@ -1,20 +1,19 @@
 #' Annotates messy dates for uncertainty and/or approximation
 #'
-#' In some cases, datasets have an arbitrary cut off point
+#' Some datasets have an arbitrary cut off point
 #' for start and end points, for example,
 #' but these do not refer to the real start or end dates.
-#' Though these are coded as precise dates.
+#' Though these are often coded as precise dates.
 #' This collection of functions helps annotate uncertainty and
 #' approximation to dates according to ISO2019E standards.
 #' Uncertain start or end dates can be represented by an affix
 #' indicating "on or before", if used as a prefix (e.g. ..1816-01-01),
 #' or indicating "on or after", if used as a suffix (e.g. 2016-12-31..).
 #' Approximate dates are indicated by adding a `~` to year,
-#' month, or day, to estimate whose value is asserted
-#' to be possibly correct (e.g. 2003~-03-03).
-#' Specific day, month, or year, uncertainty can be indicated by `?`,
-#' added to a date component whose source is considered
-#' to be dubious (e.g. 1916?-10-10).
+#' month, or day, to estimate values that are
+#' possibly correct (e.g. 2003~-03-03).
+#' Day, month, or year, uncertainty can be indicated by adding a `?`
+#' to a possibly dubious date component (e.g. 1916?-10-10).
 #' @param data Dataset
 #' @param var Variable
 #' @param date Date to be annotated.
@@ -34,7 +33,8 @@
 NULL
 
 #' @rdname annotate
-#' @details `on_or_before()` annotates uncertain start dates by adding ".." as a prefix to dates(e.g. `..2019-01-01`)
+#' @details `on_or_before()` annotates uncertain start dates by adding ".." as a prefix
+#' to dates (e.g. `..1816-01-01`).
 #' @export
 on_or_before <- function(data, var = NULL, date = NULL) {
 
@@ -53,6 +53,8 @@ d
 }
 
 #' @rdname annotate
+#' @details `on_or_after()` annotates uncertain end dates by adding ".." as a suffix
+#' to dates (e.g. `2016-12-31`).
 #' @export
 on_or_after <- function(data, var = NULL, date = NULL) {
 
@@ -71,6 +73,8 @@ on_or_after <- function(data, var = NULL, date = NULL) {
 }
 
 #' @rdname annotate
+#' @details `add_approximation()` annotates approximate dates, or date components,
+#' deemed possibly correct by adding "~" to date (e.g. `1916~-01-01`)
 #' @export
 add_approximation <- function(data, var = NULL, date = NULL, level = NULL) {
 
@@ -108,6 +112,8 @@ d
 }
 
 #' @rdname annotate
+#' @details `add_uncertainty()` annotates uncertain dates, or date components,
+#' deemed dubious by adding "?" to date (e.g. `1916?-01-01`)
 #' @export
 add_uncertainty <- function(data, var = NULL, date = NULL, level = NULL) {
 

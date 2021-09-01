@@ -14,21 +14,17 @@
 #' possibly correct (e.g. 2003~-03-03).
 #' Day, month, or year, uncertainty can be indicated by adding a `?`
 #' to a possibly dubious date component (e.g. 1916?-10-10).
-#' @param data Dataset
-#' @param var Variable
-#' @param date Date to be annotated.
-#' For `on_or_before()` and `on_or_after()` all dates before/after,
-#' or equal, the specified date value are annotated in variable.
-#' For other annotate functions, all dates corresponding to
-#' specified date value in variable are annotated.
+#' @param x A date vector
 #' @param level Should the annotation be on the "year", "month", or "day"?
-#' Optional. If unspecified annotation will be added to before the date.
+#' Optional. If unspecified annotation will be added to before date.
 #' @return A messydt object with annotated date(s)
 #' @examples
 #' data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
 #' End = c("1816-12-31", "1916-12-31", "2016-12-31"))
-#' on_or_before(data, "Beg", "1816-01-01")
-#' on_or_after(data, "End", "2016-12-31")
+#' dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg))
+#' dplyr::mutate(data, End = ifelse(End >= "2016-01-01", on_or_after(End), End))
+#' dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01", add_approximation(Beg), Beg))
+#' dplyr::mutate(data, End = ifelse(End == "1916-12-31", add_uncertainty(End), End))
 #' @name annotate
 NULL
 
@@ -36,122 +32,74 @@ NULL
 #' @details `on_or_before()` annotates uncertain start dates by adding ".." as a prefix
 #' to dates (e.g. `..1816-01-01`).
 #' @export
-on_or_before <- function(data, var = NULL, date = NULL) {
-
-  if (missing(data)) {
-    stop("Please declare a dataset")
-  }
-
-  if (is.null(var) & is.null(date)) {
-    var = "Beg"
-    date = "1816-01-01"
-    print("Varaible set to Beg and date set to 1816-01-01")
-  }
-
-d <- ifelse(data[[var]] <= date, paste0("..", data[[var]]), data[[var]])
-d <- as_messydate(d)
-d
+on_or_before <- function(x) {
+x <- paste0("..", x)
+x <- as_messydate(x)
+x
 }
 
 #' @rdname annotate
 #' @details `on_or_after()` annotates uncertain end dates by adding ".." as a suffix
 #' to dates (e.g. `2016-12-31`).
 #' @export
-on_or_after <- function(data, var = NULL, date = NULL) {
-
-  if (missing(data)) {
-    stop("Please declare a dataset")
-  }
-
-  if (is.null(var) & is.null(date)) {
-    var = "End"
-    date = "2016-12-31"
-    print("Varaible set to End and date set to 2016-12-31")
-  }
-
-  d <- ifelse(data[[var]] >= date, paste0(data[[var]], ".."), data[[var]])
-  d <- as_messydate(d)
-  d
+on_or_after <- function(x) {
+  x <- paste0(x, "..")
+  x <- as_messydate(x)
+  x
 }
 
 #' @rdname annotate
 #' @details `add_approximation()` annotates approximate dates, or date components,
 #' deemed possibly correct by adding "~" to date (e.g. `1916~-01-01`)
 #' @export
-add_approximation <- function(data, var = NULL, date = NULL, level = NULL) {
-
-  if (missing(data)) {
-    stop("Please declare a dataset")
-  }
-
-  if (is.null(var)) {
-    stop("Please declare a variable")
-  }
-
-  if (is.null(var)) {
-    stop("Please declare a date")
-  }
+add_approximation <- function(x, level = NULL) {
 
   if (is.null(level)) {
-    d <- ifelse(data[[var]] == date, paste0("~", data[[var]]), data[[var]])
+    x <- paste0("~", x)
   }
 
   if (!is.null(level)) {
-    day <- strsplit(date, "-")[[1]][3]
-    month <- strsplit(date, "-")[[1]][2]
-    year <- strsplit(date, "-")[[1]][1]
+    day <- vapply(strsplit(x,"-"), `[`, 3, FUN.VALUE=character(1))
+    month <- vapply(strsplit(x,"-"), `[`, 2, FUN.VALUE=character(1))
+    year <- vapply(strsplit(x,"-"), `[`, 1, FUN.VALUE=character(1))
     if (level == "day") {
-      d <- ifelse(data[[var]] == date, paste0(year, "-", month, "-", day, "~"), data[[var]])
+      x <- paste0(year, "-", month, "-", day, "~")
     }
     if (level == "month") {
-      d <- ifelse(data[[var]] == date, paste0(year, "-", month, "~", "-", day), data[[var]])
+      x <- paste0(year, "-", month, "~", "-", day)
     }
     if (level == "year") {
-      d <- ifelse(data[[var]] == date, paste0(year, "~", "-", month, "-", day), data[[var]])
+      x <- paste0(year, "~", "-", month, "-", day)
     }
   }
-
-  d <- as_messydate(d)
-  d
+  x <- as_messydate(x)
+  x
 }
 
 #' @rdname annotate
 #' @details `add_uncertainty()` annotates uncertain dates, or date components,
 #' deemed dubious by adding "?" to date (e.g. `1916?-01-01`)
 #' @export
-add_uncertainty <- function(data, var = NULL, date = NULL, level = NULL) {
-
-  if (missing(data)) {
-    stop("Please declare a dataset")
-  }
-
-  if (is.null(var)) {
-    stop("Please declare a variable")
-  }
-
-  if (is.null(var)) {
-    stop("Please declare a date")
-  }
+add_uncertainty <- function(x, level = NULL) {
 
   if (is.null(level)) {
-    d <- ifelse(data[[var]] == date, paste0("?", data[[var]]), data[[var]])
+    x <- paste0("?", x)
   }
 
   if (!is.null(level)) {
-    day <- strsplit(date, "-")[[1]][3]
-    month <- strsplit(date, "-")[[1]][2]
-    year <- strsplit(date, "-")[[1]][1]
+    day <- vapply(strsplit(x,"-"), `[`, 3, FUN.VALUE=character(1))
+    month <- vapply(strsplit(x,"-"), `[`, 2, FUN.VALUE=character(1))
+    year <- vapply(strsplit(x,"-"), `[`, 1, FUN.VALUE=character(1))
     if (level == "day") {
-      d <- ifelse(data[[var]] == date, paste0(year, "-", month, "-", day, "?"), data[[var]])
+      x <- paste0(year, "-", month, "-", day, "?")
     }
     if (level == "month") {
-      d <- ifelse(data[[var]] == date, paste0(year, "-", month, "?", "-", day), data[[var]])
+      x <- paste0(year, "-", month, "?", "-", day)
     }
     if (level == "year") {
-      d <- ifelse(data[[var]] == date, paste0(year, "?", "-", month, "-", day), data[[var]])
+      x <- paste0(year, "?", "-", month, "-", day)
     }
   }
-
-  d <- as_messydate(d)
-  d
+  x <- as_messydate(x)
+  x
 }

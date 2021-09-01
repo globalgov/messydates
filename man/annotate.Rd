@@ -8,27 +8,19 @@
 \alias{add_uncertainty}
 \title{Annotates messy dates for uncertainty and/or approximation}
 \usage{
-on_or_before(data, var = NULL, date = NULL)
+on_or_before(x)
 
-on_or_after(data, var = NULL, date = NULL)
+on_or_after(x)
 
-add_approximation(data, var = NULL, date = NULL, level = NULL)
+add_approximation(x, level = NULL)
 
-add_uncertainty(data, var = NULL, date = NULL, level = NULL)
+add_uncertainty(x, level = NULL)
 }
 \arguments{
-\item{data}{Dataset}
-
-\item{var}{Variable}
-
-\item{date}{Date to be annotated.
-For \code{on_or_before()} and \code{on_or_after()} all dates before/after,
-or equal, the specified date value are annotated in variable.
-For other annotate functions, all dates corresponding to
-specified date value in variable are annotated.}
+\item{x}{A date vector}
 
 \item{level}{Should the annotation be on the "year", "month", or "day"?
-Optional. If unspecified annotation will be added to before the date.}
+Optional. If unspecified annotation will be added to before date.}
 }
 \value{
 A messydt object with annotated date(s)
@@ -65,6 +57,8 @@ deemed dubious by adding "?" to date (e.g. \code{1916?-01-01})
 \examples{
 data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
 End = c("1816-12-31", "1916-12-31", "2016-12-31"))
-on_or_before(data, "Beg", "1816-01-01")
-on_or_after(data, "End", "2016-12-31")
+dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg))
+dplyr::mutate(data, End = ifelse(End >= "2016-01-01", on_or_after(End), End))
+dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01", add_approximation(Beg), Beg))
+dplyr::mutate(data, End = ifelse(End == "1916-12-31", add_uncertainty(End), End))
 }

@@ -6,17 +6,21 @@
 #' Though these are often coded as precise dates.
 #' This collection of functions helps annotate uncertainty and
 #' approximation to dates according to ISO2019E standards.
-#' Uncertain start or end dates can be represented by an affix
+#' Innacurate start or end dates can be represented by an affix
 #' indicating "on or before", if used as a prefix (e.g. ..1816-01-01),
 #' or indicating "on or after", if used as a suffix (e.g. 2016-12-31..).
 #' Approximate dates are indicated by adding a `~` to year,
 #' month, or day, to estimate values that are
 #' possibly correct (e.g. 2003~-03-03).
 #' Day, month, or year, uncertainty can be indicated by adding a `?`
-#' to a possibly dubious date component (e.g. 1916?-10-10).
+#' to a possibly dubious date (e.g. ?1916-10-10) or date
+#' component (e.g. 1916-10-10?).
 #' @param x A date vector
-#' @param level Should the annotation be on the "year", "month", or "day"?
-#' Optional. If unspecified annotation will be added to before date.
+#' @param level Should the annotation be on the "year", "month", "day",
+#' or month and day ("md")? Optional.
+#' If unspecified annotation will be added to before date.
+#' For month and day ("md") uncertainty or approximation
+#' sign is added before month in date (e.g. 1916-?10-10 or 1916-~10-10).
 #' @return A messydt object with annotated date(s)
 #' @examples
 #' data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
@@ -71,6 +75,9 @@ add_approximation <- function(x, level = NULL) {
     if (level == "year") {
       x <- paste0(year, "~", "-", month, "-", day)
     }
+    if (level == "md") {
+      x <- paste0(year, "-", "~", month, "-", day)
+    }
   }
   x <- as_messydate(x)
   x
@@ -98,6 +105,9 @@ add_uncertainty <- function(x, level = NULL) {
     }
     if (level == "year") {
       x <- paste0(year, "?", "-", month, "-", day)
+    }
+    if (level == "md") {
+      x <- paste0(year, "-", "?", month, "-", day)
     }
   }
   x <- as_messydate(x)

@@ -6,20 +6,19 @@
 #' in the dataframe to sequence
 #' @param unity a string identifying how multiple
 #' entries may be glued together.
-#' By default, tidyr::unite() glues using the underscore "_".
+#' By default, ".." are used in accordance with
+#' ISO 8601-2_2019(E) standards.
 #' @return a dataframe/columns
 #' @import lubridate
 #' @importFrom stats na.omit
 #' @examples
-#' \dontrun{
 #' data <- data.frame(Sign = c("2000-01-01", "2001-01-01",
-#' "2001-01-01_2000-01-01", "2000-01-01", NA),
+#' "2001-01-01..2000-01-01", "2000-01-01", NA, "2016-12-31~"),
 #' Force = c("2001-01-01", "2000-01-01",
-#' "2001-01-01", NA, "2001-01-01"))
+#' "2001-01-01", NA, "2001-XX-XX", "~1816_01_01"))
 #' resequence(data, c("Sign", "Force"))
-#' }
 #' @export
-resequence <- function(data, vars, unity = "_") {
+resequence <- function(data, vars, unity = "\\.\\.") {
 
   len <- length(vars)
 
@@ -44,8 +43,13 @@ resequence <- function(data, vars, unity = "_") {
     dates
   })
 
-  t(out)
+  out <- t(out)
 
+  for (i in seq_len(len)) {
+    out[, i] <- as_messydate(out[, i])
+  }
+
+  out
 }
 
 #' Helper function for interleaving two vectors by position

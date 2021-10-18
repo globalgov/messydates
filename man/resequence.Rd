@@ -4,7 +4,7 @@
 \alias{resequence}
 \title{Resorting and filtering dates}
 \usage{
-resequence(data, vars, unity = "_")
+resequence(data, vars, unity = "\\\\.\\\\.")
 }
 \arguments{
 \item{data}{a dataframe}
@@ -14,7 +14,8 @@ in the dataframe to sequence}
 
 \item{unity}{a string identifying how multiple
 entries may be glued together.
-By default, tidyr::unite() glues using the underscore "_".}
+By default, ".." are used in accordance with
+ISO 8601-2_2019(E) standards.}
 }
 \value{
 a dataframe/columns
@@ -23,11 +24,9 @@ a dataframe/columns
 Resorting and filtering dates
 }
 \examples{
-\dontrun{
 data <- data.frame(Sign = c("2000-01-01", "2001-01-01",
-"2001-01-01_2000-01-01", "2000-01-01", NA),
+"2001-01-01..2000-01-01", "2000-01-01", NA, "2016-12-31~"),
 Force = c("2001-01-01", "2000-01-01",
-"2001-01-01", NA, "2001-01-01"))
+"2001-01-01", NA, "2001-XX-XX", "~1816_01_01"))
 resequence(data, c("Sign", "Force"))
-}
 }

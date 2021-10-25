@@ -51,12 +51,25 @@ day <- function(md) {
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
 precision <- function(md) {
+
+  # length of expanded dates
+  s <- sum(lengths(md))
+
   md <- as.character(md)
   md <- stringr::str_remove_all(md, "\\..*")
   md <- stringr::str_remove_all(md, ",.*")
   count <- stringr::str_count(md, "-")
 
-  out <- ifelse(count == 2, "day",
+  p <- ifelse(count == 2, "day",
                 ifelse(count == 1, "month", "year"))
+
+  p <- stringr::str_c(p, collapse = ",")
+
+  # state the most precise level of date given in vector
+  p <- ifelse(stringr::str_detect(p, "day"), "day",
+              ifelse(stringr::str_detect(p, "month"), "month", "year"))
+
+  out <- c(s, p)
+
   out
 }

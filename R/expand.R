@@ -13,8 +13,9 @@ expand <- function(x) UseMethod("expand")
 #' @importFrom stringr str_replace_all str_split str_detect str_extract str_remove_all
 #' lubridate leap_year
 #' @examples
-# d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01", "2001~", "2001-01-01..2001-02-02",
-# "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}", "2008-XX-31"))
+#' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
+#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+#' "{2001-01,2001-02-02}", "2008-XX-31"))
 #' expand(d)
 #' @export
 expand.messydt <- function(x) {
@@ -29,12 +30,12 @@ expand.messydt <- function(x) {
 }
 
 remove_qualifiers <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "\\?")
-  dates <- stringr::str_remove_all(dates, "\\~")
-  dates <- stringr::str_remove_all(dates, "\\%")
+  dates <- stringr::str_replace_all(dates, "\\~", "\\?")
+  # dates <- stringr::str_replace_all(dates, "\\%", "\\?")
   dates <- stringr::str_remove_all(dates, "[:space:]")
   dates <- stringr::str_remove_all(dates, "\\{")
-  dates <- stringr::str_remove_all(dates, "\\}")
+  dates <- stringr::str_replace_all(dates, "\\}", "\\?")
+  dates <- ifelse(stringr::str_detect(dates, "-XX-"), paste0(dates, "?"), dates)
   dates
 }
 
@@ -50,52 +51,60 @@ expand_range <- function(dates) {
       x
     }
 
-    # expand uncertain dates
-    else {
-      if (stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2})$") == TRUE) {
-        b <- as.character(seq(from = as.Date(x), by = "-1 day", length.out = 4))
-        a <- as.character(seq(from = as.Date(x), by = "days", length.out = 4))
-        x <- c(b, a)
-        x <- sort(unique(x))
-      }
 
-      else{
-        if (stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})$") == TRUE) {
-          x <- paste0(x, "-28")
-          b <- as.character(seq(from = as.Date(x), by = "-1 month", length.out = 4))
-          a <- as.character(seq(from = as.Date(x), by = "months", length.out = 4))
+    else {
+
+      if(stringr::str_detect(x, "\\?") == TRUE) {
+
+        # expand uncertain dates
+        x <- stringr::str_remove_all(x, "\\?")
+
+        if (stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2})$") == TRUE) {
+          b <- as.character(seq(from = as.Date(x), by = "-1 day", length.out = 4))
+          a <- as.character(seq(from = as.Date(x), by = "days", length.out = 4))
           x <- c(b, a)
-          x <- stringr::str_remove(x, "-28")
           x <- sort(unique(x))
         }
         else{
-          if(stringr::str_detect(x, "(^|,)([:digit:]{4})($|,)") == TRUE) {
-            x <- paste0(x, "-01-28")
-            b <- as.character(seq(from = as.Date(x), by = "-1 year", length.out = 4))
-            a <- as.character(seq(from = as.Date(x), by = "years", length.out = 4))
+          if (stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})$") == TRUE) {
+            x <- paste0(x, "-28")
+            b <- as.character(seq(from = as.Date(x), by = "-1 month", length.out = 4))
+            a <- as.character(seq(from = as.Date(x), by = "months", length.out = 4))
             x <- c(b, a)
-            x <- stringr::str_remove(x, "-01-28")
+            x <- stringr::str_remove(x, "-28")
             x <- sort(unique(x))
           }
-          else {
-            if(stringr::str_detect(x, "^([:digit:]{4})-XX-([:digit:]{2})$") == TRUE) {
-              x <- stringr::str_replace_all(x, "XX", "05")
-              b <- as.character(seq(from = as.Date(x), by = "-1 day", length.out = 4))
-              a <- as.character(seq(from = as.Date(x), by = "days", length.out = 4))
+          else{
+            if(stringr::str_detect(x, "(^|,)([:digit:]{4})($|,)") == TRUE) {
+              x <- paste0(x, "-01-28")
+              b <- as.character(seq(from = as.Date(x), by = "-1 year", length.out = 4))
+              a <- as.character(seq(from = as.Date(x), by = "years", length.out = 4))
               x <- c(b, a)
-              x <- stringr::str_replace_all(x, "-([:digit:]{2})-", "-XX-")
+              x <- stringr::str_remove(x, "-01-28")
               x <- sort(unique(x))
             }
             else {
-              # expand sets of certain dates
-              x <- stringr::str_split(x, ",")
+              if(stringr::str_detect(x, "^([:digit:]{4})-XX-([:digit:]{2})$") == TRUE) {
+                x <- stringr::str_replace_all(x, "XX", "05")
+                b <- as.character(seq(from = as.Date(x), by = "-1 day", length.out = 4))
+                a <- as.character(seq(from = as.Date(x), by = "days", length.out = 4))
+                x <- c(b, a)
+                x <- stringr::str_replace_all(x, "-([:digit:]{2})-", "-XX-")
+                x <- sort(unique(x))
+              }
+              else {
+                # expand sets of certain dates
+                x <- stringr::str_split(x, ",")
+              }
             }
           }
         }
+        unlist(x)
       }
-    }
-    unlist(x)
+      else {
+        x
+      }
+      }
   })
-
   dates
 }

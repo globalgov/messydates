@@ -51,7 +51,6 @@ expand_range <- function(dates) {
       x
     }
 
-
     else {
 
       if(stringr::str_detect(x, "\\?") == TRUE) {
@@ -67,20 +66,40 @@ expand_range <- function(dates) {
         }
         else{
           if (stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})$") == TRUE) {
-            x <- paste0(x, "-28")
-            b <- as.character(seq(from = as.Date(x), by = "-1 month", length.out = 4))
-            a <- as.character(seq(from = as.Date(x), by = "months", length.out = 4))
+            x <- paste0(x, "-01")
+            b <- as.character(seq(from = as.Date(x), by = "-1 day",
+                                  length.out = ifelse(lubridate::leap_year(x),
+                                                      ifelse(stringr::str_detect(x, "-05-"), 91,
+                                                             ifelse(stringr::str_detect(x, "-03-")|
+                                                                      stringr::str_detect(x, "-04-")|
+                                                                      stringr::str_detect(x, "-07-")|
+                                                                      stringr::str_detect(x, "-12-"), 92, 93)),
+                                                      ifelse(stringr::str_detect(x, "-05-"), 90,
+                                                             ifelse(stringr::str_detect(x, "-03-")|
+                                                                      stringr::str_detect(x, "-04-"), 91,
+                                                                    ifelse(stringr::str_detect(x, "-07-")|
+                                                                             stringr::str_detect(x, "-12-"), 92, 93))))))
+            a <- as.character(seq(from = as.Date(x), by = "days",
+                                  length.out = ifelse(lubridate::leap_year(x),
+                                                      ifelse(stringr::str_detect(x, "-01-")|stringr::str_detect(x, "-02-")|
+                                                               stringr::str_detect(x, "-11-"), 121,
+                                                             ifelse(stringr::str_detect(x, "-05-")|stringr::str_detect(x, "-07-")|
+                                                                      stringr::str_detect(x, "-10-"), 123, 122)),
+                                                      ifelse(stringr::str_detect(x, "-01-")|stringr::str_detect(x, "-02-")|
+                                                               stringr::str_detect(x, "-11-"), 120,
+                                                             ifelse(stringr::str_detect(x, "-12-"), 121,
+                                                                    ifelse(stringr::str_detect(x, "-05-")|stringr::str_detect(x, "-07-")|
+                                                                             stringr::str_detect(x, "-10-"), 123, 122))))))
             x <- c(b, a)
-            x <- stringr::str_remove(x, "-28")
             x <- sort(unique(x))
           }
           else{
             if(stringr::str_detect(x, "(^|,)([:digit:]{4})($|,)") == TRUE) {
-              x <- paste0(x, "-01-28")
-              b <- as.character(seq(from = as.Date(x), by = "-1 year", length.out = 4))
-              a <- as.character(seq(from = as.Date(x), by = "years", length.out = 4))
+              x <- paste0(x, "-01-01")
+              b <- as.character(seq(from = as.Date(x), by = "-1 day",
+                                    length.out = ifelse(lubridate::leap_year(x), 1096, 1097)))
+              a <- as.character(seq(from = as.Date(x), by = "days", length.out = 1461))
               x <- c(b, a)
-              x <- stringr::str_remove(x, "-01-28")
               x <- sort(unique(x))
             }
             else {

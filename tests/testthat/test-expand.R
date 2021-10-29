@@ -6,7 +6,7 @@ test_that("Expand dates works properly for date ranges and unspecified dates", {
   set <- as_messydate("{2012-01-01,2012-01-12}")
   expect_equal(as.character(expand(range)),
                "c(\"2014-01-01\", \"2014-01-02\", \"2014-01-03\")")
-  expect_equal(as.character(expand(uncertain)[[1]][365]), "1999-12-31") # remove uncertainty & expand to make precise
+  expect_equal(as.character(expand(uncertain)[[1]][365]), "2000-12-31") # remove uncertainty & expand to make precise
   expect_equal(as.character(expand(approximate)[[1]][1]), "1995-01-01")
   expect_equal(as.character(expand(approximate, approx_range = 4)[[1]][1461]), "1999-12-31")
   expect_equal(as.character(expand(unspecified)[[1]][1]), "2008-01-03")

@@ -59,4 +59,8 @@ reference:
       - starts_with("median")
       - starts_with("modal")
       - starts_with("sample")
+  - title: "Data"
+    desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
+    contents:
+      - battles
 

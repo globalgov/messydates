@@ -30,14 +30,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 LazyData: true
 Imports:
-    covr,
     stringr,
     purrr,
     lubridate,
     tibble,
     dplyr
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    covr
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)

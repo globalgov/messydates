@@ -41,9 +41,9 @@ as_messydate.POSIXlt <- function(x) {
 #' @export
 as_messydate.character <- function(x) {
 
-  d <- x
-  d <- standardise_date_separators(d)
+  d <- standardise_date_separators(x)
   d <- standardise_date_order(d)
+  d <- standardise_ylength(d)
   d <- standardise_date_input(d)
   d <- standardise_unspecifieds(d)
   d <- standardise_widths(d)
@@ -73,32 +73,16 @@ standardise_date_order <- function(dates) {
   dates
 }
 
-standardise_widths <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
-  dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
-  dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
-  dates
-}
-
-standardise_unspecifieds <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "^NA", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-NA", "-XX")
-  dates <- stringr::str_replace_all(dates, "0000", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-00", "-XX")
-  dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-\\?\\?", "-XX")
-  dates
-}
-
-standardise_ranges <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "_", "..")
-  dates <- stringr::str_replace_all(dates, ":", "..")
-  dates
-}
-
-remove_imprecision <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "-XX$", "")
-  dates <- stringr::str_replace_all(dates, "-XX$", "")
+standardise_ylength <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{1})$") &
+                    stringr::str_detect(dates, "\\~|\\?", negate = TRUE),
+                  paste0("000", dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})$") &
+                    stringr::str_detect(dates, "\\~|\\?", negate = TRUE),
+                  paste0("00", dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{3})$") &
+                    stringr::str_detect(dates, "\\~|\\?", negate = TRUE),
+                  paste0("0", dates), dates)
   dates
 }
 
@@ -117,4 +101,33 @@ standardise_date_input <- function(dates) {
   # replacing BC for corresponding negative dates
   dates <- stringr::str_trim(dates, side = "both")
   # removes trailing white spaces
+}
+
+standardise_unspecifieds <- function(dates) {
+  dates <- stringr::str_replace_all(dates, "^NA", "XXXX")
+  dates <- stringr::str_replace_all(dates, "-NA", "-XX")
+  dates <- stringr::str_replace_all(dates, "0000", "XXXX")
+  dates <- stringr::str_replace_all(dates, "-00", "-XX")
+  dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
+  dates <- stringr::str_replace_all(dates, "-\\?\\?", "-XX")
+  dates
+}
+
+standardise_widths <- function(dates) {
+  dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
+  dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
+  dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
+  dates
+}
+
+standardise_ranges <- function(dates) {
+  dates <- stringr::str_replace_all(dates, "_", "..")
+  dates <- stringr::str_replace_all(dates, ":", "..")
+  dates
+}
+
+remove_imprecision <- function(dates) {
+  dates <- stringr::str_replace_all(dates, "-XX$", "")
+  dates <- stringr::str_replace_all(dates, "-XX$", "")
+  dates
 }

@@ -13,9 +13,9 @@
 and day and month uncertainty 
 * Updated `resequence()` to work consistently with messydate objects
 * Updated `expand()` function to expand imprecise, unspecified, approximate, and
-uncertain dates according to approximate ranges
+uncertain dates according to approximate ranges and added tests
 * Updated `precision()` to return the lengths of expanded dates
-* Updated resolve functions for precision
+* Updated resolve functions for precision and added tests
 
 # messydates 0.1.1
 

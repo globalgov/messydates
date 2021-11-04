@@ -58,7 +58,9 @@ then just that precise date is returned.
 This can be useful for various descriptive or inferential projects.
 }
 \examples{
-d <- as_messydate("2014-01-01..2014-01-31")
+d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
+"2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+"{2001-01,2001-02-02}", "2008-XX-31"))
 d
 min(d)
 max(d)

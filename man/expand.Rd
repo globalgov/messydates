@@ -16,10 +16,13 @@ expand(x)
 A list of dates, including all dates in each range or set.
 }
 \description{
-These functions expand on unspecified dates, ranges and on sets of dates.
-Uncertain dates may include several possible dates.
+These functions expand on date ranges, sets of dates, and uncertain or
+approximate dates (annotated with ? or ~).
+Uncertain dates may refer to several possible dates.
 The function "opens" these values to include all the possible dates
-contained in uncertain dates.
+implied by uncertain dates.
+Imprecise dates (dates only containing information on year and/or month)
+are also expanded to include possible dates in that year and/or month.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -27,7 +30,8 @@ contained in uncertain dates.
 }}
 
 \examples{
-d <- as_messydate(c("2001-01-01", "2001-01", "2001", "2001-01-01..2001-02-02",
-        "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}"))
+d <- as_messydate(c("2008-03-25", "2012-02-27", "2001-01?", "2001~",
+"2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+"{2001-01,2001-02-02}", "2008-XX-31", "..2002-02-03", "2001-01-03.."))
 expand(d)
 }

@@ -24,8 +24,10 @@ is_messydate <- function(x) inherits(x, "messydt")
 
 #' @rdname logical
 #' @examples
-#' is_intersecting(as_messydate("2012-01"), as_messydate("2012-01-01..2012-02-22"))
-#' is_intersecting(as_messydate("2012-01"), as_messydate("2012-02-01..2012-02-22"))
+#' is_intersecting(as_messydate("2012-01"),
+#' as_messydate("2012-01-01..2012-02-22"))
+#' is_intersecting(as_messydate("2012-01"),
+#' as_messydate("2012-02-01..2012-02-22"))
 #' @export
 is_intersecting <- function(x, y) {
   length(intersect(x, y)) > 0

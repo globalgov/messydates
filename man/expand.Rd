@@ -12,9 +12,9 @@ expand(x, approx_range)
 \arguments{
 \item{x}{A \code{messydt} object.}
 
-\item{approx_range}{What range do you want approximate dates to be expanded to?
-By defaut 3.
-That is, 3 days for day approximation, 3 months for month, and 3 years for year.}
+\item{approx_range}{range to expand approximate dates to, by default 3.
+That is, 3 days for day approximation, 3 months for month approximation, and
+3 years for year approximation.}
 }
 \value{
 A list of dates, including all dates in each range or set.

@@ -16,6 +16,7 @@ make_messydate <- function(...) {
     dots <- purrr::map(dots, as.character)
     dates <- unlist(purrr::pmap_chr(dots, paste, sep = "-"))
     dates <- gsub("NA-NA-NA", "NA", dates)
-  } else stop("Either you need to pass make_messydate() one variable (i.e. 'yyyy-mm-dd' three (yyyy, mm, dd).")
+  } else stop("Either you need to pass make_messydate() one variable
+              (i.e. 'yyyy-mm-dd' three (yyyy, mm, dd).")
   as_messydate(dates)
 }

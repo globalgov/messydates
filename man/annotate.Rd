@@ -46,14 +46,15 @@ to a possibly dubious date (e.g. ?1916-10-10) or date
 component (e.g. 1916-10-10?).
 }
 \details{
-\code{on_or_before()} annotates uncertain start dates by adding ".." as a prefix
-to dates (e.g. \code{..1816-01-01}).
+\code{on_or_before()} annotates uncertain start dates by adding ".." as
+a prefix to dates (e.g. \code{..1816-01-01}).
 
-\code{on_or_after()} annotates uncertain end dates by adding ".." as a suffix
-to dates (e.g. \code{2016-12-31}).
+\code{on_or_after()} annotates uncertain end dates by adding ".." as
+a suffix to dates (e.g. \code{2016-12-31}).
 
-\code{add_approximation()} annotates approximate dates, or date components,
-deemed possibly correct by adding "~" to date (e.g. \code{1916~-01-01})
+\code{add_approximation()} annotates approximate dates, or date
+components, deemed possibly correct by adding "~" to date
+(e.g. \code{1916~-01-01})
 
 \code{add_uncertainty()} annotates uncertain dates, or date components,
 deemed dubious by adding "?" to date (e.g. \code{1916?-01-01})
@@ -61,8 +62,12 @@ deemed dubious by adding "?" to date (e.g. \code{1916?-01-01})
 \examples{
 data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
 End = c("1816-12-31", "1916-12-31", "2016-12-31"))
-dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg))
-dplyr::mutate(data, End = ifelse(End >= "2016-01-01", on_or_after(End), End))
-dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01", add_approximation(Beg), Beg))
-dplyr::mutate(data, End = ifelse(End == "1916-12-31", add_uncertainty(End), End))
+dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01",
+ on_or_before(Beg), Beg))
+dplyr::mutate(data, End = ifelse(End >= "2016-01-01",
+ on_or_after(End), End))
+dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01",
+add_approximation(Beg), Beg))
+dplyr::mutate(data, End = ifelse(End == "1916-12-31",
+add_uncertainty(End), End))
 }

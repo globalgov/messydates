@@ -39,8 +39,8 @@ compact_ranges <- function(x) {
       sequ <- is_sequence(d)
       if (any(sequ)) {
         starts <- d[which(sequ == FALSE)]
-        ends <- d[dplyr::lead(sequ)==FALSE | is.na(dplyr::lead(sequ))]
-        if (any(starts==ends)) ends[starts==ends] <- NA
+        ends <- d[dplyr::lead(sequ) == FALSE | is.na(dplyr::lead(sequ))]
+        if (any(starts == ends)) ends[starts == ends] <- NA
         d <- paste(starts, ends, sep = "..")
         d <- stringr::str_replace_all(d, "\\.\\.NA", "")
       }
@@ -60,19 +60,23 @@ collapse_sets <- function(x) {
 }
 
 collapse_ranges <- function(x) {
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4})-01-01\\.\\.([:digit:]{4})-12-31",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-28",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-29",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-30",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-31",
-                                "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4})-01-01\\.\\.([:digit:]{4})-12-31", "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-28",
+    "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-29",
+    "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-30",
+    "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-31",
+    "\\1")
 }

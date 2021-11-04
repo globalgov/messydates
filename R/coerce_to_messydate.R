@@ -56,7 +56,8 @@ as_messydate.character <- function(x) {
 # Helper functions
 standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates,
-                                    "([:digit:]{4})([:digit:]{2})([:digit:]{2})",
+                                    "([:digit:]{4})([:digit:]{2})
+                                    ([:digit:]{2})",
                                     "\\1-\\2-\\3")
   dates <- stringr::str_replace_all(dates,
                                     "(?<=[:digit:])\\.(?=[:digit:])",
@@ -68,7 +69,8 @@ standardise_date_separators <- function(dates) {
 
 standardise_date_order <- function(dates) {
   dates <- stringr::str_replace_all(dates,
-                                    "([:digit:]{2})-([:digit:]{2})-([:digit:]{4})",
+                                    "([:digit:]{2})-([:digit:]{2})-
+                                    ([:digit:]{4})",
                                     "\\3-\\2-\\1")
   dates
 }

@@ -74,7 +74,8 @@ validate_messydate <- function(x) {
 
   if (any(grepl("[A-WYZa-z]", values))) {
     stop(
-      "The only alpha character allowed in messy dates is 'X' for unspecified time components",
+      "The only alpha character allowed in messy dates is 'X' for
+      unspecified time components",
       call. = FALSE
     )
   }
@@ -88,7 +89,8 @@ validate_messydate <- function(x) {
 
   if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|,|;|>|<|_|\\^|'|&|\\$|#", values))) {
     stop(
-      "Messy dates can only consist of numbers and some special symbols: []{}..X%?~",
+      "Messy dates can only consist of numbers and
+      some special symbols: []{}..X%?~",
       call. = FALSE
     )
   }

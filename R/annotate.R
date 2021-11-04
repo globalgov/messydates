@@ -25,16 +25,20 @@
 #' @examples
 #' data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
 #' End = c("1816-12-31", "1916-12-31", "2016-12-31"))
-#' dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg))
-#' dplyr::mutate(data, End = ifelse(End >= "2016-01-01", on_or_after(End), End))
-#' dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01", add_approximation(Beg), Beg))
-#' dplyr::mutate(data, End = ifelse(End == "1916-12-31", add_uncertainty(End), End))
+#' dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01",
+#'  on_or_before(Beg), Beg))
+#' dplyr::mutate(data, End = ifelse(End >= "2016-01-01",
+#'  on_or_after(End), End))
+#' dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01",
+#' add_approximation(Beg), Beg))
+#' dplyr::mutate(data, End = ifelse(End == "1916-12-31",
+#' add_uncertainty(End), End))
 #' @name annotate
 NULL
 
 #' @rdname annotate
-#' @details `on_or_before()` annotates uncertain start dates by adding ".." as a prefix
-#' to dates (e.g. `..1816-01-01`).
+#' @details `on_or_before()` annotates uncertain start dates by adding ".." as
+#' a prefix to dates (e.g. `..1816-01-01`).
 #' @export
 on_or_before <- function(x) {
 x <- paste0("..", x)
@@ -43,8 +47,8 @@ x
 }
 
 #' @rdname annotate
-#' @details `on_or_after()` annotates uncertain end dates by adding ".." as a suffix
-#' to dates (e.g. `2016-12-31`).
+#' @details `on_or_after()` annotates uncertain end dates by adding ".." as
+#' a suffix to dates (e.g. `2016-12-31`).
 #' @export
 on_or_after <- function(x) {
   x <- paste0(x, "..")
@@ -53,8 +57,9 @@ on_or_after <- function(x) {
 }
 
 #' @rdname annotate
-#' @details `add_approximation()` annotates approximate dates, or date components,
-#' deemed possibly correct by adding "~" to date (e.g. `1916~-01-01`)
+#' @details `add_approximation()` annotates approximate dates, or date
+#' components, deemed possibly correct by adding "~" to date
+#' (e.g. `1916~-01-01`)
 #' @export
 add_approximation <- function(x, level = NULL) {
 
@@ -63,9 +68,9 @@ add_approximation <- function(x, level = NULL) {
   }
 
   if (!is.null(level)) {
-    day <- vapply(strsplit(x,"-"), `[`, 3, FUN.VALUE=character(1))
-    month <- vapply(strsplit(x,"-"), `[`, 2, FUN.VALUE=character(1))
-    year <- vapply(strsplit(x,"-"), `[`, 1, FUN.VALUE=character(1))
+    day <- vapply(strsplit(x, "-"), `[`, 3, FUN.VALUE = character(1))
+    month <- vapply(strsplit(x, "-"), `[`, 2, FUN.VALUE = character(1))
+    year <- vapply(strsplit(x, "-"), `[`, 1, FUN.VALUE = character(1))
     if (level == "day") {
       x <- paste0(year, "-", month, "-", day, "~")
     }
@@ -94,9 +99,9 @@ add_uncertainty <- function(x, level = NULL) {
   }
 
   if (!is.null(level)) {
-    day <- vapply(strsplit(x,"-"), `[`, 3, FUN.VALUE=character(1))
-    month <- vapply(strsplit(x,"-"), `[`, 2, FUN.VALUE=character(1))
-    year <- vapply(strsplit(x,"-"), `[`, 1, FUN.VALUE=character(1))
+    day <- vapply(strsplit(x, "-"), `[`, 3, FUN.VALUE = character(1))
+    month <- vapply(strsplit(x, "-"), `[`, 2, FUN.VALUE = character(1))
+    year <- vapply(strsplit(x, "-"), `[`, 1, FUN.VALUE = character(1))
     if (level == "day") {
       x <- paste0(year, "-", month, "-", day, "?")
     }

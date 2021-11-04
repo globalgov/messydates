@@ -30,13 +30,17 @@ resequence <- function(data, vars, unity = "\\.\\.") {
     }
 
     if (length(dates) > len) {
-      if (sum((!grepl("-01-01", dates)) * 1) >= len) dates <- dates[!grepl("-01-01", dates)]
-      if (sum((!grepl("9999", dates)) * 1) >= len) dates <- dates[!grepl("9999", dates)]
+      if (sum((!grepl("-01-01", dates)) * 1) >= len)
+        dates <- dates[!grepl("-01-01", dates)]
+      if (sum((!grepl("9999", dates)) * 1) >= len)
+        dates <- dates[!grepl("9999", dates)]
 
-      dmax <- max(lubridate::as.duration(interval(dates[1 : (length(dates)-1)],
-                                                  dates[2 : (length(dates))])))
-      dmax <- which(lubridate::as.duration(interval(dates[1 : (length(dates)-1)],
-                                                    dates[2 : (length(dates))])) == as.duration(dmax))
+      dmax <- max(lubridate::as.duration(
+        lubridate::interval(dates[1 : (length(dates) - 1)],
+                            dates[2 : (length(dates))])))
+      dmax <- which(lubridate::as.duration(
+        lubridate::interval(dates[1 : (length(dates) - 1)],
+                            dates[2 : (length(dates))])) == as.duration(dmax))
       dates <- dates[c(1, dmax + 1)]
     }
 

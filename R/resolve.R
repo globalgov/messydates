@@ -52,7 +52,7 @@ median.messydt <- function(..., na.rm = TRUE) {
   y <- expand(x[[1]])
   y <- sapply(y, function(z) {
 
-    if(length(z)%%2 == 0) {
+    if (length(z) %% 2 == 0) {
       z <- unlist(z[-1])
       z <- as.character(median(z, na.rm = na.rm))
       z

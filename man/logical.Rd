@@ -36,8 +36,10 @@ This can be useful for identifying dates that may be typos of one another.
 \examples{
 is_messydate(as_messydate("2012-01-01"))
 is_messydate(as.Date("2012-01-01"))
-is_intersecting(as_messydate("2012-01"), as_messydate("2012-01-01..2012-02-22"))
-is_intersecting(as_messydate("2012-01"), as_messydate("2012-02-01..2012-02-22"))
+is_intersecting(as_messydate("2012-01"),
+as_messydate("2012-01-01..2012-02-22"))
+is_intersecting(as_messydate("2012-01"),
+as_messydate("2012-02-01..2012-02-22"))
 is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
 is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
 is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))

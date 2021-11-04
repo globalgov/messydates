@@ -5,7 +5,7 @@
 \alias{expand.messydt}
 \title{Expand messy dates to lists of dates}
 \usage{
-expand(x)
+expand(x, approx_range)
 
 \method{expand}{messydt}(x, approx_range = 3)
 }

@@ -13,7 +13,7 @@ Description: Contains a set of tools for constructing and coercing
   the effects of network and power on how quickly states join,
   reform, or create international institutions by examining the
   historical dynamics of institutional networks from different domains.
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",

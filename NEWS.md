@@ -1,3 +1,22 @@
+# messydates 0.1.2
+
+## Package
+* Added PANARCHIC project details to README and Description files
+
+
+## Functions
+* Expanded on messydates checks for class validity
+* Fixed bugs for `make_messydate()`
+* Added annotation functions
+* Updated `as_messydate()` by adding zero padding for month, day or year
+* Updated `add_uncertainty()` by adding discrimination between month uncertainty
+and day and month uncertainty 
+* Updated `resequence()` to work consistently with messydate objects
+* Updated `expand()` function to expand imprecise, unspecified, approximate, and
+uncertain dates according to approximate ranges
+* Updated `precision()` to return the lengths of expanded dates
+* Updated resolve functions for precision
+
 # messydates 0.1.1
 
 ## Package

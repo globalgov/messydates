@@ -10,7 +10,7 @@
 #' @param x A `messydt` object.
 #' @return A list of dates, including all dates in each range or set.
 #' @export
-expand <- function(x) UseMethod("expand")
+expand <- function(x, approx_range) UseMethod("expand")
 
 #' @describeIn expand Expanding messydates
 #' @importFrom stringr str_replace_all str_split str_detect str_extract str_remove_all

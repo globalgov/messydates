@@ -89,10 +89,13 @@ expand_unspecified <- function(dates) {
   dates <- stringr::str_replace_all(dates,
                                     "(^|,)([:digit:]{4})($|,)",
                                     "\\1\\2-01-01..\\2-12-31\\3")
-  dates <- stringr::str_replace_all(dates,
-                                    "(^|,)([:digit:]{4})-02($|,)",
-                                    "\\1\\2-02-01..\\2-02-28\\3")
-  # needs to correct for leap years
+  dates <- ifelse((as.numeric(year(dates))/4)%%1==0,
+                  stringr::str_replace_all(dates,
+                                           "(^|,)([:digit:]{4})-02($|,)",
+                                           "\\1\\2-02-01..\\2-02-29\\3"),
+                  stringr::str_replace_all(dates,
+                                           "(^|,)([:digit:]{4})-02($|,)",
+                                           "\\1\\2-02-01..\\2-02-28\\3"))
   dates <- stringr::str_replace_all(dates,
                                     "(^|,)([:digit:]{4})-09($|,)",
                                     "\\1\\2-09-01..\\2-09-30\\3")

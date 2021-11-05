@@ -43,23 +43,20 @@ expand_approximate <- function(dates, approx_range) {
                   paste0(dates, "-01-01"), dates)
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-[:digit:]{2}\\~$"),
                   paste0(dates, "-01"), dates)
-  dates <- ifelse(stringr::str_detect(dates,
-  "^[:digit:]{4}\\~-[:digit:]{2}-[:digit:]{2}$|
-  |^\\~[:digit:]{4}\\-[:digit:]{2}-[:digit:]{2}$"),
+  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~-[:digit:]{2}-[:digit:]{2}$|
+                                      |^\\~[:digit:]{4}\\-[:digit:]{2}-[:digit:]{2}$"),
                   paste0(as.Date(gsub("\\~", "", dates)) -
                            (365 * approx_range), "..",
                          as.Date(gsub("\\~", "", dates)) +
                            (365 * approx_range)), dates)
   dates <- ifelse(stringr::str_detect(dates,
-                                      "^[:digit:]{4}\\-[:digit:]{2}\\~
-                                      -[:digit:]{2}$"),
+                                      "^[:digit:]{4}\\-[:digit:]{2}\\~-[:digit:]{2}$"),
                   paste0(as.Date(gsub("\\~", "", dates)) - (31 * approx_range),
                          "..",
                          as.Date(gsub("\\~", "", dates)) + (31 * approx_range)),
                   dates)
   dates <- ifelse(stringr::str_detect(dates,
-                                      "^[:digit:]{4}-[:digit:]{2}-
-                                      [:digit:]{2}\\~$"),
+                                      "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$"),
                   paste0(as.Date(gsub("\\~", "", dates)) - approx_range, "..",
                          as.Date(gsub("\\~", "", dates)) + approx_range), dates)
   dates <- ifelse(stringr::str_detect(dates, "^\\.\\."),

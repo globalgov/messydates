@@ -78,7 +78,8 @@ expand_unspecified <- function(dates) {
                                     "\\1\\20-01-01..\\29-12-31\\3")
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
                                     "\\1\\2-01-01..\\2-12-31\\3")
-  dates <- ifelse((as.numeric(year(dates))/4)%%1 == 0,
+  dates <- ifelse(stringr::str_detect(dates, "(^|,)([:digit:]{4})-02($|,)") &
+                    !grepl("\\.", as.numeric(stringr::str_extract(dates, "[:digit:]{4}"))/4),
                   stringr::str_replace_all(dates, "(^|,)([:digit:]{4})-02($|,)",
                                            "\\1\\2-02-01..\\2-02-29\\3"),
                   stringr::str_replace_all(dates, "(^|,)([:digit:]{4})-02($|,)",
@@ -107,6 +108,24 @@ expand_sets <- function(dates) {
                         gsub("XX", "11", dates), gsub("XX", "12", dates),
                         sep = ","), dates)
   dates <- stringr::str_split(dates, "\\,")
+  dates
+}
+
+expand_negative <- function(dates) {
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})($|,)",
+                                    "-\\1\\2-01-01..-\\2-12-31\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-02($|,)",
+                                    "\\1\\2-02-01..\\2-02-28\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-04($|,)",
+                                    "\\1\\2-04-01..\\2-04-30\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-06($|,)",
+                                    "\\1\\2-06-01..\\2-06-30\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-09($|,)",
+                                    "\\1\\2-09-01..\\2-09-30\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-11($|,)",
+                                    "\\1\\2-11-01..\\2-11-30\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-([:digit:]{2})($|,)",
+                                    "\\1\\2-\\3-01..\\2-\\3-31\\4")
   dates
 }
 

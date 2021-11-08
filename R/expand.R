@@ -107,6 +107,7 @@ expand_unspecified <- function(dates) {
 }
 
 expand_sets <- function(dates) {
+<<<<<<< HEAD
   # Sets of months
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-XX-[:digit:]{2}$"),
                   paste(gsub("XX", "01", dates), gsub("XX", "02", dates),
@@ -126,6 +127,18 @@ expand_sets <- function(dates) {
                   stringr::str_replace(dates,
                                        "[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\.\\.", ""),
                   dates)
+=======
+  # dates <- ifelse(stringr::str_detect(dates, "\\.\\.[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\,") &
+  #                   stringr::str_count(dates, ",") == 1,
+  #                 stringr::str_replace(dates, "\\.\\.[:digit:]{4}-[:digit:]{2}-[:digit:]{2}", ""),
+  #                 dates)
+  # dates <- ifelse(stringr::str_detect(dates,
+  #                                     "\\,[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\.\\.") &
+  #                   stringr::str_count(dates, ",") == 1,
+  #                 stringr::str_replace(dates,
+  #                                      "[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\.\\.", ""),
+  #                 dates)
+>>>>>>> 6851cf6bf939064b2cd869a84bca5738ce429e1a
   dates <- stringr::str_split(dates, "\\,")
   dates
 }

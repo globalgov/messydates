@@ -7,7 +7,7 @@
 #' @return A `messydt` vector
 #' @importFrom tibble tibble
 #' @importFrom lubridate NA_Date_
-#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_replace_all str_detect
 #' @importFrom dplyr lead
 #' @examples
 #' d <- as_messydate(c("2001-01-01", "2001-01", "2001",
@@ -17,11 +17,9 @@
 #' tibble::tibble(d,contract(e))
 #' @export
 contract <- function(x = list()) {
-
   x <- compact_ranges(x)
   x <- collapse_sets(x)
   x <- collapse_ranges(x)
-
   new_messydate(x)
 }
 
@@ -50,13 +48,9 @@ compact_ranges <- function(x) {
 }
 
 collapse_sets <- function(x) {
-  sapply(x, function(l) {
-    if (length(l) > 1) {
-      l <- paste(l, collapse = ",")
-      l <- paste0("{", l, "}")
-    }
-    l
-  })
+  x <- lapply(x, paste, collapse = ",")
+  x <- ifelse(stringr::str_detect(x, ","), paste0("{", x, "}"), x)
+  x
 }
 
 collapse_ranges <- function(x) {

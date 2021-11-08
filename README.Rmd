@@ -94,7 +94,7 @@ please see [our website](https://panarchic.ch) or [our Github page](https://gith
 
 ## Cheat Sheet
 
-<a href="https://github.com/globalgov/messydates/blob/develop/man/figures/cheatsheet.pdf"><img src="https://raw.githubusercontent.com/globalgov/messydates/develop/man/figures/cheatsheet.png" width="787" height="567"/></a>
+<a href="https://github.com/globalgov/messydates/blob/main/man/figures/cheatsheet.pdf"><img src="https://raw.githubusercontent.com/globalgov/messydates/main/man/figures/cheatsheet.png" width="525" height="378"/></a>
 
 ## Relationship to other packages
 

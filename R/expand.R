@@ -115,16 +115,16 @@ expand_unspecified <- function(dates) {
 }
 
 expand_sets <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "\\.\\.[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\,") &
-                    stringr::str_count(dates, ",") == 1,
-                  stringr::str_replace(dates, "\\.\\.[:digit:]{4}-[:digit:]{2}-[:digit:]{2}", ""),
-                  dates)
-  dates <- ifelse(stringr::str_detect(dates,
-                                      "\\,[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\.\\.") &
-                    stringr::str_count(dates, ",") == 1,
-                  stringr::str_replace(dates,
-                                       "[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\.\\.", ""),
-                  dates)
+  # dates <- ifelse(stringr::str_detect(dates, "\\.\\.[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\,") &
+  #                   stringr::str_count(dates, ",") == 1,
+  #                 stringr::str_replace(dates, "\\.\\.[:digit:]{4}-[:digit:]{2}-[:digit:]{2}", ""),
+  #                 dates)
+  # dates <- ifelse(stringr::str_detect(dates,
+  #                                     "\\,[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\.\\.") &
+  #                   stringr::str_count(dates, ",") == 1,
+  #                 stringr::str_replace(dates,
+  #                                      "[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\.\\.", ""),
+  #                 dates)
   dates <- stringr::str_split(dates, "\\,")
   dates
 }

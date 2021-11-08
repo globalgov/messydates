@@ -92,6 +92,10 @@ The PANARCHIC project is funded by the Swiss National Science Foundation (SNSF).
 For more information on the Geneva Global Governance Observatory and our current projects, 
 please see [our website](https://panarchic.ch) or [our Github page](https://github.com/globalgov).
 
+## Cheat Sheet
+
+<a href="https://github.com/globalgov/messydates/blob/main/man/figures/cheatsheet.pdf"><img src="https://raw.githubusercontent.com/globalgov/messydates/main/man/figures/cheatsheet.png" width="525" height="378"/></a>
+
 ## Relationship to other packages
 
 `{messydates}` offers a new date class, but one that comes with methods for converting from and into

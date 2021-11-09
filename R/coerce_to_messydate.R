@@ -96,7 +96,7 @@ standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "^NA", "XXXX")
   dates <- stringr::str_replace_all(dates, "-NA", "-XX")
   dates <- stringr::str_replace_all(dates, "0000", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-00", "-XX")
+  dates <- stringr::str_replace_all(dates, "-00-|-0-|-0$|-00$", "-XX-")
   dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
   dates <- stringr::str_replace_all(dates, "-\\?\\?", "-XX")
   dates
@@ -138,7 +138,6 @@ standardise_ranges <- function(dates) {
 }
 
 remove_imprecision <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "-XX$", "")
   dates <- stringr::str_replace_all(dates, "-XX$", "")
   dates
 }

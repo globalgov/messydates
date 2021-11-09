@@ -49,26 +49,27 @@ expand_approximate <- function(dates, approx_range) {
                   paste0(dates, "-01-01"), dates)
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-[:digit:]{2}\\~$"),
                   paste0(dates, "-01"), dates)
-  # Year
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~-[:digit:]{2}-[:digit:]{2}$|
-                                      |^\\~[:digit:]{4}\\-[:digit:]{2}-[:digit:]{2}$"),
-                  paste0(as.Date(gsub("\\~", "", dates)) - ly, "..",
-                         as.Date(gsub("\\~", "", dates)) + ly), dates)
-  # Month
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\-[:digit:]{2}\\~-[:digit:]{2}$"),
-                  paste0(as.Date(gsub("\\~", "", dates)) - mr, "..",
-                         as.Date(gsub("\\~", "", dates)) + mr), dates)
-  # Day
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$"),
-                  paste0(as.Date(gsub("\\~", "", dates)) - approx_range, "..",
-                         as.Date(gsub("\\~", "", dates)) + approx_range), dates)
-  # On before and after
-  dates <- ifelse(stringr::str_detect(dates, "^\\.\\."),
-                  paste0(as.Date(gsub("\\.\\.", "", dates)) - ly,
-                         "..", gsub("\\.\\.", "", dates)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "\\.\\.$"),
-                  paste0(gsub("\\.\\.", "", dates), "..",
-                         as.Date(gsub("\\.\\.", "", dates)) + ly), dates)
+  dates <- lapply(dates, function(x) {
+    # Year
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}\\~-[:digit:]{2}-[:digit:]{2}$|
+                               |^\\~[:digit:]{4}\\-[:digit:]{2}-[:digit:]{2}$"),
+           paste0(as.Date(gsub("\\~", "", x)) - ly, "..",
+                  as.Date(gsub("\\~", "", x)) + ly), x)
+    # Month
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}\\-[:digit:]{2}\\~-[:digit:]{2}$"),
+                paste0(as.Date(gsub("\\~", "", x)) - mr, "..",
+                       as.Date(gsub("\\~", "", x)) + mr), x)
+    # Day
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$"),
+                paste0(as.Date(gsub("\\~", "", x)) - approx_range, "..",
+                       as.Date(gsub("\\~", "", x)) + approx_range), x)
+    # On before and after
+    x <- ifelse(stringr::str_detect(x, "^\\.\\."),
+                paste0(as.Date(gsub("\\.\\.", "", x)) - ly, "..", gsub("\\.\\.", "", x)), x)
+    x <- ifelse(stringr::str_detect(x, "\\.\\.$"),
+                paste0(gsub("\\.\\.", "", x), "..", as.Date(gsub("\\.\\.", "", x)) + ly), x)
+  })
+  dates <- unlist(dates)
   dates
 }
 

@@ -38,6 +38,7 @@ NULL
 #' as.Date(as_messydate("2012-01"), random)
 #' @export
 as.Date.messydt <- function(x, ..., FUN) {
+  x <- str_replace_all(x, "^-", "")
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   as.Date(x)
@@ -46,6 +47,7 @@ as.Date.messydt <- function(x, ..., FUN) {
 #' @rdname from_messydate
 #' @export
 as.POSIXct.messydt <- function(x, ..., FUN) {
+  x <- str_replace_all(x, "^-", "")
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   as.POSIXct(x)
@@ -54,6 +56,7 @@ as.POSIXct.messydt <- function(x, ..., FUN) {
 #' @rdname from_messydate
 #' @export
 as.POSIXlt.messydt <- function(x, ..., FUN) {
+  x <- str_replace_all(x, "^-", "")
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   as.POSIXlt(x)

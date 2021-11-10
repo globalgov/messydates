@@ -8,15 +8,24 @@
 ## Functions
 * Expanded on messydates checks for class validity
 * Fixed bugs for `make_messydate()`
-* Added annotation functions (on_or_before(), on_or_after(), as_approximate(), 
-as_uncertain()) with discrimination between month uncertainty and 
-day and month uncertainty
+* Added annotation functions
+  *`on_or_before()`
+  * `on_or_after()`
+  * `as_approximate()`
+  * `as_uncertain()` (includes discrimination between month uncertainty and 
+  day and month uncertainty)
 * Updated `as_messydate()` by adding zero padding for month, day or year
 * Updated `resequence()` to work consistently with messydate objects
 * Updated `expand()` function to expand imprecise, unspecified, approximate, 
 uncertain, and negative dates according to approximate ranges and added tests
 * Updated `precision()` to return the lengths of expanded dates
-* Updated resolve functions for precision and added tests
+* Updated `median()` in resolve family of functions for precision
+* Added tests for functions
+  * Added tests for `expand()`
+  * Added tests for `contract()`
+  * Added tests for `precision()`
+  * Added tests for `coerce_from_messydate()`
+  
 
 # messydates 0.1.1
 

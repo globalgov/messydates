@@ -9,7 +9,7 @@
 * Expanded on messydates checks for class validity
 * Fixed bugs for `make_messydate()`
 * Added annotation functions
-  *`on_or_before()`
+  * `on_or_before()`
   * `on_or_after()`
   * `as_approximate()`
   * `as_uncertain()` (includes discrimination between month uncertainty and 
@@ -19,7 +19,8 @@
 * Updated `expand()` function to expand imprecise, unspecified, approximate, 
 uncertain, and negative dates according to approximate ranges and added tests
 * Updated `precision()` to return the lengths of expanded dates
-* Updated `median()` in resolve family of functions for precision
+* Updated `median()` in resolve family of functions to work with changes to 
+`expand()`
 * Added tests for functions
   * Added tests for `expand()`
   * Added tests for `contract()`

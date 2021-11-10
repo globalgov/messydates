@@ -19,8 +19,8 @@ add_uncertainty(x, level = NULL)
 \arguments{
 \item{x}{A date vector}
 
-\item{level}{Should the annotation be on the "year", "month", "day",
-or month and day ("md")? Optional.
+\item{level}{Annotation can be added on the "year", "month", "day",
+or month and day ("md"), must be specified.
 If unspecified annotation will be added to before date.
 For month and day ("md") uncertainty or approximation
 sign is added before month in date (e.g. 1916-?10-10 or 1916-~10-10).}

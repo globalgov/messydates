@@ -7,7 +7,3 @@
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
-
-* Updated README with some more explanation about what the package does/offers
-* The URL https://globalgov.github.io/messydates was changed to https://globalgov.github.io/messydates/
-* The ISO publication that provides the basis for the new class does not have a DOI

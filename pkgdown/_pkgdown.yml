@@ -54,14 +54,9 @@ reference:
   - title: "Resolution"
     desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
     contents:
-      - starts_with("max")
-      - starts_with("min")
-      - starts_with("mean")
-      - starts_with("median")
-      - starts_with("modal")
-      - starts_with("sample")
+      - resolve
   - title: "Data"
-    desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
+    desc: "Some test and/or example data:"
     contents:
       - battles
 

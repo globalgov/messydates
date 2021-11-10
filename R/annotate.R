@@ -16,7 +16,7 @@
 #' to a possibly dubious date (e.g. ?1916-10-10) or date
 #' component (e.g. 1916-10-10?).
 #' @param x A date vector
-#' @param level Annotation can be added on the "year", "month", "day",
+#' @param component Annotation can be added on the "year", "month", "day",
 #' or month and day ("md"), must be specified.
 #' If unspecified annotation will be added to before date.
 #' For month and day ("md") uncertainty or approximation
@@ -30,9 +30,9 @@
 #' dplyr::mutate(data, End = ifelse(End >= "2016-01-01",
 #'  on_or_after(End), End))
 #' dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01",
-#' add_approximation(Beg), Beg))
+#' as_approximate(Beg), Beg))
 #' dplyr::mutate(data, End = ifelse(End == "1916-12-31",
-#' add_uncertainty(End), End))
+#' as_uncertain(End), End))
 #' @name annotate
 NULL
 
@@ -57,30 +57,30 @@ on_or_after <- function(x) {
 }
 
 #' @rdname annotate
-#' @details `add_approximation()` annotates approximate dates, or date
+#' @details `as_approximate()` annotates approximate dates, or date
 #' components, deemed possibly correct by adding "~" to date
 #' (e.g. `1916~-01-01`)
 #' @export
-add_approximation <- function(x, level = NULL) {
+as_approximate <- function(x, component = NULL) {
 
-  if (is.null(level)) {
+  if (is.null(component)) {
     x <- paste0("~", x)
   }
 
-  if (!is.null(level)) {
+  if (!is.null(component)) {
     day <- vapply(strsplit(x, "-"), `[`, 3, FUN.VALUE = character(1))
     month <- vapply(strsplit(x, "-"), `[`, 2, FUN.VALUE = character(1))
     year <- vapply(strsplit(x, "-"), `[`, 1, FUN.VALUE = character(1))
-    if (level == "day") {
+    if (component == "day") {
       x <- paste0(year, "-", month, "-", day, "~")
     }
-    if (level == "month") {
+    if (component == "month") {
       x <- paste0(year, "-", month, "~", "-", day)
     }
-    if (level == "year") {
+    if (component == "year") {
       x <- paste0(year, "~", "-", month, "-", day)
     }
-    if (level == "md") {
+    if (component == "md") {
       x <- paste0(year, "-", "~", month, "-", day)
     }
   }
@@ -89,29 +89,29 @@ add_approximation <- function(x, level = NULL) {
 }
 
 #' @rdname annotate
-#' @details `add_uncertainty()` annotates uncertain dates, or date components,
+#' @details `as_uncertain()` annotates uncertain dates, or date components,
 #' deemed dubious by adding "?" to date (e.g. `1916?-01-01`)
 #' @export
-add_uncertainty <- function(x, level = NULL) {
+as_uncertain <- function(x, component = NULL) {
 
-  if (is.null(level)) {
+  if (is.null(component)) {
     x <- paste0("?", x)
   }
 
-  if (!is.null(level)) {
+  if (!is.null(component)) {
     day <- vapply(strsplit(x, "-"), `[`, 3, FUN.VALUE = character(1))
     month <- vapply(strsplit(x, "-"), `[`, 2, FUN.VALUE = character(1))
     year <- vapply(strsplit(x, "-"), `[`, 1, FUN.VALUE = character(1))
-    if (level == "day") {
+    if (component == "day") {
       x <- paste0(year, "-", month, "-", day, "?")
     }
-    if (level == "month") {
+    if (component == "month") {
       x <- paste0(year, "-", month, "?", "-", day)
     }
-    if (level == "year") {
+    if (component == "year") {
       x <- paste0(year, "?", "-", month, "-", day)
     }
-    if (level == "md") {
+    if (component == "md") {
       x <- paste0(year, "-", "?", month, "-", day)
     }
   }

@@ -4,22 +4,22 @@
 \alias{annotate}
 \alias{on_or_before}
 \alias{on_or_after}
-\alias{add_approximation}
-\alias{add_uncertainty}
+\alias{as_approximate}
+\alias{as_uncertain}
 \title{Annotates messy dates for uncertainty and/or approximation}
 \usage{
 on_or_before(x)
 
 on_or_after(x)
 
-add_approximation(x, level = NULL)
+as_approximate(x, component = NULL)
 
-add_uncertainty(x, level = NULL)
+as_uncertain(x, component = NULL)
 }
 \arguments{
 \item{x}{A date vector}
 
-\item{level}{Annotation can be added on the "year", "month", "day",
+\item{component}{Annotation can be added on the "year", "month", "day",
 or month and day ("md"), must be specified.
 If unspecified annotation will be added to before date.
 For month and day ("md") uncertainty or approximation
@@ -52,11 +52,11 @@ a prefix to dates (e.g. \code{..1816-01-01}).
 \code{on_or_after()} annotates uncertain end dates by adding ".." as
 a suffix to dates (e.g. \code{2016-12-31}).
 
-\code{add_approximation()} annotates approximate dates, or date
+\code{as_approximate()} annotates approximate dates, or date
 components, deemed possibly correct by adding "~" to date
 (e.g. \code{1916~-01-01})
 
-\code{add_uncertainty()} annotates uncertain dates, or date components,
+\code{as_uncertain()} annotates uncertain dates, or date components,
 deemed dubious by adding "?" to date (e.g. \code{1916?-01-01})
 }
 \examples{
@@ -67,7 +67,7 @@ dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01",
 dplyr::mutate(data, End = ifelse(End >= "2016-01-01",
  on_or_after(End), End))
 dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01",
-add_approximation(Beg), Beg))
+as_approximate(Beg), Beg))
 dplyr::mutate(data, End = ifelse(End == "1916-12-31",
-add_uncertainty(End), End))
+as_uncertain(End), End))
 }

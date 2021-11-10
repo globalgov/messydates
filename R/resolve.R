@@ -74,7 +74,7 @@ mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
   y <- sapply(y, function(x) {
-    if (length(x) > 1) x <- as.character(mean.Date(as.Date(x),
+    if (length(x) > 1) x <- as.character(mean(as.Date(x),
                                               trim = 0, na.rm = TRUE))
     x
   })

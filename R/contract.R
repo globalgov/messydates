@@ -11,12 +11,11 @@
 #' @importFrom dplyr lead
 #' @examples
 #' d <- as_messydate(c("2001-01-01", "2001-01", "2001",
-#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-#' "{2001-01,2001-02-02}"))
+#' "2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}", "{2001-01,2001-02-02}"))
 #' e <- expand(d)
-#' tibble::tibble(d,contract(e))
+#' tibble::tibble(d, contract(e))
 #' @export
-contract <- function(x = list()) {
+contract <- function(x) {
   x <- compact_ranges(x)
   x <- collapse_sets(x)
   x <- collapse_ranges(x)
@@ -32,7 +31,7 @@ is_sequence <- function(x) {
 }
 
 compact_ranges <- function(x) {
-  sapply(x, function(d) {
+  lapply(x, function(d) {
     if (length(d) > 1) {
       sequ <- is_sequence(d)
       if (any(sequ)) {

@@ -4,7 +4,7 @@
 \alias{contract}
 \title{Contract lists of dates into messy dates}
 \usage{
-contract(x = list())
+contract(x)
 }
 \arguments{
 \item{x}{A list of dates}
@@ -19,8 +19,7 @@ of messy dates.
 }
 \examples{
 d <- as_messydate(c("2001-01-01", "2001-01", "2001",
-"2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-"{2001-01,2001-02-02}"))
+"2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}", "{2001-01,2001-02-02}"))
 e <- expand(d)
-tibble::tibble(d,contract(e))
+tibble::tibble(d, contract(e))
 }

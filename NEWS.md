@@ -3,19 +3,18 @@
 ## Package
 * Added PANARCHIC project details to README file
 * Added cheatsheet
-* Updated documentation
-* Updated website
+* Added a new CSS style to website and updated functions displayed
 
 ## Functions
 * Expanded on messydates checks for class validity
 * Fixed bugs for `make_messydate()`
-* Added annotation functions (on_or_before(), on_or_after(), 
-add_approximation(), add_uncertainty()) with discrimination between month 
-uncertainty and day and month uncertainty 
+* Added annotation functions (on_or_before(), on_or_after(), as_approximate(), 
+as_uncertain()) with discrimination between month uncertainty and 
+day and month uncertainty
 * Updated `as_messydate()` by adding zero padding for month, day or year
 * Updated `resequence()` to work consistently with messydate objects
-* Updated `expand()` function to expand imprecise, unspecified, approximate, and
-uncertain dates according to approximate ranges and added tests
+* Updated `expand()` function to expand imprecise, unspecified, approximate, 
+uncertain, and negative dates according to approximate ranges and added tests
 * Updated `precision()` to return the lengths of expanded dates
 * Updated resolve functions for precision and added tests
 

@@ -82,19 +82,18 @@ validate_messydate <- function(x) {
 
   if (!all(grepl("[0-9]", values))) {
     stop(
-      "Messy dates require at least one specified date component.",
+      "Messydt object requires at least one specified date component.",
       call. = FALSE
     )
     }
 
   if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|,|;|>|<|_|\\^|'|&|\\$|#", values))) {
     stop(
-      "Messy dates can only consist of numbers and
+      "Messydt object can only consist of numbers and
       some special symbols: []{}..X%?~",
       call. = FALSE
     )
   }
-
   x
 }
 

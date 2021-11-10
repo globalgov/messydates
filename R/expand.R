@@ -1,12 +1,12 @@
 #' Expand messy dates to lists of dates
 #'
-#' These functions expand on date ranges, sets of dates, and uncertain or
-#' approximate dates (annotated with ? or ~).
-#' Uncertain dates may refer to several possible dates.
-#' The function "opens" these values to include all the possible dates
-#' implied by uncertain dates.
+#' These functions expand on date ranges, sets of dates, and unspecified or
+#' approximate dates (annotated with '..', '{ , }', 'XX' or '~').
+#' As these dates may refer to several possible dates, the function "opens"
+#' these values to include all the possible dates implied.
 #' Imprecise dates (dates only containing information on year and/or month)
 #' are also expanded to include possible dates in that year and/or month.
+#' Annotation is removed from uncertain dates with unreliable sources ('?').
 #' @param x A `messydt` object.
 #' @return A list of dates, including all dates in each range or set.
 #' @export
@@ -15,7 +15,7 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' @describeIn expand Expanding messydates
 #' @importFrom stringr str_replace_all str_split str_detect
 #' str_extract str_remove_all
-#' @param approx_range range to expand approximate dates to, by default 3.
+#' @param approx_range Range to expand approximate dates to, by default 3.
 #' That is, 3 days for day approximation, 3 months for month approximation, and
 #' 3 years for year approximation.
 #' @examples

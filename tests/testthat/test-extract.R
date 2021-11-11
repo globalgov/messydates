@@ -7,7 +7,7 @@ test_that("extract functions work properly", {
 test_that("precision function works properly", {
   expect_equal(precision(as_messydate("2012-02-03")), 1)
   expect_equal(precision(as_messydate("2012-02-03?")), 1)
-  expect_equal(precision(as_messydate("2012-02-03~")), 7)
+  expect_equal(precision(as_messydate("2012-02-~03")), 7)
   expect_equal(precision(as_messydate("2012-02-03..2012-02-14")), 12)
   expect_equal(precision(as_messydate("2012-02")), 29)
   expect_equal(precision(as_messydate("2012")), 366)

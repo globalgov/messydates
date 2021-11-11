@@ -16,12 +16,13 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' @importFrom stringr str_replace_all str_split str_detect
 #' str_extract str_remove_all
 #' @param approx_range Range to expand approximate dates to, by default 3.
-#' That is, 3 days for day approximation, 3 months for month approximation, and
-#' 3 years for year approximation.
+#' That is, 3 days for day approximation, 3 months for month approximation,
+#' 3 years for year/whole date approximation, 3 years and 3 months for year-
+#' month approximation, and 3 months and 3 days for month-day approximation.
 #' @examples
-#' d <- as_messydate(c("2008-03-25", "2012-02-27", "2001-01?", "2001~",
-#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-#' "{2001-01,2001-02-02}", "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
+#' d <- as_messydate(c("2008-03-25", "2012-02-27", "2001-01?", "~2001",
+#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
+#' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 #' expand(d)
 #' @export
 expand.messydt <- function(x, approx_range = 3) {
@@ -29,7 +30,7 @@ expand.messydt <- function(x, approx_range = 3) {
   x <- stringr::str_remove_all(x, "\\{")
   x <- stringr::str_remove_all(x, "\\}")
   x <- stringr::str_remove_all(x, "\\%")
-  x <- stringr::str_remove_all(x, "\\?") # Dubious dates are not expanded...
+  x <- stringr::str_remove_all(x, "\\?") # Uncertain dates are not expanded...
   x <- expand_approximate(x, approx_range)
   x <- expand_unspecified(x)
   x <- expand_negative(x) # Negative date rages are treated as sets for now...
@@ -45,24 +46,32 @@ expand_approximate <- function(dates, approx_range) {
   # For month approximation
   mr <- 30.42*approx_range
   # Substitute signs
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
+  dates <- ifelse(stringr::str_detect(dates, "^\\~[:digit:]{4}$"),
                   paste0(dates, "-01-01"), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-[:digit:]{2}\\~$"),
+  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-\\~[:digit:]{2}$|^[:digit:]{4}-[:digit:]{2}\\~$"),
                   paste0(dates, "-01"), dates)
   dates <- lapply(dates, function(x) {
-    # Year
-    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}\\~-[:digit:]{2}-[:digit:]{2}$|
-                               |^\\~[:digit:]{4}\\-[:digit:]{2}-[:digit:]{2}$"),
+    # Year and whole date
+    x <- ifelse(stringr::str_detect(x, "^\\~[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
+                               |^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$"),
            paste0(as.Date(gsub("\\~", "", x)) - ly, "..",
                   as.Date(gsub("\\~", "", x)) + ly), x)
     # Month
-    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}\\-[:digit:]{2}\\~-[:digit:]{2}$"),
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-\\~[:digit:]{2}-[:digit:]{2}$"),
                 paste0(as.Date(gsub("\\~", "", x)) - mr, "..",
                        as.Date(gsub("\\~", "", x)) + mr), x)
     # Day
-    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$"),
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-\\~[:digit:]{2}$"),
                 paste0(as.Date(gsub("\\~", "", x)) - approx_range, "..",
                        as.Date(gsub("\\~", "", x)) + approx_range), x)
+    # Year-Month
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}\\~-[:digit:]{2}$"),
+                paste0(as.Date(gsub("\\~", "", x)) - (ly+mr), "..",
+                       as.Date(gsub("\\~", "", x)) + (ly+mr)), x)
+    # Month-Day
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-\\~[:digit:]{2}-\\~[:digit:]{2}$"),
+                paste0(as.Date(gsub("\\~", "", x)) - (mr+approx_range), "..",
+                       as.Date(gsub("\\~", "", x)) + (mr+approx_range)), x)
     # On before and after
     x <- ifelse(stringr::str_detect(x, "^\\.\\."),
                 paste0(as.Date(gsub("\\.\\.", "", x)) - ly, "..", gsub("\\.\\.", "", x)), x)

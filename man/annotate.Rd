@@ -19,31 +19,36 @@ as_uncertain(x, component = NULL)
 \arguments{
 \item{x}{A date vector}
 
-\item{component}{Annotation can be added on the "year", "month", "day",
-or month and day ("md"), must be specified.
-If unspecified annotation will be added to before date.
-For month and day ("md") uncertainty or approximation
-sign is added before month in date (e.g. 1916-?10-10 or 1916-~10-10).}
+\item{component}{Annotation can be added on specific date components
+("year", "month" or "day"), or to groups of date components (month and
+day ("md"), or year and month ("ym")). This must be specified.
+If unspecified, annotation will be added after the date (e.g. 1916-10-10?),
+indicating the whole date is uncertain or approximate.
+For specific date components, uncertainty or approximation is annotated to
+the left of the date component.
+E.g. for "day": 1916-10-?10 or 1916-10-~10.
+For groups of date components, uncertainty or approximation is annotated to
+the right of the group ("ym") or to both components ("md").
+E.g. for "ym": 1916-10~-10; for "md": 1916-?10-?10.}
 }
 \value{
 A messydt object with annotated date(s)
 }
 \description{
-Some datasets have an arbitrary cut off point
-for start and end points, for example,
-but these do not refer to the real start or end dates.
-Though these are often coded as precise dates.
+Some datasets have for example an arbitrary cut off point
+for start and end points, but these are often coded as precise dates
+when they are not necessarily the real start or end dates.
 This collection of functions helps annotate uncertainty and
 approximation to dates according to ISO2019E standards.
-Innacurate start or end dates can be represented by an affix
+Inaccurate start or end dates can be represented by an affix
 indicating "on or before", if used as a prefix (e.g. ..1816-01-01),
 or indicating "on or after", if used as a suffix (e.g. 2016-12-31..).
 Approximate dates are indicated by adding a \code{~} to year,
-month, or day, to estimate values that are
-possibly correct (e.g. 2003~-03-03).
+month, or day components, as well as groups of components or whole dates
+to estimate values that are possibly correct (e.g. 2003-03-03~).
 Day, month, or year, uncertainty can be indicated by adding a \verb{?}
-to a possibly dubious date (e.g. ?1916-10-10) or date
-component (e.g. 1916-10-10?).
+to a possibly dubious date (e.g. 1916-10-10?) or date
+component (e.g. 1916-?10-10).
 }
 \details{
 \code{on_or_before()} annotates uncertain start dates by adding ".." as

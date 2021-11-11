@@ -8,7 +8,8 @@
 ## Functions
 * Expanded on messydates checks for class validity
 * Fixed bugs for `make_messydate()`
-* Added annotation functions
+* Added annotation functions and standardized annotation so that it is 
+consistent with ISO2019E standards.
   * `on_or_before()`
   * `on_or_after()`
   * `as_approximate()`

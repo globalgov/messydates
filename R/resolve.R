@@ -12,7 +12,9 @@
 #' @param na.rm Should NAs be removed? True by default.
 #' @return A single scalar or vector of dates
 #' @examples
-#' d <- as_messydate("2014-01-01..2014-01-31")
+#' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
+#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+#' "{2001-01,2001-02-02}", "2008-XX-31"))
 #' d
 #' min(d)
 #' max(d)
@@ -48,7 +50,18 @@ max.messydt <- function(..., na.rm = TRUE) {
 median.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
-  y <- sapply(y, function(x) as.character(stats::median(x, na.rm = na.rm)))
+  y <- sapply(y, function(z) {
+
+    if (length(z) %% 2 == 0) {
+      z <- unlist(z[-1])
+      z <- as.character(median(z, na.rm = na.rm))
+      z
+    }
+    else{
+      z <- as.character(median(z, na.rm = na.rm))
+      z
+    }
+  })
   y
 }
 

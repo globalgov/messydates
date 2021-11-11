@@ -5,21 +5,29 @@
 \alias{expand.messydt}
 \title{Expand messy dates to lists of dates}
 \usage{
-expand(x)
+expand(x, approx_range)
 
-\method{expand}{messydt}(x)
+\method{expand}{messydt}(x, approx_range = 3)
 }
 \arguments{
 \item{x}{A \code{messydt} object.}
+
+\item{approx_range}{Range to expand approximate dates to, by default 3.
+That is, 3 days for day approximation, 3 months for month approximation,
+3 years for year/whole date approximation, 3 years and 3 months for year-
+month approximation, and 3 months and 3 days for month-day approximation.}
 }
 \value{
 A list of dates, including all dates in each range or set.
 }
 \description{
-These functions expand on unspecified dates, ranges and on sets of dates.
-Uncertain dates may include several possible dates.
-The function "opens" these values to include all the possible dates
-contained in uncertain dates.
+These functions expand on date ranges, sets of dates, and unspecified or
+approximate dates (annotated with '..', '{ , }', 'XX' or '~').
+As these dates may refer to several possible dates, the function "opens"
+these values to include all the possible dates implied.
+Imprecise dates (dates only containing information on year and/or month)
+are also expanded to include possible dates in that year and/or month.
+Annotation is removed from uncertain dates with unreliable sources ('?').
 }
 \section{Methods (by class)}{
 \itemize{
@@ -27,7 +35,8 @@ contained in uncertain dates.
 }}
 
 \examples{
-d <- as_messydate(c("2001-01-01", "2001-01", "2001", "2001-01-01..2001-02-02",
-        "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}"))
+d <- as_messydate(c("2008-03-25", "2012-02-27", "2001-01?", "~2001",
+"2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
+"2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 expand(d)
 }

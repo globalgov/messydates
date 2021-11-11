@@ -26,7 +26,7 @@ should be flagged as uncertain, or sources offer multiple, competing
 dates.
 
 As researchers, we often recognise this messiness but are forced to
-force nonexistent precision on data to we can proceed with analysis. For
+force nonexistent precision on data so we can proceed with analysis. For
 example, if we only know something happened in a given month or year, we
 might just opt for the start of that month (e.g. 2021-07-01) or year
 (2021-01-01), assuming that to err on the earlier (or later) side is a
@@ -49,7 +49,7 @@ include standardised notation for:
     the 12th of January 2012
 -   uncertain date( component)s, e.g. `2012-01-12?` where this data
     point is based on an unreliable source
--   sets of dates, e.g. `[2012-01-01,2012-01-12]` where the date is
+-   sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date is
     either 1 January 2012 or 12 January 2012
 -   ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between
     the 1 January 2012 and 12 January 2012 inclusive
@@ -86,10 +86,19 @@ remotes::install_github("globalgov/messydates")
 
 Please see [the messydates
 website](https://globalgov.github.io/messydates/) for more information
-about how to use `{messydates}`. For more information on the Geneva
-Global Governance Observatory and our current projects, please see [our
+about how to use `{messydates}`. The package was developed as part of
+the PANARCHIC project, which studies the effects of network and power on
+how quickly states join, reform, or create international institutions by
+examining the historical dynamics of institutional networks from
+different domains. The PANARCHIC project is funded by the Swiss National
+Science Foundation (SNSF). For more information on the Geneva Global
+Governance Observatory and our current projects, please see [our
 website](https://panarchic.ch) or [our Github
 page](https://github.com/globalgov).
+
+## Cheat Sheet
+
+<a href="https://github.com/globalgov/messydates/blob/main/man/figures/cheatsheet.pdf"><img src="https://raw.githubusercontent.com/globalgov/messydates/main/man/figures/cheatsheet.png" width="525" height="378"/></a>
 
 ## Relationship to other packages
 

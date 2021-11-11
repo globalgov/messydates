@@ -3,7 +3,7 @@ development:
     mode: auto
 template:
   params:
-    bootswatch: flatly
+    bootswatch: paper
 authors:
   James Hollway:
     href: https://jameshollway.com
@@ -34,6 +34,7 @@ reference:
       - starts_with("new_")
       - starts_with("validate_")
       - starts_with("make_")
+      - annotate
   - title: "Coercion"
     desc: "These functions coerce classes to and from the `messydt` class:"
     contents:
@@ -53,10 +54,9 @@ reference:
   - title: "Resolution"
     desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
     contents:
-      - starts_with("max")
-      - starts_with("min")
-      - starts_with("mean")
-      - starts_with("median")
-      - starts_with("modal")
-      - starts_with("sample")
+      - resolve
+  - title: "Data"
+    desc: "Some test and/or example data:"
+    contents:
+      - battles
 

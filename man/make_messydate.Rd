@@ -7,7 +7,7 @@
 make_messydate(...)
 }
 \arguments{
-\item{...}{One (ymd) or three (yyyy, mm, dd) variables}
+\item{...}{One (yyyy-mm-dd) or three (yyyy, mm, dd) variables}
 }
 \value{
 A character vector containing the

@@ -40,6 +40,7 @@ NULL
 as.Date.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
+  x <- stringr::str_replace_all(x, "^-", "")
   as.Date(x)
 }
 
@@ -48,6 +49,7 @@ as.Date.messydt <- function(x, ..., FUN) {
 as.POSIXct.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
+  x <- stringr::str_replace_all(x, "^-", "")
   as.POSIXct(x)
 }
 
@@ -56,5 +58,6 @@ as.POSIXct.messydt <- function(x, ..., FUN) {
 as.POSIXlt.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
+  x <- stringr::str_replace_all(x, "^-", "")
   as.POSIXlt(x)
 }

@@ -7,21 +7,18 @@
 #' @return A `messydt` vector
 #' @importFrom tibble tibble
 #' @importFrom lubridate NA_Date_
-#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_replace_all str_detect
 #' @importFrom dplyr lead
 #' @examples
 #' d <- as_messydate(c("2001-01-01", "2001-01", "2001",
-#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-#' "{2001-01,2001-02-02}"))
+#' "2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}", "{2001-01,2001-02-02}"))
 #' e <- expand(d)
-#' tibble::tibble(d,contract(e))
+#' tibble::tibble(d, contract(e))
 #' @export
-contract <- function(x = list()) {
-
+contract <- function(x) {
   x <- compact_ranges(x)
   x <- collapse_sets(x)
   x <- collapse_ranges(x)
-
   new_messydate(x)
 }
 
@@ -34,13 +31,13 @@ is_sequence <- function(x) {
 }
 
 compact_ranges <- function(x) {
-  sapply(x, function(d) {
+  lapply(x, function(d) {
     if (length(d) > 1) {
       sequ <- is_sequence(d)
       if (any(sequ)) {
         starts <- d[which(sequ == FALSE)]
-        ends <- d[dplyr::lead(sequ)==FALSE | is.na(dplyr::lead(sequ))]
-        if (any(starts==ends)) ends[starts==ends] <- NA
+        ends <- d[dplyr::lead(sequ) == FALSE | is.na(dplyr::lead(sequ))]
+        if (any(starts == ends)) ends[starts == ends] <- NA
         d <- paste(starts, ends, sep = "..")
         d <- stringr::str_replace_all(d, "\\.\\.NA", "")
       }
@@ -50,29 +47,29 @@ compact_ranges <- function(x) {
 }
 
 collapse_sets <- function(x) {
-  sapply(x, function(l) {
-    if (length(l) > 1) {
-      l <- paste(l, collapse = ",")
-      l <- paste0("{", l, "}")
-    }
-    l
-  })
+  x <- lapply(x, paste, collapse = ",")
+  x <- ifelse(stringr::str_detect(x, ","), paste0("{", x, "}"), x)
+  x
 }
 
 collapse_ranges <- function(x) {
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4})-01-01\\.\\.([:digit:]{4})-12-31",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-28",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-29",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-30",
-                                "\\1")
-  x <- stringr::str_replace_all(x,
-                                "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-31",
-                                "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4})-01-01\\.\\.([:digit:]{4})-12-31", "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-28",
+    "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-29",
+    "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-30",
+    "\\1")
+  x <- stringr::str_replace_all(
+    x,
+    "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-31",
+    "\\1")
 }

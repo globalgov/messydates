@@ -40,6 +40,7 @@ These functions coerce different data classes into \code{messydt} class
 }}
 
 \examples{
+as_messydate("28 BC")
 as_messydate("2021")
 as_messydate("2021-02")
 as_messydate("2021-02-01")

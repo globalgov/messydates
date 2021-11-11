@@ -8,16 +8,16 @@
 \alias{precision}
 \title{Extracting components from messy dates}
 \usage{
-year(md)
+year(x)
 
-month(md)
+month(x)
 
-day(md)
+day(x)
 
-precision(md)
+precision(x)
 }
 \arguments{
-\item{md}{A messy date object}
+\item{x}{A \code{messydt} object}
 }
 \value{
 \code{year()}, \code{month()}, and \code{day()} extraction return the integer

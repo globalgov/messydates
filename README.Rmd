@@ -78,7 +78,7 @@ install.packages("messydates")
 
 However, you may also install the development version from [GitHub](https://github.com/).
 
-``` r
+``` {r git, eval=FALSE}
 # install.packages("remotes")
 remotes::install_github("globalgov/messydates")
 ```

@@ -186,11 +186,7 @@ jobs:
 
       # install packages needed
       - name: install required packages
-        run: Rscript -e 'install.packages(c("rmarkdown","remotes"))'
-
-      # install messydates
-      - name: install messydates package
-        run: Rscript -e 'remotes::install_github("globalgov/messydates")'
+        run: Rscript -e 'install.packages("rmarkdown")'
 
       # Render README.md using rmarkdown
       - name: render README

@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
 <meta property="og:title" content="Coercion to messy dates — as_messydate" />
 <meta property="og:description" content="These functions coerce different data classes into messydt class" />
@@ -72,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -153,15 +155,25 @@ such as <code>Date</code>, <code>POSIXct</code>, <code>POSIXlt</code>, or charac
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "2021"</div><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "2021-02"</div><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "2021-02-01"</div><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01?"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "2021-02-01?"</div><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01~"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "2021-02-01~"</div><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01%"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "2021-02-01%"</div><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01..2021-02-28"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "2021-02-01..2021-02-28"</div><div class='input'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"{2021-02-01,2021-02-28}"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'messydt' chr "{2021-02-01,2021-02-28}"</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"28 BC"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "-0028"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "2021"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "2021-02"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "2021-02-01"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01?"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "2021-02-01?"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01~"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "2021-02-01~"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01%"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "2021-02-01%"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"2021-02-01..2021-02-28"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "2021-02-01..2021-02-28"</span>
+<span class='r-in'><span class='fu'>as_messydate</span><span class='op'>(</span><span class='st'>"{2021-02-01,2021-02-28}"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  'messydt' chr "{2021-02-01,2021-02-28}"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Ubuntu+Mono');
+
+/* Color Palette
+messydates brown #C7A077, used for standard links
+Light brown #ECCAA5, used for hovered links
+Green Sheen #876949, Used for active things
+Dark White #f3f3f3, used for discrete active things, like the active dropdown
+                    menu link.
+*/
+
+h1 {
+  font-size: 40px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+h3 {
+  font-size: 17px;
+}
+
+p {
+  font-size: 14px;
+}
+
+.version {
+  font-size: 50%;
+}
+
+body{
+  font-family: 'Lato', sans-serif;
+}
+
+/* ---- particles.js container ---- */
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #b61924;
+  background-image: url("");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+/*The code itself inline AND chunks*/
+code{
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  background-color: #f9f6fd;
+}
+
+pre code {
+  font-size: 13px;
+}
+
+/*Links in code and header*/
+code a, pre a{
+  color: #C7A077;
+}
+
+.docs-link:hover{
+  text-decoration: none;
+}
+/*What is this thing?*/
+.docs-link{
+  color: #C7A077;
+}
+/*Links in paragraphs*/
+p>a {
+  color: #C7A077;
+}
+/*What is this?*/
+.panel-body>a {
+  color: #C7A077;
+}
+
+h4>a {
+  color: #C7A077;
+}
+
+li>a {
+  color: #C7A077;
+}
+/* Link in the dropdown menu if active*/
+.dropdown-menu > .active > a,
+.dropdown-menu>.active>a:focus {
+  background-color: #C7A077;
+}
+.dropdown-menu>.active>a:hover{
+  background-color: #876949;
+}
+/* Little arrow in the dropdown menu*/
+a .caret{
+  color: #D3D3D3 !important;
+}
+
+small>a{
+  color: #C7A077;
+}
+
+.sourceCode>a{
+  color: #C7A077;
+}
+
+.fl{
+  color: #C7A077;
+}
+/*Strings in code*/
+.st{
+  color: green;
+}
+
+.op, .kw{
+  color: #666666;
+}
+
+.dv, .dt{
+  color: #191919;
+}
+
+.g2r {
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0 2px 3px 1px,
+    rgba(0, 0, 0, 0.1) 0 1px 3px 1px,
+    rgba(0, 0, 0, 0.2) 0 1px 1px -1px;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100% !important;
+  background-color: white;
+}
+
+.jumbotron {
+  background-color: #fff;
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0 2px 3px 1px,
+    rgba(0, 0, 0, 0.1) 0 1px 3px 1px,
+    rgba(0, 0, 0, 0.2) 0 1px 1px -1px;
+}
+
+pre {
+  -moz-box-shadow:    inset 0 0 2px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
+  box-shadow:         inset 0 0 2px rgba(0, 0, 0, 0.1);
+}
+/*Hover color of the package name in nav bar*/
+.navbar-default .navbar-link:hover {
+    color: #ECCAA5;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #f3f3f3;
+    background-color: #C7A077;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #876949;
+}
+/* Little arrow in the dropdown menu when active*/
+.navbar-default .navbar-nav > .dropdown > a .caret {
+  color: #D3D3D3;
+}/* Little arrow in the dropdown menu when active and hovered over*/
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+  color: #011629;
+}
+
+.navbar-default .navbar-nav>.open>a,
+.navbar-default .navbar-nav>.open>a:hover,
+.navbar-default .navbar-nav>.open>a:focus{
+  color: white;
+  background-color: #876949;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu>li>a:hover{
+  color: white;
+  background-color: #876949;
+}
+.navbar-default .navbar-nav .open .dropdown-menu{
+  color: #876949;
+}
+
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:hover,
+.nav-pills>li.active>a:focus {
+  color: white;
+  background-color: #C7A077;
+  font-weight: bold;
+}
+
+.navbar-default .navbar-nav>li>a{
+  color: #C7A077;
+  font-size: 14px;
+}
+/*qPackage name in the navbar*/
+.navbar-default .navbar-link{
+  color: #C7A077;
+  font-size: 30px;
+}
+
+div>a{
+  color: #C7A077;
+}
+/* General links when hovered over*/
+a:hover, a:focus {
+  color: #ECCAA5;
+}
+
+.panel{
+  min-height: 140px;
+}
+
+.btn-primary{
+  background-color: #C7A077;
+}
+
+.panel-orange > .panel-heading{
+  background-color: #F0760F;
+  border-color: #F7BA87;
+  color: white;
+  font-weight: bold;
+  font-size: 150%;
+  text-align: center;
+}
+
+.panel-info > .panel-heading{
+  background-color: #6906FF;
+  border-color: #ab74fc;
+  font-weight: bold;
+  font-size: 150%;
+  text-align: center;
+}
+
+.panel-warning > .panel-heading{
+  font-weight: bold;
+  font-size: 20px;
+  text-decoration: underline;
+}
+
+.panel-warning{
+  background-color: #ff9800;
+  color: white;
+}
+
+.panel-warning > .panel-body{
+  color: white;
+  font-size: 15px;
+}
+
+.panel-danger > .panel-heading{
+  font-weight: bold;
+  font-size: 20px;
+  text-decoration: underline;
+}
+
+.panel-danger{
+  background-color: #e84f3f;
+  color: white;
+  min-height: 50px!important;
+}
+
+.panel-danger > .panel-body{
+  color: white;
+  font-size: 18px;
+  text-align:center;
+}
+
+.centerize{
+  text-align: center;
+}

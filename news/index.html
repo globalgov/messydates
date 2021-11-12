@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
 <meta property="og:title" content="Changelog" />
 
@@ -71,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -109,12 +111,70 @@
       
     </div>
 
-    <div id="messydates-011" class="section level1">
-<h1 class="page-header" data-toc-text="0.1.1">
-<a href="#messydates-011" class="anchor"></a>messydates 0.1.1</h1>
+    <div id="messydates-020" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.0">
+<a href="#messydates-020" class="anchor"></a>messydates 0.2.0<small> Unreleased </small>
+</h1>
 <div id="package" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package" class="anchor"></a>Package</h2>
+<ul>
+<li>Added PANARCHIC project details to README file</li>
+<li>Added cheatsheet</li>
+<li>Added a new CSS style to website and updated functions displayed</li>
+<li>Addressed workflow actions issues
+<ul>
+<li>Updated pushrelease.yml workflow actions file to stop installing <code>{messydates}</code> from Github</li>
+<li>Updated README file to stop installing <code>{messydates}</code> from Github</li>
+</ul>
+</li>
+<li>Fixed Codecov test coverage URL on README file for CRAN submission</li>
+</ul>
+</div>
+<div id="functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#functions" class="anchor"></a>Functions</h2>
+<ul>
+<li>Expanded on messydates checks for class validity</li>
+<li>Fixed bugs for <code><a href="../reference/make_messydate.html">make_messydate()</a></code>
+</li>
+<li>Added annotation functions and standardized annotation so that it is consistent with ISO2019E standards.
+<ul>
+<li><code><a href="../reference/annotate.html">on_or_before()</a></code></li>
+<li><code><a href="../reference/annotate.html">on_or_after()</a></code></li>
+<li><code><a href="../reference/annotate.html">as_approximate()</a></code></li>
+<li>
+<code><a href="../reference/annotate.html">as_uncertain()</a></code> (includes discrimination between month uncertainty and day and month uncertainty)</li>
+</ul>
+</li>
+<li>Updated <code><a href="../reference/as_messydate.html">as_messydate()</a></code> by adding zero padding for month, day or year</li>
+<li>Updated <code><a href="../reference/resequence.html">resequence()</a></code> to work consistently with messydate objects</li>
+<li>Updated <code><a href="../reference/expand.html">expand()</a></code> function to expand imprecise, unspecified, approximate, uncertain, and negative dates according to approximate ranges and added tests</li>
+<li>Updated <code><a href="../reference/extract.html">precision()</a></code> to return the lengths of expanded dates</li>
+<li>Updated <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code> in resolve family of functions to work with changes to <code><a href="../reference/expand.html">expand()</a></code>
+</li>
+<li>Added tests for functions
+<ul>
+<li>Added tests for <code><a href="../reference/expand.html">expand()</a></code>
+</li>
+<li>Added tests for <code><a href="../reference/contract.html">contract()</a></code>
+</li>
+<li>Added tests for <code><a href="../reference/extract.html">precision()</a></code>
+</li>
+<li>Added tests for <code>coerce_from_messydate()</code>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+    <div id="messydates-011" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.1">
+<a href="#messydates-011" class="anchor"></a>messydates 0.1.1<small> 2021-07-19 </small>
+</h1>
+<div id="package-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#package-1" class="anchor"></a>Package</h2>
 <ul>
 <li>Updated README with some more explanation about what the package does/offers</li>
 <li>Fixed URL to the package website</li>
@@ -123,17 +183,18 @@
 </div>
     <div id="messydates-010" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
-<a href="#messydates-010" class="anchor"></a>messydates 0.1.0</h1>
-<div id="package-1" class="section level2">
+<a href="#messydates-010" class="anchor"></a>messydates 0.1.0<small> Unreleased </small>
+</h1>
+<div id="package-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#package-1" class="anchor"></a>Package</h2>
+<a href="#package-2" class="anchor"></a>Package</h2>
 <ul>
 <li>Updated call to <code>messydt</code> class in DESCRIPTION file</li>
 </ul>
 </div>
-<div id="functions" class="section level2">
+<div id="functions-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#functions" class="anchor"></a>Functions</h2>
+<a href="#functions-1" class="anchor"></a>Functions</h2>
 <ul>
 <li>Updated documentation for <code><a href="../reference/as_messydate.html">as_messydate()</a></code> functions</li>
 <li>Updated documentation for <code><a href="../reference/expand.html">expand()</a></code> function</li>
@@ -145,10 +206,11 @@
 </div>
     <div id="messydates-001" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.1">
-<a href="#messydates-001" class="anchor"></a>messydates 0.0.1</h1>
-<div id="package-2" class="section level2">
+<a href="#messydates-001" class="anchor"></a>messydates 0.0.1<small> Unreleased </small>
+</h1>
+<div id="package-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#package-2" class="anchor"></a>Package</h2>
+<a href="#package-3" class="anchor"></a>Package</h2>
 <ul>
 <li>Setup <code>{messydates}</code> package
 <ul>
@@ -166,9 +228,9 @@
 <li>Added package logo</li>
 </ul>
 </div>
-<div id="functions-1" class="section level2">
+<div id="functions-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#functions-1" class="anchor"></a>Functions</h2>
+<a href="#functions-2" class="anchor"></a>Functions</h2>
 <ul>
 <li>Added a new messydt class which follows the latest ISO 8601 (2019) standards
 <ul>

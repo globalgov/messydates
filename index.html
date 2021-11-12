@@ -6,12 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Flexible Class for Messy Dates • messydates</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="A Flexible Class for Messy Dates">
+<script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<meta property="og:title" content="A Flexible Class for Messy Dates">
 <meta property="og:description" content="Contains a set of tools for constructing and coercing
   into and from the messydt class. 
   This date class implements ISO 8601-2:2019(E) and
@@ -39,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -81,7 +82,7 @@
 <h2 class="hasAnchor">
 <a href="#why-this-package" class="anchor"></a>Why this package?</h2>
 <p>Dates are often messy. Whether historical (or ancient), future, or even recent, we often only know approximately when an event occurred, that it happened within a particular period, an unreliable source means a date should be flagged as uncertain, or sources offer multiple, competing dates.</p>
-<p>As researchers, we often recognise this messiness but are forced to force nonexistent precision on data to we can proceed with analysis. For example, if we only know something happened in a given month or year, we might just opt for the start of that month (e.g. 2021-07-01) or year (2021-01-01), assuming that to err on the earlier (or later) side is a justifiable bias. However, this can create issues for inference in which sequence or timing is important. The goal of <code>{messydates}</code> is to help with this problem by retaining and working with various kinds of date imprecision.</p>
+<p>As researchers, we often recognise this messiness but are forced to force nonexistent precision on data so we can proceed with analysis. For example, if we only know something happened in a given month or year, we might just opt for the start of that month (e.g. 2021-07-01) or year (2021-01-01), assuming that to err on the earlier (or later) side is a justifiable bias. However, this can create issues for inference in which sequence or timing is important. The goal of <code>{messydates}</code> is to help with this problem by retaining and working with various kinds of date imprecision.</p>
 </div>
 <div id="a-quick-overview" class="section level2">
 <h2 class="hasAnchor">
@@ -91,7 +92,7 @@
 <li>unspecified date( component)s, e.g. <code>2012-XX-01</code> for the first of some unknown month in 2012 or <code>2012-01</code> for some unknown day in January 2012</li>
 <li>approximate date( component)s, e.g. <code>2012-01-12~</code> for approximately the 12th of January 2012</li>
 <li>uncertain date( component)s, e.g. <code>2012-01-12?</code> where this data point is based on an unreliable source</li>
-<li>sets of dates, e.g. <code>[2012-01-01,2012-01-12]</code> where the date is either 1 January 2012 or 12 January 2012</li>
+<li>sets of dates, e.g. <code>{2012-01-01,2012-01-12}</code> where the date can be both 1 January 2012 and 12 January 2012</li>
 <li>ranges of dates, e.g. <code>2012-01-01..2012-01-12</code> for all dates between the 1 January 2012 and 12 January 2012 inclusive</li>
 </ul>
 <p><code>{messydates}</code> contains a set of tools for constructing and coercing into and from the ‘messydt’ class. This date class allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.</p>
@@ -107,18 +108,30 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"globalgov/messydates"</span><span class="op">)</span></code></pre></div>
-<p>Please see <a href="https://globalgov.github.io/messydates/">the messydates website</a> for more information about how to use <code>{messydates}</code>. For more information on the Geneva Global Governance Observatory and our current projects, please see <a href="https://panarchic.ch">our website</a> or <a href="https://github.com/globalgov">our Github page</a>.</p>
+<p>Please see <a href="https://globalgov.github.io/messydates/">the messydates website</a> for more information about how to use <code>{messydates}</code>. The package was developed as part of the PANARCHIC project, which studies the effects of network and power on how quickly states join, reform, or create international institutions by examining the historical dynamics of institutional networks from different domains. The PANARCHIC project is funded by the Swiss National Science Foundation (SNSF). For more information on the Geneva Global Governance Observatory and our current projects, please see <a href="https://panarchic.ch">our website</a> or <a href="https://github.com/globalgov">our Github page</a>.</p>
+</div>
+<div id="cheat-sheet" class="section level2">
+<h2 class="hasAnchor">
+<a href="#cheat-sheet" class="anchor"></a>Cheat Sheet</h2>
+<p><a href="https://github.com/globalgov/messydates/blob/main/man/figures/cheatsheet.pdf"><img src="https://raw.githubusercontent.com/globalgov/messydates/main/man/figures/cheatsheet.png" width="525" height="378"></a></p>
 </div>
 <div id="relationship-to-other-packages" class="section level2">
 <h2 class="hasAnchor">
 <a href="#relationship-to-other-packages" class="anchor"></a>Relationship to other packages</h2>
-<p><code>{messydates}</code> offers a new date class, but one that comes with methods for converting from and into common date classes such as <code>Date</code>, <code>POSIXct</code>, and <code>POSIXlt</code>. It is thus fully compatible with packages such as <a href="https://lubridate.tidyverse.org">lubridate</a> and <code>{anydate}</code>. It is also compatible with <code>{unstruwwel}</code>, which also parses historic dates in R, though the emphasis of our package is on working with these dates.</p>
+<p><code>{messydates}</code> offers a new date class, but one that comes with methods for converting from and into common date classes such as <code>Date</code>, <code>POSIXct</code>, and <code>POSIXlt</code>. It is thus fully compatible with packages such as <a href="https://lubridate.tidyverse.org">lubridate</a> and <code>{anydate}</code>. It is also compatible with <a href="https://github.com/stefanieschneider/unstruwwel">unstruwwel</a>, which also parses historic dates in R, though the emphasis of our package is on working with these dates.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=messydates">https://​cloud.r-project.org/​package=messydates</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>

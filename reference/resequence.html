@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A broader date class for messy dates — class • messydates</title>
+<title>Resorting and filtering dates — resequence • messydates</title>
 
 
 <!-- jquery -->
@@ -41,13 +41,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="A broader date class for messy dates — class" />
-<meta property="og:description" content="These functions create and validate a new date class for R
-consistent with
-ISO 8601-2_2019(E).
-These recent extensions to standardised date notation
-create space for unspecified, uncertain, and approximate dates,
-as well as succinct representation of date ranges." />
+<meta property="og:title" content="Resorting and filtering dates — resequence" />
+<meta property="og:description" content="Resorting and filtering dates" />
 
 
 
@@ -113,85 +108,56 @@ as well as succinct representation of date ranges." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A broader date class for messy dates</h1>
+    <h1>Resorting and filtering dates</h1>
     
-    <div class="hidden name"><code>class.Rd</code></div>
+    <div class="hidden name"><code>resequence.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These functions create and validate a new date class for R
-consistent with
-<a href='https://www.iso.org/standard/70908.html'>ISO 8601-2_2019(E)</a>.
-These recent extensions to standardised date notation
-create space for unspecified, uncertain, and approximate dates,
-as well as succinct representation of date ranges.</p>
+    <p>Resorting and filtering dates</p>
     </div>
 
-    <pre class="usage"><span class='fu'>new_messydate</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'>validate_messydate</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-
-<span class='va'>NA_messydt_</span></pre>
+    <pre class="usage"><span class='fu'>resequence</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>vars</span>, unity <span class='op'>=</span> <span class='st'>"\\.\\."</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A character scalar or vector in the expected "yyyy-mm-dd" format
-annotated, as necessary, according to ISO 8601-2_2019(E).</p></td>
+      <th>data</th>
+      <td><p>a dataframe</p></td>
+    </tr>
+    <tr>
+      <th>vars</th>
+      <td><p>a character vector identifying columns
+in the dataframe to sequence</p></td>
+    </tr>
+    <tr>
+      <th>unity</th>
+      <td><p>a string identifying how multiple
+entries may be glued together.
+By default, ".." are used in accordance with
+ISO 8601-2_2019(E) standards.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>messydt</code> of length 1.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of class <code>messydt</code></p>
-    <h2 class="hasAnchor" id="date-annotations"><a class="anchor" href="#date-annotations"></a>Date annotations</h2>
+    <p>a dataframe/columns</p>
 
-    <p><em>Unspecified date components</em>, such as when the day is unknown,
-can be represented by one or more <code>X</code>s in place of the digits.
-The modifier <code>*</code> is recommended to indicate that the entire
-time scale component value is unspecified, e.g. <code>X*-03-03</code>,
-however this is not implemented here.
-Please be explicit about the digits that are unspecified,
-e.g. <code>XXXX-03-03</code> expresses 3rd March in some unspecified year,
-whereas <code>2003-XX-03</code> expresses the 3rd of some month in 2003.
-If time components are not given, they are expanded to this.</p>
-<p><em>Approximate date components</em>, modified by <code>~</code>,
-represent an estimate whose value is asserted
-to be possibly correct.
-For example, <code>2003~-03-03</code>
-The degree of confidence in approximation
-depends on the application.</p>
-<p><em>Uncertain date components</em>, modified by <code>?</code>,
-represent a date component whose source is considered
-to be dubious and therefore not to be relied upon.
-An additional modifier, <code>%</code>, is used to indicate
-a value that is both uncertain and approximate.</p>
-    <h2 class="hasAnchor" id="date-sets"><a class="anchor" href="#date-sets"></a>Date sets</h2>
-
-    <p>These functions also introduce standard notation
-for ranges of dates.
-Rather than the typical R notation for ranges,
-<code>:</code>, ISO 8601-2_2019(E) recommends <code>..</code>.
-This then can be applied between two time scale
-components to create a standard range between
-these dates (inclusive), e.g. <code>2009-01-01..2019-01-01</code>.
-But it can also be used as an affix,
-indicating "on or before" if used as a prefix,
-e.g. <code>..2019-01-01</code>,
-or indicating "on or after" if used as a suffix,
-e.g. <code>2009-01-01..</code>.</p>
-<p>And lastly, notation for sets of dates is also included.
-Here braces, <code><a href='https://rdrr.io/r/base/Paren.html'>{}</a></code>, are used to mean "all members of the set",
-while brackets, <code>[]</code>, are used to mean "one member of the set".</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>as_messydate</p></div>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>Sign <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2000-01-01"</span>, <span class='st'>"2001-01-01"</span>,</span>
+<span class='r-in'><span class='st'>"2001-01-01..2000-01-01"</span>, <span class='st'>"2000-01-01"</span>, <span class='cn'>NA</span>, <span class='st'>"2016-12-31~"</span><span class='op'>)</span>,</span>
+<span class='r-in'>Force <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2001-01-01"</span>, <span class='st'>"2000-01-01"</span>,</span>
+<span class='r-in'><span class='st'>"2001-01-01"</span>, <span class='cn'>NA</span>, <span class='st'>"2001-XX-XX"</span>, <span class='st'>"~1816_01_01"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>resequence</span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Sign"</span>, <span class='st'>"Force"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1]            [,2]         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,] "2000-01-01"    "2001-01-01" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,] "2000-01-01"    "2001-01-01" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [3,] "2000-01-01"    "2001-01-01" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4,] "2000-01-01"    NA           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5,] NA              "2001-XX"    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6,] "~1816..01..01" "2016-12-31~"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

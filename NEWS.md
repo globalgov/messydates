@@ -1,9 +1,14 @@
-# messydates 0.1.2
+# messydates 0.2.0
 
 ## Package
 * Added PANARCHIC project details to README file
 * Added cheatsheet
 * Added a new CSS style to website and updated functions displayed
+* Addressed workflow actions issues
+  * Updated pushrelease.yml workflow actions file to stop installing 
+  `{messydates}` from Github
+  * Updated README file to stop installing `{messydates}` from Github
+* Fixed Codecov test coverage URL on README file for CRAN submission
 
 ## Functions
 * Expanded on messydates checks for class validity

@@ -12,7 +12,7 @@ Date](https://img.shields.io/github/release-date/globalgov/messydates)
 ![GitHub
 issues](https://img.shields.io/github/issues-raw/globalgov/messydates)
 [![Codecov test
-coverage](https://codecov.io/gh/globalgov/messydates/branch/main/graph/badge.svg)](https://codecov.io/gh/globalgov/qCreate?branch=main)
+coverage](https://codecov.io/gh/globalgov/messydates/branch/main/graph/badge.svg)](https://app.codecov.io/gh/globalgov/qCreate?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/globalgov/messydates/badge)](https://www.codefactor.io/repository/github/globalgov/messydates)
 [![CII Best
 Practices](https://bestpractices.coreinfrastructure.org/projects/5061/badge)](https://bestpractices.coreinfrastructure.org/projects/5061)

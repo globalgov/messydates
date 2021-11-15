@@ -18,7 +18,7 @@ battles <- tibble::tribble(~Battle, ~Date,
                            "Battle of Tora Bora","2001-12-12..2001-12-17",
                            "Battle of Shawali Kowt","2001-12-03",
                            "Battle of Sayyd Alma Kalay","2001-12-04",
-                           "Battle of Amami-Ōshima","2001-12-22",
+                           "Battle of Amami-Oshima","2001-12-22",
                            "Tsotsin-Yurt operation","2001-12-30..2002-01-03")
 battles$Date <- as_messydate(battles$Date)
 battles

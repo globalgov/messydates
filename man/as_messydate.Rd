@@ -49,4 +49,5 @@ as_messydate("2021-02-01~")
 as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
+as_messydate("20-01-2009")
 }

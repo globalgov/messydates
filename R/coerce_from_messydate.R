@@ -37,6 +37,8 @@ NULL
 #' as.Date(as_messydate("2012-01"), modal)
 #' as.Date(as_messydate("2012-01"), random)
 #' as.Date(as_messydate("1000 BC"), max)
+#' as.Date(as_messydate("1000 BC"), mean)
+#' as.Date(as_messydate("1000 BC"), median)
 #' as.Date(as_messydate(c("-1000-12-01", "2020")), min)
 #' @export
 as.Date.messydt <- function(x, ..., FUN) {

@@ -15,6 +15,7 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' @describeIn expand Expanding messydates
 #' @importFrom stringr str_replace_all str_split str_detect
 #' str_extract str_remove_all
+#' @importFrom lubridate as_date ymd years
 #' @param approx_range Range to expand approximate dates to, by default 3.
 #' That is, 3 days for day approximation, 3 months for month approximation,
 #' 3 years for year/whole date approximation, 3 years and 3 months for year-

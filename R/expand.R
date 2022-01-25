@@ -27,11 +27,8 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' expand(d)
 #' @export
 expand.messydt <- function(x, approx_range = 3) {
-  x <- stringr::str_remove_all(x, "[:space:]")
-  x <- stringr::str_remove_all(x, "\\{")
-  x <- stringr::str_remove_all(x, "\\}")
-  x <- stringr::str_remove_all(x, "\\%")
-  x <- stringr::str_remove_all(x, "\\?") # Uncertain dates are not expanded...
+  x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
+  # Uncertain dates are not expanded...
   x <- expand_approximate(x, approx_range)
   x <- expand_unspecified(x)
   x <- expand_negative(x)

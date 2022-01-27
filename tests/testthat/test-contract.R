@@ -1,14 +1,8 @@
+d <- as_messydate(c("2001-01-01", "2001-01", "2001",
+                    "2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}",
+                    "{2001-01,2001-02-02}", "28 BC", "-2000-01-01"))
+e <- expand(d)
+
 test_that("contract works properly", {
-  d <- as_messydate("2010-10-01")
-  expect_equal(contract(expand(d)), d)
-  d <- as_messydate("2010-10")
-  expect_equal(contract(expand(d)), d)
-  d <- as_messydate("2010")
-  expect_equal(contract(expand(d)), d)
-  d <- as_messydate("2010-10-01..2010-11-04")
-  expect_equal(contract(expand(d)), d)
-  d <- as_messydate("{2010-10-01,2010-10-04}")
-  expect_equal(contract(expand(d)), d)
-  d <- as_messydate("{2001-01,2001-02-02}")
-  expect_equal(contract(expand(d)), d)
+  expect_equal(contract(e), d)
 })

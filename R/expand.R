@@ -39,8 +39,7 @@ expand.messydt <- function(x, approx_range = 3) {
 
 expand_approximate <- function(dates, approx_range) {
   # For year approximation
-  ar <- as.numeric(strsplit(as.character(approx_range/4), "\\.")[[1]][1])
-  ly = ar + (365*approx_range)
+  ly <- as.numeric(strsplit(as.character(approx_range/4), "\\.")[[1]][1]) + (365*approx_range)
   # For month approximation
   mr <- 30.42*approx_range
   # Substitute signs

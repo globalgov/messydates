@@ -168,6 +168,9 @@ expand_negative_dates <- function(dates) {
       y
     })
     unlist(x)
+    x <- lapply(x, function(y) {
+      y <- ifelse(nchar(y) == 10, stringr::str_replace_all(y, "^-", "-0"), y)
+    })
   })
   dates
 }

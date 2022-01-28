@@ -4,10 +4,14 @@
 \alias{contract}
 \title{Contract lists of dates into messy dates}
 \usage{
-contract(x)
+contract(x, collapse = TRUE)
 }
 \arguments{
 \item{x}{A list of dates}
+
+\item{collapse}{Do you want ranges to be collapsed?
+TRUE by default.
+If FALSE ranges are returned in compact format.}
 }
 \value{
 A \code{messydt} vector

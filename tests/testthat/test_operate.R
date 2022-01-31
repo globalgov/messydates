@@ -13,4 +13,12 @@ s <- as_messydate(c("2005-03-26", "-2009-02-27", "2004-01-01..1998-02-01",
 test_that("operations work properly", {
   expect_equal(add(d, 3), a)
   expect_equal(subtract(d, 3), s)
+  expect_equal(add(as_messydate("2010-01-01"), 1, "month"),
+               as_messydate("2010-01-31"))
+  expect_equal(subtract(as_messydate("2010-02-01"), 1, "month"),
+               as_messydate("2010-01-01"))
+  expect_equal(add(as_messydate("2010-01-01"), 1, "day"),
+               as_messydate("2010-01-02"))
+  expect_equal(subtract(as_messydate("2010-01-02"), 1, "day"),
+               as_messydate("2010-01-01"))
 })

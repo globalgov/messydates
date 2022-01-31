@@ -125,6 +125,14 @@ expand_negative <- function(dates) {
 
 expand_sets <- function(dates) {
   # Sets of months
+  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-XX-31$|^[:digit:]{4}-XX-30$"),
+                  paste(gsub("XX-31|XX-30", "01-31", dates), gsub("XX-31|XX-30", "02-28", dates),
+                        gsub("XX-31|XX-30", "03-31", dates), gsub("XX-31|XX-30", "04-30", dates),
+                        gsub("XX-31|XX-30", "05-31", dates), gsub("XX-31|XX-30", "06-30", dates),
+                        gsub("XX-31|XX-30", "07-31", dates), gsub("XX-31|XX-30", "08-31", dates),
+                        gsub("XX-31|XX-30", "09-30", dates), gsub("XX-31|XX-30", "10-31", dates),
+                        gsub("XX-31|XX-30", "11-30", dates), gsub("XX-31|XX-30", "12-31", dates),
+                        sep = ","), dates)
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-XX-[:digit:]{2}$"),
                   paste(gsub("XX", "01", dates), gsub("XX", "02", dates),
                         gsub("XX", "03", dates), gsub("XX", "04", dates),

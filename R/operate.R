@@ -1,7 +1,7 @@
 #' Arithmetic operations for messydates
 #'
 #' These operations allow users to add or subtract dates messydate objects.
-#' Messydate objects include imcomplete or uncertain dates,
+#' Messydate objects include incomplete or uncertain dates,
 #' ranges of dates, negative dates, and date sets.
 #' @param x A date or list of dates
 #' @param digit How many date units?
@@ -10,12 +10,12 @@
 #' Other options are month and day.
 #' @importFrom stringr str_detect str_replace str_split
 #' @importFrom lubridate as_date
-#' @return A messydates list
+#' @return A messydates vector
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-#' tibble::tibble(date = d, add = add(d, 3), subtract = subtract(d, 3))
+#' tibble::tibble(date = d, add = d + year(3), subtract = d - year(3))
 #' tibble::tibble(date = d, day = add(d, 1, "day"), month = add(d, 1, "month"),
 #' year = add(d, 1))
 #' tibble::tibble(date = d, day = subtract(d, 1, "day"), month = subtract(d, 1, "month"),

@@ -1,0 +1,168 @@
+---
+title: "Introduction to messydates"
+author: "Henrique Sposito"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to messydates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  purl = NOT_CRAN,
+  eval = NOT_CRAN
+)
+```
+
+## Why messydates?
+
+Dates are often messy.
+Whether historical (or ancient), future, or even recent,
+we often only know approximately when an event occurred,
+that it happened within a particular period,
+an unreliable source means a date should be flagged as uncertain,
+or sources offer multiple, competing dates.
+
+As researchers, we often recognise this messiness
+but are forced to force non-existent precision on data so we can proceed with analysis.
+For example, if we only know something happened in a given month or year,
+we might just opt for the start of that month (e.g. 2021-07-01) or year (2021-01-01),
+assuming that to err on the earlier (or later) side is a justifiable bias.
+However, this can create issues for inference in which sequence or timing is important.
+The goal of `{messydates}` is to help with this problem by retaining and working
+with various kinds of date imprecision.
+
+`{messydates}` contains a set of tools for constructing and coercing into and from the messydt class. 
+This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated 
+to express unspecified date components, approximate or uncertain date components, 
+date ranges, and sets of dates.
+The function `as_messydate()` handles the coercion to messydt class.
+
+```{r comparison, warning=FALSE}
+library(messydates)
+library(lubridate)
+library(tibble)
+library(dplyr)
+dates_comparison <- tibble::tribble(~Example, ~OriginalDate,
+                                    "A normal date", "2010-01-01",
+                                    "A historical date", "1291-08-01",
+                                    "A very historical date", "476",
+                                    "A really historical date", "33 BC",
+                                    "A clearly future date", "9999-12-31",
+                                    "A not so clearly future date", "2599-12-31",
+                                    "A range of dates", "2019-11-01:2020-01-01",
+                                    "An uncertain date", "2001-01-01?",
+                                    "A set of dates", "2021-5-26, 2021-6-10, 2021-11-19, 2021-12-4")
+dates_comparison %>% dplyr::mutate(base = as.Date(OriginalDate),
+                                   lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
+                                   messydates = messydates::as_messydate(OriginalDate)) %>%
+  print()
+```
+
+## Annotate
+
+Some datasets have for example an arbitrary cut off point for start and end points, 
+but these are often coded as precise dates when they are not necessarily the real start or end dates.
+The annotate functions helps annotate uncertainty and approximation to dates.
+Inaccurate start or end dates can be represented by an affix
+indicating "on or before", if used as a prefix (e.g. ..1816-01-01),
+or indicating "on or after", if used as a suffix (e.g. 2016-12-31..).
+Approximate dates are indicated by adding a `~` to year,
+month, or day components, as well as groups of components or whole dates
+to estimate values that are possibly correct (e.g. 2003-03-03~).
+Day, month, or year, uncertainty can be indicated by adding a `?`
+to a possibly dubious date (e.g. 1916-10-10?) or date
+component (e.g. 1916-?10-10).
+
+```{r annotate, warning=FALSE}
+dates_annotate <- tibble::tibble(Beg = as_messydate(c("1816-01-01", "1916-01-01", "2016-01-01")),
+                                 End = as_messydate(c("1816-12-31", "1916-12-31", "2016-12-31")))
+dplyr::mutate(dates_annotate, Beg = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg))
+dplyr::mutate(dates_annotate, End = ifelse(End >= "2016-01-01", on_or_after(End), End))
+dplyr::mutate(dates_annotate, Beg = ifelse(Beg == "1916-01-01", as_approximate(Beg), Beg))
+dplyr::mutate(dates_annotate, End = ifelse(End == "1916-12-31", as_uncertain(End), End))
+```
+
+## Expand
+
+Expand functions expand on date ranges, sets of dates, and unspecified or 
+approximate dates (annotated with '..', '{ , }', 'XX' or '~') to lists of dates.
+As these dates may refer to several possible dates,
+the function "opens" these values to include all the possible dates implied.
+
+```{r expand, warning=FALSE}
+dates_expand <- as_messydate(c("2008-03-25", "2001-01?", "2001",
+                               "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+                               "2008-XX-31", "28 BC"))
+expand(dates_expand)
+```
+
+## Contract
+
+the `contract()`function operates as the opposite of `expand()`.
+It contracts a list of dates into the abbreviated annotation of messy dates.
+
+```{r contract, warning=FALSE}
+tibble::tibble(contract = contract(expand(dates_expand)))
+```
+
+## Coerce from messydates
+
+Coercion functions coerce objects of `messydt` class to 
+common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
+Since `messydt` objects can hold multiple individual dates,
+an additional function must be passed as an argument so that multiple dates
+are "resolved" into a single date.
+
+For example, one might wish to use the earliest possible date
+in any ranges of dates (`min`), the latest possible date (`max`),
+some notion of a central tendency (`mean`, `median`, or `modal`),
+or even a `random` selection from amongst the candidate dates.
+
+These functions are particularly useful for use with existing methods and models,
+especially for checking the robustness of results.
+
+```{r coerce, warning=FALSE}
+tibble::tibble(min = as.Date(dates_expand, min),
+               max = as.Date(dates_expand, max),
+               median = as.Date(dates_expand, median),
+               mean = as.Date(dates_expand, mean),
+               modal = as.Date(dates_expand, modal),
+               random = as.Date(dates_expand, random))
+```
+
+## Additional functionality
+
+Several other functions are also offered in the `{messydates}` package.
+
+For example, one can check various logical tests for messy date objects.
+`is_messydate()` tests whether the object inherits the `messydt` class.
+`is_intersecting()` tests whether there is any intersection between two messy dates.
+`is_element()` similarly tests whether a messy date can be found within a messy date range or set.
+`is_similar()` tests whether two dates contain similar components.
+
+```{r logical, warning=FALSE}
+is_messydate(as_messydate("2012-01-01"))
+is_messydate(as.Date("2012-01-01"))
+is_intersecting(as_messydate("2012-01"), as_messydate("2012-01-01..2012-02-22"))
+is_intersecting(as_messydate("2012-01"), as_messydate("2012-02-01..2012-02-22"))
+is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
+is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
+is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
+is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
+```
+
+Additionally, perform intersection (`md_intersect()`) and union (`md_union()`) on, 
+inter alia, messy date class objects. Or 'join' that retains all elements, even if duplicated,
+with `md_multiset`.
+
+```{r set, warning=FALSE}
+md_intersect(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
+md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
+md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
+```

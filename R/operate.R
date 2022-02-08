@@ -3,6 +3,31 @@
 #' These operations allow users to add or subtract dates messydate objects.
 #' Messydate objects include incomplete or uncertain dates,
 #' ranges of dates, negative dates, and date sets.
+#' @return A messydates vector
+#' @examples
+#' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
+#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+#' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
+#' tibble::tibble(date = d, add = d + 1, subtract = d - 1)
+#' @name operate
+NULL
+
+#' @rdname operate
+#' @param e1 element one
+#' @param e2 element two
+#' @export
+`+.messydt` <- function(e1, e2){
+  add(e1, e2)
+}
+
+#' @rdname operate
+#' @param e1 element one
+#' @param e2 element two
+#' @export
+`-.messydt` <- function(e1, e2){
+  subtract(e1, e2)
+}
+
 #' @param x A date or list of dates
 #' @param n What do you want to be added?
 #' Please specify in numeric format (i.e. one day is 1, one year is 365).
@@ -11,15 +36,7 @@
 #' @return A messydates vector
 #' @details `add()` adds date units to dates, negative dates,
 #' ranges of dates, and sets of dates.
-#' For ranges of dates, it increases the range by the unit on each side.
-#' `subtract()` subtracts date units from dates, negative dates,
-#' ranges of dates, and sets of dates.
-#' For ranges of dates, it reduces the range by the unit on each side.
-#' @examples
-#' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
-#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-#' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-#' tibble::tibble(date = d, add = d + 1, subtract = d - 1)
+#' @rdname operate
 add <- function(x, n) {
   # Step one: get only first and last components for ranges
   # But keep approximation for before or after date
@@ -42,6 +59,16 @@ add <- function(x, n) {
   contract(x)
 }
 
+#' @param x A date or list of dates
+#' @param n What do you want to be added?
+#' Please specify in numeric format (i.e. one day is 1, one year is 365).
+#' @importFrom stringr str_detect str_replace str_split
+#' @importFrom lubridate as_date
+#' @return A messydates vector
+#' @details `subtract()` subtracts date units from dates, negative dates,
+#' ranges of dates, and sets of dates.
+#' For ranges of dates, it reduces the range by the unit on each side.
+#' @rdname operate
 subtract <- function(x, n) {
   # Step one: get only first and last components for ranges
   # But keep approximation for before or after date
@@ -73,14 +100,3 @@ subtract <- function(x, n) {
 #' #' @export
 #' setMethod("-", signature(e1 = "messydt", e2 = "numeric"),
 #'           function(e1, e2) subtract(e1, e2))
-
-#' @param e1 element one
-#' @param e2 element two
-#' @export
-`+.messydt` <- function(e1, e2){
-  add(e1, e2)
-}
-#' @export
-`-.messydt` <- function(e1, e2){
-  subtract(e1, e2)
-}

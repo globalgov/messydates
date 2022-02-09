@@ -4,47 +4,24 @@
 \alias{operate}
 \alias{+.messydt}
 \alias{-.messydt}
-\alias{add}
-\alias{subtract}
 \title{Arithmetic operations for messydates}
 \usage{
 \method{+}{messydt}(e1, e2)
 
 \method{-}{messydt}(e1, e2)
-
-add(x, n)
-
-subtract(x, n)
 }
 \arguments{
-\item{e1}{element one}
+\item{e1}{A messydate object}
 
-\item{e2}{element two}
-
-\item{x}{A date or list of dates}
-
-\item{n}{What do you want to be added?
-Please specify in numeric format (i.e. one day is 1, one year is 365).}
+\item{e2}{A numerical object}
 }
 \value{
-A messydates vector
-
-A messydates vector
-
 A messydates vector
 }
 \description{
 These operations allow users to add or subtract dates messydate objects.
 Messydate objects include incomplete or uncertain dates,
 ranges of dates, negative dates, and date sets.
-}
-\details{
-\code{add()} adds date units to dates, negative dates,
-ranges of dates, and sets of dates.
-
-\code{subtract()} subtracts date units from dates, negative dates,
-ranges of dates, and sets of dates.
-For ranges of dates, it reduces the range by the unit on each side.
 }
 \examples{
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",

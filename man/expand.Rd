@@ -15,7 +15,8 @@ expand(x, approx_range)
 \item{approx_range}{Range to expand approximate dates to, by default 3.
 That is, 3 days for day approximation, 3 months for month approximation,
 3 years for year/whole date approximation, 3 years and 3 months for year-
-month approximation, and 3 months and 3 days for month-day approximation.}
+month approximation, and 3 months and 3 days for month-day approximation.
+If 0, returns original values and removes signs for aproximate dates.}
 }
 \value{
 A list of dates, including all dates in each range or set.

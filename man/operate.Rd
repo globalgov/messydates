@@ -13,7 +13,7 @@
 \arguments{
 \item{e1}{A messydate object}
 
-\item{e2}{A numerical object}
+\item{e2}{A numerical object.}
 }
 \value{
 A messydates vector
@@ -28,4 +28,5 @@ d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 tibble::tibble(date = d, add = d + 1, subtract = d - 1)
+tibble::tibble(date = d, add = d + "1 year", subtract = d - "1 year")
 }

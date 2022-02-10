@@ -16,3 +16,10 @@ test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_length(expand(unspecified), 1)
   expect_equal(lengths(expand(negative)), 366)
 })
+
+test_that("Expand aproxximate works properly for leap years", {
+  ly <- as_messydate("~2000-01-01")
+  lym <- as_messydate("2000-~02-01")
+  expect_equal(lengths(expand(ly, approx_range = 1)), 732)
+  expect_equal(lengths(expand(lym, approx_range = 1)), 61)
+})

@@ -15,4 +15,6 @@ test_that("operations work properly", {
   expect_equal(d + 3, a)
   expect_equal(subtract(d, 3), s)
   expect_equal(d - 3, s)
+  expect_equal(d + "3 days", a)
+  expect_equal(d - "3 days", s)
 })

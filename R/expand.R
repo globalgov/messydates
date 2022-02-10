@@ -61,14 +61,15 @@ expand_approximate <- function(dates, approx_range) {
            paste0(as.Date(gsub("\\~", "", x)) - ly, "..",
                   as.Date(gsub("\\~", "", x)) + ly), x)
     # One Month
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~05-|-\\~10-"),
+
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~04-|-\\~06-|-\\~09-|-\\~11-"),
+                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
+                       as.Date(gsub("\\~", "", x)) + 30), x)
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~05-|-\\~10-|-\\~12-|-\\~07-"),
                 paste0(as.Date(gsub("\\~", "", x)) - 30, "..",
                        as.Date(gsub("\\~", "", x)) + 31), x)
     x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~01-|-\\~08-"),
                 paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
-                       as.Date(gsub("\\~", "", x)) + 31), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~12-|-\\~07-"),
-                paste0(as.Date(gsub("\\~", "", x)) - 30, "..",
                        as.Date(gsub("\\~", "", x)) + 31), x)
     x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~03-") & # leap year
                   lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
@@ -77,9 +78,6 @@ expand_approximate <- function(dates, approx_range) {
     x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~03-"),
                 paste0(as.Date(gsub("\\~", "", x)) - 28, "..",
                        as.Date(gsub("\\~", "", x)) + 31), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~04-|-\\~06-|-\\~09-|-\\~11-"),
-                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
-                       as.Date(gsub("\\~", "", x)) + 30), x)
     x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~02-") & # leap year
                   lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
                 paste0(as.Date(gsub("\\~", "", x)) - 31, "..",

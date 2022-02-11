@@ -9,7 +9,7 @@ Description: Contains a set of tools for constructing and coercing
   date ranges, and sets of dates. 
   This is useful for describing and analysing temporal information,
   whether historical or recent, where date precision may vary.
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",
@@ -44,18 +44,3 @@ Suggests:
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
-Collate: 
-    'annotate.R'
-    'battles.R'
-    'class.R'
-    'coerce_from_messydate.R'
-    'coerce_to_messydate.R'
-    'contract.R'
-    'expand.R'
-    'extract.R'
-    'logical.R'
-    'messydate_make.R'
-    'operate.R'
-    'resequence.R'
-    'resolve.R'
-    'set.R'

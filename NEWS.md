@@ -1,3 +1,26 @@
+# messydates 0.2.1
+
+## Package
+
+* Added a vignette for working with the `{messydates}` package
+
+## Functions
+
+* Closed #9 by adding arithmetic operations for working with "messydt" objects
+  * Added S3 methods for "+" and "-" operators
+  * Added `add()` and `subtract()` helper functions for arithmetic operations
+* Updated `expand()` function
+  * Closed #31 by updating how approximate dates are expanded to account for leap years 
+  * Closed #34 by updating `expand()` to manage negative dates
+  * Added `expand_negative_dates()` helper function for expanding ranges of negative dates
+* Updated functions that coerce from "messydt" objects to "Date" to manage negative dates
+  * Added `negative_dates()` helper function to coerce negative "messydt" dates 
+* Closed #39 by updating how resolve mean methods work for negative dates
+* Closed #40 by updating contract function to manage the contraction of negative dates
+  * Added `compact_negative_dates()` helper function to compact negative date ranges
+  * Added `is.sequence()` as a helper function to check if dates are a range
+* Updated resequence script to export `interleave()` function
+
 # messydates 0.2.0
 
 ## Package

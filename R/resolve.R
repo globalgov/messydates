@@ -10,6 +10,7 @@
 #' This can be useful for various descriptive or inferential projects.
 #' @param ... a messydt object
 #' @param na.rm Should NAs be removed? True by default.
+#' @importFrom stringr str_detect
 #' @return A single scalar or vector of dates
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",

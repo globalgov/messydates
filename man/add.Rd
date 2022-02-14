@@ -21,4 +21,5 @@ Helper function to add to messydates
 \details{
 \code{add()} adds date units to dates, negative dates,
 ranges of dates, and sets of dates.
+For ranges of dates, it adds the unit on each side.
 }

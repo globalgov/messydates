@@ -21,5 +21,5 @@ Helper function to subtract from messydates
 \details{
 \code{subtract()} subtracts date units from dates, negative dates,
 ranges of dates, and sets of dates.
-For ranges of dates, it reduces the range by the unit on each side.
+For ranges of dates, it subtracts the unit on each side.
 }

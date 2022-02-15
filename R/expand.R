@@ -59,7 +59,7 @@ expand_unspecified <- function(dates) {
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
                                     "\\1\\2-01-01..\\2-12-31\\3")
   dates <- ifelse(stringr::str_detect(dates, "(^|,)([:digit:]{4})-02($|,)") &
-                    !grepl("\\.", as.numeric(stringr::str_extract(dates, "[:digit:]{4}"))/4),
+                    !grepl("\\.", as.numeric(stringr::str_extract(dates, "[:digit:]{4}")) / 4),
                   stringr::str_replace_all(dates, "(^|,)([:digit:]{4})-02($|,)",
                                            "\\1\\2-02-01..\\2-02-29\\3"),
                   stringr::str_replace_all(dates, "(^|,)([:digit:]{4})-02($|,)",
@@ -157,7 +157,7 @@ expand_negative_dates <- function(dates) {
 
 expand_approximate_years <- function(dates, approx_range) {
   # For year approximation
-  ly <- as.numeric(strsplit(as.character(approx_range/4), "\\.")[[1]][1]) + (365*approx_range)
+  ly <- as.numeric(strsplit(as.character(approx_range / 4), "\\.")[[1]][1]) + (365 * approx_range)
   dates <- lapply(dates, function(x) {
     # Leap year
     x <- ifelse(stringr::str_detect(x, "^\\~[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
@@ -182,15 +182,15 @@ expand_approximate_years <- function(dates, approx_range) {
                 paste0(gsub("\\.\\.", "", x), "..", as.Date(gsub("\\.\\.", "", x)) + ly), x)
     # Year-Month
     x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}\\~-[:digit:]{2}$"),
-                paste0(as.Date(gsub("\\~", "", x)) - (ly + (30.42*approx_range)), "..",
-                       as.Date(gsub("\\~", "", x)) + (ly + (30.42*approx_range))), x)
+                paste0(as.Date(gsub("\\~", "", x)) - (ly + (30.42 * approx_range)), "..",
+                       as.Date(gsub("\\~", "", x)) + (ly + (30.42 * approx_range))), x)
   })
   dates
 }
 
 expand_approximate_months <- function(dates, approx_range) {
   # For month approximation
-  mr <- 30.42*approx_range
+  mr <- 30.42 * approx_range
   dates <- lapply(dates, function(x) {
     # One Month
     x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~04-|-\\~06-|-\\~09-|-\\~11-"),
@@ -222,8 +222,8 @@ expand_approximate_months <- function(dates, approx_range) {
                        as.Date(gsub("\\~", "", x)) + mr), x)
     # Month-Day
     x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-\\~[:digit:]{2}-\\~[:digit:]{2}$"),
-                paste0(as.Date(gsub("\\~", "", x)) - (mr+approx_range), "..",
-                       as.Date(gsub("\\~", "", x)) + (mr+approx_range)), x)
+                paste0(as.Date(gsub("\\~", "", x)) - (mr + approx_range), "..",
+                       as.Date(gsub("\\~", "", x)) + (mr + approx_range)), x)
   })
   dates
 }

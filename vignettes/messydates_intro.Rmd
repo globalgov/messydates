@@ -1,5 +1,5 @@
 ---
-title: "Introduction to messydates"
+title: "Working with messy dates"
 author: "Henrique Sposito"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Why messydates?
+## Why `{messydates}`?
 
 Dates are often messy.
 Whether historical (or ancient), future, or even recent,
@@ -40,7 +40,7 @@ with various kinds of date imprecision.
 `{messydates}` contains a set of tools for constructing and coercing into and from the messydt class. 
 This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated 
 to express unspecified date components, approximate or uncertain date components, 
-date ranges, and sets of dates.
+date ranges, and sets of dates. 
 The function `as_messydate()` handles the coercion to messydt class.
 
 ```{r comparison, warning=FALSE}
@@ -66,7 +66,7 @@ dates_comparison %>% dplyr::mutate(base = as.Date(OriginalDate),
 
 ## Annotate
 
-Some datasets have for example an arbitrary cut off point for start and end points, 
+Some datasets have, for example, an arbitrary cut off point for start and end points, 
 but these are often coded as precise dates when they are not necessarily the real start or end dates.
 The annotate functions helps annotate uncertainty and approximation to dates.
 Inaccurate start or end dates can be represented by an affix
@@ -90,8 +90,8 @@ dplyr::mutate(dates_annotate, End = ifelse(End == "1916-12-31", as_uncertain(End
 
 ## Expand
 
-Expand functions expand on date ranges, sets of dates, and unspecified or 
-approximate dates (annotated with '..', '{ , }', 'XX' or '~') to lists of dates.
+Expand functions transform date ranges, sets of dates, and unspecified or 
+approximate dates (annotated with '..', '{ , }', 'XX' or '~') into lists of dates.
 As these dates may refer to several possible dates,
 the function "opens" these values to include all the possible dates implied.
 
@@ -104,8 +104,8 @@ expand(dates_expand)
 
 ## Contract
 
-the `contract()`function operates as the opposite of `expand()`.
-It contracts a list of dates into the abbreviated annotation of messy dates.
+The `contract()` function operates as the opposite of `expand()`.
+It contracts a list of dates into the abbreviated annotation of messydates.
 
 ```{r contract, warning=FALSE}
 tibble::tibble(contract = contract(expand(dates_expand)))
@@ -157,7 +157,7 @@ is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 ```
 
-Additionally, perform intersection (`md_intersect()`) and union (`md_union()`) on, 
+Additionally, one can perform intersection (`md_intersect()`) and union (`md_union()`) on, 
 inter alia, messy date class objects. Or 'join' that retains all elements, even if duplicated,
 with `md_multiset`.
 

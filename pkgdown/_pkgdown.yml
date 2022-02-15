@@ -48,6 +48,8 @@ reference:
   - title: "Operations"
     desc: "These methods extend set, logical, and arithmetic operations to objects of `messydt` class:"
     contents:
+      - starts_with("+.")
+      - starts_with("-.")
       - set
       - logical
       - extract

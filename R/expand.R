@@ -39,77 +39,14 @@ expand.messydt <- function(x, approx_range = 3) {
 }
 
 expand_approximate <- function(dates, approx_range) {
-  # For year approximation
-  ly <- as.numeric(strsplit(as.character(approx_range/4), "\\.")[[1]][1]) + (365*approx_range)
-  # For month approximation
-  mr <- 30.42*approx_range
   # Substitute signs
   dates <- ifelse(stringr::str_detect(dates, "^\\~[:digit:]{4}$"),
                   paste0(dates, "-01-01"), dates)
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-\\~[:digit:]{2}$|^[:digit:]{4}-[:digit:]{2}\\~$"),
                   paste0(dates, "-01"), dates)
-  dates <- lapply(dates, function(x) {
-    # Leap year
-    x <- ifelse(stringr::str_detect(x, "^\\~[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
-                                    |^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$") &
-                  approx_range < 4 & lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
-                paste0(as.Date(gsub("\\~", "", x)) - ly, "..",
-                       as.Date(gsub("\\~", "", x)) + ly + 1), x)
-    # Non leap year
-    x <- ifelse(stringr::str_detect(x, "^\\~[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
-                                    |^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$"),
-           paste0(as.Date(gsub("\\~", "", x)) - ly, "..",
-                  as.Date(gsub("\\~", "", x)) + ly), x)
-    # One Month
-
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~04-|-\\~06-|-\\~09-|-\\~11-"),
-                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
-                       as.Date(gsub("\\~", "", x)) + 30), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~05-|-\\~10-|-\\~12-|-\\~07-"),
-                paste0(as.Date(gsub("\\~", "", x)) - 30, "..",
-                       as.Date(gsub("\\~", "", x)) + 31), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~01-|-\\~08-"),
-                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
-                       as.Date(gsub("\\~", "", x)) + 31), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~03-") & # leap year
-                  lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
-                paste0(as.Date(gsub("\\~", "", x)) - 29, "..",
-                       as.Date(gsub("\\~", "", x)) + 31), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~03-"),
-                paste0(as.Date(gsub("\\~", "", x)) - 28, "..",
-                       as.Date(gsub("\\~", "", x)) + 31), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~02-") & # leap year
-                  lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
-                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
-                       as.Date(gsub("\\~", "", x)) + 29), x)
-    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~02-"),
-                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
-                       as.Date(gsub("\\~", "", x)) + 28), x)
-    # Multiple months
-    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-\\~[:digit:]{2}-[:digit:]{2}$"),
-                paste0(as.Date(gsub("\\~", "", x)) - mr, "..",
-                       as.Date(gsub("\\~", "", x)) + mr), x)
-    # Day
-    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-\\~[:digit:]{2}$"),
-                paste0(as.Date(gsub("\\~", "", x)) - approx_range, "..",
-                       as.Date(gsub("\\~", "", x)) + approx_range), x)
-    # Year-Month
-    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}\\~-[:digit:]{2}$"),
-                paste0(as.Date(gsub("\\~", "", x)) - (ly+mr), "..",
-                       as.Date(gsub("\\~", "", x)) + (ly+mr)), x)
-    # Month-Day
-    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-\\~[:digit:]{2}-\\~[:digit:]{2}$"),
-                paste0(as.Date(gsub("\\~", "", x)) - (mr+approx_range), "..",
-                       as.Date(gsub("\\~", "", x)) + (mr+approx_range)), x)
-    # On before and after
-    x <- ifelse(stringr::str_detect(x, "^\\.\\."),
-                paste0(as.Date(gsub("\\.\\.", "", x)) - ly, "..", gsub("\\.\\.", "", x)), x)
-    x <- ifelse(stringr::str_detect(x, "\\.\\.$") & approx_range < 4 &
-                  lubridate::leap_year(lubridate::as_date(gsub("\\.\\.", "", x))), # Leap year
-                paste0(gsub("\\.\\.", "", x), "..", as.Date(gsub("\\.\\.", "", x)) + ly + 1), x)
-    x <- ifelse(stringr::str_detect(x, "\\.\\.$"),
-                paste0(gsub("\\.\\.", "", x), "..", as.Date(gsub("\\.\\.", "", x)) + ly), x)
-  })
+  dates <- expand_approximate_years(dates, approx_range)
+  dates <- expand_approximate_months(dates, approx_range)
+  dates <- expand_approximate_days(dates, approx_range)
   dates <- unlist(dates)
   dates
 }
@@ -214,6 +151,89 @@ expand_negative_dates <- function(dates) {
     x <- lapply(x, function(y) {
       y <- ifelse(nchar(y) == 10, stringr::str_replace_all(y, "^-", "-0"), y)
     })
+  })
+  dates
+}
+
+expand_approximate_years <- function(dates, approx_range) {
+  # For year approximation
+  ly <- as.numeric(strsplit(as.character(approx_range/4), "\\.")[[1]][1]) + (365*approx_range)
+  dates <- lapply(dates, function(x) {
+    # Leap year
+    x <- ifelse(stringr::str_detect(x, "^\\~[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
+                                    |^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$") &
+                  approx_range < 4 & lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
+                paste0(as.Date(gsub("\\~", "", x)) - ly, "..",
+                       as.Date(gsub("\\~", "", x)) + ly + 1), x)
+    # Non leap year
+    x <- ifelse(stringr::str_detect(x, "^\\~[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
+                                    |^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}\\~$"),
+                paste0(as.Date(gsub("\\~", "", x)) - ly, "..",
+                       as.Date(gsub("\\~", "", x)) + ly), x)
+    # On before
+    x <- ifelse(stringr::str_detect(x, "^\\.\\."),
+                paste0(as.Date(gsub("\\.\\.", "", x)) - ly, "..", gsub("\\.\\.", "", x)), x)
+    # On after, leap
+    x <- ifelse(stringr::str_detect(x, "\\.\\.$") & approx_range < 4 &
+                  lubridate::leap_year(lubridate::as_date(gsub("\\.\\.", "", x))),
+                paste0(gsub("\\.\\.", "", x), "..", as.Date(gsub("\\.\\.", "", x)) + ly + 1), x)
+    # On after
+    x <- ifelse(stringr::str_detect(x, "\\.\\.$"),
+                paste0(gsub("\\.\\.", "", x), "..", as.Date(gsub("\\.\\.", "", x)) + ly), x)
+    # Year-Month
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}\\~-[:digit:]{2}$"),
+                paste0(as.Date(gsub("\\~", "", x)) - (ly + (30.42*approx_range)), "..",
+                       as.Date(gsub("\\~", "", x)) + (ly + (30.42*approx_range))), x)
+  })
+  dates
+}
+
+expand_approximate_months <- function(dates, approx_range) {
+  # For month approximation
+  mr <- 30.42*approx_range
+  dates <- lapply(dates, function(x) {
+    # One Month
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~04-|-\\~06-|-\\~09-|-\\~11-"),
+                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
+                       as.Date(gsub("\\~", "", x)) + 30), x)
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~05-|-\\~10-|-\\~12-|-\\~07-"),
+                paste0(as.Date(gsub("\\~", "", x)) - 30, "..",
+                       as.Date(gsub("\\~", "", x)) + 31), x)
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~01-|-\\~08-"),
+                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
+                       as.Date(gsub("\\~", "", x)) + 31), x)
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~03-") & # leap year
+                  lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
+                paste0(as.Date(gsub("\\~", "", x)) - 29, "..",
+                       as.Date(gsub("\\~", "", x)) + 31), x)
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~03-"),
+                paste0(as.Date(gsub("\\~", "", x)) - 28, "..",
+                       as.Date(gsub("\\~", "", x)) + 31), x)
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~02-") & # leap year
+                  lubridate::leap_year(lubridate::as_date(gsub("\\~", "", x))),
+                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
+                       as.Date(gsub("\\~", "", x)) + 29), x)
+    x <- ifelse(approx_range == 1 & stringr::str_detect(x, "-\\~02-"),
+                paste0(as.Date(gsub("\\~", "", x)) - 31, "..",
+                       as.Date(gsub("\\~", "", x)) + 28), x)
+    # Multiple months
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-\\~[:digit:]{2}-[:digit:]{2}$"),
+                paste0(as.Date(gsub("\\~", "", x)) - mr, "..",
+                       as.Date(gsub("\\~", "", x)) + mr), x)
+    # Month-Day
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-\\~[:digit:]{2}-\\~[:digit:]{2}$"),
+                paste0(as.Date(gsub("\\~", "", x)) - (mr+approx_range), "..",
+                       as.Date(gsub("\\~", "", x)) + (mr+approx_range)), x)
+  })
+  dates
+}
+
+expand_approximate_days <- function(dates, approx_range) {
+  dates <- lapply(dates, function(x) {
+    # Day
+    x <- ifelse(stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-\\~[:digit:]{2}$"),
+                paste0(as.Date(gsub("\\~", "", x)) - approx_range, "..",
+                       as.Date(gsub("\\~", "", x)) + approx_range), x)
   })
   dates
 }

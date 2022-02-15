@@ -45,7 +45,7 @@ add <- function(x, n) {
   # But keep approximation for before or after date
   x <- ifelse(stringr::str_detect(x, "^\\.\\.|\\.\\.$"), x, expand(x))
   # Step two, add by component
-  x <- sapply(x, function(y) {
+  x <- lapply(x, function(y) {
     if (stringr::str_detect(y[1], "^-")) {
       y <- paste0("-", lubridate::as_date(y) - n)
     } else if (stringr::str_detect(y[1], "^\\.\\.")) {
@@ -78,7 +78,7 @@ subtract <- function(x, n) {
   # But keep approximation for before or after date
   x <- ifelse(stringr::str_detect(x, "^\\.\\.|\\.\\.$"), x, expand(x))
   # Step two, add by component
-  x <- sapply(x, function(y) {
+  x <- lapply(x, function(y) {
     if (stringr::str_detect(y[1], "^-")) {
       y <- paste0("-", lubridate::as_date(y) + n)
     } else if (stringr::str_detect(y[1], "^\\.\\.")) {

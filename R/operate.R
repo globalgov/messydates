@@ -29,17 +29,6 @@ NULL
   subtract(e1, e2)
 }
 
-#' Helper function to add to messydates
-#'
-#' @param x A mssydate or list of messydates
-#' @param n What do you want to be added?
-#' Please specify in numeric format (i.e. one day is 1).
-#' @importFrom stringr str_detect str_replace str_split
-#' @importFrom lubridate as_date
-#' @details `add()` adds date units to dates, negative dates,
-#' ranges of dates, and sets of dates.
-#' For ranges of dates, it adds the unit on each side.
-#' @return A messydates vector
 add <- function(x, n) {
   # Step one: get only first and last components for ranges
   # But keep approximation for before or after date
@@ -62,17 +51,6 @@ add <- function(x, n) {
   contract(x)
 }
 
-#' Helper function to subtract from messydates
-#'
-#' @param x A date or list of dates
-#' @param n What do you want to be added?
-#' Please specify in numeric format (i.e. one day is 1, one year is 365).
-#' @importFrom stringr str_detect str_replace str_split
-#' @importFrom lubridate as_date
-#' @details `subtract()` subtracts date units from dates, negative dates,
-#' ranges of dates, and sets of dates.
-#' For ranges of dates, it subtracts the unit on each side.
-#' @return A messydates vector
 subtract <- function(x, n) {
   # Step one: get only first and last components for ranges
   # But keep approximation for before or after date
@@ -95,10 +73,6 @@ subtract <- function(x, n) {
   contract(x)
 }
 
-#' Helper function to parse character for date operations
-#'
-#' @param e2 Date character
-#' @return The equivalent amount of days in numeric format
 parse_date_strings <- function(e2) {
   e2 <- ifelse(stringr::str_detect(e2, "years|year"),
                as.numeric(stringr::str_remove(e2, "years|year")) * 365, e2)

@@ -52,6 +52,7 @@ reference:
       - set
       - logical
       - extract
+      - resequence
   - title: "Resolution"
     desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
     contents:

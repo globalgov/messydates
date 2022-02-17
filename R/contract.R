@@ -76,10 +76,6 @@ collapse_ranges <- function(x) {
   x <- stringr::str_replace_all(x, "(-[:digit:]{4}-[:digit:]{2})-01\\.\\.(-[:digit:]{4}-[:digit:]{2})-31", "\\1")
 }
 
-#' Logical sequence test helper function
-#'
-#' @param x A date range in messydates format
-#' @return TRUE if messydate is sequence or FALSE if not.
 is_sequence <- function(x) {
   l <- as.Date(x) + 1
   l <- c(lubridate::NA_Date_, l[-length(l)])

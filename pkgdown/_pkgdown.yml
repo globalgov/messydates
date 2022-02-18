@@ -14,8 +14,8 @@ navbar:
     - intro
     - reference
     - articles
-    - tutorials
     - news
+    - data
     right: github
   components:
     home:
@@ -27,24 +27,32 @@ navbar:
     news:
       text: News
       href: news/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Working with messy dates
+        href: articles/messydates_intro.html
 reference:
   - title: "Construction"
     desc: "These functions create and print the `messydt` class:"
     contents:
       - starts_with("new_")
       - starts_with("validate_")
-      - starts_with("make_")
-      - annotate
-  - title: "Coercion"
-    desc: "These functions coerce classes to and from the `messydt` class:"
+  - title: "Coerce to"
+    desc: "These functions coerce classes to the `messydt` class:"
     contents:
-      - starts_with("as_")
-      - starts_with("as.")
+      - as_messydate
+      - make_messydate
+  - title: "Coerce from"
+    desc: "These functions coerce classes from the `messydt` class:"
+    contents:
+      - starts_with("as\\.")
   - title: "Manipulation"
-    desc: "These functions expand objects of `messydt` class into a list of dates or contract from a list of dates to a `messydt` class:"
+    desc: "These functions annotate, expand or contract objects of `messydt` class from/into a list:"
     contents:
       - starts_with("expand")
       - starts_with("contract")
+      - annotate
   - title: "Operations"
     desc: "These methods extend set, logical, and arithmetic operations to objects of `messydt` class:"
     contents:

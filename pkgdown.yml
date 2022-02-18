@@ -1,9 +1,10 @@
 pandoc: 2.7.3
-pkgdown: 1.6.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
-articles: {}
-last_built: 2021-11-12T10:43Z
+articles:
+  messydates_intro: messydates_intro.html
+last_built: 2022-02-18T12:59Z
 urls:
-  reference: https://globalgov.github.io/messydates//reference
-  article: https://globalgov.github.io/messydates//articles
+  reference: https://globalgov.github.io/messydates/reference
+  article: https://globalgov.github.io/messydates/articles
 

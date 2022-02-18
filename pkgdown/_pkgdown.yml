@@ -26,11 +26,6 @@ navbar:
     news:
       text: News
       href: news/index.html
-    articles:
-      text: Articles
-      menu:
-      - text: Working with messy dates
-        href: articles/messydates_intro.html
 reference:
   - title: "Construction"
     desc: "These functions create and print the `messydt` class:"

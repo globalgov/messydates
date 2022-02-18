@@ -59,7 +59,6 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
-          remotes::install_github("globalgov/qStates")
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("lintr")
           remotes::install_cran("goodpractice")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/resequence.R
 \name{interleave}
 \alias{interleave}
-\title{Helper function for interleaving two vectors by position}
+\title{Function for interleaving two vectors by position}
 \usage{
 interleave(vect, pos, elems = NA)
 }

@@ -56,7 +56,7 @@ resequence <- function(data, vars, unity = "\\.\\.") {
   out
 }
 
-#' Helper function for interleaving two vectors by position
+#' Function for interleaving two vectors by position
 #'
 #' Insert elements in different positions for vectors
 #' @param vect Main vector
@@ -65,6 +65,7 @@ resequence <- function(data, vars, unity = "\\.\\.") {
 #' By default, these are NAs (missing values).
 #' @return A vector the length of the sum of \code{vect}
 #' and \code{pos}.
+#' @export
 interleave <- function(vect, pos, elems = NA) {
 
   j <- 0

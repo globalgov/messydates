@@ -15,7 +15,8 @@ expand(x, approx_range)
 \item{approx_range}{Range to expand approximate dates to, by default 3.
 That is, 3 days for day approximation, 3 months for month approximation,
 3 years for year/whole date approximation, 3 years and 3 months for year-
-month approximation, and 3 months and 3 days for month-day approximation.}
+month approximation, and 3 months and 3 days for month-day approximation.
+If 0, returns original values and removes signs for aproximate dates.}
 }
 \value{
 A list of dates, including all dates in each range or set.
@@ -35,7 +36,7 @@ Annotation is removed from uncertain dates with unreliable sources ('?').
 }}
 
 \examples{
-d <- as_messydate(c("2008-03-25", "2012-02-27", "2001-01?", "~2001",
+d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 expand(d)

@@ -10,6 +10,7 @@
 #' This can be useful for various descriptive or inferential projects.
 #' @param ... a messydt object
 #' @param na.rm Should NAs be removed? True by default.
+#' @importFrom stringr str_detect
 #' @return A single scalar or vector of dates
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
@@ -69,13 +70,18 @@ median.messydt <- function(..., na.rm = TRUE) {
 #' @param trim the fraction (0 to 0.5) of observations to be trimmed
 #' from each end of x before the mean is computed.
 #' Values of trim outside that range are taken as the nearest endpoint.
+#' @importFrom lubridate as_date
 #' @export
 mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
   x <- list(...)
   y <- expand(x[[1]])
   y <- sapply(y, function(x) {
-    if (length(x) > 1) x <- as.character(mean(as.Date(x),
-                                              trim = 0, na.rm = TRUE))
+    if (length(x) > 1 & stringr::str_detect(x[1], "^-", negate = TRUE)) {
+      x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
+    }
+    if (length(x) > 1 & stringr::str_detect(x[1], "^-")) {
+      x <- paste0("-", as.character(mean(lubridate::as_date(x), trim = 0, na.rm = TRUE)))
+    }
     x
   })
   y

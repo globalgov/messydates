@@ -5,6 +5,7 @@
 \alias{as.Date.messydt}
 \alias{as.POSIXct.messydt}
 \alias{as.POSIXlt.messydt}
+\alias{negative_dates}
 \title{Coercion from messy dates}
 \usage{
 \method{as.Date}{messydt}(x, ..., FUN)
@@ -12,6 +13,8 @@
 \method{as.POSIXct}{messydt}(x, ..., FUN)
 
 \method{as.POSIXlt}{messydt}(x, ..., FUN)
+
+negative_dates(x)
 }
 \arguments{
 \item{x}{A \code{messydt} object}
@@ -46,9 +49,13 @@ especially for checking the robustness of results.
 }
 \examples{
 as.Date(as_messydate("2012-01"), min)
-as.Date(as_messydate("2012-01"), mean)
+as.Date(as_messydate("2012-01-01"), mean)
 as.Date(as_messydate("2012-01"), max)
 as.Date(as_messydate("2012-01"), median)
 as.Date(as_messydate("2012-01"), modal)
 as.Date(as_messydate("2012-01"), random)
+as.Date(as_messydate("1000 BC"), max)
+as.Date(as_messydate("1000 BC"), mean)
+as.Date(as_messydate("1000 BC"), median)
+as.Date(as_messydate(c("-1000", "2020")), min)
 }

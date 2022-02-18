@@ -5,6 +5,7 @@ test_that("Resolve dates works properly for date ranges", {
   expect_equal(as.character(median(range)), "2014-01-16")
   expect_equal(as.character(mean(range)), "2014-01-16")
   expect_equal(as.character(modal(range)), "2014-01-01")
+  expect_length(random(range), 1)
 })
 
 test_that("Resolve dates works properly for unspecified dates", {
@@ -14,4 +15,15 @@ test_that("Resolve dates works properly for unspecified dates", {
   expect_equal(as.character(median(unspecified)), "1999-07-02")
   expect_equal(as.character(mean(unspecified)), "1999-07-02")
   expect_equal(as.character(modal(unspecified)), "1999-01-01")
+  expect_length(random(unspecified), 1)
+})
+
+test_that("Resolve dates works properly for negative dates", {
+  negative <- as_messydate("1000 BC")
+  expect_equal(as.character(min(negative)), "-1000-01-01")
+  expect_equal(as.character(max(negative)), "-1000-12-31")
+  expect_equal(as.character(median(negative)), "-1000-07-02")
+  expect_equal(as.character(mean(negative)), "-1000-07-02")
+  expect_equal(as.character(modal(negative)), "-1000-01-01")
+  expect_length(random(negative), 1)
 })

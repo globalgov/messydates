@@ -31,17 +31,23 @@ NULL
 #' @rdname from_messydate
 #' @examples
 #' as.Date(as_messydate("2012-01"), min)
-#' as.Date(as_messydate("2012-01"), mean)
+#' as.Date(as_messydate("2012-01-01"), mean)
 #' as.Date(as_messydate("2012-01"), max)
 #' as.Date(as_messydate("2012-01"), median)
 #' as.Date(as_messydate("2012-01"), modal)
 #' as.Date(as_messydate("2012-01"), random)
+#' as.Date(as_messydate("1000 BC"), max)
+#' as.Date(as_messydate("1000 BC"), mean)
+#' as.Date(as_messydate("1000 BC"), median)
+#' as.Date(as_messydate(c("-1000", "2020")), min)
 #' @export
 as.Date.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
-  x <- stringr::str_replace_all(x, "^-", "")
-  as.Date(x)
+  x <- ifelse(stringr::str_detect(x, "^-"),
+              lubridate::as_date(negative_dates(x)),
+              lubridate::as_date(x))
+  as.Date(x, origin = "1970-01-01")
 }
 
 #' @rdname from_messydate
@@ -49,7 +55,9 @@ as.Date.messydt <- function(x, ..., FUN) {
 as.POSIXct.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
-  x <- stringr::str_replace_all(x, "^-", "")
+  if (stringr::str_detect(x, "^-")) {
+    stop("For conversion of negative dates from messydt class use as.Date()")
+  }
   as.POSIXct(x)
 }
 
@@ -58,6 +66,23 @@ as.POSIXct.messydt <- function(x, ..., FUN) {
 as.POSIXlt.messydt <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
-  x <- stringr::str_replace_all(x, "^-", "")
+  if (stringr::str_detect(x, "^-")) {
+    stop("For conversion of negative dates from messydt class use as.Date()")
+  }
   as.POSIXlt(x)
+}
+
+#' Helper function for returning negative dates in date formats
+#' @rdname from_messydate
+#' @importFrom stringr str_remove str_replace
+#' @importFrom lubridate ymd years as_date
+negative_dates <- function(x) {
+  x <- ifelse(stringr::str_detect(x, "^-[0-9]{3}-"),
+              stringr::str_replace(x, "^-", "0"),
+              stringr::str_remove(x, "^-"))
+  y <- stringr::str_extract(x, "^[0-9]{4}")
+  md <- stringr::str_replace(x, "^[0-9]{4}", "0000")
+  x <- lubridate::ymd(md) - lubridate::years(y)
+  x <- lubridate::as_date(x)
+  x
 }

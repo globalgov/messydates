@@ -9,6 +9,8 @@
 #' as_messydate("2021")
 #' as_messydate("2021-02")
 #' as_messydate("2021-02-01")
+#' as_messydate("20-01-2021")
+#' as_messydate("01-20-2021")
 #' as_messydate("2021-02-01?")
 #' as_messydate("2021-02-01~")
 #' as_messydate("2021-02-01%")
@@ -54,8 +56,7 @@ as_messydate.character <- function(x) {
 # Helper functions
 standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates,
-                                    "([:digit:]{4})([:digit:]{2})
-                                    ([:digit:]{2})",
+                                    "([:digit:]{4})([:digit:]{2})([:digit:]{2})",
                                     "\\1-\\2-\\3")
   dates <- stringr::str_replace_all(dates,
                                     "(?<=[:digit:])\\.(?=[:digit:])",
@@ -66,9 +67,14 @@ standardise_date_separators <- function(dates) {
 }
 
 standardise_date_order <- function(dates) {
-  dates <- stringr::str_replace_all(dates,
-                                    "([:digit:]{2})-([:digit:]{2})-
-                                    ([:digit:]{4})", "\\3-\\2-\\1")
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
+                  stringr::str_replace_all(dates,
+                                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                                           "\\3-\\1-\\2"),
+                  stringr::str_replace_all(dates,
+                                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                                           "\\3-\\2-\\1"))
   dates
 }
 

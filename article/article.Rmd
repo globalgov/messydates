@@ -169,4 +169,9 @@ md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 ```
 
+# Acknowledgements
+
+We would like to thank the Swiss National Science Foundation. 
+This work was supported by grant number 188976.
+
 # References

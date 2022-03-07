@@ -64,6 +64,8 @@ As researchers, we often recognise this messiness but are forced to force non-ex
 
 Importantly, the package also includes a function for unpacking or expanding sets or ranges of dates into all dates consistent with how the date or set of dates is specified or annotated. Methods are also offered that can be used to make explicit how researchers convert date imprecision into precise dates for analysis, such as getting the `min()`, `max()`, or even a `random()` date from among the dates consistent with a set or range of dates. This greatly facilitates research transparency as well as robustness checks.
 
+<!-- Should we have a separate motivation section? If so, I would suggest we merge the first paragraph of the introduction and the quick overview section, to become the introduction and expand on the second paragraph of the introduction to become the motivation section. -->
+
 ## Relationship to other packages
 
 \pkg{messydates} offers a new date class, but one that comes with methods for converting from and into common date classes such as `Date`, `POSIXct`, and `POSIXlt.` It is thus fully compatible with packages such as \pkg{lubridate} [@grolemundDatesTimesMade2011] and \pkg{anytime} [@eddelbuettelAnytimeEasierDate2019]. It is also compatible with \pkg{unstruwwel}, which also parses historic dates in R, though the emphasis of our package is on working with these dates.
@@ -144,7 +146,9 @@ tibble::tibble(min = as.Date(dates_expand, min),
                random = as.Date(dates_expand, random))
 ```
 
-## Additional functionality
+<!-- Should we mention/illustrate the ability to do some arithmetic operations with messydates here? -->
+
+## Additional functionality 
 
 Several other functions are also offered in the \pkg{messydates} package.
 

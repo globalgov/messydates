@@ -35,7 +35,8 @@ Imports:
     purrr,
     lubridate,
     tibble,
-    dplyr
+    dplyr,
+    skimr
 Suggests: 
     testthat (>= 3.0.0),
     covr,

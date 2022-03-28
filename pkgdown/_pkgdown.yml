@@ -2,8 +2,9 @@ url: https://globalgov.github.io/messydates/
 development:
     mode: auto
 template:
+  bootstrap: 5
   params:
-    bootswatch: paper
+    bootswatch: litera
 authors:
   James Hollway:
     href: https://jameshollway.com
@@ -15,7 +16,9 @@ navbar:
     - reference
     - articles
     - news
-    right: github
+    right:
+    - search
+    - github
   components:
     home:
       icon: fa-home fa-lg
@@ -26,6 +29,9 @@ navbar:
     news:
       text: News
       href: news/index.html
+    github:
+      icon: "fab fa-github fa-lg"
+      href: https://github.com/globalgov/messydates
 reference:
   - title: "Construction"
     desc: "These functions create and print the `messydt` class:"

@@ -173,7 +173,25 @@ md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 ```
 
-## Case Study 1 - Roman Emperors Rise to Power: Inference and robustness checks with "messy" historical dates
+## Case Study 1 - The size of the population of the Roman Empire
+
+Several historical facts are contested. However, up to this point, dealing with negative historical dates in R was difficult and only manageable if authors made arbitrary choices to complete dates, making them biased, or left these in character class, instead of date class, limiting their analytical usefulness. Take, for example, the population sizes in the Roman Empire, which has been a topic of heated debates among some academics (see Scheidel 2008). Various accounts diverge in how they estimate population size and, therefore, the conclusions about the of the population at certain points in time differs (Scheidel 2008). Below, we build a dataset for the populations of mainland Italy during the Roman Empire (Scheidel 2008, p. 31) to illustrate how \pkg{messydates} facilitate the annotation and the conversion of historical dates for analysis.  
+
+```{r}
+roman_population <- tibble::tibble(period = as_messydate(c("200 BC:100 BC", "100 BC:1 AD", "1 AD:150 AD", "150 AD:200 AD")),
+                                   population_min = c(3900000, 4400000, 5500000, 6000000),
+                                   population_max = c(8000000, 10000000, 16000000, 2000000))
+roman_population_md <- roman_population %>% 
+  dplyr::mutate(period_min = as.Date(period, min),
+                period_max = as.Date(period, max),
+                period_mean = as.Date(period, mean),
+                period_median = as.Date(period, median),
+                period_random = as.Date(period, random)) %>% 
+  print()
+```
+
+
+## Case Study 2 - Roman Emperors Rise to Power: Inference and robustness checks with "messy" historical dates
 
 Getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (i.e. year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences where getting "timing" right is important. Assume, for example, certain researcher is interested in the relationship between how Roman Emperors rose to power and how long they stayed in powe. The researcher theorizes that Roman Emperors that rose to power through birthrights were less contested politically and popularly and, thus, tended to stay in power for longer than those Roman Emperors that rose to power in other ways (e.g. coup or appointment). The \pkg{manydata} contains a database on Roman Emperors composed of three datasets. We can also use \pkg{manydata} to "consolidate" the database into a single dataset using some combination of the rows and columns available. 
 
@@ -198,9 +216,7 @@ random <- lm(random ~ Rise, emperors)
 stargazer(year, arbitrary, random, type = "text")
 ```
 
-Notice how the regression coefficients change when we take the year only of dates, add an arbitrary cut off point to dates, or get random dates from the range. However, in this case, we can say that the relationship between Roman Emperors rising to power through birthrights and time in power is both positive and statistically significant across the three linear models; therefore, more robust findings than otherwise. 
-
-## Case Study 2
+Notice how the regression coefficients change when we take the year only of dates, add an arbitrary cut off point to dates, or get random dates from the range. However, in this case, we can say that the relationship between Roman Emperors rising to power through birthrights and time in power is both positive and statistically significant across the three cases; therefore, more robust than otherwise.
 
 # Acknowledgements
 

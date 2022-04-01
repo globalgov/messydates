@@ -45,23 +45,20 @@ as_messydate.POSIXlt <- function(x) {
 as_messydate.character <- function(x) {
   d <- standardise_date_separators(x)
   d <- standardise_date_order(d)
-  d <- standardise_date_input(d)
-  d <- standardise_unspecifieds(d)
-  d <- standardise_widths(d)
   d <- standardise_ranges(d)
+  d <- standardise_unspecifieds(d)
   d <- remove_imprecision(d)
+  d <- standardise_date_input(d)
+  d <- standardise_widths(d)
   new_messydate(d)
 }
 
 # Helper functions
 standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates,
-                                    "([:digit:]{4})([:digit:]{2})([:digit:]{2})",
-                                    "\\1-\\2-\\3")
-  dates <- stringr::str_replace_all(dates,
-                                    "(?<=[:digit:])\\.(?=[:digit:])",
-                                    "-")
+                                    "(?<=[:digit:])\\.(?=[:digit:])", "-")
   dates <- stringr::str_replace_all(dates, "\\/", "-")
+  dates <- stringr::str_remove_all(dates, "\\(|\\)|\\{|\\}|\\[|\\]")
   dates <- stringr::str_trim(dates, side = "both")
   dates
 }
@@ -78,23 +75,9 @@ standardise_date_order <- function(dates) {
   dates
 }
 
-standardise_date_input <- function(dates) {
-  as_bc_dates <- function(dates) {
-    # remove before christ letters
-    dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
-    dates <- stringr::str_trim(dates, side = "both")
-    dates <- paste0("-", dates)
-    dates
-  }
-  as_ac_dates <- function(dates) {
-    # remove after christ letters
-    dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD)")
-    dates <- stringr::str_trim(dates, side = "both")
-  }
-  dates <- ifelse(stringr::str_detect(dates, "(bc|BC|Bc|bC)"),
-                  as_bc_dates(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "(ad|AD|Ad|aD)"),
-                  as_ac_dates(dates), dates)
+standardise_ranges <- function(dates) {
+  dates <- stringr::str_replace_all(dates, "_", "..")
+  dates <- stringr::str_replace_all(dates, ":", "..")
   dates
 }
 
@@ -108,7 +91,32 @@ standardise_unspecifieds <- function(dates) {
   dates
 }
 
+remove_imprecision <- function(dates) {
+  dates <- stringr::str_replace_all(dates, "-XX$", "")
+  dates
+}
+
+standardise_date_input <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "(bc|BC|Bc|bC)"),
+                  as_bc_dates(dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "(ad|AD|Ad|aD)"),
+                  as_ac_dates(dates), dates)
+  dates <- gsub(" ", "", dates)
+  dates
+}
+
 standardise_widths <- function(dates) {
+  dates <- add_zero_padding(dates)
+  dates <- ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-"),
+                  add_zero_range(dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "\\,"),
+                  add_zero_set(dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "\\,"),
+                  paste0("{", dates, "}"), dates)
+  dates
+}
+
+add_zero_padding <- function(dates) {
   # Negative year only
   dates <- stringr::str_replace_all(dates, "^-([:digit:]{1})$", "-000\\1")
   dates <- stringr::str_replace_all(dates, "^-([:digit:]{2})$", "-00\\1")
@@ -137,13 +145,91 @@ standardise_widths <- function(dates) {
   dates
 }
 
-standardise_ranges <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "_", "..")
-  dates <- stringr::str_replace_all(dates, ":", "..")
+add_zero_range <- function(dates) {
+  dates <- strsplit(dates, "\\.\\.")
+  dates <- lapply(dates, function(x) {
+    x <- gsub(" ", "", x)
+    x <- stringr::str_replace_all(x, "^-([:digit:]{1})$", "-000\\1")
+    x <- stringr::str_replace_all(x, "^-([:digit:]{2})$", "-00\\1")
+    x <- stringr::str_replace_all(x, "^-([:digit:]{3})$", "-0\\1")
+    x <- stringr::str_replace_all(x, "^~([:digit:]{1})$", "000\\1~")
+    x <- stringr::str_replace_all(x, "^~([:digit:]{2})$", "00\\1~")
+    x <- stringr::str_replace_all(x, "^~([:digit:]{3})$", "0\\1~")
+    x <- stringr::str_replace_all(x, "^\\?([:digit:]{1})$", "000\\1?")
+    x <- stringr::str_replace_all(x, "^\\?([:digit:]{2})$", "00\\1?")
+    x <- stringr::str_replace_all(x, "^\\?([:digit:]{3})$", "0\\1?")
+    x <- stringr::str_replace_all(x, "^([:digit:]{1})$", "000\\1")
+    x <- stringr::str_replace_all(x, "^([:digit:]{2})$", "00\\1")
+    x <- stringr::str_replace_all(x, "^([:digit:]{3})$", "0\\1")
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+                paste0("000", x), x)
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+                paste0("00", x), x)
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
+                paste0("0", x), x)
+  })
+  dates <- purrr::map_chr(dates, paste, collapse = "..")
   dates
 }
 
-remove_imprecision <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "-XX$", "")
+add_zero_set <- function(dates) {
+  dates <- strsplit(dates, "\\,")
+  dates <- lapply(dates, function(x) {
+    x <- gsub(" ", "", x)
+    x <- stringr::str_replace_all(x, "^-([:digit:]{1})$", "-000\\1")
+    x <- stringr::str_replace_all(x, "^-([:digit:]{2})$", "-00\\1")
+    x <- stringr::str_replace_all(x, "^-([:digit:]{3})$", "-0\\1")
+    x <- stringr::str_replace_all(x, "^~([:digit:]{1})$", "000\\1~")
+    x <- stringr::str_replace_all(x, "^~([:digit:]{2})$", "00\\1~")
+    x <- stringr::str_replace_all(x, "^~([:digit:]{3})$", "0\\1~")
+    x <- stringr::str_replace_all(x, "^\\?([:digit:]{1})$", "000\\1?")
+    x <- stringr::str_replace_all(x, "^\\?([:digit:]{2})$", "00\\1?")
+    x <- stringr::str_replace_all(x, "^\\?([:digit:]{3})$", "0\\1?")
+    x <- stringr::str_replace_all(x, "^([:digit:]{1})$", "000\\1")
+    x <- stringr::str_replace_all(x, "^([:digit:]{2})$", "00\\1")
+    x <- stringr::str_replace_all(x, "^([:digit:]{3})$", "0\\1")
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+                paste0("000", x), x)
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+                paste0("00", x), x)
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
+                paste0("0", x), x)
+  })
+  dates <- purrr::map_chr(dates, paste, collapse = ",")
   dates
+}
+
+as_bc_dates <- function(dates) {
+  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 2,
+                  st_negative_range(dates), dates)
+  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") > 2,
+                  st_negative_sets(dates), dates)
+  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 1,
+                  st_negative(dates), dates)
+}
+
+as_ac_dates <- function(dates) {
+  # remove after christ letters
+  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD)")
+  dates <- stringr::str_trim(dates, side = "both")
+}
+
+st_negative_range <- function(dates) {
+  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- gsub(" ", "", dates)
+  dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
+                  "..-", strsplit(dates, "\\.\\.")[[1]][2])
+}
+st_negative_sets <- function(dates) {
+  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- gsub(" ", "", dates)
+  dates <- unlist(strsplit(dates, "\\,"))
+  dates <- ifelse(length(dates) > 1,
+                  paste0("-", paste(dates, collapse = ", -")),
+                  paste0("-", dates))
+}
+st_negative <- function(dates) {
+  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_trim(dates, side = "both")
+  dates <- paste0("-", dates)
 }

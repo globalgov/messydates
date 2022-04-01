@@ -52,10 +52,7 @@ expand_approximate <- function(dates, approx_range) {
 }
 
 expand_unspecified <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{2})($|,)",
-                                    "\\1\\200-01-01..\\299-12-31\\3")
-  dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{3})($|,)",
-                                    "\\1\\20-01-01..\\29-12-31\\3")
+  dates <- stringr::str_replace_all(dates, ",", ",,")
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
                                     "\\1\\2-01-01..\\2-12-31\\3")
   dates <- ifelse(stringr::str_detect(dates, "(^|,)([:digit:]{4})-02($|,)") &
@@ -74,6 +71,7 @@ expand_unspecified <- function(dates) {
                                     "\\1\\2-11-01..\\2-11-30\\3")
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})-([:digit:]{2})($|,)",
                                     "\\1\\2-\\3-01..\\2-\\3-31\\4")
+  dates <- stringr::str_replace_all(dates, ",,", ",")
   dates
 }
 
@@ -118,6 +116,9 @@ expand_sets <- function(dates) {
 }
 
 expand_ranges <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
+                    nchar(dates) < 17,
+                  expand_unspecified_ranges(dates), dates)
   dates <- lapply(dates, function(x) {
     x <- stringr::str_split(x, "\\.\\.")
     x <- lapply(x, function(y) {
@@ -235,5 +236,19 @@ expand_approximate_days <- function(dates, approx_range) {
                 paste0(as.Date(gsub("\\~", "", x)) - approx_range, "..",
                        as.Date(gsub("\\~", "", x)) + approx_range), x)
   })
+  dates
+}
+
+expand_unspecified_ranges <- function(dates) {
+  dates <- strsplit(as.character(dates), "\\.\\.")
+  dates1 <- purrr::map_chr(dates, 1)
+  dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})$|^-([:digit:]{4})$"),
+                  paste0(dates1, "-01-01"), dates1)
+  dates2 <- purrr::map_chr(dates, 2)
+  dates2 <- ifelse(stringr::str_detect(dates2, "^([:digit:]{4})$|^-([:digit:]{4})$"),
+                   paste0(dates2, "-12-31"), dates2)
+  dates <- paste(dates1, dates2, sep = "..")
+  dates <- ifelse(stringr::str_detect(dates, "^-|\\.\\.-"),
+                  gsub("\\.\\.", "%", dates), dates)
   dates
 }

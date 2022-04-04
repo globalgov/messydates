@@ -244,9 +244,28 @@ expand_unspecified_ranges <- function(dates) {
   dates1 <- purrr::map_chr(dates, 1)
   dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})$|^-([:digit:]{4})$"),
                   paste0(dates1, "-01-01"), dates1)
+  dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})-([:digit:]{2})$|^-([:digit:]{4})-([:digit:]{2})$"),
+                   paste0(dates1, "-01"), dates1)
   dates2 <- purrr::map_chr(dates, 2)
   dates2 <- ifelse(stringr::str_detect(dates2, "^([:digit:]{4})$|^-([:digit:]{4})$"),
                    paste0(dates2, "-12-31"), dates2)
+  dates2 <- ifelse(stringr::str_detect(dates2, "^([:digit:]{4})-02$|^-([:digit:]{4})-02$"),
+                   paste0(dates2, "-28"), dates2)
+  dates2 <- ifelse(stringr::str_detect(dates2,
+                                       "^([:digit:]{4})-01$|^-([:digit:]{4})-01$|
+                                       |^([:digit:]{4})-03$|^-([:digit:]{4})-03$|
+                                       |^([:digit:]{4})-05$|^-([:digit:]{4})-05$|
+                                       |^([:digit:]{4})-07$|^-([:digit:]{4})-07$|
+                                       |^([:digit:]{4})-08$|^-([:digit:]{4})-08$|
+                                       |^([:digit:]{4})-10$|^-([:digit:]{4})-10$|
+                                       |^([:digit:]{4})-12$|^-([:digit:]{4})-12$"),
+                   paste0(dates2, "-31"), dates2)
+  dates2 <- ifelse(stringr::str_detect(dates2,
+                                       "^([:digit:]{4})-04$|^-([:digit:]{4})-04$|
+                                       |^([:digit:]{4})-06$|^-([:digit:]{4})-06$|
+                                       |^([:digit:]{4})-09$|^-([:digit:]{4})-09$|
+                                       |^([:digit:]{4})-11$|^-([:digit:]{4})-11$"),
+                   paste0(dates2, "-30"), dates2)
   dates <- paste(dates1, dates2, sep = "..")
   dates <- ifelse(stringr::str_detect(dates, "^-|\\.\\.-"),
                   gsub("\\.\\.", "%", dates), dates)

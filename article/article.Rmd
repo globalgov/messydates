@@ -178,6 +178,7 @@ md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 Several historical facts are contested. However, up to this point, dealing with negative historical dates in R was difficult and only manageable if authors made arbitrary choices to complete dates, making them biased, or left these in character class, instead of date class, limiting their analytical usefulness. Take, for example, the population sizes in the Roman Empire, which has been a topic of heated debates among some academics (see Scheidel 2008). Various accounts diverge in how they estimate population size and, therefore, the conclusions about the of the population at certain points in time differs (Scheidel 2008). Below, we build a dataset for the populations of mainland Italy during the Roman Empire (Scheidel 2008, p. 31) to illustrate how \pkg{messydates} facilitate the annotation and the conversion of historical dates for analysis.  
 
 ```{r}
+scipen(999)
 roman_population <- tibble::tibble(period = as_messydate(c("200 BC:100 BC", "100 BC:1 AD", "1 AD:150 AD", "150 AD:200 AD")),
                                    population_min = c(3900000, 4400000, 5500000, 6000000),
                                    population_max = c(8000000, 10000000, 16000000, 2000000))

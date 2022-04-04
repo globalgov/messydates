@@ -3,6 +3,7 @@ approximate <- as_messydate(c("~1999", "1999-10~", "1999-10-~11"))
 unspecified <- as_messydate("2008-XX-03")
 set <- as_messydate("{2012-01-01,2012-01-12}")
 negative <- as_messydate("20 BC")
+unspecified_range <- as_messydate("2010..2010-12")
 
 test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_equal(as.character(expand(range)),
@@ -15,6 +16,8 @@ test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_length(expand(range), 1)
   expect_length(expand(unspecified), 1)
   expect_equal(lengths(expand(negative)), 366)
+  expect_equal(as.character(expand(unspecified_range)[[1]][1]), "2010-01-01")
+  expect_equal(lengths(expand(unspecified_range)), 365)
   skip_on_os("linux")
   expect_equal(as.character(expand(negative)[[1]][1]), "-0020-01-01")
 })

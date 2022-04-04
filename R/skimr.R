@@ -20,9 +20,11 @@
 get_skimmers.messydt <- function(column) {
   skimr::sfl(
     skim_type = "messydt",
-    max = maxmax,
-    min = minmin,
-    mean = meanmean,
+    n_empty = skimr::n_empty,
+    n_unique = skimr::n_unique,
+    # max = maxmax,
+    # min = minmin,
+    # mean = meanmean,
     # median = medianmedian,
     # mode = meanmode,
     # uncertainty = uncertainty

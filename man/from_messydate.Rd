@@ -40,7 +40,7 @@ into a single date.
 For example, one might wish to use the earliest possible date
 in any ranges of dates (\code{min}), the latest possible date (\code{max}),
 some notion of a central tendency (\code{mean}, \code{median}, or \code{modal}),
-or even a \code{random} selection from amongst the candidate dates.
+or even a \code{random} selection from among the candidate dates.
 
 These functions then, building on \code{expand()} and the resolve functions,
 are particularly useful in converting back out of the \code{messydt} class

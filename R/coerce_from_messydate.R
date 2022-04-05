@@ -11,7 +11,7 @@
 #' For example, one might wish to use the earliest possible date
 #' in any ranges of dates (`min`), the latest possible date (`max`),
 #' some notion of a central tendency (`mean`, `median`, or `modal`),
-#' or even a `random` selection from amongst the candidate dates.
+#' or even a `random` selection from among the candidate dates.
 #'
 #' These functions then, building on `expand()` and the resolve functions,
 #' are particularly useful in converting back out of the `messydt` class

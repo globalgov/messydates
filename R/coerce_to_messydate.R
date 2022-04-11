@@ -88,6 +88,8 @@ standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-00-|-0-|-0$|-00$", "-XX-")
   dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
   dates <- stringr::str_replace_all(dates, "-\\?\\?", "-XX")
+  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
+                  paste0("~", stringr::str_remove(dates, "\\~")), dates)
   dates
 }
 
@@ -220,6 +222,7 @@ st_negative_range <- function(dates) {
   dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
                   "..-", strsplit(dates, "\\.\\.")[[1]][2])
 }
+
 st_negative_sets <- function(dates) {
   dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
   dates <- gsub(" ", "", dates)
@@ -228,6 +231,7 @@ st_negative_sets <- function(dates) {
                   paste0("-", paste(dates, collapse = ", -")),
                   paste0("-", dates))
 }
+
 st_negative <- function(dates) {
   dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
   dates <- stringr::str_trim(dates, side = "both")

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2022.3.7)  7 MAR 2022 13:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2022.3.7)  8 APR 2022 15:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -553,7 +553,7 @@ LaTeX Info: Redefining \nameref on input line 69.
 \@outlinefile=\write5
 \openout5 = `article.out'.
 
-<jsslogo.jpg, id=51, 540.0175pt x 393.47pt>
+<jsslogo.jpg, id=59, 540.0175pt x 393.47pt>
 File: jsslogo.jpg Graphic file (type jpg)
 <use jsslogo.jpg>
 Package pdftex.def Info: jsslogo.jpg  used on input line 69.
@@ -664,40 +664,7 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 10 []
  []
 
-[10] (./article.bbl
-
-Package xcolor Warning: Incompatible color definition on input line 22.
-
-
-Package xcolor Warning: Incompatible color definition on input line 23.
-
-)
-
-Package xcolor Warning: Incompatible color definition on input line 651.
-
-
-Package xcolor Warning: Incompatible color definition on input line 651.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 651--651
-
- []
-
-LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/m/it' tried instead on input line 651.
-
-Package xcolor Warning: Incompatible color definition on input line 651.
-
-
-Package xcolor Warning: Incompatible color definition on input line 651.
-
-
-Package xcolor Warning: Incompatible color definition on input line 651.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+[10]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 11
  []
@@ -707,23 +674,63 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 12 []
  []
 
-[12] (./article.aux)
+[12]
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 13
+ []
+
+[13] (./article.bbl
+
+Package xcolor Warning: Incompatible color definition on input line 22.
+
+
+Package xcolor Warning: Incompatible color definition on input line 23.
+
+)
+
+Package xcolor Warning: Incompatible color definition on input line 812.
+
+
+Package xcolor Warning: Incompatible color definition on input line 812.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 812--812
+
+ []
+
+LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
+(Font)              Font shape `T1/pzc/m/it' tried instead on input line 812.
+
+Package xcolor Warning: Incompatible color definition on input line 812.
+
+
+Package xcolor Warning: Incompatible color definition on input line 812.
+
+
+Package xcolor Warning: Incompatible color definition on input line 812.
+
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10.95 14 []
+ []
+
+[14] (./article.aux)
 Package rerunfilecheck Info: File `article.out' has not changed.
-(rerunfilecheck)             Checksum: 1A6EAC02921277F9A3A1C339AEFCC2E2;1691.
+(rerunfilecheck)             Checksum: 17EDAE899F9039060A80789C58A8B384;2929.
  ) 
 Here is how much of TeX's memory you used:
- 20966 strings out of 480236
- 403462 string characters out of 5894788
- 655199 words of memory out of 5000000
- 38471 multiletter control sequences out of 15000+600000
+ 20978 strings out of 480236
+ 404330 string characters out of 5894788
+ 655261 words of memory out of 5000000
+ 38475 multiletter control sequences out of 15000+600000
  544166 words of font info for 66 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,9n,103p,389b,505s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 99i,9n,103p,924b,522s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmb10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbo10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtto10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on article.pdf (12 pages, 343559 bytes).
+Output written on article.pdf (14 pages, 354448 bytes).
 PDF statistics:
- 222 PDF objects out of 1000 (max. 8388607)
- 180 compressed objects within 2 object streams
- 47 named destinations out of 1000 (max. 500000)
- 106 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 246 PDF objects out of 1000 (max. 8388607)
+ 201 compressed objects within 3 object streams
+ 55 named destinations out of 1000 (max. 500000)
+ 122 words of extra memory for PDF output out of 10000 (max. 10000000)
 

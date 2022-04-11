@@ -177,8 +177,7 @@ md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 
 Several historical facts are contested. However, up to this point, dealing with negative historical dates in R was difficult and only manageable if authors made arbitrary choices to complete dates, making them biased, or left these in character class, instead of date class, limiting their analytical usefulness. Take, for example, the population sizes in the Roman Empire, which has been a topic of heated debates among some academics (see Scheidel 2008). Various accounts diverge in how they estimate population size and, therefore, the conclusions about the of the population at certain points in time differs (Scheidel 2008). Below, we build a dataset for the populations of mainland Italy during the Roman Empire (Scheidel 2008, p. 31) to illustrate how \pkg{messydates} facilitate the annotation and the conversion of historical dates for analysis.  
 
-```{r}
-scipen(999)
+```{r case study 1, warning=FALSE}
 roman_population <- tibble::tibble(period = as_messydate(c("200 BC:100 BC", "100 BC:1 AD", "1 AD:150 AD", "150 AD:200 AD")),
                                    population_min = c(3900000, 4400000, 5500000, 6000000),
                                    population_max = c(8000000, 10000000, 16000000, 2000000))
@@ -198,7 +197,7 @@ Getting the timing can be important for researchers, however, when faced with da
 
 Below, we use the `consolidate()` function to transform the Emperors database into a single dataset by, first, favoring the United Nations of Rome Victrix (UNVR) dataset over others in the database. Second, we select all rows that are present in "every" one of the data sets (i.e. rows present in all the datasets only) and columns that are present in "any" of the datasets in the database (i.e. rows present in at least one of the datasets). Third, we resolve the conflicts between observations using the "coalesce" method that takes the first non-NA value. Finally, we select "ID" as the key variable to which observations will be matched. Then, we use \pkg{dplyr} in combination with \pkg{messydates} to create three different date variables to be our dependent variables: imprecise (year only), arbitrary (the minimal value for a data range), and random (a random value within the date range). With these variables in hand, we build three simple linear regression models correlating each of the dependent variables to the variable on how Roman Emperors rose to power. We use \pkg{stargazer} to visualize and compare the regression results.
 
-```{r case study 1, warning=FALSE}
+```{r case study 2, warning=FALSE}
 library(manydata)
 library(dplyr)
 library(stargazer)
@@ -214,7 +213,7 @@ emperors <- manydata::consolidate(database = manydata::favour(manydata::emperors
 year_only <- lm(years_only ~ Rise , emperors)
 arbitrary <- lm(arbitrary ~ Rise, emperors)
 random <- lm(random ~ Rise, emperors)
-stargazer(year, arbitrary, random, type = "text")
+stargazer(year_only, arbitrary, random, type = "text")
 ```
 
 Notice how the regression coefficients change when we take the year only of dates, add an arbitrary cut off point to dates, or get random dates from the range. However, in this case, we can say that the relationship between Roman Emperors rising to power through birthrights and time in power is both positive and statistically significant across the three cases; therefore, more robust than otherwise.

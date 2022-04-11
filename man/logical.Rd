@@ -6,6 +6,7 @@
 \alias{is_intersecting}
 \alias{is_element}
 \alias{is_similar}
+\alias{is_uncertain}
 \title{Logical tests on messy dates}
 \usage{
 is_messydate(x)
@@ -15,6 +16,8 @@ is_intersecting(x, y)
 is_element(x, y)
 
 is_similar(x, y)
+
+is_uncertain(x)
 }
 \arguments{
 \item{x, y}{Messy date or other class objects}
@@ -44,4 +47,5 @@ is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
 is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
 is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
+is_uncertain(as_messydate(c("2012-06-02", "2012-06")))
 }

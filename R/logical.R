@@ -51,3 +51,13 @@ is_element <- function(x, y) {
 is_similar <- function(x, y) {
   year(x) == year(y) & month(x) == day(y) & day(x) == month(y)
 }
+
+#' @rdname logical
+#' @examples
+#' is_uncertain(as_messydate(c("2012-06-02", "2012-06")))
+#' @export
+is_uncertain <- function(x) {
+  stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
+                      |^-[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$",
+                      negate = TRUE)
+}

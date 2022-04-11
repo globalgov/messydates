@@ -31,8 +31,8 @@ NULL
 #' @export
 min.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(x) as.character(min(x, na.rm = na.rm)))
+  y <- sapply(x, function(y) ifelse(is_uncertain(y), expand(y), y))
+  y <- sapply(y, function(x) min(x, na.rm = na.rm))
   y
 }
 
@@ -40,8 +40,8 @@ min.messydt <- function(..., na.rm = TRUE) {
 #' @export
 max.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(x) as.character(max(x, na.rm = na.rm)))
+  y <- sapply(x, function(y) ifelse(is_uncertain(y), expand(y), y))
+  y <- sapply(y, function(x) max(x, na.rm = na.rm))
   y
 }
 
@@ -50,9 +50,8 @@ max.messydt <- function(..., na.rm = TRUE) {
 #' @export
 median.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
+  y <- sapply(x, function(y) ifelse(is_uncertain(y), expand(y), y))
   y <- sapply(y, function(z) {
-
     if (length(z) %% 2 == 0) {
       z <- unlist(z[-1])
       z <- as.character(median(z, na.rm = na.rm))
@@ -74,7 +73,7 @@ median.messydt <- function(..., na.rm = TRUE) {
 #' @export
 mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
+  y <- sapply(x, function(y) ifelse(is_uncertain(y), expand(y), y))
   y <- sapply(y, function(x) {
     if (length(x) > 1 & stringr::str_detect(x[1], "^-", negate = TRUE)) {
       x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
@@ -95,7 +94,7 @@ modal <- function(..., na.rm = FALSE) UseMethod("modal")
 #' @export
 modal.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
+  y <- sapply(x, function(y) ifelse(is_uncertain(y), expand(y), y))
   getmode <- function(v) {
     uniqv <- unique(v)
     uniqv[which.max(tabulate(match(v, uniqv)))]
@@ -124,7 +123,7 @@ random.messydt <- function(...,
                            replace = FALSE,
                            prob = NULL) {
   x <- list(...)
-  y <- expand(x[[1]])
+  y <- sapply(x, function(y) ifelse(is_uncertain(y), expand(y), y))
   y <- sapply(y, function(x) {
     if (length(x) > 1) x <- as.character(sample(x, size = 1))
     x

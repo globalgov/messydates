@@ -16,7 +16,7 @@ expand(x, approx_range)
 That is, 3 days for day approximation, 3 months for month approximation,
 3 years for year/whole date approximation, 3 years and 3 months for year-
 month approximation, and 3 months and 3 days for month-day approximation.
-If 0, returns original values and removes signs for aproximate dates.}
+If 0, returns original values and removes signs for approximate dates.}
 }
 \value{
 A list of dates, including all dates in each range or set.

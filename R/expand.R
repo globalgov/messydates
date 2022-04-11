@@ -71,6 +71,12 @@ expand_unspecified <- function(dates) {
                                     "\\1\\2-11-01..\\2-11-30\\3")
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})-([:digit:]{2})($|,)",
                                     "\\1\\2-\\3-01..\\2-\\3-31\\4")
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) < 23,
+                  paste0("20", dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) > 23,
+                  paste0("19", dates), dates)
   dates <- stringr::str_replace_all(dates, ",,", ",")
   dates
 }

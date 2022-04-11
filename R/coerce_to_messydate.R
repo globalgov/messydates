@@ -72,6 +72,18 @@ standardise_date_order <- function(dates) {
                   stringr::str_replace_all(dates,
                                            "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
                                            "\\3-\\2-\\1"))
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 12 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,
+                  stringr::str_replace_all(dates,
+                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                           "\\3-\\2-\\1"), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,
+                  stringr::str_replace_all(dates,
+                                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\3-\\1-\\2"), dates)
   dates
 }
 

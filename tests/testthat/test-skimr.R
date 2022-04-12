@@ -9,5 +9,5 @@ test_that("skimr report works", {
   expect_equal(a$skim_type, c("character", "messydt"))
   expect_equal(a$skim_variable, c("event", "messydates"))
   expect_equal(a$n_missing, c(0, 0))
-  expect_length(a, 14)
+  expect_equal(ncol(a), 13)
 })

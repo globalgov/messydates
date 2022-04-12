@@ -66,11 +66,9 @@ standardise_date_separators <- function(dates) {
 standardise_date_order <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
-                  stringr::str_replace_all(dates,
-                                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
                                            "\\3-\\1-\\2"),
-                  stringr::str_replace_all(dates,
-                                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                  stringr::str_replace_all(dates,"^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
                                            "\\3-\\2-\\1"))
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 12 &
@@ -81,8 +79,7 @@ standardise_date_order <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,
-                  stringr::str_replace_all(dates,
-                                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
                                            "\\3-\\1-\\2"), dates)
   dates
 }
@@ -142,11 +139,14 @@ add_zero_padding <- function(dates) {
   dates <- stringr::str_replace_all(dates, "^\\?([:digit:]{1})$", "000\\1?")
   dates <- stringr::str_replace_all(dates, "^\\?([:digit:]{2})$", "00\\1?")
   dates <- stringr::str_replace_all(dates, "^\\?([:digit:]{3})$", "0\\1?")
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+  dates <- ifelse(stringr::str_detect(dates,
+                                      "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
                   paste0("000", dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+  dates <- ifelse(stringr::str_detect(dates,
+                                      "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
                   paste0("00", dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
+  dates <- ifelse(stringr::str_detect(dates,
+                                      "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
                   paste0("0", dates), dates)
   # Year only
   dates <- stringr::str_replace_all(dates, "^([:digit:]{1})$", "000\\1")

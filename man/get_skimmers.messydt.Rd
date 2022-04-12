@@ -13,9 +13,10 @@
 A \code{{skimr}} template for messydt objects.
 }
 \description{
-Defines a \code{{skimr}} template for messydt objects. The helper functions take a
-\code{{messydt}} vector as an input and return a single value to be displayed
-by the \code{{skimr}} report. The vector is first resolved yielding a single
+Defines a \code{{skimr}} template for messydt objects.
+The helper functions take a \code{{messydt}} vector as an input and
+return a single value to be displayed by the \code{{skimr}} report.
+The vector is first resolved yielding a single
 statistic per observation before being summarized again by a function
 (mean, max, min, etc.) at the vector level.
 }

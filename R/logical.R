@@ -33,7 +33,7 @@ is_messydate <- function(x) inherits(x, "messydt")
 #' as_messydate("2012-02-01..2012-02-22"))
 #' @export
 is_intersecting <- function(x, y) {
-  length(intersect(x, y)) > 0
+  length(intersect(unlist(expand(x)), unlist(expand(y)))) > 0
 }
 
 #' @rdname logical

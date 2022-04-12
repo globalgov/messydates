@@ -4,6 +4,8 @@ unspecified <- as_messydate("2008-XX-03")
 set <- as_messydate("{2012-01-01,2012-01-12}")
 negative <- as_messydate("20 BC")
 unspecified_range <- as_messydate("2010..2010-12")
+negative_incomplete_range <- as_messydate("200 BC:199 BC")
+negative_incomplete_set <- as_messydate("{-200, -199}")
 
 test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_equal(as.character(expand(range)),
@@ -20,6 +22,8 @@ test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_equal(lengths(expand(unspecified_range)), 365)
   skip_on_os("linux")
   expect_equal(as.character(expand(negative)[[1]][1]), "-0020-01-01")
+  expect_equal(lengths(expand(negative_incomplete_range)), 730)
+  expect_equal(lengths(expand(negative_incomplete_set)), 730)
 })
 
 ly <- as_messydate("~2000-01-01")

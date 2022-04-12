@@ -36,11 +36,11 @@ resequence <- function(data, vars, unity = "\\.\\.") {
         dates <- dates[!grepl("9999", dates)]
 
       dmax <- max(lubridate::as.duration(
-        lubridate::interval(dates[1 : (length(dates) - 1)],
-                            dates[2 : (length(dates))])))
+        lubridate::interval(dates[1:(length(dates) - 1)],
+                            dates[2:(length(dates))])))
       dmax <- which(lubridate::as.duration(
-        lubridate::interval(dates[1 : (length(dates) - 1)],
-                            dates[2 : (length(dates))])) == as.duration(dmax))
+        lubridate::interval(dates[1:(length(dates) - 1)],
+                            dates[2:(length(dates))])) == as.duration(dmax))
       dates <- dates[c(1, dmax + 1)]
     }
 

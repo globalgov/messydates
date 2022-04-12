@@ -4,14 +4,11 @@
 \alias{stats}
 \alias{maxmax}
 \alias{minmin}
-\alias{meanmean}
 \title{Summary statistic functions}
 \usage{
 maxmax(date)
 
 minmin(date)
-
-meanmean(date)
 }
 \arguments{
 \item{date}{A \code{messydt} vector}
@@ -32,8 +29,6 @@ a vector level statistic is computed.
 
 \item \code{minmin}: Calculate the farthest date in the past of a \code{messydt}
 vector
-
-\item \code{meanmean}: Calculate the mean date of a \code{messydt} vector
 }}
 
 \seealso{

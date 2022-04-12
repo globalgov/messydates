@@ -9,6 +9,9 @@
 #' within a messy date range or set.
 #' `is_similar()` tests whether two dates contain similar components.
 #' This can be useful for identifying dates that may be typos of one another.
+#' `is_uncertain()` tests whether a date is uncertain.
+#' Uncertain dates can contain markers that they are approximate (i.e. ~),
+#' uncertain (i.e. % or ?), or be incomplete dates (i.e. year only).
 #' @name logical
 #' @param x,y Messy date or other class objects
 #' @return A logical vector the length of the messy dates passed.

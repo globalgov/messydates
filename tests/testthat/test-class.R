@@ -11,6 +11,7 @@ test_that("incompleteness works", {
   expect_equal(unclass(as_messydate("2012-1")), "2012-01")
   expect_equal(unclass(as_messydate("2012")), "2012")
   expect_equal(unclass(as_messydate("1")), "0001")
+  expect_equal(unclass(as_messydate("12-10-93")), "93-10-12")
 })
 
 test_that("uncertainty works", {

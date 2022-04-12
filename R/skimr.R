@@ -24,8 +24,8 @@ get_skimmers.messydt <- function(column) {
     n_empty = skimr::n_empty,
     n_unique = skimr::n_unique,
     max = maxmax,
-    min = minmin,
-    mean = meanmean,
+    min = minmin
+    # mean = meanmean
     # median = medianmedian,
     # mode = meanmode,
     # uncertainty = uncertainty

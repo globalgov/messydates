@@ -25,11 +25,11 @@ minmin <- function(date) {
   min(as.Date(date, min), na.rm = TRUE)
 }
 
-#' @describeIn stats Calculate the mean date of a `messydt` vector
-#' @export
-meanmean <- function(date) {
-  mean(as.Date(date, mean), na.rm = TRUE)
-}
+#' #' @describeIn stats Calculate the mean date of a `messydt` vector
+#' #' @export
+# meanmean <- function(date) {
+#   mean(as.Date(date, mean), na.rm = TRUE)
+# }
 
 #' #' @describeIn stats Calculate the median date of a `messydt` vector
 #' #' @export

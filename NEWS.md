@@ -1,3 +1,21 @@
+# messydates 0.2.2
+
+## Package
+
+* Closed #41 by creating `{skimr}` template for "messydt" class
+
+## Functions
+
+* Updated how 6 digit dates are handled
+  * Closed #45 by improving how `as_messydates()` re-orders date components if necessary
+  * Updated `expand()` to allow for the expansion of 6 digit dates
+* Updated how incomplete date sets and date ranges are expanded 
+  * Closed #48 by adding zero padding incomplete date ranges and sets of dates
+  * Updated `expand()` to allow for the expansion of incomplete date ranges and sets of dates
+* Updated how resolve functions to make these run faster
+  * Added `is_uncertain()` function that provides a logical test for uncertain dates
+  * Closed #49 by updating resolve functions to only expand dates if they are uncertain
+
 # messydates 0.2.1
 
 ## Package

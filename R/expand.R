@@ -7,7 +7,14 @@
 #' Imprecise dates (dates only containing information on year and/or month)
 #' are also expanded to include possible dates in that year and/or month.
 #' Annotation is removed from uncertain dates with unreliable sources ('?').
+#' These dates are expanded normally though if they are incomplete.
 #' @param x A `messydt` object.
+#' @param approx_range Range to expand approximate dates,
+#' or date components, annotated with '~', by default 3.
+#' That is, 3 days for day approximation, 3 months for month approximation,
+#' 3 years for year/whole date approximation, 3 years and 3 months for year-
+#' month approximation, and 3 months and 3 days for month-day approximation.
+#' If 0, returns original values and removes signs for approximate dates.
 #' @return A list of dates, including all dates in each range or set.
 #' @export
 expand <- function(x, approx_range) UseMethod("expand")
@@ -16,11 +23,6 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' @importFrom stringr str_replace_all str_split str_detect
 #' str_extract str_remove_all
 #' @importFrom lubridate as_date ymd years
-#' @param approx_range Range to expand approximate dates to, by default 3.
-#' That is, 3 days for day approximation, 3 months for month approximation,
-#' 3 years for year/whole date approximation, 3 years and 3 months for year-
-#' month approximation, and 3 months and 3 days for month-day approximation.
-#' If 0, returns original values and removes signs for approximate dates.
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
@@ -29,7 +31,6 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' @export
 expand.messydt <- function(x, approx_range = 3) {
   x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
-  # Uncertain dates are not expanded.
   x <- suppressWarnings(expand_approximate(x, approx_range))
   x <- expand_unspecified(x)
   x <- expand_negative(x)

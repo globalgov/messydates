@@ -9,9 +9,9 @@
 #' within a messy date range or set.
 #' `is_similar()` tests whether two dates contain similar components.
 #' This can be useful for identifying dates that may be typos of one another.
-#' `is_uncertain()` tests whether a date is uncertain.
-#' Uncertain dates can contain markers that they are approximate (i.e. ~),
-#' uncertain (i.e. % or ?), or be incomplete dates (i.e. year only).
+#' `is_precise()` tests whether a date is precise (i.e. an 8 digit date).
+#' Non-precise dates contain markers that they are approximate (i.e. ~),
+#' unreliable (i.e. % or ?), or are incomplete dates (i.e. year only).
 #' @name logical
 #' @param x,y Messy date or other class objects
 #' @return A logical vector the length of the messy dates passed.
@@ -57,10 +57,9 @@ is_similar <- function(x, y) {
 
 #' @rdname logical
 #' @examples
-#' is_uncertain(as_messydate(c("2012-06-02", "2012-06")))
+#' is_precise(as_messydate(c("2012-06-02", "2012-06")))
 #' @export
-is_uncertain <- function(x) {
+is_precise <- function(x) {
   stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
-                      |^-[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$",
-                      negate = TRUE)
+                      |^-[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$")
 }

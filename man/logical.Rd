@@ -6,7 +6,7 @@
 \alias{is_intersecting}
 \alias{is_element}
 \alias{is_similar}
-\alias{is_uncertain}
+\alias{is_precise}
 \title{Logical tests on messy dates}
 \usage{
 is_messydate(x)
@@ -17,7 +17,7 @@ is_element(x, y)
 
 is_similar(x, y)
 
-is_uncertain(x)
+is_precise(x)
 }
 \arguments{
 \item{x, y}{Messy date or other class objects}
@@ -35,9 +35,9 @@ two messy dates, leveraging \code{intersect()}.
 within a messy date range or set.
 \code{is_similar()} tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.
-\code{is_uncertain()} tests whether a date is uncertain.
-Uncertain dates can contain markers that they are approximate (i.e. ~),
-uncertain (i.e. \% or ?), or be incomplete dates (i.e. year only).
+\code{is_precise()} tests whether a date is precise (i.e. an 8 digit date).
+Non-precise dates contain markers that they are approximate (i.e. ~),
+unreliable (i.e. \% or ?), or are incomplete dates (i.e. year only).
 }
 \examples{
 is_messydate(as_messydate("2012-01-01"))
@@ -50,5 +50,5 @@ is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
 is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
 is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
-is_uncertain(as_messydate(c("2012-06-02", "2012-06")))
+is_precise(as_messydate(c("2012-06-02", "2012-06")))
 }

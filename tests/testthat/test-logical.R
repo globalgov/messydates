@@ -20,3 +20,8 @@ test_that("is_similar works", {
   expect_true(is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06")))
   expect_false(is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06")))
 })
+
+test_that("is_precise works", {
+  expect_true(is_precise(as_messydate("2012-06-02")))
+  expect_false(is_precise(as_messydate("2012?-06-22")))
+})

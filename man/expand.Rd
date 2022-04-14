@@ -12,7 +12,8 @@ expand(x, approx_range)
 \arguments{
 \item{x}{A \code{messydt} object.}
 
-\item{approx_range}{Range to expand approximate dates to, by default 3.
+\item{approx_range}{Range to expand approximate dates,
+or date components, annotated with '~', by default 3.
 That is, 3 days for day approximation, 3 months for month approximation,
 3 years for year/whole date approximation, 3 years and 3 months for year-
 month approximation, and 3 months and 3 days for month-day approximation.
@@ -29,6 +30,7 @@ these values to include all the possible dates implied.
 Imprecise dates (dates only containing information on year and/or month)
 are also expanded to include possible dates in that year and/or month.
 Annotation is removed from uncertain dates with unreliable sources ('?').
+These dates are expanded normally though if they are incomplete.
 }
 \section{Methods (by class)}{
 \itemize{

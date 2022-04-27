@@ -25,12 +25,13 @@ A list of dates, including all dates in each range or set.
 \description{
 These functions expand on date ranges, sets of dates, and unspecified or
 approximate dates (annotated with '..', '{ , }', 'XX' or '~').
-As these dates may refer to several possible dates, the function "opens"
-these values to include all the possible dates implied.
+As these messydates may refer to several possible dates,
+the function "opens" these values to reveal a vector of all the possible
+dates implied.
 Imprecise dates (dates only containing information on year and/or month)
-are also expanded to include possible dates in that year and/or month.
-Annotation is removed from uncertain dates with unreliable sources ('?').
-These dates are expanded normally though if they are incomplete.
+are also expanded to include possible dates within that year and/or month.
+The function removes the annotation from dates with unreliable sources ('?'),
+before being expanded normally as though if they were incomplete.
 }
 \section{Methods (by class)}{
 \itemize{

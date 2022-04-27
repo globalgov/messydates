@@ -37,7 +37,7 @@ within a messy date range or set.
 This can be useful for identifying dates that may be typos of one another.
 \code{is_precise()} tests whether a date is precise (i.e. an 8 digit date).
 Non-precise dates contain markers that they are approximate (i.e. ~),
-unreliable (i.e. \% or ?), or are incomplete dates (i.e. year only).
+unreliable (i.e. \% or ?), or incomplete dates (i.e. year only).
 }
 \examples{
 is_messydate(as_messydate("2012-01-01"))

@@ -1,10 +1,12 @@
 #' Summary statistic functions
 #'
-#' `messydates` provides extensions to a variety of functions with R's stats
-#' package to simplify creating summaries of data with `{skimr}`. All functions
-#' take a `messydt` vector as an input and return a single statistic. Note that
-#' individual dates are first resolved (second term in the function name) before
-#' a vector level statistic is computed.
+#' `{messydates}` provides extensions to a variety of functions with R's `{stats}`
+#' package to simplify the creation of summary reports of data with `{skimr}`.
+#' All functions take a `messydt` vector as an input and return a single
+#' statistic. Note that individual dates are first resolved (second term in the
+#' function name) before a vector level statistic is computed e.g. `maxmax()`
+#' corresponds to the maximum date of the maximum of the vector resulting from
+#' a resolved `{messydt}`
 #'
 #' @seealso [get_skimmers()] for customizing the functions called by [skim()].
 #' @param date A `messydt` vector

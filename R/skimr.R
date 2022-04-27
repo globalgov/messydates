@@ -4,7 +4,7 @@
 #' Defines a `{skimr}` template for messydt objects.
 #' The helper functions take a `{messydt}` vector as an input and
 #' return a single value to be displayed by the `{skimr}` report.
-#' The vector is first resolved yielding a single
+#' The vector is first resolved and yields a single
 #' statistic per observation before being summarized again by a function
 #' (mean, max, min, etc.) at the vector level.
 #' @param column A messydt object.

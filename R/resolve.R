@@ -32,9 +32,9 @@ NULL
 min.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = F)
+              recursive = FALSE)
   y <- unlist(lapply(y, function(x) min(x, na.rm = na.rm)),
-              recursive = F)
+              recursive = FALSE)
   y
 }
 
@@ -43,9 +43,9 @@ min.messydt <- function(..., na.rm = TRUE) {
 max.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = F)
+              recursive = FALSE)
   y <- unlist(lapply(y, function(x) max(x, na.rm = na.rm)),
-              recursive = F)
+              recursive = FALSE)
   y
 }
 
@@ -55,7 +55,7 @@ max.messydt <- function(..., na.rm = TRUE) {
 median.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = F)
+              recursive = FALSE)
   y <- unlist(lapply(y, function(z) {
     if (length(z) %% 2 == 0) {
       z <- unlist(z[-1])
@@ -66,7 +66,7 @@ median.messydt <- function(..., na.rm = TRUE) {
       z <- as.character(median(z, na.rm = na.rm))
       z
     }
-  }), recursive = F)
+  }), recursive = FALSE)
   y
 }
 
@@ -79,7 +79,7 @@ median.messydt <- function(..., na.rm = TRUE) {
 mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = F)
+              recursive = FALSE)
   y <- unlist(lapply(y, function(x) {
     if (length(x) > 1 & stringr::str_detect(x[1], "^-", negate = TRUE)) {
       x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
@@ -89,7 +89,7 @@ mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
                                          trim = 0, na.rm = TRUE)))
     }
     x
-  }), recursive = F)
+  }), recursive = FALSE)
   y
 }
 
@@ -102,7 +102,7 @@ modal <- function(..., na.rm = FALSE) UseMethod("modal")
 modal.messydt <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = F)
+              recursive = FALSE)
   getmode <- function(v) {
     uniqv <- unique(v)
     uniqv[which.max(tabulate(match(v, uniqv)))]
@@ -110,7 +110,7 @@ modal.messydt <- function(..., na.rm = TRUE) {
   y <- unlist(lapply(y, function(x) {
     if (length(x) > 1) x <- as.character(getmode(x))
     x
-  }), recursive = F)
+  }), recursive = FALSE)
   y
 }
 
@@ -132,10 +132,10 @@ random.messydt <- function(...,
                            prob = NULL) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = F)
+              recursive = FALSE)
   y <- unlist(lapply(y, function(x) {
     if (length(x) > 1) x <- as.character(sample(x, size = 1))
     x
-  }), recursive = F)
+  }), recursive = FALSE)
   y
 }

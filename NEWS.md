@@ -13,8 +13,9 @@
   * Closed #48 by adding zero padding incomplete date ranges and sets of dates
   * Updated `expand()` to allow for the expansion of incomplete date ranges and sets of dates
 * Updated how resolve functions to make these run faster
-  * Added `is_uncertain()` function that provides a logical test for uncertain dates
+  * Added `is_precise()` function that provides a logical test for precise dates
   * Closed #49 by updating resolve functions to only expand dates if they are uncertain
+* Added `text_to date()` function that extracts dates from texts
 
 # messydates 0.2.1
 

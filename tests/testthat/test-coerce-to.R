@@ -5,6 +5,7 @@ test_that("Coercion from other date classes into messydt works", {
   character <- "2010-10-10"
   character2 <- "AD2010-10-10"
   character3 <- "{BC2010-10-10,BC2010-10-11,BC2010-10-12}"
+  month_text <- "10 October 2010"
   messy <- as_messydate("2010-10-10")
   messyneg <- as_messydate("{-2010-10-10,-2010-10-11,-2010-10-12}")
   expect_equal(as_messydate(date), messy)
@@ -13,4 +14,5 @@ test_that("Coercion from other date classes into messydt works", {
   expect_equal(as_messydate(character), messy)
   expect_equal(as_messydate(character2), messy)
   expect_equal(as_messydate(character3), messyneg)
+  expect_equal(as_messydate(month_text), messy)
 })

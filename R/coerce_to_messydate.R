@@ -11,6 +11,7 @@
 #' as_messydate("2021-02-01")
 #' as_messydate("20-01-2021")
 #' as_messydate("01-20-2021")
+#' as_messydate("20 September 2021")
 #' as_messydate("2021-02-01?")
 #' as_messydate("2021-02-01~")
 #' as_messydate("2021-02-01%")
@@ -44,6 +45,7 @@ as_messydate.POSIXlt <- function(x) {
 #' @export
 as_messydate.character <- function(x) {
   d <- standardise_date_separators(x)
+  d <- standardise_months(d)
   d <- standardise_date_order(d)
   d <- standardise_ranges(d)
   d <- standardise_unspecifieds(d)
@@ -60,6 +62,23 @@ standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates, "\\/", "-")
   dates <- stringr::str_remove_all(dates, "\\(|\\)|\\{|\\}|\\[|\\]")
   dates <- stringr::str_trim(dates, side = "both")
+  dates
+}
+
+standardise_months <- function(dates) {
+  dates <- gsub(" january ", "-01-", dates, ignore.case = TRUE)
+  dates <- gsub(" february ", "-02-", dates, ignore.case = TRUE)
+  dates <- gsub(" march ", "-03-", dates, ignore.case = TRUE)
+  dates <- gsub(" april ", "-04-", dates, ignore.case = TRUE)
+  dates <- gsub(" may ", "-05-", dates, ignore.case = TRUE)
+  dates <- gsub(" june ", "-06-", dates, ignore.case = TRUE)
+  dates <- gsub(" july ", "-07-", dates, ignore.case = TRUE)
+  dates <- gsub(" august ", "-08-", dates, ignore.case = TRUE)
+  dates <- gsub(" september ", "-09-", dates, ignore.case = TRUE)
+  dates <- gsub(" october ", "-10-", dates, ignore.case = TRUE)
+  dates <- gsub(" november ", "-11-", dates, ignore.case = TRUE)
+  dates <- gsub(" december ", "-12-", dates, ignore.case = TRUE)
+  dates <- stringr::str_squish(dates)
   dates
 }
 

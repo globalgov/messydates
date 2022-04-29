@@ -61,7 +61,6 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("lintr")
-          remotes::install_cran("goodpractice")
           remotes::install_cran("spelling")
         shell: Rscript {0}
 
@@ -101,11 +100,6 @@ jobs:
 
       - name: Lint
         run: lintr::lint_package()
-        shell: Rscript {0}
-
-      - name: Goodpractice
-        run: |
-          goodpractice::gp()
         shell: Rscript {0}
 
       - name: Spell check

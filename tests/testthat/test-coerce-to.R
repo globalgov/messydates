@@ -21,4 +21,7 @@ test_that("dates are properly extracted from text", {
   expect_equal(as_messydate(c("This function was created on the 29 September 2021",
                               "Tomorrow is 13-10-2021"), text = TRUE),
                as_messydate(c("29-9-2021", "13-10-2021")))
+  expect_equal(as_messydate("signed on this thirtieth day of October one thousand nine hundred and forty-seven",
+                            text = TRUE),
+               as_messydate(c("30-10-1947")))
 })

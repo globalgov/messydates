@@ -291,7 +291,8 @@ extract_from_text <- function(v) {
   out <- gsub(",", "", out)
   # remove ordinal signs and date related articles
   out <- gsub("de |of ", " ", out)
-  out <- gsub("\\dst |\\dnd |\\drd |\\dth |\\d day|st |nd |rd |th |day ", " ", out)
+  out <- ifelse(grepl("\\dst |\\dnd |\\drd |\\dth |\\d day ", out),
+                gsub("st |nd |rd |th |day ", " ", out), out)
   # add hyphen between numbers in words
   out <- ifelse(grepl("\\w*ty\\b \\w*st\\b|\\w*ty\\b \\w*nd\\b|
                       |\\w*ty\\b \\w*rd\\b|\\w*ty\\b \\w*th\\b", out),

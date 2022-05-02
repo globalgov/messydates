@@ -206,10 +206,10 @@ emperors <- manydata::consolidate(database = manydata::favour(manydata::emperors
                                   cols = "any",
                                   resolve = "coalesce",
                                   key = "ID") %>% 
-  select(c(ID, Rise, Birth, Beg, End)) %>% 
-  mutate(years_only = as.numeric(End) - as.numeric(Beg),
-         arbitrary = md_duration(Beg, End, "min"),
-         random = md_duration(Beg, End, "random"))
+  select(c(ID, Rise, Birth, Beg, End))
+  mutate(years_only = as.numeric((as.Date(End, max) - as.Date(Beg, min))/365.25),
+         arbitrary = as.numeric(as.Date(End, max) - as.Date(Beg, min)),
+         random = as.Date(End, random) - as.Date(Beg, random))
 year_only <- lm(years_only ~ Rise , emperors)
 arbitrary <- lm(arbitrary ~ Rise, emperors)
 random <- lm(random ~ Rise, emperors)

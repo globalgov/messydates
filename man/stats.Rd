@@ -17,13 +17,15 @@ minmin(date)
 A statistic describing the \code{messydt} vector.
 }
 \description{
-\code{{messydates}} provides extensions to a variety of functions with R's \code{{stats}}
-package to simplify the creation of summary reports of data with \code{{skimr}}.
+\code{{messydates}} provides extensions to a variety of functions
+with R's \code{{stats}} package to simplify the creation of
+summary reports of data with \code{{skimr}}.
 All functions take a \code{messydt} vector as an input and return a single
-statistic. Note that individual dates are first resolved (second term in the
-function name) before a vector level statistic is computed e.g. \code{maxmax()}
-corresponds to the maximum date of the maximum of the vector resulting from
-a resolved \code{{messydt}}
+statistic.
+Note that individual dates are first expanded and resolved
+before a vector level statistic is computed
+(e.g. \code{maxmax()} corresponds to the maximum date of the maximum
+of the vector resulting from an expanded \code{{messydt}})
 }
 \section{Functions}{
 \itemize{

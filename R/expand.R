@@ -8,7 +8,7 @@
 #' Imprecise dates (dates only containing information on year and/or month)
 #' are also expanded to include possible dates within that year and/or month.
 #' The function removes the annotation from dates with unreliable sources ('?'),
-#' before being expanded normally as though if they were incomplete.
+#' before being expanded normally as though they were incomplete.
 #' @param x A `messydt` object.
 #' @param approx_range Range to expand approximate dates,
 #' or date components, annotated with '~', by default 3.

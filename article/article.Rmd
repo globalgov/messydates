@@ -48,10 +48,6 @@ options(prompt = 'R> ', continue = '+ ')
 
 Dates are often messy. Whether historical (or ancient), future, or even recent, we often only know approximately when an event occurred, that it happened within a particular period, an unreliable source means a date should be flagged as uncertain, or sources offer multiple, competing dates.
 
-As researchers, we often recognize this messiness but are forced to force non-existent precision on data so we can proceed with analysis. For example, if we only know something happened in a given month or year, we might just opt for the start of that month (e.g. `2021-07-01`) or year (`2021-01-01`), assuming that to err on the earlier (or later) side is a justifiable bias. However, this can create issues for inference in which sequence or timing is important. The goal of \pkg{messydates} is to help with this problem by retaining and working with various kinds of date imprecision.
-
-## A quick overview
-
 \pkg{messydates} implements the extended annotation standard for dates, the Extended Date/Time Format (EDTF), outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) for R. These include standardised notation for:
 
 -   unspecified date( component)s, e.g. `2012-XX-01` for the first of some unknown month in 2012 or 2012-01 for some unknown day in January 2012
@@ -64,7 +60,9 @@ As researchers, we often recognize this messiness but are forced to force non-ex
 
 Importantly, the package also includes a function for unpacking or expanding sets or ranges of dates into all dates consistent with how the date or set of dates is specified or annotated. Methods are also offered that can be used to make explicit how researchers convert date imprecision into precise dates for analysis, such as getting the `min()`, `max()`, or even a `random()` date from among the dates consistent with a set or range of dates. This greatly facilitates research transparency as well as robustness checks.
 
-<!-- Should we have a separate motivation section? If so, I would suggest we merge the first paragraph of the introduction and the quick overview section, to become the introduction and expand on the second paragraph of the introduction to become the motivation section. -->
+## Motivation
+
+As researchers, we often recognize this messiness but are forced to force non-existent precision on data so we can proceed with analysis. For example, if we only know something happened in a given month or year, we might just opt for the start of that month (e.g. `2021-07-01`) or year (`2021-01-01`), assuming that to err on the earlier (or later) side is a justifiable bias. However, this can create issues for inference in which sequence or timing is important. The goal of \pkg{messydates} is to help with this problem by retaining and working with various kinds of date imprecision.
 
 ## Relationship to other packages
 
@@ -146,13 +144,11 @@ tibble::tibble(min = as.Date(dates_expand, min),
                random = as.Date(dates_expand, random))
 ```
 
-<!-- Should we mention/illustrate the ability to do some arithmetic operations with messydates here? -->
-
 ## Additional functionality 
 
 Several other functions are also offered in the \pkg{messydates} package.
 
-For example, one can check various logical tests for messy date objects. `is_messydate()` tests whether the object inherits the `messydt` class. `is_intersecting()` tests whether there is any intersection between two messy dates. `is_element()` similarly tests whether a messy date can be found within a messy date range or set. `is_similar()` tests whether two dates contain similar components.
+For example, one can check various logical tests for messy date objects. `is_messydate()` tests whether the object inherits the `messydt` class. `is_intersecting()` tests whether there is any intersection between two messy dates. `is_element()` similarly tests whether a messy date can be found within a messy date range or set. `is_similar()` tests whether two dates contain similar components. `is_precise()` tests for whether date is precise.
 
 ```{r logical, warning=FALSE}
 is_messydate(as_messydate("2012-01-01"))
@@ -163,6 +159,8 @@ is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
 is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
 is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
+is_precise(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
+is_precise(as_messydate("2012-06-22"), as_messydate("2012-02"))
 ```
 
 Additionally, one can perform intersection (`md_intersect()`) and union (`md_union()`) on, inter alia, messy date class objects. Or 'join' that retains all elements, even if duplicated, with `md_multiset`.
@@ -171,6 +169,13 @@ Additionally, one can perform intersection (`md_intersect()`) and union (`md_uni
 md_intersect(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
+```
+
+As well, some arithmetic operations are available for messydates. For instance, one can add or subtract one year to all messydates in a vector.
+
+```{r}
+operate <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001", "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
+tibble::tibble(date = operate, add = operate + "1 year", subtract = operate - "1 year")
 ```
 
 ## Case Study 1 - The size of the population of the Roman Empire
@@ -190,7 +195,6 @@ roman_population_md <- roman_population %>%
   print()
 ```
 
-
 ## Case Study 2 - Roman Emperors Rise to Power: Inference and robustness checks with "messy" historical dates
 
 Getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (i.e. year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences where getting "timing" right is important. Assume, for example, certain researcher is interested in the relationship between how Roman Emperors rose to power and how long they stayed in powe. The researcher theorizes that Roman Emperors that rose to power through birthrights were less contested politically and popularly and, thus, tended to stay in power for longer than those Roman Emperors that rose to power in other ways (e.g. coup or appointment). The \pkg{manydata} contains a database on Roman Emperors composed of three datasets. We can also use \pkg{manydata} to "consolidate" the database into a single dataset using some combination of the rows and columns available. 
@@ -206,17 +210,17 @@ emperors <- manydata::consolidate(database = manydata::favour(manydata::emperors
                                   cols = "any",
                                   resolve = "coalesce",
                                   key = "ID") %>% 
-  select(c(ID, Rise, Birth, Beg, End))
-  mutate(years_only = as.numeric((as.Date(End, max) - as.Date(Beg, min))/365.25),
+  select(c(ID, Rise, Birth, Beg, End)) %>%
+  mutate(years_only = as.numeric((as.Date(End, min) - as.Date(Beg, min))/365.25),
          arbitrary = as.numeric(as.Date(End, max) - as.Date(Beg, min)),
-         random = as.Date(End, random) - as.Date(Beg, random))
+         random = as.numeric(as.Date(End, random) - as.Date(Beg, random)))
 year_only <- lm(years_only ~ Rise , emperors)
 arbitrary <- lm(arbitrary ~ Rise, emperors)
 random <- lm(random ~ Rise, emperors)
 stargazer(year_only, arbitrary, random, type = "text")
 ```
 
-Notice how the regression coefficients change when we take the year only of dates, add an arbitrary cut off point to dates, or get random dates from the range. However, in this case, we can say that the relationship between Roman Emperors rising to power through birthrights and time in power is both positive and statistically significant across the three cases; therefore, more robust than otherwise.
+Notice how the regression coefficients change when we use the year only for the dates, add an arbitrary cut off point to dates, or get random dates from the range. However, in this case, we can say that the relationship between Roman Emperors rising to power through birthrights and time in power is both positive and statistically significant across the three cases; therefore, more robust than otherwise.
 
 # Acknowledgements
 

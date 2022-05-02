@@ -103,7 +103,7 @@ standardise_date_order <- function(dates) {
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
                   stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
                                            "\\3-\\1-\\2"),
-                  stringr::str_replace_all(dates,"^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
                                            "\\3-\\2-\\1"))
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 12 &
@@ -291,8 +291,7 @@ extract_from_text <- function(v) {
   out <- gsub(",", "", out)
   # remove ordinal signs and date related articles
   out <- gsub("de |of ", " ", out)
-  out <- ifelse(grepl("\\dst |\\dnd |\\drd |\\dth |\\d day ", out),
-                gsub("st |nd |rd |th |day ", " ", out), out)
+  out <- gsub("\\dst |\\dnd |\\drd |\\dth |\\d day|st |nd |rd |th |day ", " ", out)
   # add hyphen between numbers in words
   out <- ifelse(grepl("\\w*ty\\b \\w*st\\b|\\w*ty\\b \\w*nd\\b|
                       |\\w*ty\\b \\w*rd\\b|\\w*ty\\b \\w*th\\b", out),
@@ -443,16 +442,16 @@ extract_from_text <- function(v) {
 }
 
 match_year <- function(string) {
-  nums <- list(one=1, two=2, three=3, four=4, five=5,
-               six=6, seven=7, eight=8, nine=9, ten=10,
-               eleven=11, twelve=12, thirteen=13, fourteen=14, fifteen=15,
-               sixteen=16, seventeen=17, eighteen=18, nineteen=19,
-               twenty=20, thirty=30, forty=40, fifty=50,
-               sixty=60, seventy=70, eighty=80, ninety=90)
+  nums <- list(one = 1, two = 2, three = 3, four = 4, five = 5, six = 6,
+               seven = 7, eight = 8, nine = 9, ten = 10, eleven = 11,
+               twelve = 12, thirteen = 13, fourteen = 14, fifteen = 15,
+               sixteen = 16, seventeen = 17, eighteen = 18, nineteen = 19,
+               twenty = 20, thirty = 30, forty = 40, fifty = 50,
+               sixty = 60, seventy = 70, eighty = 80, ninety = 90)
   year <- stringr::str_extract(string, "one.*|two.*")
   words <- stringr::str_split(year, " ")
   year.date <- lapply(words, function(x) {
-    multi.y1 <- ifelse(x[1] == "one"|x[1] == "two", as.numeric(nums[x[1]]), 0)
+    multi.y1 <- ifelse(x[1] == "one" | x[1] == "two", as.numeric(nums[x[1]]), 0)
     y1 <- ifelse(x[2] == "thousand", 1000, 0)
     multi.y2 <- ifelse(x[3] != "and", as.numeric(nums[x[3]]), 0)
     y2 <- ifelse(x[4] == "hundred", 100, 0)
@@ -463,7 +462,7 @@ match_year <- function(string) {
     y3b <- y3[2]
     y3b <- unlist(nums[y3b])
     y3 <- sum(y3a, y3b)
-    out <- multi.y1*y1 + multi.y2*y2 + y3
+    out <- multi.y1 * y1 + multi.y2 * y2 + y3
     out
   })
   year.date
@@ -479,9 +478,9 @@ ask_user <- function(dates) {
 
 ask_user_input <- function(d) {
   input <- menu(c("Year-Month-Day", "Day-Month-Year", "Month-Day-Year"),
-                title = paste0("What format is this date ", d," ?"))
+                title = paste0("What format is this date ", d, " ?"))
   if (input == 1) {
-    out = d
+    out <- d
     message("Dates already in standard YMD format")
   }
   if (input == 2) {

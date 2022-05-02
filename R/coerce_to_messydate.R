@@ -389,12 +389,12 @@ extract_from_text <- function(v) {
                               |\\w*th\\b day.*ty-four|\\w*th\\b day.*ty-five|
                               |\\w*th\\b day.*ty-six|\\w*th\\b day.*ty-seven|
                               |\\w*th\\b day.*ty-eight|\\w*th\\b day.*ty-nine|
-                              |\\w*st\\b day.*[:digit:]{4}|\\w*nd\\b day.*[:digit:]{4}|
-                              |\\w*rd\\b day.*[:digit:]{4}|\\w*th\\b day.*[:digit:]{4}|
-                              |\\w*ty-.*st\\b day.*[:digit:]{4}|
-                              |\\w*ty-.*nd\\b day.*[:digit:]{4}|
-                              |\\w*ty-.*rd\\b day.*[:digit:]{4}|
-                              |\\w*ty-.*th\\b day.*[:digit:]{4}")
+                              |\\w*st\\b .*[:digit:]{4}|\\w*nd\\b .*[:digit:]{4}|
+                              |\\w*rd\\b .*[:digit:]{4}|\\w*th\\b .*[:digit:]{4}|
+                              |\\w*ty-.*st\\b .*[:digit:]{4}|
+                              |\\w*ty-.*nd\\b .*[:digit:]{4}|
+                              |\\w*ty-.*rd\\b .*[:digit:]{4}|
+                              |\\w*ty-.*th\\b .*[:digit:]{4}")
   # remove all 'day' and 'year' from string
   out <- stringr::str_remove_all(out, "day")
   out <- stringr::str_remove_all(out, "year|in the year")

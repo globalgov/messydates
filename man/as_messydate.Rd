@@ -8,19 +8,29 @@
 \alias{as_messydate.character}
 \title{Coercion to messy dates}
 \usage{
-as_messydate(x)
+as_messydate(x, text, interactive)
 
-\method{as_messydate}{Date}(x)
+\method{as_messydate}{Date}(x, text, interactive)
 
-\method{as_messydate}{POSIXct}(x)
+\method{as_messydate}{POSIXct}(x, text, interactive)
 
-\method{as_messydate}{POSIXlt}(x)
+\method{as_messydate}{POSIXlt}(x, text, interactive)
 
-\method{as_messydate}{character}(x)
+\method{as_messydate}{character}(x, text = FALSE, interactive = FALSE)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
+
+\item{text}{Do you want dates to be extract dates from text?
+By default false.
+If TRUE, dates are extracted from text.
+If multiple dates are identified in the same row,
+only the first date is returned.}
+
+\item{interactive}{By default FALSE.
+If TRUE, it allows users to choose the correct order
+for ambiguous 6 digit dates.}
 }
 \value{
 A \code{messydt} class object

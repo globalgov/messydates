@@ -487,7 +487,7 @@ ask_user_input <- function(d) {
                 title = paste0("What should the component order of ambiguous 6 digit dates, such as this one ", d, " be?"))
   if (input == 1) {
     out <- d
-    message("Dates already in standard YMD format")
+    message("Ambiguous 6 digit dates already in standard YMD format")
   }
   if (input == 2) {
     out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$",

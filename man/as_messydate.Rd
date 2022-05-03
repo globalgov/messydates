@@ -8,21 +8,21 @@
 \alias{as_messydate.character}
 \title{Coercion to messy dates}
 \usage{
-as_messydate(x, text, interactive)
+as_messydate(x, from_text, interactive)
 
-\method{as_messydate}{Date}(x, text, interactive)
+\method{as_messydate}{Date}(x, from_text, interactive)
 
-\method{as_messydate}{POSIXct}(x, text, interactive)
+\method{as_messydate}{POSIXct}(x, from_text, interactive)
 
-\method{as_messydate}{POSIXlt}(x, text, interactive)
+\method{as_messydate}{POSIXlt}(x, from_text, interactive)
 
-\method{as_messydate}{character}(x, text = FALSE, interactive = FALSE)
+\method{as_messydate}{character}(x, from_text = FALSE, interactive = FALSE)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
-\item{text}{Would you like to extract dates from text?
+\item{from_text}{Would you like to extract dates from text?
 By default false.
 If TRUE, dates are extracted from text.
 If multiple dates are identified, only the first date is returned.}

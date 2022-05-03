@@ -3,7 +3,7 @@
 #' These functions coerce different data classes into `messydt` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
 #' such as `Date`, `POSIXct`, `POSIXlt`, or character.
-#' @param text Would you like to extract dates from text?
+#' @param from_text Would you like to extract dates from text?
 #' By default false.
 #' If TRUE, dates are extracted from text.
 #' If multiple dates are identified, only the first date is returned.
@@ -27,33 +27,33 @@
 #' as_messydate("2021-02-01..2021-02-28")
 #' as_messydate("{2021-02-01,2021-02-28}")
 #' @export
-as_messydate <- function(x, text, interactive) UseMethod("as_messydate")
+as_messydate <- function(x, from_text, interactive) UseMethod("as_messydate")
 
 #' @describeIn as_messydate Coerce from `Date` to `messydt` class
 #' @export
-as_messydate.Date <- function(x, text, interactive) {
+as_messydate.Date <- function(x, from_text, interactive) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
 #' @export
-as_messydate.POSIXct <- function(x, text, interactive) {
+as_messydate.POSIXct <- function(x, from_text, interactive) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
 #' @export
-as_messydate.POSIXlt <- function(x, text, interactive) {
+as_messydate.POSIXlt <- function(x, from_text, interactive) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce character date objects to `messydt` class
 #' @export
-as_messydate.character <- function(x, text = FALSE, interactive = FALSE) {
-  if (isTRUE(text)) {
+as_messydate.character <- function(x, from_text = FALSE, interactive = FALSE) {
+  if (isTRUE(from_text)) {
     x <- extract_from_text(x)
   }
   d <- standardise_date_separators(x)

@@ -3,12 +3,12 @@
 #' These functions coerce different data classes into `messydt` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
 #' such as `Date`, `POSIXct`, `POSIXlt`, or character.
-#' @param text Do you want dates to be extract dates from text?
+#' @param text Would you like to extract dates from text?
 #' By default false.
 #' If TRUE, dates are extracted from text.
-#' If multiple dates are identified in the same row,
-#' only the first date is returned.
-#' @param interactive By default FALSE.
+#' If multiple dates are identified, only the first date is returned.
+#' @param interactive Would you like to choose the order for ambiguous dates?
+#' By default FALSE.
 #' If TRUE, it allows users to choose the correct order
 #' for ambiguous 6 digit dates.
 #' @importFrom utils menu
@@ -400,14 +400,16 @@ extract_from_text <- function(v) {
   out <- stringr::str_remove_all(out, "year|in the year")
   out <- stringr::str_squish(out)
   # get the days into numeric form
-  days <- data.frame(days = c("^first", "^second", "^third", "^fourth", "^fifth",
-                              "^sixth", "^seventh", "^eighth", "^ninth", "tenth",
-                              "eleventh", "twelfth", "thirteenth", "fourteenth",
-                              "fifteenth", "sixteenth", "seventeenth", "eighteenth",
-                              "nineteenth", "twentieth", "twenty-first", "twenty-second",
-                              "twenty-third", "twenty-fourth", "twenty-fifth",
-                              "twenty-sixth", "twenty-seventh", "twenty-eighth",
-                              "twenty-ninth", "thirtieth", "thirty-first"),
+  days <- data.frame(days = c("^first", "^second", "^third", "^fourth",
+                              "^fifth", "^sixth", "^seventh", "^eighth",
+                              "^ninth", "tenth", "eleventh", "twelfth",
+                              "thirteenth", "fourteenth", "fifteenth",
+                              "sixteenth", "seventeenth", "eighteenth",
+                              "nineteenth", "twentieth", "twenty-first",
+                              "twenty-second", "twenty-third", "twenty-fourth",
+                              "twenty-fifth", "twenty-sixth", "twenty-seventh",
+                              "twenty-eighth", "twenty-ninth", "thirtieth",
+                              "thirty-first"),
                      number = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
                                 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
                                 27, 28, 29, 30, 31))

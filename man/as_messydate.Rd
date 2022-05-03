@@ -22,13 +22,13 @@ as_messydate(x, text, interactive)
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
-\item{text}{Do you want dates to be extract dates from text?
+\item{text}{Would you like to extract dates from text?
 By default false.
 If TRUE, dates are extracted from text.
-If multiple dates are identified in the same row,
-only the first date is returned.}
+If multiple dates are identified, only the first date is returned.}
 
-\item{interactive}{By default FALSE.
+\item{interactive}{Would you like to choose the order for ambiguous dates?
+By default FALSE.
 If TRUE, it allows users to choose the correct order
 for ambiguous 6 digit dates.}
 }

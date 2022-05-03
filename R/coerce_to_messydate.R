@@ -472,10 +472,12 @@ match_year <- function(string) {
 }
 
 ask_user <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$|
+  |^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$|^([:digit:]{1})-([:digit:]{2})-([:digit:]{1})$|
+                                      |^([:digit:]{2})-([:digit:]{2})-([:digit:]{1})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-|^[:digit:]{1}-"))) < 32 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$|[:digit:]{1}$"))) < 32,
                   ask_user_input(dates), dates)
 }
 

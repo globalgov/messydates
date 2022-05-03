@@ -452,9 +452,9 @@ match_year <- function(string) {
   year <- stringr::str_extract(string, "one.*|two.*")
   words <- stringr::str_split(year, " ")
   year.date <- lapply(words, function(x) {
-    multi.y1 <- ifelse(x[1] == "one" | x[1] == "two", as.numeric(nums[x[1]]), 0)
+    multi.y1 <- ifelse(x[1] == "one" | x[1] == "two", unlist(nums[x[1]]), 0)
     y1 <- ifelse(x[2] == "thousand", 1000, 0)
-    multi.y2 <- ifelse(x[3] != "and", as.numeric(nums[x[3]]), 0)
+    multi.y2 <- ifelse(x[3] != "and", unlist(nums[x[3]]), 0)
     y2 <- ifelse(x[4] == "hundred", 100, 0)
     y3 <- ifelse(x[5] == "and", paste0(x[6]), 0)
     y3 <- unlist(stringr::str_split(y3, "-"))

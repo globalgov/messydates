@@ -27,4 +27,7 @@ test_that("dates are properly extracted from text", {
   expect_equal(as_messydate("signed on this thirtieth day of October one thousand nine hundred and forty-seven",
                             from_text = TRUE),
                as_messydate("30-10-1947"))
-  })
+  expect_equal(as_messydate("signed on this twenty-first day of October one thousand nine hundred and forty-seven",
+                            from_text = TRUE),
+               as_messydate("1947-10-21"))
+})

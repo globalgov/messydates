@@ -65,5 +65,5 @@ as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
 as_messydate("Two of February of two thousand twenty-two",
 from_text = TRUE)
-#as_messydate("1-2-21", interactive = TRUE)
+#as_messydate("01-02-21", interactive = TRUE)
 }

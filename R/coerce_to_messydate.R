@@ -29,7 +29,7 @@
 #' as_messydate("{2021-02-01,2021-02-28}")
 #' as_messydate("Two of February of two thousand twenty-two",
 #' from_text = TRUE)
-#' #as_messydate("1-2-21", interactive = TRUE)
+#' #as_messydate("01-02-21", interactive = TRUE)
 #' @export
 as_messydate <- function(x, from_text, interactive) UseMethod("as_messydate")
 
@@ -290,9 +290,6 @@ st_negative <- function(dates) {
 
 extract_from_text <- function(v) {
   # get ordinal and numeric dates spelled and replace in text
-  text_to_number <- data.frame(text = paste0(english::ordinal(2030:1), "|",
-                                             english::words(2030:1)),
-                               numeric = paste0("-", as.numeric(2030:1), "-"))
   out <- stringr::str_squish(gsub(" of| and | day| year| month", " ", v))
   for (k in seq_len(nrow(text_to_number))) {
     out <- gsub(paste0(text_to_number$text[k]),
@@ -300,16 +297,16 @@ extract_from_text <- function(v) {
                 out, ignore.case = TRUE,
                 perl = T)
   }
-  # get the months into numeric form
-  months <- data.frame(months = c("january", "february", "march","april",
+  # get the months into date form
+  months <- data.frame(months = c("january", "february", "march", "april",
                                   "may", "june", "july", "august", "september",
                                   "october", "november", "december"),
-                       number = c("-01-", "-02-", "-03-", "-04-", "-05-",
+                       numeric = c("-01-", "-02-", "-03-", "-04-", "-05-",
                                   "-06-", "-07-", "-08-", "-09-", "-10-",
                                   "-11-", "-12-"))
   for (k in seq_len(nrow(months))) {
     out <- gsub(paste0(months$months[k]),
-                paste0(months$number[k]),
+                paste0(months$numeric[k]),
                 out, ignore.case = TRUE,
                 perl = T)
   }

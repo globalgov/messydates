@@ -25,7 +25,8 @@ such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 \item{from_text}{Would you like to extract dates from text?
 By default false.
 If TRUE, dates are extracted from text.
-If multiple dates are identified, only the first date is returned.}
+If multiple dates are identified, only the first date is returned.
+Currently, this only works for texts in English.}
 
 \item{interactive}{Would you like to choose the order for ambiguous dates?
 By default FALSE.
@@ -62,4 +63,7 @@ as_messydate("2021-02-01~")
 as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
+as_messydate("Two of February of two thousand twenty-two",
+from_text = TRUE)
+#as_messydate("1-2-21", interactive = TRUE)
 }

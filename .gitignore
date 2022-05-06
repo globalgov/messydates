@@ -4,4 +4,4 @@
 .Ruserdata
 docs
 iso_standards*
-.DS_Store
+*.DS_Store

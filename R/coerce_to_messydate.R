@@ -341,7 +341,7 @@ ask_user <- function(dates) {
 }
 
 reorder_ambiguous <- function(d) {
-  input <- utils::menu(c("YMD (Year-Month-Day)","DMY (Day-Month-Year)",
+  input <- utils::menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
                          "MDY (Month-Day-Year)"),
                        title = paste0("What should the component order of ambiguous 6 digit dates (such as ", d, " ) be?"))
   if (input == 1) {

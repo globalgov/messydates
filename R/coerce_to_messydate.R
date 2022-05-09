@@ -12,7 +12,6 @@
 #' By default FALSE.
 #' If TRUE, it allows users to choose the correct order
 #' for ambiguous 6 digit dates.
-#' @importFrom utils menu
 #' @return A `messydt` class object
 #' @examples
 #' as_messydate("28 BC")
@@ -68,7 +67,6 @@ as_messydate.character <- function(x, from_text = FALSE, resequence = FALSE) {
   }
   d <- standardise_ranges(d)
   d <- standardise_unspecifieds(d)
-  d <- remove_imprecision(d)
   d <- standardise_date_input(d)
   d <- standardise_widths(d)
   new_messydate(d)
@@ -81,6 +79,10 @@ standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates, "\\/", "-")
   dates <- stringr::str_remove_all(dates, "\\(|\\)|\\{|\\}|\\[|\\]")
   dates <- stringr::str_trim(dates, side = "both")
+  # Adds zero padding to days and months
+  dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
+  dates <- stringr::str_replace_all(dates, "([:digit:]{2})-([:digit:])$", "\\1-0\\2")
+  dates <- stringr::str_replace_all(dates, "^([:digit:])-([:digit:]{2})", "0\\1-\\2")
   dates
 }
 
@@ -98,7 +100,6 @@ standardise_months <- function(dates) {
   dates <- gsub(" november ", "-11-", dates, ignore.case = TRUE)
   dates <- gsub(" december ", "-12-", dates, ignore.case = TRUE)
   dates <- stringr::str_squish(dates)
-  dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
   dates
 }
 
@@ -110,7 +111,7 @@ standardise_date_order <- function(dates) {
                   stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
                                            "\\3-\\2-\\1"))
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 12 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 13 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,
                   stringr::str_replace_all(dates,
                            "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
@@ -136,13 +137,9 @@ standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-00-|-0-|-0$|-00$", "-XX-")
   dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
   dates <- stringr::str_replace_all(dates, "-\\?\\?", "-XX")
+  dates <- stringr::str_replace_all(dates, "-XX$", "")
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
                   paste0("~", stringr::str_remove(dates, "\\~")), dates)
-  dates
-}
-
-remove_imprecision <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "-XX$", "")
   dates
 }
 
@@ -163,6 +160,8 @@ standardise_widths <- function(dates) {
                   add_zero_set(dates), dates)
   dates <- ifelse(stringr::str_detect(dates, "\\,"),
                   paste0("{", dates, "}"), dates)
+  dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
+  dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
   dates
 }
 
@@ -191,9 +190,6 @@ add_zero_padding <- function(dates) {
   dates <- stringr::str_replace_all(dates, "^([:digit:]{1})$", "000\\1")
   dates <- stringr::str_replace_all(dates, "^([:digit:]{2})$", "00\\1")
   dates <- stringr::str_replace_all(dates, "^([:digit:]{3})$", "0\\1")
-  # Adds zero padding to days
-  dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
-  dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
   dates
 }
 
@@ -330,32 +326,66 @@ extract_from_text <- function(v) {
 }
 
 ask_user <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$|
-  |^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$|^([:digit:]{1})-([:digit:]{2})-([:digit:]{1})$|
-                                      |^([:digit:]{2})-([:digit:]{2})-([:digit:]{1})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-|^[:digit:]{1}-"))) < 32 &
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$|[:digit:]{1}$"))) < 32,
-                  ask_user_input(dates), dates)
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                  reorder_ambiguous(dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
+                  complete_ambiguous_20(dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
+                  complete_ambiguous_19(dates), dates)
+  dates
 }
 
-ask_user_input <- function(d) {
-  input <- menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
-                  "MDY (Month-Day-Year)"),
-                title = paste0("What should the component order of ambiguous 6 digit dates (such as ", d, " ) be?"))
+reorder_ambiguous <- function(d) {
+  input <- utils::menu(c("YMD (Year-Month-Day)","DMY (Day-Month-Year)",
+                         "MDY (Month-Day-Year)"),
+                       title = paste0("What should the component order of ambiguous 6 digit dates (such as ", d, " ) be?"))
   if (input == 1) {
     out <- d
     message("Ambiguous 6 digit dates already in standard YMD format")
   }
   if (input == 2) {
-    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$",
-                                    "\\3-\\2-\\1")
+    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "\\3-\\2-\\1")
     message("Ambiguous 6 digit dates have been changed to standard YMD format")
   }
   if (input == 3) {
-    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$",
-                                    "\\3-\\1-\\2")
+    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "\\3-\\1-\\2")
     message("Ambiguous 6 digit dates have been changed to standard YMD format")
+  }
+  out
+}
+
+complete_ambiguous_20 <- function(d) {
+  input <- utils::menu(c("Yes", "No"),
+                       title = paste0("Are all ambiguous 6 digit dates for which the year is between 0 and 23
+                       in the 21st century (i.e. ", d, " is equal to 20", d, " )?"))
+  if (input == 1) {
+    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "20\\1-\\2-\\3")
+    message("Ambiguous 6 digit dates for which the year is smaller than 23 were completed.")
+  }
+  if (input == 2) {
+    out <- d
+    message("No changes were made to ambiguous 6 digit dates for which the year is smaller than 23.")
+  }
+  out
+}
+
+complete_ambiguous_19 <- function(d) {
+  input <- utils::menu(c("Yes", "No"),
+                       title = paste0("Are all ambiguous 6 digit dates for which the year is bigger than 22
+                       in the 19th century?"))
+
+  if (input == 1) {
+    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "19\\1-\\2-\\3")
+    message("Ambiguous 6 digit dates for which the year is bigger than 22 were completed.")
+  }
+  if (input == 2) {
+    out <- d
+    message("No changes were made to ambiguous 6 digit dates for which the year is bigger than 22.")
   }
   out
 }

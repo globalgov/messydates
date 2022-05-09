@@ -342,7 +342,7 @@ ask_user <- function(dates) {
 ask_user_input <- function(d) {
   input <- menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
                   "MDY (Month-Day-Year)"),
-                title = paste0("What should the component order of ambiguous 6 digit dates, such as this one ", d, " be?"))
+                title = paste0("What should the component order of ambiguous 6 digit dates (such as ", d, " ) be?"))
   if (input == 1) {
     out <- d
     message("Ambiguous 6 digit dates already in standard YMD format")

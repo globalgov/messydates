@@ -8,7 +8,7 @@
 #' If TRUE, dates are extracted from text.
 #' If multiple dates are identified, only the first date is returned.
 #' Currently, this only works for texts in English.
-#' @param interactive Would you like to choose the order for ambiguous dates?
+#' @param resequence Would you like to choose the order for ambiguous dates?
 #' By default FALSE.
 #' If TRUE, it allows users to choose the correct order
 #' for ambiguous 6 digit dates.
@@ -29,41 +29,41 @@
 #' as_messydate("{2021-02-01,2021-02-28}")
 #' as_messydate("Two of February of two thousand twenty-two",
 #' from_text = TRUE)
-#' #as_messydate("01-02-21", interactive = TRUE)
+#' #as_messydate("01-02-21", resequence = TRUE)
 #' @export
-as_messydate <- function(x, from_text, interactive) UseMethod("as_messydate")
+as_messydate <- function(x, from_text, resequence) UseMethod("as_messydate")
 
 #' @describeIn as_messydate Coerce from `Date` to `messydt` class
 #' @export
-as_messydate.Date <- function(x, from_text, interactive) {
+as_messydate.Date <- function(x, from_text, resequence) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
 #' @export
-as_messydate.POSIXct <- function(x, from_text, interactive) {
+as_messydate.POSIXct <- function(x, from_text, resequence) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
 #' @export
-as_messydate.POSIXlt <- function(x, from_text, interactive) {
+as_messydate.POSIXlt <- function(x, from_text, resequence) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce character date objects to `messydt` class
 #' @export
-as_messydate.character <- function(x, from_text = FALSE, interactive = FALSE) {
+as_messydate.character <- function(x, from_text = FALSE, resequence = FALSE) {
   if (isTRUE(from_text)) {
     x <- extract_from_text(x)
   }
   d <- standardise_date_separators(x)
   d <- standardise_months(d)
   d <- standardise_date_order(d)
-  if (isTRUE(interactive)) {
+  if (isTRUE(resequence)) {
     d <- ask_user(d)
   }
   d <- standardise_ranges(d)

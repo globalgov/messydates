@@ -8,15 +8,15 @@
 \alias{as_messydate.character}
 \title{Coercion to messy dates}
 \usage{
-as_messydate(x, from_text, interactive)
+as_messydate(x, from_text, resequence)
 
-\method{as_messydate}{Date}(x, from_text, interactive)
+\method{as_messydate}{Date}(x, from_text, resequence)
 
-\method{as_messydate}{POSIXct}(x, from_text, interactive)
+\method{as_messydate}{POSIXct}(x, from_text, resequence)
 
-\method{as_messydate}{POSIXlt}(x, from_text, interactive)
+\method{as_messydate}{POSIXlt}(x, from_text, resequence)
 
-\method{as_messydate}{character}(x, from_text = FALSE, interactive = FALSE)
+\method{as_messydate}{character}(x, from_text = FALSE, resequence = FALSE)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
@@ -28,7 +28,7 @@ If TRUE, dates are extracted from text.
 If multiple dates are identified, only the first date is returned.
 Currently, this only works for texts in English.}
 
-\item{interactive}{Would you like to choose the order for ambiguous dates?
+\item{resequence}{Would you like to choose the order for ambiguous dates?
 By default FALSE.
 If TRUE, it allows users to choose the correct order
 for ambiguous 6 digit dates.}
@@ -65,5 +65,5 @@ as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
 as_messydate("Two of February of two thousand twenty-two",
 from_text = TRUE)
-#as_messydate("01-02-21", interactive = TRUE)
+#as_messydate("01-02-21", resequence = TRUE)
 }

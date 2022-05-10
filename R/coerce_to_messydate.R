@@ -331,19 +331,24 @@ ask_user <- function(dates) {
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
                   reorder_ambiguous(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
-                  complete_ambiguous_20(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
-                  complete_ambiguous_19(dates), dates)
+  input <- utils::menu(c("Yes", "No"),
+                       title = paste0("Would you like to complete ambiguous 6 digit dates?"))
+  if (input == 1) {
+    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
+                    complete_ambiguous_20(dates), dates)
+    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
+                    complete_ambiguous_19(dates), dates)
+  }
   dates
 }
 
 reorder_ambiguous <- function(d) {
   input <- utils::menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
                          "MDY (Month-Day-Year)"),
-                       title = paste0("What should the component order of ambiguous 6 digit dates (such as ", d, " ) be?"))
+                       title = paste0("What should the component order of ambiguous 6 digit dates be
+                                      (e.g. ", d, ")?"))
   if (input == 1) {
     out <- d
     message("Ambiguous 6 digit dates already in standard YMD format")

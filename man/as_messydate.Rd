@@ -36,8 +36,8 @@ A \code{messydt} class object
 These functions coerce different data classes into \code{messydt} class
 }
 \details{
-The function also extract dates from text.
-Currently, this only works for texts in English.
+The function can also extract dates from text.
+Currently this only works for texts in English.
 }
 \section{Methods (by class)}{
 \itemize{

@@ -9,8 +9,8 @@
 #' If TRUE, it allows users to choose the correct order and
 #' complete some of these dates for ambiguous 6 digit dates
 #' according to choices.
-#' @details The function also extract dates from text.
-#' Currently, this only works for texts in English.
+#' @details The function can also extract dates from text.
+#' Currently this only works for texts in English.
 #' @return A `messydt` class object
 #' @examples
 #' as_messydate("28 BC")

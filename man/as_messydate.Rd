@@ -8,36 +8,36 @@
 \alias{as_messydate.character}
 \title{Coercion to messy dates}
 \usage{
-as_messydate(x, from_text, resequence)
+as_messydate(x, resequence)
 
-\method{as_messydate}{Date}(x, from_text, resequence)
+\method{as_messydate}{Date}(x, resequence)
 
-\method{as_messydate}{POSIXct}(x, from_text, resequence)
+\method{as_messydate}{POSIXct}(x, resequence)
 
-\method{as_messydate}{POSIXlt}(x, from_text, resequence)
+\method{as_messydate}{POSIXlt}(x, resequence)
 
-\method{as_messydate}{character}(x, from_text = FALSE, resequence = FALSE)
+\method{as_messydate}{character}(x, resequence = FALSE)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
-\item{from_text}{Would you like to extract dates from text?
-By default false.
-If TRUE, dates are extracted from text.
-If multiple dates are identified, only the first date is returned.
-Currently, this only works for texts in English.}
-
-\item{resequence}{Would you like to choose the order for ambiguous dates?
+\item{resequence}{Would you like to choose the order for ambiguous dates
+or complete these dates?
 By default FALSE.
-If TRUE, it allows users to choose the correct order
-for ambiguous 6 digit dates.}
+If TRUE, it allows users to choose the correct order and
+complete some of these dates for ambiguous 6 digit dates
+according to choices.}
 }
 \value{
 A \code{messydt} class object
 }
 \description{
 These functions coerce different data classes into \code{messydt} class
+}
+\details{
+The function also extract dates from text.
+Currently, this only works for texts in English.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -63,7 +63,6 @@ as_messydate("2021-02-01~")
 as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
-as_messydate("Two of February of two thousand twenty-two",
-from_text = TRUE)
+as_messydate("Second of February, two thousand and twenty-two")
 #as_messydate("01-02-21", resequence = TRUE)
 }

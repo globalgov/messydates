@@ -3,15 +3,14 @@
 #' These functions coerce different data classes into `messydt` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
 #' such as `Date`, `POSIXct`, `POSIXlt`, or character.
-#' @param from_text Would you like to extract dates from text?
-#' By default false.
-#' If TRUE, dates are extracted from text.
-#' If multiple dates are identified, only the first date is returned.
-#' Currently, this only works for texts in English.
-#' @param resequence Would you like to choose the order for ambiguous dates?
+#' @param resequence Would you like to choose the order for ambiguous dates
+#' or complete these dates?
 #' By default FALSE.
-#' If TRUE, it allows users to choose the correct order
-#' for ambiguous 6 digit dates.
+#' If TRUE, it allows users to choose the correct order and
+#' complete some of these dates for ambiguous 6 digit dates
+#' according to choices.
+#' @details The function also extract dates from text.
+#' Currently, this only works for texts in English.
 #' @return A `messydt` class object
 #' @examples
 #' as_messydate("28 BC")
@@ -26,41 +25,37 @@
 #' as_messydate("2021-02-01%")
 #' as_messydate("2021-02-01..2021-02-28")
 #' as_messydate("{2021-02-01,2021-02-28}")
-#' as_messydate("Two of February of two thousand twenty-two",
-#' from_text = TRUE)
+#' as_messydate("Second of February, two thousand and twenty-two")
 #' #as_messydate("01-02-21", resequence = TRUE)
 #' @export
-as_messydate <- function(x, from_text, resequence) UseMethod("as_messydate")
+as_messydate <- function(x, resequence) UseMethod("as_messydate")
 
 #' @describeIn as_messydate Coerce from `Date` to `messydt` class
 #' @export
-as_messydate.Date <- function(x, from_text, resequence) {
+as_messydate.Date <- function(x, resequence) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
 #' @export
-as_messydate.POSIXct <- function(x, from_text, resequence) {
+as_messydate.POSIXct <- function(x, resequence) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
 #' @export
-as_messydate.POSIXlt <- function(x, from_text, resequence) {
+as_messydate.POSIXlt <- function(x, resequence) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce character date objects to `messydt` class
 #' @export
-as_messydate.character <- function(x, from_text = FALSE, resequence = FALSE) {
-  if (isTRUE(from_text)) {
-    x <- extract_from_text(x)
-  }
-  d <- standardise_date_separators(x)
-  d <- standardise_months(d)
+as_messydate.character <- function(x, resequence = FALSE) {
+  d <- standardise_text(x)
+  d <- standardise_date_separators(d)
   d <- standardise_date_order(d)
   if (isTRUE(resequence)) {
     d <- ask_user(d)
@@ -73,6 +68,11 @@ as_messydate.character <- function(x, from_text = FALSE, resequence = FALSE) {
 }
 
 # Helper functions
+standardise_text <- function(v) {
+  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})"), extract_from_text(v), v)
+  dates
+}
+
 standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates,
                                     "(?<=[:digit:])\\.(?=[:digit:])", "-")
@@ -83,23 +83,6 @@ standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
   dates <- stringr::str_replace_all(dates, "([:digit:]{2})-([:digit:])$", "\\1-0\\2")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-([:digit:]{2})", "0\\1-\\2")
-  dates
-}
-
-standardise_months <- function(dates) {
-  dates <- gsub(" january ", "-01-", dates, ignore.case = TRUE)
-  dates <- gsub(" february ", "-02-", dates, ignore.case = TRUE)
-  dates <- gsub(" march ", "-03-", dates, ignore.case = TRUE)
-  dates <- gsub(" april ", "-04-", dates, ignore.case = TRUE)
-  dates <- gsub(" may ", "-05-", dates, ignore.case = TRUE)
-  dates <- gsub(" june ", "-06-", dates, ignore.case = TRUE)
-  dates <- gsub(" july ", "-07-", dates, ignore.case = TRUE)
-  dates <- gsub(" august ", "-08-", dates, ignore.case = TRUE)
-  dates <- gsub(" september ", "-09-", dates, ignore.case = TRUE)
-  dates <- gsub(" october ", "-10-", dates, ignore.case = TRUE)
-  dates <- gsub(" november ", "-11-", dates, ignore.case = TRUE)
-  dates <- gsub(" december ", "-12-", dates, ignore.case = TRUE)
-  dates <- stringr::str_squish(dates)
   dates
 }
 
@@ -163,6 +146,47 @@ standardise_widths <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
   dates
+}
+
+extract_from_text <- function(v) {
+  # get ordinal and numeric dates spelled and replace in text
+  out <- stringr::str_squish(gsub(" of| and | day| year| month|,", " ", v))
+  for (k in seq_len(nrow(text_to_number))) {
+    out <- gsub(paste0(text_to_number$text[k]),
+                paste0(text_to_number$numeric[k]),
+                out, ignore.case = TRUE,
+                perl = T)
+  }
+  # get the months into date form
+  months <- data.frame(months = c("january", "february", "march", "april",
+                                  "may", "june", "july", "august", "september",
+                                  "october", "november", "december"),
+                       numeric = c("-01-", "-02-", "-03-", "-04-", "-05-",
+                                   "-06-", "-07-", "-08-", "-09-", "-10-",
+                                   "-11-", "-12-"))
+  for (k in seq_len(nrow(months))) {
+    out <- gsub(paste0(months$months[k]),
+                paste0(months$numeric[k]),
+                out, ignore.case = TRUE,
+                perl = T)
+  }
+  # correct double white space left and standardize separators
+  out <- gsub("- -| -|- | /", "-", stringr::str_squish(out))
+  # get the first date per row
+  out <- stringr::str_extract(out,
+                              "[:digit:]{2}-[:digit:]{2}-[:digit:]{4}|
+                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{4}|
+                              |[:digit:]{2}-[:digit:]{2}-[:digit:]{2}|
+                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{2}|
+                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
+                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}|
+                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{2}|
+                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{2}|
+                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{2}|
+                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{1}|
+                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{2}|
+                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{1}")
+  out
 }
 
 add_zero_padding <- function(dates) {
@@ -282,47 +306,6 @@ st_negative <- function(dates) {
   dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
   dates <- stringr::str_trim(dates, side = "both")
   dates <- paste0("-", dates)
-}
-
-extract_from_text <- function(v) {
-  # get ordinal and numeric dates spelled and replace in text
-  out <- stringr::str_squish(gsub(" of| and | day| year| month", " ", v))
-  for (k in seq_len(nrow(text_to_number))) {
-    out <- gsub(paste0(text_to_number$text[k]),
-                paste0(text_to_number$numeric[k]),
-                out, ignore.case = TRUE,
-                perl = T)
-  }
-  # get the months into date form
-  months <- data.frame(months = c("january", "february", "march", "april",
-                                  "may", "june", "july", "august", "september",
-                                  "october", "november", "december"),
-                       numeric = c("-01-", "-02-", "-03-", "-04-", "-05-",
-                                  "-06-", "-07-", "-08-", "-09-", "-10-",
-                                  "-11-", "-12-"))
-  for (k in seq_len(nrow(months))) {
-    out <- gsub(paste0(months$months[k]),
-                paste0(months$numeric[k]),
-                out, ignore.case = TRUE,
-                perl = T)
-  }
-  # correct double white space left and standardize separators
-  out <- gsub("- -| -|- | /", "-", stringr::str_squish(out))
-  # get the first date per row
-  out <- stringr::str_extract(out,
-                              "[:digit:]{2}-[:digit:]{2}-[:digit:]{4}|
-                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{4}|
-                              |[:digit:]{2}-[:digit:]{2}-[:digit:]{2}|
-                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{2}|
-                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
-                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}|
-                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{2}|
-                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{2}|
-                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{2}|
-                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{1}|
-                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{2}|
-                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{1}")
-  out
 }
 
 ask_user <- function(dates) {

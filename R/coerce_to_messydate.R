@@ -3,9 +3,9 @@
 #' These functions coerce different data classes into `messydt` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
 #' such as `Date`, `POSIXct`, `POSIXlt`, or character.
-#' @param resequence Users have the option to choose the order for ambiguous
-#' 6 digit dates (eg. "11-01-12"), and to expand these dates into precise dates
-#' (i.e. YYYY-MM-DD format).
+#' @param resequence Users have the option to choose the
+#' order for ambiguous 6 digit dates (eg. "11-01-12"),
+#' and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
 #' By default FALSE.
 #' If TRUE, it prompts users to select the existing component order of ambiguous
 #' 6 digit dates, based on which the date is reordered into YY-MM-DD format
@@ -151,7 +151,7 @@ standardise_widths <- function(dates) {
 
 extract_from_text <- function(v) {
   # get ordinal and numeric dates spelled and replace in text
-  out <- stringr::str_squish(gsub(" of| and | day| year| month|,", " ", v))
+  out <- stringr::str_squish(gsub("of$|\\s+and\\s+|\\s+day\\s+|\\s+year\\s+|\\s+month\\s+|\\,|\\.", " ", v))
   for (k in seq_len(nrow(text_to_number))) {
     out <- gsub(paste0(text_to_number$text[k]),
                 paste0(text_to_number$numeric[k]),
@@ -172,21 +172,21 @@ extract_from_text <- function(v) {
                 perl = T)
   }
   # correct double white space left and standardize separators
-  out <- gsub("- -| -|- | /", "-", stringr::str_squish(out))
+  out <- gsub("- -| -|- |/", "-", stringr::str_squish(out))
   # get the first date per row
   out <- stringr::str_extract(out,
-                              "[:digit:]{2}-[:digit:]{2}-[:digit:]{4}|
-                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{4}|
-                              |[:digit:]{2}-[:digit:]{2}-[:digit:]{2}|
+                              "[:digit:]{2}-[:digit:]{2}-[:digit:]{2}|
                               |[:digit:]{1}-[:digit:]{2}-[:digit:]{2}|
-                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
-                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}|
                               |[:digit:]{2}-[:digit:]{1}-[:digit:]{2}|
                               |[:digit:]{1}-[:digit:]{1}-[:digit:]{2}|
                               |[:digit:]{4}-[:digit:]{2}-[:digit:]{2}|
                               |[:digit:]{4}-[:digit:]{2}-[:digit:]{1}|
                               |[:digit:]{4}-[:digit:]{1}-[:digit:]{2}|
-                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{1}")
+                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{1}|
+                              |[:digit:]{2}-[:digit:]{2}-[:digit:]{4}|
+                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{4}|
+                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
+                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}")
   out
 }
 

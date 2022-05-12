@@ -24,6 +24,7 @@ test_that("dates are properly extracted from text", {
                as_messydate(c("29-9-2021", "13-10-2021", "2-2-2022")))
   expect_equal(as_messydate(c("signed on this thirtieth day of October one thousand nine hundred and forty-seven",
                             "signed on this thirtieth day of October one thousand nine hundred and forty-seven",
-                            "signed on this twenty-first day of October one thousand nine hundred and forty-seven")),
-               as_messydate(c("1947-10-30", "30-10-1947", "1947-10-21")))
+                            "signed on this twenty-first day of October one thousand nine hundred and forty-seven",
+                            "twenty second day of November 2022")),
+               as_messydate(c("1947-10-30", "30-10-1947", "1947-10-21", "22-11-2022")))
 })

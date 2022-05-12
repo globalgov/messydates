@@ -22,12 +22,13 @@ as_messydate(x, resequence)
 \item{x}{A scalar or vector of a class that can be coerced into a Date,
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
-\item{resequence}{Would you like to choose the order for ambiguous dates
-or complete these dates?
+\item{resequence}{Users have the option to choose the
+order for ambiguous 6 digit dates (eg. "11-01-12"),
+and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
 By default FALSE.
-If TRUE, it allows users to choose the correct order and
-complete some of these dates for ambiguous 6 digit dates
-according to choices.}
+If TRUE, it prompts users to select the existing component order of ambiguous
+6 digit dates, based on which the date is reordered into YY-MM-DD format
+and further completed to YYYY-MM-DD format if users choose to do so.}
 }
 \value{
 A \code{messydt} class object

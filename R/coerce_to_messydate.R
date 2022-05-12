@@ -151,7 +151,7 @@ standardise_widths <- function(dates) {
 
 extract_from_text <- function(v) {
   # get ordinal and numeric dates spelled and replace in text
-  out <- stringr::str_squish(gsub("of$|\\s+and\\s+|\\s+day\\s+|\\s+year\\s+|\\s+month\\s+|\\,|\\.", " ", v))
+  out <- stringr::str_squish(gsub("\\,|\\.|of |\\s+and\\s+|\\s+day\\s+|\\s+year\\s+|\\s+month\\s+", " ", v))
   for (k in seq_len(nrow(text_to_number))) {
     out <- gsub(paste0(text_to_number$text[k]),
                 paste0(text_to_number$numeric[k]),
@@ -175,10 +175,10 @@ extract_from_text <- function(v) {
   out <- gsub("- -| -|- |/", "-", stringr::str_squish(out))
   # get the first date per row
   out <- stringr::str_extract(out,
-                              "[:digit:]{2}-[:digit:]{2}-[:digit:]{2}|
-                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{2}|
-                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{2}|
-                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{2}|
+                              "^[:digit:]{2}-[:digit:]{2}-[:digit:]{2}$|
+                              |^[:digit:]{1}-[:digit:]{2}-[:digit:]{2}$|
+                              |^[:digit:]{2}-[:digit:]{1}-[:digit:]{2}$|
+                              |^[:digit:]{1}-[:digit:]{1}-[:digit:]{2}$|
                               |[:digit:]{4}-[:digit:]{2}-[:digit:]{2}|
                               |[:digit:]{4}-[:digit:]{2}-[:digit:]{1}|
                               |[:digit:]{4}-[:digit:]{1}-[:digit:]{2}|

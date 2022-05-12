@@ -3,12 +3,13 @@
 #' These functions coerce different data classes into `messydt` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
 #' such as `Date`, `POSIXct`, `POSIXlt`, or character.
-#' @param resequence Would you like to choose the order for ambiguous dates
-#' or complete these dates?
+#' @param resequence Users have the option to choose the order for ambiguous
+#' 6 digit dates (eg. "11-01-12"), and to expand these dates into precise dates
+#' (i.e. YYYY-MM-DD format).
 #' By default FALSE.
-#' If TRUE, it allows users to choose the correct order and
-#' complete some of these dates for ambiguous 6 digit dates
-#' according to choices.
+#' If TRUE, it prompts users to select the existing component order of ambiguous
+#' 6 digit dates, based on which the date is reordered into YY-MM-DD format
+#' and further completed to YYYY-MM-DD format if users choose to do so.
 #' @details The function can also extract dates from text.
 #' Currently this only works for texts in English.
 #' @return A `messydt` class object

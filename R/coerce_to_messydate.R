@@ -70,7 +70,8 @@ as_messydate.character <- function(x, resequence = FALSE) {
 
 # Helper functions
 standardise_text <- function(v) {
-  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})"), extract_from_text(v), v)
+  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})"),
+                  extract_from_text(v), v)
   dates
 }
 
@@ -82,8 +83,10 @@ standardise_date_separators <- function(dates) {
   dates <- stringr::str_trim(dates, side = "both")
   # Adds zero padding to days and months
   dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
-  dates <- stringr::str_replace_all(dates, "([:digit:]{2})-([:digit:])$", "\\1-0\\2")
-  dates <- stringr::str_replace_all(dates, "^([:digit:])-([:digit:]{2})", "0\\1-\\2")
+  dates <- stringr::str_replace_all(dates, "([:digit:]{2})-([:digit:])$",
+                                    "\\1-0\\2")
+  dates <- stringr::str_replace_all(dates, "^([:digit:])-([:digit:]{2})",
+                                    "0\\1-\\2")
   dates
 }
 
@@ -151,7 +154,9 @@ standardise_widths <- function(dates) {
 
 extract_from_text <- function(v) {
   # get ordinal and numeric dates spelled and replace in text
-  out <- stringr::str_squish(gsub("\\,|\\.|of |\\s+and\\s+|\\s+day\\s+|\\s+year\\s+|\\s+month\\s+", " ", v))
+  out <- stringr::str_squish(gsub("\\,|\\.|of | on | and|the | this|
+                                  | day|year|month",
+                                  " ", v))
   for (k in seq_len(nrow(text_to_number))) {
     out <- gsub(paste0(text_to_number$text[k]),
                 paste0(text_to_number$numeric[k]),
@@ -365,7 +370,7 @@ complete_ambiguous_20 <- function(d) {
 
 complete_ambiguous_19 <- function(d) {
   input <- utils::menu(c("Yes", "No"),
-                       title = paste0("Are 6 digit dates for which the year is bigger than 22 in the 19th century?"))
+                       title = paste0("Are 6 digit dates for which the year is bigger than 22 in the 20th century?"))
   if (input == 1) {
     out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "19\\1-\\2-\\3")
     message("6 digit dates for which the year is bigger than 22 were completed.")

@@ -364,16 +364,14 @@ complete_ambiguous_20 <- function(d) {
 
 complete_ambiguous_19 <- function(d) {
   input <- utils::menu(c("Yes", "No"),
-                       title = paste0("Are all ambiguous 6 digit dates for which the year is bigger than 22
-                       in the 19th century?"))
-
+                       title = paste0("Are 6 digit dates for which the year is bigger than 22 in the 19th century?"))
   if (input == 1) {
     out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "19\\1-\\2-\\3")
-    message("Ambiguous 6 digit dates for which the year is bigger than 22 were completed.")
+    message("6 digit dates for which the year is bigger than 22 were completed.")
   }
   if (input == 2) {
     out <- d
-    message("No changes were made to ambiguous 6 digit dates for which the year is bigger than 22.")
+    message("No changes were made to 6 digit dates for which the year is bigger than 22.")
   }
   out
 }

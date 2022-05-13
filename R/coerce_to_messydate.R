@@ -25,6 +25,7 @@
 #' as_messydate("2021-02-01%")
 #' as_messydate("2021-02-01..2021-02-28")
 #' as_messydate("{2021-02-01,2021-02-28}")
+#' as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
 #' #as_messydate("01-02-21", resequence = TRUE)
 #' @export
 as_messydate <- function(x, resequence = FALSE) UseMethod("as_messydate")

@@ -8,13 +8,13 @@
 \alias{as_messydate.character}
 \title{Coercion to messy dates}
 \usage{
-as_messydate(x, resequence)
+as_messydate(x, resequence = FALSE)
 
-\method{as_messydate}{Date}(x, resequence)
+\method{as_messydate}{Date}(x, resequence = FALSE)
 
-\method{as_messydate}{POSIXct}(x, resequence)
+\method{as_messydate}{POSIXct}(x, resequence = FALSE)
 
-\method{as_messydate}{POSIXlt}(x, resequence)
+\method{as_messydate}{POSIXlt}(x, resequence = FALSE)
 
 \method{as_messydate}{character}(x, resequence = FALSE)
 }
@@ -52,18 +52,17 @@ Currently this only works for texts in English.
 }}
 
 \examples{
-as_messydate("28 BC")
 as_messydate("2021")
 as_messydate("2021-02")
 as_messydate("2021-02-01")
-as_messydate("20-01-2021")
-as_messydate("01-20-2021")
-as_messydate("20 September 2021")
+as_messydate("01-02-2021")
+as_messydate("1 February 2021")
+as_messydate("First of February, two thousand and twenty-one")
 as_messydate("2021-02-01?")
 as_messydate("2021-02-01~")
 as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
-as_messydate("Second of February, two thousand and twenty-two")
+as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
 #as_messydate("01-02-21", resequence = TRUE)
 }

@@ -14,40 +14,38 @@
 #' Currently this only works for texts in English.
 #' @return A `messydt` class object
 #' @examples
-#' as_messydate("28 BC")
 #' as_messydate("2021")
 #' as_messydate("2021-02")
 #' as_messydate("2021-02-01")
-#' as_messydate("20-01-2021")
-#' as_messydate("01-20-2021")
-#' as_messydate("20 September 2021")
+#' as_messydate("01-02-2021")
+#' as_messydate("1 February 2021")
+#' as_messydate("First of February, two thousand and twenty-one")
 #' as_messydate("2021-02-01?")
 #' as_messydate("2021-02-01~")
 #' as_messydate("2021-02-01%")
 #' as_messydate("2021-02-01..2021-02-28")
 #' as_messydate("{2021-02-01,2021-02-28}")
-#' as_messydate("Second of February, two thousand and twenty-two")
 #' #as_messydate("01-02-21", resequence = TRUE)
 #' @export
-as_messydate <- function(x, resequence) UseMethod("as_messydate")
+as_messydate <- function(x, resequence = FALSE) UseMethod("as_messydate")
 
 #' @describeIn as_messydate Coerce from `Date` to `messydt` class
 #' @export
-as_messydate.Date <- function(x, resequence) {
+as_messydate.Date <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
 #' @export
-as_messydate.POSIXct <- function(x, resequence) {
+as_messydate.POSIXct <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
 #' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
 #' @export
-as_messydate.POSIXlt <- function(x, resequence) {
+as_messydate.POSIXlt <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }

@@ -9,7 +9,7 @@
 #' By default FALSE.
 #' If TRUE, it prompts users to select the existing component order of ambiguous
 #' 6 digit dates, based on which the date is reordered into YY-MM-DD format
-#' and further completed to YYYY-MM-DD format if users choose to do so.
+#' and further completed to YYYY-MM-DD format if they choose to do so.
 #' @details The function can also extract dates from text.
 #' Currently this only works for texts in English.
 #' @return A `messydt` class object
@@ -92,16 +92,13 @@ standardise_date_separators <- function(dates) {
 standardise_date_order <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
-                                           "\\3-\\1-\\2"),
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
-                                           "\\3-\\2-\\1"))
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)", "\\3-\\1-\\2"),
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)", "\\3-\\2-\\1"))
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 13 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,
-                  stringr::str_replace_all(dates,
-                           "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
-                           "\\3-\\2-\\1"), dates)
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\3-\\2-\\1"), dates)
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,

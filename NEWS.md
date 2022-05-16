@@ -6,8 +6,8 @@
 
 ## Functions
 
-* Updated coercion to messydate
-  * Closed #45 by improving how `as_messydate()` re-orders 6 digit date components if necessary
+* Updated coercion to messy dates
+  * Closed #45 by improving how `as_messydate()` re-orders 6 digit date components
   * Added "resequence" argument to `as_messydate()` that allows user to choose component order of ambiguous dates
   * Closed #48 by adding zero padding incomplete date ranges and sets of dates
   * Updated `as_messydate()` to also extract dates from text strings

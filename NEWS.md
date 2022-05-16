@@ -6,17 +6,15 @@
 
 ## Functions
 
-* Updated how 6 digit dates are handled
-  * Closed #45 by improving how `as_messydate()` re-orders date components if necessary
-  * Added interactive argument to `as_messydate()` that allows user to choose component order of ambiguous dates
-  * Updated `expand()` to allow for the expansion of 6 digit dates
-* Updated how incomplete date sets and date ranges are expanded 
+* Updated coercion to messydate
+  * Closed #45 by improving how `as_messydate()` re-orders 6 digit date components if necessary
+  * Added "resequence" argument to `as_messydate()` that allows user to choose component order of ambiguous dates
   * Closed #48 by adding zero padding incomplete date ranges and sets of dates
+  * Updated `as_messydate()` to also extract dates from text strings
+* Added `is_precise()` function that provides a logical test for precise dates
+* Updated messy dates expansion
   * Updated `expand()` to allow for the expansion of incomplete date ranges and sets of dates
-* Updated how resolve functions to make these run faster
-  * Added `is_precise()` function that provides a logical test for precise dates
-  * Closed #49 by updating resolve functions to only expand dates if they are uncertain
-* Updated `as_messydate()` to extract dates from text strings if declared
+  * Closed #49 by updating resolve functions to only expand dates if they are not precise
 
 # messydates 0.2.1
 

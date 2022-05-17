@@ -23,10 +23,10 @@ as_messydate(x, resequence = FALSE)
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
 \item{resequence}{Users have the option to choose the
-order for ambiguous 6 digit dates (eg. "11-01-12"),
+order for ambiguous 6 digit dates (e.g. "11-01-12"),
 and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
-By default FALSE.
-If TRUE, it prompts users to select the existing component order of ambiguous
+\code{FALSE} by default.
+If \code{TRUE}, it prompts users to select the existing component order of ambiguous
 6 digit dates, based on which the date is reordered into YY-MM-DD format
 and further completed to YYYY-MM-DD format if they choose to do so.}
 }
@@ -64,5 +64,5 @@ as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
 as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
-#as_messydate("01-02-21", resequence = TRUE)
+# as_messydate("01-02-21", resequence = TRUE)
 }

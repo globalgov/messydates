@@ -4,10 +4,15 @@
 \alias{make_messydate}
 \title{Make messy dates from multiple variables}
 \usage{
-make_messydate(...)
+make_messydate(..., resequence = FALSE)
 }
 \arguments{
 \item{...}{One (yyyy-mm-dd) or three (yyyy, mm, dd) variables}
+
+\item{resequence}{The argument is passed onto \code{as_messydate()}
+to allow users to choose the order for ambiguous 6 digit dates
+(eg. "11-01-12"), and to expand these dates into precise dates
+(i.e. YYYY-MM-DD format). \code{FALSE} by default.}
 }
 \value{
 A character vector containing the

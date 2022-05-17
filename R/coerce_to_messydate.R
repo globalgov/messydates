@@ -331,7 +331,7 @@ add_zero_set <- function(dates) {
 
 reorder_ambiguous <- function(d) {
   input <- utils::menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
-                         "MDY (Month-Day-Year)"),
+                         "MDY (Month-Day-Year)", "Ambiguous/Not sure"),
                        title = paste0("What should the component order of ambiguous 6 digit dates be
                                       (e.g. ", d, ")?"))
   if (input == 1) {
@@ -345,6 +345,11 @@ reorder_ambiguous <- function(d) {
   if (input == 3) {
     out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "\\3-\\1-\\2")
     message("Ambiguous 6 digit dates have been changed to standard YMD format")
+  }
+  if (input == 4) {
+    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$",
+                                    "\\1-\\2-\\3,\\3-\\2-\\1,\\3-\\1-\\2")
+    message("Ambiguous 6 digit dates have been changed to a set of possible dates")
   }
   out
 }

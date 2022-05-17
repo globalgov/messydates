@@ -107,6 +107,25 @@ standardise_date_order <- function(dates) {
   dates
 }
 
+ask_user <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                  reorder_ambiguous(dates), dates)
+  input <- utils::menu(c("Yes", "No"),
+                       title = paste0("Would you like to complete ambiguous 6 digit dates?"))
+  if (input == 1) {
+    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
+                    complete_ambiguous_20(dates), dates)
+    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
+                    complete_ambiguous_19(dates), dates)
+  }
+  dates
+}
+
 standardise_ranges <- function(dates) {
   dates <- stringr::str_replace_all(dates, "_", "..")
   dates <- stringr::str_replace_all(dates, ":", "..")
@@ -191,6 +210,43 @@ extract_from_text <- function(v) {
   out
 }
 
+as_bc_dates <- function(dates) {
+  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 2,
+                  st_negative_range(dates), dates)
+  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") > 2,
+                  st_negative_sets(dates), dates)
+  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 1,
+                  st_negative(dates), dates)
+}
+
+as_ac_dates <- function(dates) {
+  # remove after christ letters
+  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD)")
+  dates <- stringr::str_trim(dates, side = "both")
+}
+
+st_negative_range <- function(dates) {
+  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- gsub(" ", "", dates)
+  dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
+                  "..-", strsplit(dates, "\\.\\.")[[1]][2])
+}
+
+st_negative_sets <- function(dates) {
+  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- gsub(" ", "", dates)
+  dates <- unlist(strsplit(dates, "\\,"))
+  dates <- ifelse(length(dates) > 1,
+                  paste0("-", paste(dates, collapse = ", -")),
+                  paste0("-", dates))
+}
+
+st_negative <- function(dates) {
+  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_trim(dates, side = "both")
+  dates <- paste0("-", dates)
+}
+
 add_zero_padding <- function(dates) {
   # Negative year only
   dates <- stringr::str_replace_all(dates, "^-([:digit:]{1})$", "-000\\1")
@@ -270,62 +326,6 @@ add_zero_set <- function(dates) {
                 paste0("0", x), x)
   })
   dates <- purrr::map_chr(dates, paste, collapse = ",")
-  dates
-}
-
-as_bc_dates <- function(dates) {
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 2,
-                  st_negative_range(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") > 2,
-                  st_negative_sets(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 1,
-                  st_negative(dates), dates)
-}
-
-as_ac_dates <- function(dates) {
-  # remove after christ letters
-  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD)")
-  dates <- stringr::str_trim(dates, side = "both")
-}
-
-st_negative_range <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
-  dates <- gsub(" ", "", dates)
-  dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
-                  "..-", strsplit(dates, "\\.\\.")[[1]][2])
-}
-
-st_negative_sets <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
-  dates <- gsub(" ", "", dates)
-  dates <- unlist(strsplit(dates, "\\,"))
-  dates <- ifelse(length(dates) > 1,
-                  paste0("-", paste(dates, collapse = ", -")),
-                  paste0("-", dates))
-}
-
-st_negative <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
-  dates <- stringr::str_trim(dates, side = "both")
-  dates <- paste0("-", dates)
-}
-
-ask_user <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
-                  reorder_ambiguous(dates), dates)
-  input <- utils::menu(c("Yes", "No"),
-                       title = paste0("Would you like to complete ambiguous 6 digit dates?"))
-  if (input == 1) {
-    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
-                    complete_ambiguous_20(dates), dates)
-    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
-                    complete_ambiguous_19(dates), dates)
-  }
   dates
 }
 

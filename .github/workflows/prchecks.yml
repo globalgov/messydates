@@ -56,6 +56,11 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
 
+      - name: Install X11 dependencies on MacOS for pdftools
+        if: runner.os == 'macOS'
+        run: |
+          brew install --cask xquartz
+
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
@@ -64,8 +69,8 @@ jobs:
           remotes::install_cran("spelling")
         shell: Rscript {0}
 
-#      - name:Document
-#        run: Rscript -e 'roxygen2::roxygenise()'
+      - name: Document
+        run: Rscript -e 'roxygen2::roxygenise()'
 
       - name: Check
         env:

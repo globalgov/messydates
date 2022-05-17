@@ -113,16 +113,12 @@ ask_user <- function(dates) {
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
                   reorder_ambiguous(dates), dates)
-  input <- utils::menu(c("Yes", "No"),
-                       title = paste0("Would you like to complete ambiguous 6 digit dates?"))
-  if (input == 1) {
     dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
                       as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
                     complete_ambiguous_20(dates), dates)
     dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
                       as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
                     complete_ambiguous_19(dates), dates)
-  }
   dates
 }
 

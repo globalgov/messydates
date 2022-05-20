@@ -26,7 +26,8 @@
 #' as_messydate("2021-02-01..2021-02-28")
 #' as_messydate("{2021-02-01,2021-02-28}")
 #' as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
-#' # as_messydate("01-02-21", resequence = TRUE)
+#' # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
+#' # resequence = TRUE)
 #' @export
 as_messydate <- function(x, resequence = FALSE) UseMethod("as_messydate")
 
@@ -96,12 +97,12 @@ standardise_date_order <- function(dates) {
                   stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)", "\\3-\\2-\\1"))
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 13 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}$"))) > 31,
                   stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
                                            "\\3-\\2-\\1"), dates)
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) > 31,
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}$"))) > 31,
                   stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
                                            "\\3-\\1-\\2"), dates)
   dates
@@ -113,12 +114,12 @@ ask_user <- function(dates) {
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
                   reorder_ambiguous(dates), dates)
-    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
-                    complete_ambiguous_20(dates), dates)
-    dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                      as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
-                    complete_ambiguous_19(dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
+                  complete_ambiguous_20(dates), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
+                  complete_ambiguous_19(dates), dates)
   dates
 }
 
@@ -326,10 +327,14 @@ add_zero_set <- function(dates) {
 }
 
 reorder_ambiguous <- function(d) {
+  examples <- ifelse(as.numeric(gsub("-", "", stringr::str_extract(d, "^[:digit:]{2}-"))) < 32 &
+                       as.numeric(gsub("-", "", stringr::str_extract(d, "-[:digit:]{2}-"))) < 32 &
+                       as.numeric(gsub("-", "", stringr::str_extract(d, "-[:digit:]{2}$"))) < 32,
+                     d, NA_character_)
   input <- utils::menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
                          "MDY (Month-Day-Year)", "Ambiguous/Not sure"),
-                       title = paste0("What should the component order of ambiguous 6 digit dates be
-                                      (e.g. ", d, ")?"))
+                       title = paste0("What is the component order of ambiguous 6 digit dates in vector
+                                      (e.g. ", dplyr::first(examples[stats::complete.cases(examples)]), ")?"))
   if (input == 1) {
     out <- d
     message("Ambiguous 6 digit dates already in standard YMD format")
@@ -351,9 +356,11 @@ reorder_ambiguous <- function(d) {
 }
 
 complete_ambiguous_20 <- function(d) {
+  examples <- ifelse(as.numeric(gsub("-", "", stringr::str_extract(d, "^[:digit:]{2}-"))) < 23, d, NA_character_)
+  examples <- dplyr::first(examples[stats::complete.cases(examples)])
   input <- utils::menu(c("Yes", "No"),
                        title = paste0("Are all ambiguous 6 digit dates for which the year is between 0 and 23
-                       in the 21st century (i.e. ", d, " is equal to 20", d, " )?"))
+                       in the 21st century (e.g. ", examples, " is equal to 20", examples, ")?"))
   if (input == 1) {
     out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "20\\1-\\2-\\3")
     message("Ambiguous 6 digit dates for which the year is smaller than 23 were completed.")
@@ -366,8 +373,11 @@ complete_ambiguous_20 <- function(d) {
 }
 
 complete_ambiguous_19 <- function(d) {
+  examples <- ifelse(as.numeric(gsub("-", "", stringr::str_extract(d, "^[:digit:]{2}-"))) > 22, d, NA_character_)
+  examples <- dplyr::first(examples[stats::complete.cases(examples)])
   input <- utils::menu(c("Yes", "No"),
-                       title = paste0("Are 6 digit dates for which the year is bigger than 22 in the 20th century?"))
+                       title = paste0("Are all ambiguous 6 digit dates for which the year is bigger than 22
+                       in the 20th century (e.g. ", examples, " is equal to 19", examples, ")?"))
   if (input == 1) {
     out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "19\\1-\\2-\\3")
     message("6 digit dates for which the year is bigger than 22 were completed.")

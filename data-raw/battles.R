@@ -1,5 +1,4 @@
-## code to prepare `battles` dataset goes here
-
+## code to prepare `battles` dataset
 battles <- tibble::tribble(~Battle, ~Date,
                            "Operation MH-2","2001-03-08",
                            "Battle of Tetovo","2001-03-16..2001-08-13",
@@ -22,5 +21,4 @@ battles <- tibble::tribble(~Battle, ~Date,
                            "Tsotsin-Yurt operation","2001-12-30..2002-01-03")
 battles$Date <- as_messydate(battles$Date)
 battles
-
 usethis::use_data(battles, overwrite = TRUE)

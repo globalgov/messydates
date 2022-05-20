@@ -64,5 +64,6 @@ as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
 as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
-# as_messydate("01-02-21", resequence = TRUE)
+# as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
+# resequence = TRUE)
 }

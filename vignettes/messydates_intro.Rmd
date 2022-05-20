@@ -37,11 +37,11 @@ However, this can create issues for inference in which sequence or timing is imp
 The goal of `{messydates}` is to help with this problem by retaining and working
 with various kinds of date imprecision.
 
-`{messydates}` contains a set of tools for constructing and coercing into and from the messydt class. 
+`{messydates}` contains a set of tools for constructing and coercing into and from the mdate class. 
 This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated 
 to express unspecified date components, approximate or uncertain date components, 
 date ranges, and sets of dates. 
-The function `as_messydate()` handles the coercion to messydt class.
+The function `as_messydate()` handles the coercion to mdate class.
 
 ```{r comparison, warning=FALSE}
 library(messydates)
@@ -113,9 +113,9 @@ tibble::tibble(contract = contract(expand(dates_expand)))
 
 ## Coerce from messydates
 
-Coercion functions coerce objects of `messydt` class to 
+Coercion functions coerce objects of `mdate` class to 
 common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
-Since `messydt` objects can hold multiple individual dates,
+Since `mdate` objects can hold multiple individual dates,
 an additional function must be passed as an argument so that multiple dates
 are "resolved" into a single date.
 
@@ -141,7 +141,7 @@ tibble::tibble(min = as.Date(dates_expand, min),
 Several other functions are also offered in the `{messydates}` package.
 
 For example, one can check various logical tests for messy date objects.
-`is_messydate()` tests whether the object inherits the `messydt` class.
+`is_messydate()` tests whether the object inherits the `mdate` class.
 `is_intersecting()` tests whether there is any intersection between two messy dates.
 `is_element()` similarly tests whether a messy date can be found within a messy date range or set.
 `is_similar()` tests whether two dates contain similar components.

@@ -2,15 +2,15 @@
 % Please edit documentation in R/expand.R
 \name{expand}
 \alias{expand}
-\alias{expand.messydt}
+\alias{expand.mdate}
 \title{Expand messy dates to lists of dates}
 \usage{
 expand(x, approx_range)
 
-\method{expand}{messydt}(x, approx_range = 3)
+\method{expand}{mdate}(x, approx_range = 3)
 }
 \arguments{
-\item{x}{A \code{messydt} object.}
+\item{x}{A \code{mdate} object.}
 
 \item{approx_range}{Range to expand approximate dates,
 or date components, annotated with '~', by default 3.
@@ -35,7 +35,7 @@ before being expanded normally as though they were incomplete.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{messydt}: Expanding messydates
+\item \code{mdate}: Expanding messydates
 }}
 
 \examples{

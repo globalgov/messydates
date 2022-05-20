@@ -31,10 +31,10 @@ If \code{TRUE}, it prompts users to select the existing component order of ambig
 and further completed to YYYY-MM-DD format if they choose to do so.}
 }
 \value{
-A \code{messydt} class object
+A \code{mdate} class object
 }
 \description{
-These functions coerce different data classes into \code{messydt} class
+These functions coerce different data classes into \code{mdate} class
 }
 \details{
 The function can also extract dates from text.
@@ -42,13 +42,13 @@ Currently this only works for texts in English.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{Date}: Coerce from \code{Date} to \code{messydt} class
+\item \code{Date}: Coerce from \code{Date} to \code{mdate} class
 
-\item \code{POSIXct}: Coerce from \code{POSIXct} to \code{messydt} class
+\item \code{POSIXct}: Coerce from \code{POSIXct} to \code{mdate} class
 
-\item \code{POSIXlt}: Coerce from \code{POSIXlt} to \code{messydt} class
+\item \code{POSIXlt}: Coerce from \code{POSIXlt} to \code{mdate} class
 
-\item \code{character}: Coerce character date objects to \code{messydt} class
+\item \code{character}: Coerce character date objects to \code{mdate} class
 }}
 
 \examples{

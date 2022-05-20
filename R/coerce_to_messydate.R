@@ -1,6 +1,6 @@
 #' Coercion to messy dates
 #'
-#' These functions coerce different data classes into `messydt` class
+#' These functions coerce different data classes into `mdate` class
 #' @param x A scalar or vector of a class that can be coerced into a Date,
 #' such as `Date`, `POSIXct`, `POSIXlt`, or character.
 #' @param resequence Users have the option to choose the
@@ -12,7 +12,7 @@
 #' and further completed to YYYY-MM-DD format if they choose to do so.
 #' @details The function can also extract dates from text.
 #' Currently this only works for texts in English.
-#' @return A `messydt` class object
+#' @return A `mdate` class object
 #' @examples
 #' as_messydate("2021")
 #' as_messydate("2021-02")
@@ -30,28 +30,28 @@
 #' @export
 as_messydate <- function(x, resequence = FALSE) UseMethod("as_messydate")
 
-#' @describeIn as_messydate Coerce from `Date` to `messydt` class
+#' @describeIn as_messydate Coerce from `Date` to `mdate` class
 #' @export
 as_messydate.Date <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn as_messydate Coerce from `POSIXct` to `messydt` class
+#' @describeIn as_messydate Coerce from `POSIXct` to `mdate` class
 #' @export
 as_messydate.POSIXct <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn as_messydate Coerce from `POSIXlt` to `messydt` class
+#' @describeIn as_messydate Coerce from `POSIXlt` to `mdate` class
 #' @export
 as_messydate.POSIXlt <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn as_messydate Coerce character date objects to `messydt` class
+#' @describeIn as_messydate Coerce character date objects to `mdate` class
 #' @export
 as_messydate.character <- function(x, resequence = FALSE) {
   d <- standardise_text(x)

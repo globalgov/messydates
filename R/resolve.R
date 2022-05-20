@@ -8,7 +8,7 @@
 #' If the date is not 'messy' (i.e. has no annotations)
 #' then just that precise date is returned.
 #' This can be useful for various descriptive or inferential projects.
-#' @param ... a messydt object
+#' @param ... a mdate object
 #' @param na.rm Should NAs be removed? True by default.
 #' @importFrom stringr str_detect
 #' @return A single scalar or vector of dates
@@ -29,7 +29,7 @@ NULL
 
 #' @rdname resolve
 #' @export
-min.messydt <- function(..., na.rm = TRUE) {
+min.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = FALSE)
@@ -40,7 +40,7 @@ min.messydt <- function(..., na.rm = TRUE) {
 
 #' @rdname resolve
 #' @export
-max.messydt <- function(..., na.rm = TRUE) {
+max.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = FALSE)
@@ -52,7 +52,7 @@ max.messydt <- function(..., na.rm = TRUE) {
 #' @rdname resolve
 #' @importFrom stats median
 #' @export
-median.messydt <- function(..., na.rm = TRUE) {
+median.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = FALSE)
@@ -76,7 +76,7 @@ median.messydt <- function(..., na.rm = TRUE) {
 #' Values of trim outside that range are taken as the nearest endpoint.
 #' @importFrom lubridate as_date
 #' @export
-mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
+mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = FALSE)
@@ -99,7 +99,7 @@ modal <- function(..., na.rm = FALSE) UseMethod("modal")
 
 #' @rdname resolve
 #' @export
-modal.messydt <- function(..., na.rm = TRUE) {
+modal.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = FALSE)
@@ -126,7 +126,7 @@ random <- function(..., size,
 
 #' @rdname resolve
 #' @export
-random.messydt <- function(...,
+random.mdate <- function(...,
                            size,
                            replace = FALSE,
                            prob = NULL) {

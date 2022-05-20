@@ -11,27 +11,27 @@ maxmax(date)
 minmin(date)
 }
 \arguments{
-\item{date}{A \code{messydt} vector}
+\item{date}{A \code{mdate} vector}
 }
 \value{
-A statistic describing the \code{messydt} vector.
+A statistic describing the \code{mdate} vector.
 }
 \description{
 \code{{messydates}} provides extensions to a variety of functions
 with R's \code{{stats}} package to simplify the creation of
 summary reports of data with \code{{skimr}}.
-All functions take a \code{messydt} vector as an input and return a single
+All functions take a \code{mdate} vector as an input and return a single
 statistic.
 Note that individual dates are first expanded and resolved
 before a vector level statistic is computed
 (e.g. \code{maxmax()} corresponds to the maximum date of the maximum
-of the vector resulting from an expanded \code{{messydt}})
+of the vector resulting from an expanded \code{{mdate}})
 }
 \section{Functions}{
 \itemize{
-\item \code{maxmax}: Calculate the farthest date forward of a \code{messydt} vector
+\item \code{maxmax}: Calculate the farthest date forward of a \code{mdate} vector
 
-\item \code{minmin}: Calculate the farthest date in the past of a \code{messydt}
+\item \code{minmin}: Calculate the farthest date in the past of a \code{mdate}
 vector
 }}
 

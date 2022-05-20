@@ -9,7 +9,7 @@
 #' are also expanded to include possible dates within that year and/or month.
 #' The function removes the annotation from dates with unreliable sources ('?'),
 #' before being expanded normally as though they were incomplete.
-#' @param x A `messydt` object.
+#' @param x A `mdate` object.
 #' @param approx_range Range to expand approximate dates,
 #' or date components, annotated with '~', by default 3.
 #' That is, 3 days for day approximation, 3 months for month approximation,
@@ -30,7 +30,7 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 #' expand(d)
 #' @export
-expand.messydt <- function(x, approx_range = 3) {
+expand.mdate <- function(x, approx_range = 3) {
   x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
   x <- suppressWarnings(expand_approximate(x, approx_range))
   x <- expand_unspecified(x)

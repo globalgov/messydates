@@ -54,7 +54,7 @@
 #' while brackets, `[]`, are used to mean "one member of the set".
 #' @param x A character scalar or vector in the expected "yyyy-mm-dd" format
 #' annotated, as necessary, according to ISO 8601-2_2019(E).
-#' @return Object of class `messydt`
+#' @return Object of class `mdate`
 #' @name class
 #' @seealso as_messydate
 NULL
@@ -64,7 +64,7 @@ NULL
 #' @export
 new_messydate <- function(x = character()) {
   stopifnot(is.character(x))
-  structure(x, class = c("messydt"))
+  structure(x, class = c("mdate"))
 }
 
 #' @rdname class
@@ -82,14 +82,14 @@ validate_messydate <- function(x) {
 
   if (!all(grepl("[0-9]", values))) {
     stop(
-      "Messydt object requires at least one specified date component.",
+      "mdate object requires at least one specified date component.",
       call. = FALSE
     )
     }
 
   if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|,|;|>|<|_|\\^|'|&|\\$|#", values))) {
     stop(
-      "Messydt object can only consist of numbers and
+      "mdate object can only consist of numbers and
       some special symbols: []{}..X%?~",
       call. = FALSE
     )
@@ -99,10 +99,10 @@ validate_messydate <- function(x) {
 
 #' @importFrom utils str
 #' @export
-print.messydt <- function(x, ...) {
+print.mdate <- function(x, ...) {
   str(x)
 }
 
 #' @rdname class
 #' @export
-NA_messydt_ <- structure(NA_real_, class = "messydt")
+NA_mdate_ <- structure(NA_real_, class = "mdate")

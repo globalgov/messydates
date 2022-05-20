@@ -1,7 +1,7 @@
 #' Logical tests on messy dates
 #'
 #' These functions provide various logical tests for messy date objects.
-#' `is_messydate()` tests whether the object inherits the `messydt` class.
+#' `is_messydate()` tests whether the object inherits the `mdate` class.
 #' If a more rigorous validation is required, see `validate_messydate()`.
 #' `is_intersecting()` tests whether there is any intersection between
 #' two messy dates, leveraging `intersect()`.
@@ -23,7 +23,7 @@ NULL
 #' is_messydate(as_messydate("2012-01-01"))
 #' is_messydate(as.Date("2012-01-01"))
 #' @export
-is_messydate <- function(x) inherits(x, "messydt")
+is_messydate <- function(x) inherits(x, "mdate")
 
 #' @rdname logical
 #' @examples

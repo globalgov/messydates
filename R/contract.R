@@ -7,7 +7,7 @@
 #' @param collapse Do you want ranges to be collapsed?
 #' TRUE by default.
 #' If FALSE ranges are returned in compact format.
-#' @return A `messydt` vector
+#' @return A `mdate` vector
 #' @importFrom tibble tibble
 #' @importFrom lubridate NA_Date_
 #' @importFrom stringr str_replace_all str_detect

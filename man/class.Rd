@@ -5,24 +5,24 @@
 \alias{class}
 \alias{new_messydate}
 \alias{validate_messydate}
-\alias{NA_messydt_}
+\alias{NA_mdate_}
 \title{A broader date class for messy dates}
 \format{
-An object of class \code{messydt} of length 1.
+An object of class \code{mdate} of length 1.
 }
 \usage{
 new_messydate(x = character())
 
 validate_messydate(x)
 
-NA_messydt_
+NA_mdate_
 }
 \arguments{
 \item{x}{A character scalar or vector in the expected "yyyy-mm-dd" format
 annotated, as necessary, according to ISO 8601-2_2019(E).}
 }
 \value{
-Object of class \code{messydt}
+Object of class \code{mdate}
 }
 \description{
 These functions create and validate a new date class for R

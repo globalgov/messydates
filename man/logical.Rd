@@ -27,7 +27,7 @@ A logical vector the length of the messy dates passed.
 }
 \description{
 These functions provide various logical tests for messy date objects.
-\code{is_messydate()} tests whether the object inherits the \code{messydt} class.
+\code{is_messydate()} tests whether the object inherits the \code{mdate} class.
 If a more rigorous validation is required, see \code{validate_messydate()}.
 \code{is_intersecting()} tests whether there is any intersection between
 two messy dates, leveraging \code{intersect()}.

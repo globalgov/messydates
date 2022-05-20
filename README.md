@@ -2,7 +2,6 @@
 # messydates <img src="man/figures/messydates_hexlogo.png" align="right" width="220"/>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- badges: start -->
 
 ![GitHub release (latest by
@@ -12,7 +11,7 @@ Date](https://img.shields.io/github/release-date/globalgov/messydates)
 ![GitHub
 issues](https://img.shields.io/github/issues-raw/globalgov/messydates)
 [![Codecov test
-coverage](https://codecov.io/gh/globalgov/messydates/branch/main/graph/badge.svg)](https://app.codecov.io/gh/globalgov/qCreate?branch=main)
+coverage](https://codecov.io/gh/globalgov/messydates/branch/main/graph/badge.svg)](https://app.codecov.io/gh/globalgov/messydates?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/globalgov/messydates/badge)](https://www.codefactor.io/repository/github/globalgov/messydates)
 [![CII Best
 Practices](https://bestpractices.coreinfrastructure.org/projects/5061/badge)](https://bestpractices.coreinfrastructure.org/projects/5061)
@@ -39,25 +38,25 @@ imprecision.
 ## A quick overview
 
 `{messydates}` implements the extended annotation standard for dates,
-the Extended Date/Time Format (EDTF), outlined in
-[ISO 8601-2\_2019(E)](https://www.iso.org/standard/70908.html) for R.
-These include standardised notation for:
+the Extended Date/Time Format (EDTF), outlined in [ISO
+8601-2_2019(E)](https://www.iso.org/standard/70908.html) for R. These
+include standardised notation for:
 
-  - unspecified date( component)s, e.g. `2012-XX-01` for the first of
+-   unspecified date( component)s, e.g. `2012-XX-01` for the first of
     some unknown month in 2012 or `2012-01` for some unknown day in
     January 2012
-  - approximate date( component)s, e.g. `2012-01-12~` for approximately
+-   approximate date( component)s, e.g. `2012-01-12~` for approximately
     the 12th of January 2012
-  - uncertain date( component)s, e.g. `2012-01-12?` where this data
+-   uncertain date( component)s, e.g. `2012-01-12?` where this data
     point is based on an unreliable source
-  - sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date can be
+-   sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date can be
     both 1 January 2012 and 12 January 2012
-  - ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between
+-   ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between
     the 1 January 2012 and 12 January 2012 inclusive
 
 `{messydates}` contains a set of tools for constructing and coercing
-into and from the ‘messydt’ class. This date class allows regular dates
-to be annotated to express unspecified date components, approximate or
+into and from the ‘mdate’ class. This date class allows regular dates to
+be annotated to express unspecified date components, approximate or
 uncertain date components, date ranges, and sets of dates.
 
 Importantly, the package also includes a function for unpacking or

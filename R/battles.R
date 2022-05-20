@@ -6,6 +6,6 @@
 #' @format A data frame with 19 rows and 2 variables:
 #' \describe{
 #'   \item{Battle}{name of the battle, character}
-#'   \item{Date}{date or date range, a messydt class vector}
+#'   \item{Date}{date or date range, a mdate class vector}
 #' }
 "battles"

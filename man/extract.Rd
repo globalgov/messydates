@@ -17,7 +17,7 @@ day(x)
 precision(x)
 }
 \arguments{
-\item{x}{A \code{messydt} object}
+\item{x}{A \code{mdate} object}
 }
 \value{
 \code{year()}, \code{month()}, and \code{day()} extraction return the integer

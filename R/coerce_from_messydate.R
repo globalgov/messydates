@@ -1,9 +1,9 @@
 #' Coercion from messy dates
 #'
 #' @description
-#' These functions coerce objects of `messydt` class to
+#' These functions coerce objects of `mdate` class to
 #' common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
-#' Since `messydt` objects can hold multiple individual dates,
+#' Since `mdate` objects can hold multiple individual dates,
 #' however, an additional function must be passed as an argument
 #' so that these functions know how to coerce resolve multiple dates
 #' into a single date.
@@ -14,10 +14,10 @@
 #' or even a `random` selection from among the candidate dates.
 #'
 #' These functions then, building on `expand()` and the resolve functions,
-#' are particularly useful in converting back out of the `messydt` class
+#' are particularly useful in converting back out of the `mdate` class
 #' for use with existing methods and models,
 #' especially for checking the robustness of results.
-#' @param x A `messydt` object
+#' @param x A `mdate` object
 #' @param ... Arguments passed on to the S3 generics.
 #' @param FUN A function that can be used to resolve expanded messy dates
 #' into a single date.
@@ -41,7 +41,7 @@ NULL
 #' as.Date(as_messydate("1000 BC"), median)
 #' as.Date(as_messydate(c("-1000", "2020")), min)
 #' @export
-as.Date.messydt <- function(x, ..., FUN) {
+as.Date.mdate <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   x <- ifelse(stringr::str_detect(x, "^-"),
@@ -52,22 +52,22 @@ as.Date.messydt <- function(x, ..., FUN) {
 
 #' @rdname from_messydate
 #' @export
-as.POSIXct.messydt <- function(x, ..., FUN) {
+as.POSIXct.mdate <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringr::str_detect(x, "^-")) {
-    stop("For conversion of negative dates from messydt class use as.Date()")
+    stop("For conversion of negative dates from mdate class use as.Date()")
   }
   as.POSIXct(x)
 }
 
 #' @rdname from_messydate
 #' @export
-as.POSIXlt.messydt <- function(x, ..., FUN) {
+as.POSIXlt.mdate <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringr::str_detect(x, "^-")) {
-    stop("For conversion of negative dates from messydt class use as.Date()")
+    stop("For conversion of negative dates from mdate class use as.Date()")
   }
   as.POSIXlt(x)
 }

@@ -32,7 +32,7 @@ the right of the group ("ym") or to both components ("md").
 E.g. for "ym": 1916-10~-10; for "md": 1916-?10-?10.}
 }
 \value{
-A messydt object with annotated date(s)
+A mdate object with annotated date(s)
 }
 \description{
 Some datasets have for example an arbitrary cut off point

@@ -57,7 +57,7 @@ e.g. `{2012-01-01,2012-01-12}` where the date can be both 1 January 2012 and 12 
 - ranges of dates,
 e.g. `2012-01-01..2012-01-12` for all dates between the 1 January 2012 and 12 January 2012 inclusive
 
-`{messydates}` contains a set of tools for constructing and coercing into and from the 'messydt' class.
+`{messydates}` contains a set of tools for constructing and coercing into and from the 'mdate' class.
 This date class allows regular dates to be annotated to express unspecified date components,
 approximate or uncertain date components, date ranges, and sets of dates.
 

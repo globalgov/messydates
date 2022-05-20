@@ -26,7 +26,7 @@
 #' For groups of date components, uncertainty or approximation is annotated to
 #' the right of the group ("ym") or to both components ("md").
 #' E.g. for "ym": 1916-10~-10; for "md": 1916-?10-?10.
-#' @return A messydt object with annotated date(s)
+#' @return A mdate object with annotated date(s)
 #' @examples
 #' data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
 #' End = c("1816-12-31", "1916-12-31", "2016-12-31"))

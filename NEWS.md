@@ -1,8 +1,9 @@
-# messydates 0.2.2
+# messydates 0.3.0
 
 ## Package
 
-* Closed #41 by creating `{skimr}` template for "messydt" class
+* Changed object class name to `mdate`
+* Closed #41 by creating `{skimr}` template for "mdate" class
 
 ## Functions
 

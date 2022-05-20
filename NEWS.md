@@ -2,14 +2,14 @@
 
 ## Package
 
-* Changed object class name to `mdate`
-* Closed #41 by creating `{skimr}` template for "mdate" class
+* Closed #51 by changing object class name to `mdate`
+* Closed #41 by creating `{skimr}` template for `mdate` class
 
 ## Functions
 
 * Updated coercion to messy dates
-  * Closed #45 by improving how `as_messydate()` re-orders 6 digit date components
-  * Added "resequence" argument to `as_messydate()` that allows user to choose component order of ambiguous dates
+  * Closed #26 by adding "resequence" argument to `as_messydate()` allowing users to choose component order of ambiguous dates
+  * Closed #45 by improving how `as_messydate()` re-orders 6 digit date components if necessary
   * Closed #48 by adding zero padding incomplete date ranges and sets of dates
   * Updated `as_messydate()` to also extract dates from text strings
 * Added `is_precise()` function that provides a logical test for precise dates

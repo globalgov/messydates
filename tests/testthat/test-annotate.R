@@ -45,5 +45,5 @@ test_that("Annotate functions work properly", {
                                    data$Beg)),
                c("1816-01-01", "1916-01?-01", "2016-01-01"))
   d <- on_or_before(data$Beg)
-  expect_equal(as.character(class(d)), "messydt")
+  expect_equal(as.character(class(d)), "mdate")
 })

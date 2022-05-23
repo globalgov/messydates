@@ -103,4 +103,3 @@ common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
 It is thus fully compatible with packages such as `{lubridate}` and `{anydate}`.
 It is also compatible with `{unstruwwel}`, which also parses historic dates in R,
 though the emphasis of our package is on working with these dates.
-

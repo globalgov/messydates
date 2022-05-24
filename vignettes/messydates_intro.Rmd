@@ -9,16 +9,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  purl = NOT_CRAN,
-  eval = NOT_CRAN
-)
-```
-
 ## Why `{messydates}`?
 
 Dates are often messy.
@@ -127,8 +117,8 @@ tibble::tibble(min = as.Date(roman_population$period, min),
 
 ## Additional functionality
 
-Several other functions are also offered in the `{messydates}` package.
-For example, we can proceed to run logical tests to the 'mdate' variable in the Roman population.
+Several other functions are offered in the package as, for example,
+we can proceed to run logical tests to the 'mdate' variable in the Roman population.
 `is_messydate()` tests whether the object inherits the `mdate` class.
 `is_intersecting()` tests whether there is any intersection between two messy dates.
 `is_element()` similarly tests whether a messy date can be found within a messy date range or set.
@@ -143,8 +133,7 @@ is_similar(as_messydate("-0199-01-01"), as_messydate(roman_population$period[1])
 is_precise(as_messydate(roman_population$period[1]))
 ```
 
-Additionally, one can perform intersection (`md_intersect()`), union (`md_union()`),
-or 'join' the 'mdate' variable in the Roman population.
+Additionally, one can perform intersection, union, or 'join' the 'mdate' variable in the Roman population.
 
 ```{r set, warning=FALSE}
 md_intersect(as_messydate(roman_population$period[1]), as_messydate("-0200-01-01"))

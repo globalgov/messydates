@@ -6,7 +6,7 @@
 \alias{on_or_after}
 \alias{as_approximate}
 \alias{as_uncertain}
-\title{Annotates messy dates for uncertainty and/or approximation}
+\title{Annotates dates as censored, uncertain, or approximate}
 \usage{
 on_or_before(x)
 
@@ -22,17 +22,17 @@ as_uncertain(x, component = NULL)
 \item{component}{Annotation can be added on specific date components
 ("year", "month" or "day"), or to groups of date components (month and
 day ("md"), or year and month ("ym")). This must be specified.
-If unspecified, annotation will be added after the date (e.g. 1916-10-10?),
+If unspecified, annotation will be added after the date (e.g. \verb{1916-10-10?}),
 indicating the whole date is uncertain or approximate.
 For specific date components, uncertainty or approximation is annotated to
 the left of the date component.
-E.g. for "day": 1916-10-?10 or 1916-10-~10.
+E.g. for "day": \code{1916-10-?10} or \code{1916-10-~10}.
 For groups of date components, uncertainty or approximation is annotated to
 the right of the group ("ym") or to both components ("md").
-E.g. for "ym": 1916-10~-10; for "md": 1916-?10-?10.}
+E.g. for "ym": \code{1916-10~-10}; for "md": \code{1916-?10-?10}.}
 }
 \value{
-A mdate object with annotated date(s)
+A \code{mdate} object with annotated date(s)
 }
 \description{
 Some datasets have for example an arbitrary cut off point
@@ -41,38 +41,35 @@ when they are not necessarily the real start or end dates.
 This collection of functions helps annotate uncertainty and
 approximation to dates according to ISO2019E standards.
 Inaccurate start or end dates can be represented by an affix
-indicating "on or before", if used as a prefix (e.g. ..1816-01-01),
-or indicating "on or after", if used as a suffix (e.g. 2016-12-31..).
-Approximate dates are indicated by adding a \code{~} to year,
+indicating "on or before", if used as a prefix (e.g. \code{..1816-01-01}),
+or indicating "on or after", if used as a suffix (e.g. \verb{2016-12-31..}).
+Approximate dates are indicated by adding a tilde to year,
 month, or day components, as well as groups of components or whole dates
-to estimate values that are possibly correct (e.g. 2003-03-03~).
-Day, month, or year, uncertainty can be indicated by adding a \verb{?}
-to a possibly dubious date (e.g. 1916-10-10?) or date
-component (e.g. 1916-?10-10).
+to estimate values that are possibly correct (e.g. \verb{2003-03-03~}).
+Day, month, or year, uncertainty can be indicated by adding a question mark
+to a possibly dubious date (e.g. \verb{1916-10-10?}) or date
+component (e.g. \code{1916-?10-10}).
 }
-\details{
-\code{on_or_before()} annotates uncertain start dates by adding ".." as
-a prefix to dates (e.g. \code{..1816-01-01}).
+\section{Functions}{
+\itemize{
+\item \code{on_or_before}: prefixes dates with ".." where start date is uncertain
 
-\code{on_or_after()} annotates uncertain end dates by adding ".." as
-a suffix to dates (e.g. \code{2016-12-31}).
+\item \code{on_or_after}: suffixes dates with ".." where end date is uncertain
 
-\code{as_approximate()} annotates approximate dates, or date
-components, deemed possibly correct by adding "~" to date
-(e.g. \code{1916~-01-01})
+\item \code{as_approximate}: adds tildes to indicate approximate dates/date components
 
-\code{as_uncertain()} annotates uncertain dates, or date components,
-deemed dubious by adding "?" to date (e.g. \code{1916?-01-01})
-}
+\item \code{as_uncertain}: adds question marks to indicate dubious dates/date components.
+}}
+
 \examples{
 data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
-End = c("1816-12-31", "1916-12-31", "2016-12-31"))
+  End = c("1816-12-31", "1916-12-31", "2016-12-31"))
 dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01",
- on_or_before(Beg), Beg))
+  on_or_before(Beg), Beg))
 dplyr::mutate(data, End = ifelse(End >= "2016-01-01",
- on_or_after(End), End))
+  on_or_after(End), End))
 dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01",
-as_approximate(Beg), Beg))
+  as_approximate(Beg), Beg))
 dplyr::mutate(data, End = ifelse(End == "1916-12-31",
-as_uncertain(End), End))
+  as_uncertain(End), End))
 }

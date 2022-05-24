@@ -53,6 +53,10 @@ body{
   font-size: 1.05rem;
 }
 
+dd {
+  font-size: 14px;
+}
+
 /* Right column titles*/
 aside .h2 {
   font-size: 1.275rem;

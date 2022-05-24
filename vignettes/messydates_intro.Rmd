@@ -57,7 +57,8 @@ dates_comparison <- tibble::tribble(~Example, ~OriginalDate,
                                     "A not so clearly future date", "2599-12-31",
                                     "A range of dates", "2019-11-01:2020-01-01",
                                     "An uncertain date", "2001-01-01?",
-                                    "A set of dates", "2021-5-26, 2021-6-10, 2021-11-19, 2021-12-4")
+                                    "A set of dates", "2021-5-26, 2021-6-10, 2021-11-19, 2021-12-4",
+                                    "A writen date", "First of February, two thousand and twenty-one")
 dates_comparison %>% dplyr::mutate(base = as.Date(OriginalDate),
                                    lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
                                    messydates = messydates::as_messydate(OriginalDate)) %>%
@@ -147,7 +148,9 @@ For example, one can check various logical tests for messy date objects.
 `is_similar()` tests whether two dates contain similar components.
 
 ```{r logical, warning=FALSE}
-is_messydate(as_messydate("2012-01-01"))
+a <- as_messydate("2012-01-01")
+
+is_messydate(a)
 is_messydate(as.Date("2012-01-01"))
 is_intersecting(as_messydate("2012-01"), as_messydate("2012-01-01..2012-02-22"))
 is_intersecting(as_messydate("2012-01"), as_messydate("2012-02-01..2012-02-22"))

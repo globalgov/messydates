@@ -56,6 +56,10 @@ reference:
       - set
       - logical
       - extract
+  - title: "Report"
+    desc: "These methods help report on objects of the `mdate` class:"
+    contents:
+      - stats
   - title: "Data"
     desc: "Some test and/or example data:"
     contents:

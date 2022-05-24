@@ -8,7 +8,7 @@
 \alias{as_messydate.POSIXlt}
 \alias{as_messydate.character}
 \alias{make_messydate}
-\title{Coercion from regular date classes to messy dates}
+\title{Coercion from regular date classes to mdate}
 \usage{
 as_messydate(x, resequence = FALSE)
 

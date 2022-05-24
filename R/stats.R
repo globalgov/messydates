@@ -10,8 +10,17 @@
 #' (e.g. `maxmax()` corresponds to the maximum date of the maximum
 #' of the vector resulting from an expanded `{mdate}`)
 #' @seealso [get_skimmers()] for customizing the functions called by [skim()].
-#' @param date A `mdate` vector
+#' @param date An `mdate` vector
 #' @return A statistic describing the `mdate` vector.
+#' @examples
+#' \dontrun{
+#' d <- tibble::tibble(event = c("Event1", "Event2", "Event3", "Event 4"),
+#'                      messydates = as_messydate(c("2001",
+#'                                                  "2001-01-01..2003-12-30",
+#'                                                  "{2001, 2002, 2003}",
+#'                                                  "33 BC")))
+#' skimr::skim(d)
+#' }
 #' @name stats
 NULL
 
@@ -28,24 +37,24 @@ minmin <- function(date) {
   min(as.Date(date, min), na.rm = TRUE)
 }
 
-#' #' @describeIn stats Calculate the mean date of a `mdate` vector
-#' #' @export
+# #' @describeIn stats Calculate the mean date of a `mdate` vector
+# #' @export
 # meanmean <- function(date) {
 #   mean(as.Date(date, mean), na.rm = TRUE)
 # }
 
-#' #' @describeIn stats Calculate the median date of a `mdate` vector
-#' #' @export
-#' medianmedian <- function(date) {
-#'   median(as.Date(date, median), na.rm = TRUE)
-#' }
-#'
-#' #' @describeIn stats Calculate the mean of the most frequent date of a
-#' #' `mdate` vector
-#' #' @export
-#' meanmode <- function(date) {
-#'   mean(as.Date(date, modal), na.rm = TRUE)
-#' }
+# #' @describeIn stats Calculate the median date of a `mdate` vector
+# #' @export
+# medianmedian <- function(date) {
+#   median(as.Date(date, median), na.rm = TRUE)
+# }
+#
+# #' @describeIn stats Calculate the mean of the most frequent date of a
+# #' `mdate` vector
+# #' @export
+# meanmode <- function(date) {
+#   mean(as.Date(date, modal), na.rm = TRUE)
+# }
 
 # # Computing a simple uncertainty measure for vectors.
 # # Expressed in number of days.
@@ -64,19 +73,10 @@ minmin <- function(date) {
 #   vec
 # }
 
-#' Defines a `{skimr}` template for mdate objects.
-#' @param column A mdate object.
+#' @describeIn stats A `{skimr}` template for mdate objects.
 #' @importFrom skimr get_skimmers
-#' @return A `{skimr}` template for mdate objects.
-#' @examples
-#' d <- tibble::tibble(event = c("Event1", "Event2", "Event3", "Event 4"),
-#'                      messydates = as_messydate(c("2001",
-#'                                                  "2001-01-01..2003-12-30",
-#'                                                  "{2001, 2002, 2003}",
-#'                                                  "33 BC")))
-#' skimr::skim(d)
 #' @export
-get_skimmers.mdate <- function(column) {
+get_skimmers.mdate <- function(date) {
   skimr::sfl(
     skim_type = "mdate",
     n_empty = skimr::n_empty,

@@ -12,6 +12,12 @@ median(as.Date(date, median), na.rm = TRUE)
 \usage{
 \method{get_skimmers}{mdate}(column)
 }
+\arguments{
+\item{column}{A mdate object.}
+}
+\value{
+A \code{{skimr}} template for mdate objects.
+}
 \description{
 #' @describeIn stats Calculate the mean of the most frequent date of a
 #' \code{mdate} vector
@@ -19,4 +25,13 @@ median(as.Date(date, median), na.rm = TRUE)
 meanmode <- function(date) {
 mean(as.Date(date, modal), na.rm = TRUE)
 }
+Defines a \code{{skimr}} template for mdate objects.
+}
+\examples{
+d <- tibble::tibble(event = c("Event1", "Event2", "Event3", "Event 4"),
+                     messydates = as_messydate(c("2001",
+                                                 "2001-01-01..2003-12-30",
+                                                 "{2001, 2002, 2003}",
+                                                 "33 BC")))
+skimr::skim(d)
 }

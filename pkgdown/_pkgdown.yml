@@ -56,6 +56,10 @@ reference:
       - set
       - logical
       - extract
+  - title: "Summarise"
+    desc: "These methods yield summary statistics of objects of the `mdate` class:"
+    contents:
+      - stats
   - title: "Data"
     desc: "Some test and/or example data:"
     contents:

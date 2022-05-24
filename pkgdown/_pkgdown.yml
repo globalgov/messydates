@@ -2,9 +2,9 @@ url: https://globalgov.github.io/messydates/
 development:
     mode: auto
 template:
-  bootstrap: 5
+  # bootstrap: 5
   params:
-    bootswatch: litera
+    bootswatch: paper
 authors:
   James Hollway:
     href: https://jameshollway.com

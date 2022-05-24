@@ -33,23 +33,21 @@ with various kinds of date imprecision.
 \pkg{messydates} contains a set of tools for constructing and coercing into and from the 'mdate' class.
 This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.
 
-# Working with messydates: The size of the Roman Empire Population
+# Working with messydates: The size of the popuklation of the Roman Empire
 
-Several historical facts are contested. Take, for example, the population sizes in the Roman Empire, which has been a topic of heated debates among some academics. Various accounts diverge in how they estimate population size and, therefore, the conclusions about the Roman population at different points in time [@scheidel2008]. Below, we exemplify how \pkg{messydates} facilitate the annotation and the conversion of historical dates for analysis by building a dataset of the high and low estimations for the population of mainland Italy during the Roman Empire [@scheidel2008, p. 31].
+Several historical facts are contested. Take, for example, the population sizes in the Roman Empire, which has been a topic of heated debates among some academics. Various accounts diverge in how they estimate population size and, therefore, the conclusions about the Roman population at different points in time. Below, we exemplify how \pkg{messydates} facilitate the annotation and the conversion of historical dates for analysis on the dataset of the high and low estimations for the population of mainland Italy during the Roman Empire included in the package.
 
 ```{r data, warning=FALSE}
-roman_population <- tibble::tibble(period = c("200 BC:100 BC", "100 BC:1 AD", "1 AD:150 AD", "150 AD:200 AD"),
-                                   population_min = c(3900000, 4400000, 5500000, 6000000),
-                                   population_max = c(8000000, 10000000, 16000000, 2000000))
+library(messydates)
+roman_population # For more information on the dataset please run `?roman_population`.
 ```
 
 ## Coerce to messydates
 
 The function `as_messydate()` handles the annotation and coercion to 'mdate' class.
-We can, for instance, coerce the date variable in the Roman population data.
+We can, for instance, coerce the date variable in the Roman population data to 'mdate'.
 
 ```{r messy, warning=FALSE}
-library(messydates)
 roman_population$period <- as_messydate(roman_population$period)
 roman_population$period
 ```
@@ -68,7 +66,7 @@ to estimate values that are possibly correct.
 Day, month, or year, uncertainty can be indicated by adding a `?`
 to a possibly dubious date or date component.
 
-For example, we can add these annotations to the date variable in the Roman population data.
+For example, we can add these annotations to the 'mdate' variable in the Roman population data.
 
 ```{r annotate, warning=FALSE}
 ifelse(roman_population$period == "-0200..-0100", on_or_before(roman_population$period), roman_population$period)
@@ -84,21 +82,21 @@ approximate dates (annotated with '..', '{ , }', 'XX' or '~') into lists of date
 As these dates may refer to several possible dates,
 the function "opens" these values to include all the possible dates implied.
 
-The ranges in the date variable in the Roman population data can be also expanded.
+The ranges in the 'mdate' variable in the Roman population data can be also expanded.
 
 ```{r expand, warning=FALSE}
-expand(roman_population$period)
+exp <- expand(roman_population$period) # Please run `exp` to see all the expanded dates.
+lengths(exp)
 ```
 
 ## Contract
 
 The `contract()` function operates as the opposite of `expand()`.
 It contracts a list of dates into the abbreviated annotation of messydates.
-
-We can contract back the date variable in the Roman population previously expanded.
+We can contract back the 'mdate' variable in the Roman population previously expanded.
 
 ```{r contract, warning=FALSE}
-contract(expand(roman_population$period), collapse = FALSE)
+tibble::tibble(contract = contract(expand(roman_population$period), collapse = FALSE))
 ```
 
 ## Coerce from messydates
@@ -116,7 +114,7 @@ or even a `random` selection from among the candidate dates.
 These functions are particularly useful for use with existing methods and models,
 especially for checking the robustness of results.
 
-We can coerce the date variable in the Roman population to `Date` class.
+We can coerce the 'mdate' variable in the Roman population to `Date` class.
 
 ```{r coerce, warning=FALSE}
 tibble::tibble(min = as.Date(roman_population$period, min),
@@ -130,14 +128,12 @@ tibble::tibble(min = as.Date(roman_population$period, min),
 ## Additional functionality
 
 Several other functions are also offered in the `{messydates}` package.
-For example, we can proceed to check various logical tests for the date variable in the Roman population.
+For example, we can proceed to run logical tests to the 'mdate' variable in the Roman population.
 `is_messydate()` tests whether the object inherits the `mdate` class.
 `is_intersecting()` tests whether there is any intersection between two messy dates.
 `is_element()` similarly tests whether a messy date can be found within a messy date range or set.
 `is_similar()` tests whether two dates contain similar components.
 `is_precise()` tests whether certain date is precise.
-
-We can test 
 
 ```{r logical, warning=FALSE}
 is_messydate(roman_population$period)
@@ -147,25 +143,20 @@ is_similar(as_messydate("-0199-01-01"), as_messydate(roman_population$period[1])
 is_precise(as_messydate(roman_population$period[1]))
 ```
 
-Additionally, one can perform intersection (`md_intersect()`) and union (`md_union()`) on, 
-inter alia, messy date class objects. Or 'join' that retains all elements, even if duplicated,
-with `md_multiset`.
+Additionally, one can perform intersection (`md_intersect()`), union (`md_union()`),
+or 'join' the 'mdate' variable in the Roman population.
 
 ```{r set, warning=FALSE}
 md_intersect(as_messydate(roman_population$period[1]), as_messydate("-0200-01-01"))
-md_union(as_messydate("-0201-12-31"), as_messydate(roman_population$period[1]))
-md_multiset(as_messydate("-0200-01-01"), as_messydate(roman_population$period[1]))
+length(md_union(as_messydate("-0201-12-31"), as_messydate(roman_population$period[1])))
+# Please run `md_union(as_messydate("-0201-12-31"), as_messydate(roman_population$period[1]))` to see all united dates.
+length(md_multiset(as_messydate("-0200-01-01"), as_messydate(roman_population$period[1])))
+# Please run `md_multiset(as_messydate("-0200-01-01"), as_messydate(roman_population$period[1]))` to all joined dates.
 ```
 
+As well, we can add or subtract one year to the 'mdate' variable in the Roman population.
 
-
-## References
-
-@article{@scheidel2008,
-  title={Roman population size: the logic of the debate},
-  author={Scheidel, Walter},
-  journal={People, land, and politics: demographic developments and the transformation of Roman Italy},
-  volume={300},
-  pages={17--70},
-  year={2008}
-}
+```{r operate}
+roman_population$period + 1 # Adds one day from ranges
+as.Date(roman_population$period, random) - 1 # Subtracts one day from a random day within range
+```

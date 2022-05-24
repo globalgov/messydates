@@ -44,9 +44,9 @@ NULL
 #' @describeIn annotate prefixes dates with ".." where start date is uncertain
 #' @export
 on_or_before <- function(x) {
-x <- paste0("..", x)
-x <- as_messydate(x)
-x
+  x <- paste0("..", x)
+  x <- as_messydate(x)
+  x
 }
 
 #' @describeIn annotate suffixes dates with ".." where end date is uncertain
@@ -60,11 +60,9 @@ on_or_after <- function(x) {
 #' @describeIn annotate adds tildes to indicate approximate dates/date components
 #' @export
 as_approximate <- function(x, component = NULL) {
-
   if (is.null(component)) {
     x <- paste0(x, "~")
   }
-
   if (!is.null(component)) {
     day <- vapply(strsplit(x, "-"), `[`, 3, FUN.VALUE = character(1))
     month <- vapply(strsplit(x, "-"), `[`, 2, FUN.VALUE = character(1))
@@ -92,7 +90,6 @@ as_approximate <- function(x, component = NULL) {
 #' @describeIn annotate adds question marks to indicate dubious dates/date components.
 #' @export
 as_uncertain <- function(x, component = NULL) {
-
   if (is.null(component)) {
     x <- paste0(x, "?")
   } else {

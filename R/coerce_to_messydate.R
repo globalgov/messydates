@@ -1,18 +1,25 @@
-#' Coercion to messy dates
+#' Coercion from regular date classes to messy dates
 #'
-#' These functions coerce different data classes into `mdate` class
-#' @param x A scalar or vector of a class that can be coerced into a Date,
-#' such as `Date`, `POSIXct`, `POSIXlt`, or character.
+#' These methods coerce various date classes into the `mdate` class.
+#' They represent the main user-facing class-creating functions in the package.
+#' In addition to the typical date classes in R (`Date`, `POSIXct`, and `POSIXlt`),
+#' there is also a direct method for converting text or character strings to `mdate`.
+#' The function can also extract dates from text,
+#' though this is a work-in-progress and currently only works in English.
+#' @param x A scalar or vector of a class that can be coerced into `mdate`,
+#'   such as `Date`, `POSIXct`, `POSIXlt`, or character.
 #' @param resequence Users have the option to choose the
-#' order for ambiguous 6 digit dates (e.g. "11-01-12"),
-#' and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
-#' `FALSE` by default.
-#' If `TRUE`, it prompts users to select the existing component order of ambiguous
-#' 6 digit dates, based on which the date is reordered into YY-MM-DD format
-#' and further completed to YYYY-MM-DD format if they choose to do so.
-#' @details The function can also extract dates from text.
-#' Currently this only works for texts in English.
+#'   order for ambiguous 6 digit dates (e.g. "11-01-12"),
+#'   and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
+#'   `FALSE` by default.
+#'   If `TRUE`, it prompts users to select the existing component order of ambiguous
+#'   6 digit dates, based on which the date is reordered into YY-MM-DD format
+#'   and further completed to YYYY-MM-DD format if they choose to do so.
 #' @return A `mdate` class object
+#' @name messydate
+NULL
+
+#' @describeIn messydate Core `mdate` class coercion function
 #' @examples
 #' as_messydate("2021")
 #' as_messydate("2021-02")
@@ -29,7 +36,8 @@
 #' # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 #' # resequence = TRUE)
 #' @export
-as_messydate <- function(x, resequence = FALSE) UseMethod("as_messydate")
+as_messydate <- function(x, resequence = FALSE)
+  UseMethod("as_messydate")
 
 #' @describeIn as_messydate Coerce from `Date` to `mdate` class
 #' @export
@@ -387,4 +395,24 @@ complete_ambiguous_19 <- function(d) {
     message("No changes were made to 6 digit dates for which the year is bigger than 22.")
   }
   out
+}
+
+#' @describeIn messydate Composes `mdate` from multiple variables
+#' @param ... One (yyyy-mm-dd) or three (yyyy, mm, dd) variables
+#' @importFrom purrr map pmap_chr
+#' @examples
+#' make_messydate("2010", "10", "10")
+#' @export
+make_messydate <- function(..., resequence = FALSE) {
+  dots <- list(...)
+  if (length(dots) == 1) {
+    dots <- do.call(as.character, dots)
+    dates <- unlist(dots)
+  } else if (length(dots) == 3) {
+    dots <- purrr::map(dots, as.character)
+    dates <- unlist(purrr::pmap_chr(dots, paste, sep = "-"))
+    dates <- gsub("NA-NA-NA", "NA", dates)
+  } else stop("Pass make_messydate() one variable (yyyy-mm-dd)
+              or three variables (yyyy, mm, dd).")
+  as_messydate(dates, resequence)
 }

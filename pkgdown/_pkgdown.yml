@@ -2,9 +2,9 @@ url: https://globalgov.github.io/messydates/
 development:
     mode: auto
 template:
-  # bootstrap: 5
+  bootstrap: 5
   params:
-    bootswatch: paper
+    bootswatch: litera
 authors:
   James Hollway:
     href: https://jameshollway.com
@@ -56,8 +56,8 @@ reference:
       - set
       - logical
       - extract
-  - title: "Report"
-    desc: "These methods help report on objects of the `mdate` class:"
+  - title: "Summarise"
+    desc: "These methods yield summary statistics of objects of the `mdate` class:"
     contents:
       - stats
   - title: "Data"

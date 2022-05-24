@@ -16,16 +16,16 @@
 #' component (e.g. `1916-?10-10`).
 #' @param x A date vector
 #' @param component Annotation can be added on specific date components
-#'   ("year", "month" or "day"), or to groups of date components (month and
-#'   day ("md"), or year and month ("ym")). This must be specified.
-#'   If unspecified, annotation will be added after the date (e.g. `1916-10-10?`),
-#'   indicating the whole date is uncertain or approximate.
-#'   For specific date components, uncertainty or approximation is annotated to
-#'   the left of the date component.
-#'   E.g. for "day": `1916-10-?10` or `1916-10-~10`.
-#'   For groups of date components, uncertainty or approximation is annotated to
-#'   the right of the group ("ym") or to both components ("md").
-#'   E.g. for "ym": `1916-10~-10`; for "md": `1916-?10-?10`.
+#' ("year", "month" or "day"), or to groups of date components (month and
+#' day ("md"), or year and month ("ym")). This must be specified.
+#' If unspecified, annotation will be added after the date (e.g. `1916-10-10?`),
+#' indicating the whole date is uncertain or approximate.
+#' For specific date components, uncertainty or approximation is annotated to
+#' the left of the date component.
+#' E.g. for "day": `1916-10-?10` or `1916-10-~10`.
+#' For groups of date components, uncertainty or approximation is annotated to
+#' the right of the group ("ym") or to both components ("md").
+#' E.g. for "ym": `1916-10~-10`; for "md": `1916-?10-?10`.
 #' @return A `mdate` object with annotated date(s)
 #' @examples
 #' data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),

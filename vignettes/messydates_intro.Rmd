@@ -146,6 +146,6 @@ length(md_multiset(as_messydate("-0200-01-01"), as_messydate(roman_population$pe
 As well, we can add or subtract one year to the 'mdate' variable in the Roman population.
 
 ```{r operate}
-roman_population$period + 1 # Adds one day from ranges
+roman_population$period + 1 # Adds one day to ranges
 as.Date(roman_population$period, random) - 1 # Subtracts one day from a random day within range
 ```

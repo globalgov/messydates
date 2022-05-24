@@ -15,9 +15,11 @@ knitr::opts_chunk$set(
 ```
 
 <!-- badges: start -->
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
+![CRAN/METACRAN](https://img.shields.io/cran/v/messydates)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/globalgov/messydates)
 ![GitHub Release Date](https://img.shields.io/github/release-date/globalgov/messydates)
-![GitHub issues](https://img.shields.io/github/issues-raw/globalgov/messydates)
+<!-- ![GitHub issues](https://img.shields.io/github/issues-raw/globalgov/messydates) -->
 [![Codecov test coverage](https://codecov.io/gh/globalgov/messydates/branch/main/graph/badge.svg)](https://app.codecov.io/gh/globalgov/messydates?branch=main)
 [![CodeFactor](https://www.codefactor.io/repository/github/globalgov/messydates/badge)](https://www.codefactor.io/repository/github/globalgov/messydates)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5061/badge)](https://bestpractices.coreinfrastructure.org/projects/5061)
@@ -25,41 +27,51 @@ knitr::opts_chunk$set(
 
 ## Why this package?
 
-Dates are often messy.
-Whether historical (or ancient), future, or even recent,
-we often only know approximately when an event occurred, that it happened within a particular period,
-an unreliable source means a date should be flagged as uncertain,
-or sources offer multiple, competing dates.
+Existing packages for working with dates in R expect them to be _tidy_.
+That is, they should be in or coercible to the standard ISO format `yyyy-mm-dd`.
 
-As researchers, we often recognise this messiness
-but are forced to force nonexistent precision on data so we can proceed with analysis.
-For example, if we only know something happened in a given month or year,
-we might just opt for the start of that month (e.g. 2021-07-01) or year (2021-01-01),
-assuming that to err on the earlier (or later) side is a justifiable bias.
-However, this can create issues for inference in which sequence or timing is important.
-The goal of `{messydates}` is to help with this problem by retaining and working
+But dates are often **_messy_**.
+Sometimes we only know the year when something happened,
+leaving other components of the date _unspecified_.
+This is often the case with historical dates, for instance.
+Sometimes we can only say _approximately_ when an event occurred,
+that it occurred _before_ or _after_ a certain date,
+or we recognise that our best estimate comes from a _dubious_ source.
+Other times there exists a _set_ or _range_ of possible dates for an event.
+
+Although researchers generally recognise this messiness,
+many feel expected to force artificial precision on temporal data to proceed with analysis.
+For example, if we only know something happened in `2021`,
+we might opt to replace this date with the start of that year (`2021-01-01`),
+assuming that erring on the earlier (or later) side is more justifiable than 
+a random date within that month or year.
+
+However, this can create inferential issues when sequence or timing is important.
+`{messydates}` assists with this problem by retaining and working
 with various kinds of date imprecision.
 
 ## A quick overview
 
-`{messydates}` implements the extended annotation standard for dates,
-the Extended Date/Time Format (EDTF), outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) for R.
+`{messydates}` implements for R the extended annotation standard for dates,
+the Extended Date/Time Format (EDTF) outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
 These include standardised notation for:
 
-- unspecified date( component)s, 
+- _unspecified_ date( component)s, 
 e.g. `2012-XX-01` for the first of some unknown month in 2012 or `2012-01` for some unknown day in January 2012
-- approximate date( component)s,
+- _approximate_ date( component)s,
 e.g. `2012-01-12~` for approximately the 12th of January 2012
-- uncertain date( component)s,
+- _uncertain_ date( component)s,
 e.g. `2012-01-12?` where this data point is based on an unreliable source
-- sets of dates,
+- _sets_ of dates,
 e.g. `{2012-01-01,2012-01-12}` where the date can be both 1 January 2012 and 12 January 2012 
-- ranges of dates,
+- _ranges_ of dates,
 e.g. `2012-01-01..2012-01-12` for all dates between the 1 January 2012 and 12 January 2012 inclusive
+- _censored_ dates,
+e.g. `..2012-01-01` for 1 January 2012 or before and `2012-01-01..` for 1 January 2012 or after
 
-`{messydates}` contains a set of tools for constructing and coercing into and from the 'mdate' class.
-This date class allows regular dates to be annotated to express unspecified date components,
-approximate or uncertain date components, date ranges, and sets of dates.
+`{messydates}` introduces a new `mdate` class that embeds these annotations,
+and offers a set of methods for constructing and coercing into and from the `mdate` class,
+as well as tools for working with such 'messy' dates.
 
 Importantly, the package also includes a function for unpacking or expanding sets or ranges of dates
 into all dates consistent with how the date or set of dates is specified or annotated.
@@ -85,12 +97,12 @@ remotes::install_github("globalgov/messydates")
 
 Please see [the messydates website](https://globalgov.github.io/messydates/) for more information about 
 how to use `{messydates}`.
-The package was developed as part of the PANARCHIC project, which studies the effects of network and
-power on how quickly states join, reform, or create international institutions by examining the historical
-dynamics of institutional networks from different domains.
-The PANARCHIC project is funded by the Swiss National Science Foundation (SNSF).
-For more information on the Geneva Global Governance Observatory and our current projects, 
-please see [our website](https://panarchic.ch) or [our Github page](https://github.com/globalgov).
+The package was developed as part of [the PANARCHIC project](https://panarchic.ch), 
+which studies the effects of network and power on how quickly states join, reform, or create 
+international institutions by examining the historical dynamics of institutional networks from different domains.
+The PANARCHIC project is funded by the Swiss National Science Foundation ([SNSF](https://p3.snf.ch/Project-188976)).
+For more information on current projects of the Geneva Global Governance Observatory, 
+please see [our Github website](https://github.com/globalgov).
 
 ## Cheat Sheet
 
@@ -101,5 +113,3 @@ please see [our website](https://panarchic.ch) or [our Github page](https://gith
 `{messydates}` offers a new date class, but one that comes with methods for converting from and into
 common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
 It is thus fully compatible with packages such as `{lubridate}` and `{anydate}`.
-It is also compatible with `{unstruwwel}`, which also parses historic dates in R,
-though the emphasis of our package is on working with these dates.

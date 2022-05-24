@@ -63,3 +63,27 @@ minmin <- function(date) {
 #   }
 #   vec
 # }
+
+#' @importFrom skimr get_skimmers
+#' @export
+get_skimmers.mdate <- function(column) {
+  skimr::sfl(
+    skim_type = "mdate",
+    n_empty = skimr::n_empty,
+    n_unique = skimr::n_unique,
+    max = maxmax,
+    min = minmin
+    # mean = meanmean
+    # median = medianmedian,
+    # mode = meanmode,
+    # uncertainty = uncertainty
+  )
+}
+
+#' @examples
+#' d <- tibble::tibble(event = c("Event1", "Event2", "Event3", "Event 4"),
+#'                      messydates = as_messydate(c("2001",
+#'                                                  "2001-01-01..2003-12-30",
+#'                                                  "{2001, 2002, 2003}",
+#'                                                  "33 BC")))
+#' skimr::skim(d)

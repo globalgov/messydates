@@ -72,9 +72,8 @@ as.POSIXlt.mdate <- function(x, ..., FUN) {
   as.POSIXlt(x)
 }
 
-#' Helper function for returning negative dates in date formats
-#' @rdname from_messydate
-#' @importFrom stringr str_remove str_replace
+# Helper function for returning negative dates in date formats
+#' @importFrom stringr str_detect str_replace str_remove str_extract
 #' @importFrom lubridate ymd years as_date
 negative_dates <- function(x) {
   x <- ifelse(stringr::str_detect(x, "^-[0-9]{3}-"),

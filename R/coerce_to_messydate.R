@@ -1,4 +1,4 @@
-#' Coercion from regular date classes to messy dates
+#' Coercion from regular date classes to mdate
 #'
 #' These methods coerce various date classes into the `mdate` class.
 #' They represent the main user-facing class-creating functions in the package.
@@ -39,28 +39,28 @@ NULL
 as_messydate <- function(x, resequence = FALSE)
   UseMethod("as_messydate")
 
-#' @describeIn as_messydate Coerce from `Date` to `mdate` class
+#' @describeIn messydate Coerce from `Date` to `mdate` class
 #' @export
 as_messydate.Date <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn as_messydate Coerce from `POSIXct` to `mdate` class
+#' @describeIn messydate Coerce from `POSIXct` to `mdate` class
 #' @export
 as_messydate.POSIXct <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn as_messydate Coerce from `POSIXlt` to `mdate` class
+#' @describeIn messydate Coerce from `POSIXlt` to `mdate` class
 #' @export
 as_messydate.POSIXlt <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn as_messydate Coerce character date objects to `mdate` class
+#' @describeIn messydate Coerce character date objects to `mdate` class
 #' @export
 as_messydate.character <- function(x, resequence = FALSE) {
   d <- standardise_text(x)

@@ -3,10 +3,22 @@
 \name{messydate}
 \alias{messydate}
 \alias{as_messydate}
+\alias{as_messydate.Date}
+\alias{as_messydate.POSIXct}
+\alias{as_messydate.POSIXlt}
+\alias{as_messydate.character}
 \alias{make_messydate}
 \title{Coercion from regular date classes to messy dates}
 \usage{
 as_messydate(x, resequence = FALSE)
+
+\method{as_messydate}{Date}(x, resequence = FALSE)
+
+\method{as_messydate}{POSIXct}(x, resequence = FALSE)
+
+\method{as_messydate}{POSIXlt}(x, resequence = FALSE)
+
+\method{as_messydate}{character}(x, resequence = FALSE)
 
 make_messydate(..., resequence = FALSE)
 }
@@ -38,6 +50,14 @@ though this is a work-in-progress and currently only works in English.
 \section{Functions}{
 \itemize{
 \item \code{as_messydate}: Core \code{mdate} class coercion function
+
+\item \code{as_messydate.Date}: Coerce from \code{Date} to \code{mdate} class
+
+\item \code{as_messydate.POSIXct}: Coerce from \code{POSIXct} to \code{mdate} class
+
+\item \code{as_messydate.POSIXlt}: Coerce from \code{POSIXlt} to \code{mdate} class
+
+\item \code{as_messydate.character}: Coerce character date objects to \code{mdate} class
 
 \item \code{make_messydate}: Composes \code{mdate} from multiple variables
 }}

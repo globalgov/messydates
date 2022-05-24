@@ -5,7 +5,6 @@
 \alias{as.Date.mdate}
 \alias{as.POSIXct.mdate}
 \alias{as.POSIXlt.mdate}
-\alias{negative_dates}
 \title{Coercion from messy dates}
 \usage{
 \method{as.Date}{mdate}(x, ..., FUN)
@@ -13,8 +12,6 @@
 \method{as.POSIXct}{mdate}(x, ..., FUN)
 
 \method{as.POSIXlt}{mdate}(x, ..., FUN)
-
-negative_dates(x)
 }
 \arguments{
 \item{x}{A \code{mdate} object}

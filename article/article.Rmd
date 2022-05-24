@@ -56,7 +56,7 @@ Dates are often messy. Whether historical (or ancient), future, or even recent, 
 -   sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date can be both 1 January 2012 and 12 January 2012
 -   ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between the 1 January 2012 and 12 January 2012 inclusive
 
-\pkg{messydates} contains a set of tools for constructing and coercing into and from the `messydt` class. This date class allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.
+\pkg{messydates} contains a set of tools for constructing and coercing into and from the `mdate` class. This date class allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.
 
 Importantly, the package also includes a function for unpacking or expanding sets or ranges of dates into all dates consistent with how the date or set of dates is specified or annotated. Methods are also offered that can be used to make explicit how researchers convert date imprecision into precise dates for analysis, such as getting the `min()`, `max()`, or even a `random()` date from among the dates consistent with a set or range of dates. This greatly facilitates research transparency as well as robustness checks.
 
@@ -66,13 +66,13 @@ As researchers, we often recognize this messiness but are forced to force non-ex
 
 ## Relationship to other packages
 
-\pkg{messydates} offers a new date class, but one that comes with methods for converting from and into common date classes such as `Date`, `POSIXct`, and `POSIXlt.` It is thus fully compatible with packages such as \pkg{lubridate} [@grolemundDatesTimesMade2011] and \pkg{anytime} [@eddelbuettelAnytimeEasierDate2019]. It is also compatible with \pkg{unstruwwel}, which also parses historic dates in R, though the emphasis of our package is on working with these dates.
+\pkg{messydates} offers a new date class, but one that comes with methods for converting from and into common date classes such as `Date`, `POSIXct`, and `POSIXlt.` It is thus fully compatible with packages such as \pkg{lubridate} [@grolemundDatesTimesMade2011] and \pkg{anytime} [@eddelbuettelAnytimeEasierDate2019].
 
 # \proglang{R} code {#r-code short-title="R code"}
 
 ## A new class
 
-\pkg{messydates} contains a set of tools for constructing and coercing into and from the messydt class. This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates. The function `as_messydate()` handles the coercion to messydt class.
+\pkg{messydates} contains a set of tools for constructing and coercing into and from the mdate class. This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates. The function `as_messydate()` handles the coercion to mdate class.
 
 ```{r comparison, warning=FALSE}
 library(messydates)
@@ -129,7 +129,7 @@ tibble::tibble(contract = contract(expand(dates_expand)))
 
 ## Coerce from messydates
 
-Coercion functions coerce objects of `messydt` class to common date classes such as `Date`, `POSIXct`, and `POSIXlt`. Since `messydt` objects can hold multiple individual dates, an additional function must be passed as an argument so that multiple dates are "resolved" into a single date.
+Coercion functions coerce objects of `mdate` class to common date classes such as `Date`, `POSIXct`, and `POSIXlt`. Since `mdate` objects can hold multiple individual dates, an additional function must be passed as an argument so that multiple dates are "resolved" into a single date.
 
 For example, one might wish to use the earliest possible date in any ranges of dates (`min`), the latest possible date (`max`), some notion of a central tendency (`mean`, `median`, or `modal`), or even a `random` selection from amongst the candidate dates.
 
@@ -148,7 +148,7 @@ tibble::tibble(min = as.Date(dates_expand, min),
 
 Several other functions are also offered in the \pkg{messydates} package.
 
-For example, one can check various logical tests for messy date objects. `is_messydate()` tests whether the object inherits the `messydt` class. `is_intersecting()` tests whether there is any intersection between two messy dates. `is_element()` similarly tests whether a messy date can be found within a messy date range or set. `is_similar()` tests whether two dates contain similar components. `is_precise()` tests for whether date is precise.
+For example, one can check various logical tests for messy date objects. `is_messydate()` tests whether the object inherits the `mdate` class. `is_intersecting()` tests whether there is any intersection between two messy dates. `is_element()` similarly tests whether a messy date can be found within a messy date range or set. `is_similar()` tests whether two dates contain similar components. `is_precise()` tests for whether date is precise.
 
 ```{r logical, warning=FALSE}
 is_messydate(as_messydate("2012-01-01"))
@@ -171,7 +171,7 @@ md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 ```
 
-As well, some arithmetic operations are available for messydates. For instance, one can add or subtract one year to all messydates in a vector.
+As well, some arithmetic operations are available for messydates. For instance, one can add or subtract one year to all messy dates in a vector.
 
 ```{r}
 operate <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001", "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
@@ -180,7 +180,7 @@ tibble::tibble(date = operate, add = operate + "1 year", subtract = operate - "1
 
 ## Case Study 1 - The size of the population of the Roman Empire
 
-Several historical facts are contested. However, up to this point, dealing with negative historical dates in R was difficult. Authors had to make arbitrary choices to complete dates, making them biased, or leave dates in character class, instead of date class, limiting their analytic usage. Take, for example, the population sizes in the Roman Empire, which has been a topic of heated debates among some academics (see Scheidel 2008). Various accounts diverge in how they estimate population size and, therefore, the conclusions about the Roman population at different points in time (Scheidel 2008). Below, we exemplify how \pkg{messydates} facilitate the annotation and the conversion of historical dates for analysis by building a dataset of the high and low estimations for the population of mainland Italy during the Roman Empire (Scheidel 2008, p. 31). \pkg{messydates} allow users to chose how to resolve each of the date values in different ways.
+Several historical facts are contested. Take, for example, the population sizes in the Roman Empire, which has been a topic of heated debates among some academics. Various accounts diverge in how they estimate population size and, therefore, the conclusions about the Roman population at different points in time [@scheidel2008]. Below, we exemplify how \pkg{messydates} facilitate the annotation and the conversion of historical dates for analysis by building a dataset of the high and low estimations for the population of mainland Italy during the Roman Empire [@scheidel2008, p. 31].
 
 ```{r case study 1, warning=FALSE}
 roman_population <- tibble::tibble(period = as_messydate(c("200 BC:100 BC", "100 BC:1 AD", "1 AD:150 AD", "150 AD:200 AD")),
@@ -197,19 +197,21 @@ roman_population_md <- roman_population %>%
 
 ## Case Study 2 - Roman Emperors Rise to Power: Inference and robustness checks with "messy" historical dates
 
-Getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (i.e. year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences where getting "timing" right is important. Assume, for example, certain researcher is interested in the relationship between how Roman Emperors rose to power and how long they stayed in powe. The researcher theorizes that Roman Emperors that rose to power through birthrights were less contested politically and popularly and, thus, tended to stay in power for longer than those Roman Emperors that rose to power in other ways (e.g. coup or appointment). The \pkg{manydata} contains a database on Roman Emperors composed of three datasets. We can also use \pkg{manydata} to "consolidate" the database into a single dataset using some combination of the rows and columns available. 
+Getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (i.e. year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences where getting "timing" right is important.
 
-Below, we use the `consolidate()` function to transform the Emperors database into a single dataset by, first, favoring the United Nations of Rome Victrix (UNVR) dataset over others in the database. Second, we select all rows that are present in "every" one of the data sets (i.e. rows present in all the datasets only) and columns that are present in "any" of the datasets in the database (i.e. rows present in at least one of the datasets). Third, we resolve the conflicts between observations using the "coalesce" method that takes the first non-NA value. Finally, we select "ID" as the key variable to which observations will be matched. Then, we use \pkg{dplyr} in combination with \pkg{messydates} to create three different date variables to be our dependent variables: imprecise (year only), arbitrary (the minimal value for a data range), and random (a random value within the date range). With these variables in hand, we build three simple linear regression models correlating each of the dependent variables to the variable on how Roman Emperors rose to power. We use \pkg{stargazer} to visualize and compare the regression results.
+Assume, for example, certain researcher is interested in the relationship between how Roman Emperors rose to power and how long they stayed in power. The researcher theorizes that Roman Emperors that rose to power through birthrights were less contested and, thus, tended to stay in power for longer than those Roman Emperors that rose to power in other ways (e.g. coup or appointment). 
+
+The \pkg{manydata} contains a database on Roman Emperors composed of three datasets. We can also use \pkg{manydata} to "consolidate" the database into a single dataset using some combination of the rows and columns available. Below, we use the `consolidate()` function to transform the Emperors database into a single dataset by favoring the United Nations of Rome Victrix (UNVR) dataset. Then, we use \pkg{messydates} to create three different date variables to be our dependent variables related that represents time in power: imprecise (year only), arbitrary (the minimal value for a data range), and random (a random value within the date range). With these variables in hand, we build three simple linear regression models correlating each of the dependent variables to the variable on how Roman Emperors rose to power.
 
 ```{r case study 2, warning=FALSE}
 library(manydata)
 library(dplyr)
 library(stargazer)
 emperors <- manydata::consolidate(database = manydata::favour(manydata::emperors, "UNRV"),
-                                  rows = "every",
-                                  cols = "any",
-                                  resolve = "coalesce",
-                                  key = "ID") %>% 
+                                  rows = "every", # rows in every dataset
+                                  cols = "any", # cols in any dataset
+                                  resolve = "coalesce", # first non-NA value
+                                  key = "ID") %>% # commem variable
   select(c(ID, Rise, Birth, Beg, End)) %>%
   mutate(years_only = as.numeric((as.Date(End, min) - as.Date(Beg, min))/365.25),
          arbitrary = as.numeric(as.Date(End, max) - as.Date(Beg, min)),

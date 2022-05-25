@@ -49,5 +49,5 @@ test_that("validate_messydate works", {
 })
 
 test_that("print method works", {
-  expect_equal(print(as_messydate("28 BC")), str("-0028"))
+  expect_output(print(as_messydate("28 BC")), "-0028")
 })

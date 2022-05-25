@@ -384,15 +384,15 @@ complete_ambiguous_19 <- function(d) {
   examples <- ifelse(as.numeric(gsub("-", "", stringr::str_extract(d, "^[:digit:]{2}-"))) > 22, d, NA_character_)
   examples <- dplyr::first(examples[stats::complete.cases(examples)])
   input <- utils::menu(c("Yes", "No"),
-                       title = paste0("Are all ambiguous 6 digit dates for which the year is bigger than 22
+                       title = paste0("Are all ambiguous 6 digit dates for which the year is larger than 22
                        in the 20th century (e.g. ", examples, " is equal to 19", examples, ")?"))
   if (input == 1) {
     out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "19\\1-\\2-\\3")
-    message("6 digit dates for which the year is bigger than 22 were completed.")
+    message("6 digit dates for which the year is larger than 22 were completed.")
   }
   if (input == 2) {
     out <- d
-    message("No changes were made to 6 digit dates for which the year is bigger than 22.")
+    message("No changes were made to 6 digit dates for which the year is larger than 22.")
   }
   out
 }

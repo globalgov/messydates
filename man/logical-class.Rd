@@ -22,7 +22,7 @@ is_precise(x)
 \item{x, y}{\code{mdate} or other class objects}
 }
 \value{
-A logical vector the same length as the \code{mdate} passed
+A logical vector the same length as the \code{mdate} passed.
 }
 \description{
 These functions provide various logical tests for messy date objects.

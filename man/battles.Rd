@@ -5,7 +5,7 @@
 \alias{battles}
 \title{Dates of battles in 2001}
 \format{
-A data frame with 19 rows and 2 variables:
+A data frame with 20 rows and 2 variables:
 \describe{
 \item{Battle}{name of the battle, character}
 \item{Date}{date or date range, a mdate class vector}
@@ -16,6 +16,6 @@ battles
 }
 \description{
 A dataset containing the names and dates of battles in 2001,
-according to Wikipedia.
+according to Wikipedia (https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
 }
 \keyword{datasets}

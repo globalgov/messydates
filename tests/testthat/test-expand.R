@@ -10,9 +10,9 @@ negative_incomplete_set <- as_messydate("{-200, -199}")
 test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_equal(as.character(expand(range)),
                "c(\"2014-01-01\", \"2014-01-02\", \"2014-01-03\")")
-  expect_equal(as.character(expand(approximate)[[1]][1]), "1996-01-02")
-  expect_equal(as.character(expand(approximate)[[2]][1]), "1996-07-01")
-  expect_equal(as.character(expand(approximate)[[3]][1]), "1999-10-08")
+  expect_equal(as.character(expand(approximate)[[1]][1]), "1999-01-01")
+  expect_equal(as.character(expand(approximate, approx_range = 3)[[2]][1]), "1996-07-01")
+  expect_equal(as.character(expand(approximate, approx_range = 3)[[3]][1]), "1999-10-08")
   expect_equal(as.character(expand(unspecified)[[1]][1]), "2008-01-03")
   expect_equal(as.character(expand(set)[[1]][1]), "2012-01-01")
   expect_length(expand(range), 1)

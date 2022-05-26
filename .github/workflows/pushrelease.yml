@@ -56,20 +56,14 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
 
-      - name: Install X11 dependencies on MacOS for pdftools
-        if: runner.os == 'macOS'
-        run: |
-          brew install --cask xquartz
-
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          remotes::install_cran("roxygen2")
         shell: Rscript {0}
 
-      - name: Document
-        run: Rscript -e 'roxygen2::roxygenise()'
+#      - name: Document
+#        run: Rscript -e 'roxygen2::roxygenise()'
 
       - name: Check
         env:
@@ -104,7 +98,7 @@ jobs:
   release:
     name: Bump version and release
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout one
         uses: actions/checkout@master
@@ -112,7 +106,7 @@ jobs:
           fetch-depth: '0'
       - name: Bump version and push tag
         id: newtag
-        uses: anothrNick/github-tag-action@1.39.0
+        uses: anothrNick/github-tag-action@1.17.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
@@ -138,7 +132,7 @@ jobs:
         run: ls -R
 
       - name: Rename Mac release
-        run: mv ./macOS/*.tgz messydates_macOS.tgz
+        run: mv ./macOS/*.tgz manydata_macOS.tgz
 
       - name: Upload Mac binary
         id: upload-mac
@@ -147,12 +141,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: messydates_macOS.tgz
-          asset_name: messydates_macOS.tgz
+          asset_path: manydata_macOS.tgz
+          asset_name: manydata_macOS.tgz
           asset_content_type: application/zip
 
       - name: Rename Linux release
-        run: mv ./linuxOS/*.tar.gz messydates_linuxOS.tar.gz
+        run: mv ./linuxOS/*.tar.gz manydata_linuxOS.tar.gz
 
       - name: Upload Linux binary
         id: upload-lin
@@ -161,12 +155,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: messydates_linuxOS.tar.gz
-          asset_name: messydates_linuxOS.tar.gz
+          asset_path: manydata_linuxOS.tar.gz
+          asset_name: manydata_linuxOS.tar.gz
           asset_content_type: application/zip
 
       - name: Rename Windows release
-        run: mv ./winOS/*.zip messydates_winOS.zip
+        run: mv ./winOS/*.zip manydata_winOS.zip
 
       - name: Upload Windows binary
         id: upload-win
@@ -175,8 +169,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: messydates_winOS.zip
-          asset_name: messydates_winOS.zip
+          asset_path: manydata_winOS.zip
+          asset_name: manydata_winOS.zip
           asset_content_type: application/zip
 
   render:
@@ -196,12 +190,12 @@ jobs:
       # Render README.md using rmarkdown
       - name: render README
         run: Rscript -e 'rmarkdown::render("README.Rmd", output_format = "md_document")'
-
+      # Add man/figures/README-* to the git add call if plots are generated
       - name: commit rendered README
         run: |
           git add README.md
           git commit -m "Re-build README.md" || echo "No changes to commit"
-          git push origin master || echo "No changes to commit"
+          git push origin main || echo "No changes to commit"
 
   pkgdown:
     name: Build and deploy website
@@ -215,10 +209,6 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
 
       - uses: r-lib/actions/setup-pandoc@v1
-
-      - name: Install X11 dependencies on MacOS for pdftools
-        run: |
-          brew install --cask xquartz
 
       - name: Query dependencies
         run: |

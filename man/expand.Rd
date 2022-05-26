@@ -7,17 +7,19 @@
 \usage{
 expand(x, approx_range)
 
-\method{expand}{mdate}(x, approx_range = 3)
+\method{expand}{mdate}(x, approx_range = 0)
 }
 \arguments{
 \item{x}{A \code{mdate} object.}
 
 \item{approx_range}{Range to expand approximate dates,
-or date components, annotated with '~', by default 3.
-That is, 3 days for day approximation, 3 months for month approximation,
-3 years for year/whole date approximation, 3 years and 3 months for year-
-month approximation, and 3 months and 3 days for month-day approximation.
-If 0, returns original values and removes signs for approximate dates.}
+or date components, annotated with '~', by default 0.
+That is, returns original values and removes signs for approximate dates.
+If 3, for example, adds 3 days for day approximation,
+3 months for month approximation,
+3 years for year/whole date approximation,
+3 years and 3 months for year-month approximation,
+and 3 months and 3 days for month-day approximation.}
 }
 \value{
 A list of dates, including all dates in each range or set.

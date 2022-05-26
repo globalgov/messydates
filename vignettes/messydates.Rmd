@@ -20,7 +20,7 @@ or sources offer multiple, competing dates.
 
 The goal of `{messydates}` is to help with this problem by retaining and working
 with various kinds of date imprecision.
-\pkg{messydates} contains a set of tools for constructing and coercing into and from the 'mdate' class.
+\pkg{messydates} contains a set of tools for constructing and coercing into and from the `mdate` class.
 This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.
 
 # Working with messydates: 2001 Battles
@@ -58,7 +58,7 @@ Previously researchers had to remove all types of imprecision from date variable
 create multiple variables to deal with date ranges.
 `{messydates}` makes it much easier to retain and work with various kinds of date imprecision.
 In the 2001 battles dataset, dates are not consistently reported,
-still, the function `as_messydate()` handles the coercion to 'mdate' class.
+still, the function `as_messydate()` handles the coercion to `mdate` class.
 
 ```{r messy, warning=FALSE, message=FALSE}
 library(messydates)

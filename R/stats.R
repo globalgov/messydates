@@ -9,13 +9,12 @@
 #' before a vector level statistic is computed
 #' (e.g. `maxmax()` corresponds to the maximum date of the maximum
 #' of the vector resulting from an expanded `{mdate}`)
-#' @seealso [get_skimmers()] for customizing the functions called by [skim()].
 #' @param date An `mdate` vector
 #' @return A statistic describing the `mdate` vector.
 #' @examples
 #' \dontrun{
 #' d <- tibble::tibble(event = c("Event1", "Event2", "Event3", "Event 4"),
-#'                      messydates = as_messydate(c("2001",
+#'                     messydates = as_messydate(c("2001",
 #'                                                  "2001-01-01..2003-12-30",
 #'                                                  "{2001, 2002, 2003}",
 #'                                                  "33 BC")))

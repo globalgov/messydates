@@ -115,7 +115,7 @@ expand(battles$Date)
 
 Note that to expand approximate dates one needs to declare the range to expand approximate dates using the 'approx_range' argument in `expand()`
 
-```{r expand, eval=FALSE}
+```{r expand_approx, eval=FALSE}
 expand(battles$Date, approx_range = 1)
 ```
 

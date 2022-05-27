@@ -37,7 +37,6 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@master
         with:
           extra-packages: |
-            rcmdcheck
             lintr
             spelling
             covr

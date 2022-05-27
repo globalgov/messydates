@@ -33,6 +33,9 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' expand(d)
 #' @export
 expand.mdate <- function(x, approx_range = 0) {
+  if (approx_range == 0) {
+    message("Please specify 'approx_range' argument if you want approximate dates to also be expanded")
+  }
   x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
   x <- suppressWarnings(expand_approximate(x, approx_range))
   x <- expand_unspecified(x)

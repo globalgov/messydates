@@ -1,23 +1,20 @@
-#' Summary statistic functions
+#' Summary data reports for messy dates
 #'
-#' `{messydates}` provides extensions to a variety of functions
-#' with R's `{stats}` package to simplify the creation of
-#' summary reports of data with `{skimr}`.
-#' All functions take a `mdate` vector as an input and return a single
-#' statistic.
-#' Note that individual dates are first expanded and resolved
-#' before a vector level statistic is computed
-#' (e.g. `maxmax()` corresponds to the maximum date of the maximum
-#' of the vector resulting from an expanded `{mdate}`)
+#' Provides variable level summaries of `mdate` objects to
+#' simplify the creation of data reports with `{skimr}`.
 #' @param date An `mdate` vector
 #' @return A statistic describing the `mdate` vector.
+#' @details Note that individual dates are first expanded and resolved
+#' before a vector level statistic is computed
+#' (e.g. `maxmax()` corresponds to the maximum date of the maximum
+#' of the vector resulting from an expanded `{mdate}`).
 #' @examples
 #' \dontrun{
 #' d <- tibble::tibble(event = c("Event1", "Event2", "Event3", "Event 4"),
 #'                     messydates = as_messydate(c("2001",
-#'                                                  "2001-01-01..2003-12-30",
-#'                                                  "{2001, 2002, 2003}",
-#'                                                  "33 BC")))
+#'                                                 "2001-01-01..2003-12-30",
+#'                                                 "{2001, 2002, 2003}",
+#'                                                 "33 BC")))
 #' skimr::skim(d)
 #' }
 #' @name stats
@@ -60,7 +57,7 @@ minmin <- function(date) {
 # uncertainty <- function(date) {
 #   sum(as.integer(messyvar(date))) / length(date)
 # }
-# # Messyvariance computes the range of the possible uncertain dates.
+# # Messy variance computes the range of the possible uncertain dates.
 # messyvar <- function(date) {
 #   # Resolve
 #   resolved <- data.frame(as.Date(date, max), as.Date(date, min))
@@ -72,7 +69,6 @@ minmin <- function(date) {
 #   vec
 # }
 
-#' @describeIn stats A `{skimr}` template for mdate objects.
 #' @importFrom skimr get_skimmers
 #' @export
 get_skimmers.mdate <- function(date) {

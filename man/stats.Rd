@@ -4,14 +4,11 @@
 \alias{stats}
 \alias{maxmax}
 \alias{minmin}
-\alias{get_skimmers.mdate}
-\title{Summary statistic functions}
+\title{Summary data reports for messy dates}
 \usage{
 maxmax(date)
 
 minmin(date)
-
-\method{get_skimmers}{mdate}(date)
 }
 \arguments{
 \item{date}{An \code{mdate} vector}
@@ -20,15 +17,14 @@ minmin(date)
 A statistic describing the \code{mdate} vector.
 }
 \description{
-\code{{messydates}} provides extensions to a variety of functions
-with R's \code{{stats}} package to simplify the creation of
-summary reports of data with \code{{skimr}}.
-All functions take a \code{mdate} vector as an input and return a single
-statistic.
+Provides variable level summaries of \code{mdate} objects to
+simplify the creation of data reports with \code{{skimr}}.
+}
+\details{
 Note that individual dates are first expanded and resolved
 before a vector level statistic is computed
 (e.g. \code{maxmax()} corresponds to the maximum date of the maximum
-of the vector resulting from an expanded \code{{mdate}})
+of the vector resulting from an expanded \code{{mdate}}).
 }
 \section{Functions}{
 \itemize{
@@ -36,17 +32,15 @@ of the vector resulting from an expanded \code{{mdate}})
 
 \item \code{minmin}: Calculate the farthest date in the past of a \code{mdate}
 vector
-
-\item \code{get_skimmers.mdate}: A \code{{skimr}} template for mdate objects.
 }}
 
 \examples{
 \dontrun{
 d <- tibble::tibble(event = c("Event1", "Event2", "Event3", "Event 4"),
                     messydates = as_messydate(c("2001",
-                                                 "2001-01-01..2003-12-30",
-                                                 "{2001, 2002, 2003}",
-                                                 "33 BC")))
+                                                "2001-01-01..2003-12-30",
+                                                "{2001, 2002, 2003}",
+                                                "33 BC")))
 skimr::skim(d)
 }
 }

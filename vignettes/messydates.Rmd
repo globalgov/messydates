@@ -122,7 +122,8 @@ expand(battles$Date, approx_range = 1)
 ## Contract
 
 The `contract()` function operates as the opposite of `expand()`.
-It contracts a list of dates into the abbreviated annotation of messydates.
+It contracts a list of dates into the abbreviated annotation of messydates,
+picking the most succinct representation of dates possible.
 We can contract back the dates in the Battles data previously expanded.
 
 ```{r contract, warning=FALSE}

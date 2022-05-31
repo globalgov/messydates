@@ -1,0 +1,189 @@
+---
+title: "Working with messy dates"
+author: "Henrique Sposito"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Working with messy dates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Why `{messydates}`?
+
+Dates are often messy.
+Whether historical (or ancient), future, or even recent,
+we sometimes only know approximately when an event occurred,
+that it happened within a particular period,
+an unreliable source means a date should be flagged as uncertain,
+or different sources offer multiple, competing dates.
+
+The goal of `{messydates}` is to help with this problem by retaining and working
+with various kinds of date imprecision.
+\pkg{messydates} contains a set of tools for constructing and coercing into and from the `mdate` class.
+This date class implements [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) allowing regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.
+
+# Working with messydates: 2001 Battles
+
+Take, for example, the names and dates of battles in 2001 according to [Wikipedia](https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
+The dates of these battles are often uncertain with different levels of date precision being reported.
+
+```{r data, warning=FALSE}
+battles <- tibble::tribble(~Battle, ~Date,
+                           "Operation MH-2", "2001 March 8",
+                           "2001 Bangladesh–India border clashes", "2001-04-16..2001-04-20",
+                           "Operation Vaksince", "25-5-2001",
+                           "Alkhan-Kala operation", "2001-6-22..2001-6-28",
+                           "Battle of Vedeno", "2001-8-13..2001-8-26",
+                           "Operation Crescent Wind", "2001-10-7..2001-12?",
+                           "Operation Rhino", "2001-10-19..2001-10-20",
+                           "Battle of Mazar-e-Sharif","2001-11-9",
+                           "Siege of Kunduz", "2001-11-11..2001-11-23",
+                           "Battle of Herat", "Twelve of November of two thousand and twenty-one", 
+                           "Battle of Kabul", "2001-11-13..2001-11-14",
+                           "Battle of Tarin Kowt", "2001-11-13:2001-11-14",
+                           "Operation Trent", "2001-11-15~..2001-11-30~",
+                           "Battle of Kandahar", "2001-11-22..2001-12-07",
+                           "Battle of Qala-i-Jangi", "2001-11-25:2001-12-01",
+                           "Battle of Tora Bora", "2001-12-12..2001-12-17",
+                           "Battle of Shawali Kowt", "2001-12-3",
+                           "Battle of Sayyd Alma Kalay", "2001-12-4",
+                           "Battle of Amami-Oshima", "2001-12-22",
+                           "Tsotsin-Yurt operation", "2001-12-30:2002-01-03")
+```
+
+## Coerce to messydates
+
+Previously researchers had to remove all types of imprecision from date variables and
+create multiple variables to deal with date ranges.
+`{messydates}` makes it much easier to retain and work with various kinds of date imprecision.
+In the 2001 battles dataset, for example, we see that dates are not consistently reported,
+but `as_messydate()` still handles the coercion to `mdate` class.
+
+```{r messy, warning=FALSE, message=FALSE}
+library(messydates)
+battles$Date <- as_messydate(battles$Date)
+tibble::tibble(battles)
+```
+
+## Annotate
+
+The annotate functions in `{messydates}` help annotate censored, uncertain, and approximate
+dates according to [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) standards.
+Some datasets might have an arbitrary cut off point for start and end points, that is, they are censored.
+But these are often coded as precise dates when they are not necessarily the real start or end dates.
+Inaccurate start or end dates can be represented by an ".." affix
+indicating "on or before", if used as a prefix,
+or indicating "on or after", if used as a suffix.
+In the case of the battles of 2001 dates, if we are not sure the
+"Battle of Kandahar" began on the 22nd of November or, alternatively, that the
+"Operation Vaksince" actually ended in the same day it began
+we use `on_or_before()` and `on_or after()` to annotate these dates.
+
+```{r censored, warning=FALSE}
+battles$Date <- as_messydate(ifelse(battles$Battle == "Battle of Herat", on_or_before(battles$Date), battles$Date))
+battles$Date <- as_messydate(ifelse(battles$Battle == "Operation Vaksince", on_or_after(battles$Date), battles$Date))
+tibble::tibble(battles)
+```
+
+Additional annotations for approximate dates, are indicated by adding a `~` to year,
+month, or day components, or whole dates to estimate values that are possibly correct.
+Day, month, or year, uncertainty can also be indicated by adding a `?`
+to a possibly dubious date or date component.
+If we are not sure about the reliability of the sources for the
+"Battle of Shawali Kowt" and that we think the date for the "Battle of Sayyd Alma Kalay" is approximate,
+we can use `as_uncertain()` or `as_approximate()` to annotate these dates.
+
+```{r approximate, warning=FALSE}
+battles$Date <- as_messydate(ifelse(battles$Battle == "Battle of Shawali Kowt", as_uncertain(battles$Date), battles$Date))
+battles$Date <- as_messydate(ifelse(battles$Battle == "Battle of Sayyd Alma Kalay", as_approximate(battles$Date), battles$Date))
+tibble::tibble(battles)
+```
+
+## Expand
+
+Expand functions transform date ranges (annotated with '..'), sets of dates (annotated with '{ , }'),
+and unspecified (missing date components or annotated with 'XX'), or 
+approximate dates (annotated '~') into lists of dates.
+As these dates may refer to several possible dates,
+the function "opens" these values to include all the possible dates implied.
+Let's expand the dates in the Battles dataset.
+
+```{r expand, warning=FALSE}
+expand(battles$Date)
+```
+
+Note that to expand approximate dates one needs to declare the range to expand approximate dates using the 'approx_range' argument in `expand()`
+
+```{r expand_approx, eval=FALSE}
+expand(battles$Date, approx_range = 1)
+```
+
+## Contract
+
+The `contract()` function operates as the opposite of `expand()`.
+It contracts a list of dates into the abbreviated annotation of messydates,
+picking the most succinct representation of dates possible.
+We can contract back the dates in the Battles data previously expanded.
+
+```{r contract, warning=FALSE}
+tibble::tibble(contract = contract(expand(battles$Date)))
+```
+
+## Coerce from messydates
+
+Coercion functions coerce objects of `mdate` class to 
+common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
+Since `mdate` objects can hold multiple individual dates,
+an additional function must be passed as an argument so that multiple dates
+are "resolved" into a single date.
+
+For example, one might wish to use the earliest possible date
+in any ranges of dates (`min`), the latest possible date (`max`),
+some notion of a central tendency (`mean`, `median`, or `modal`),
+or even a `random` selection from among the candidate dates. 
+These functions are particularly useful for use with existing methods and models,
+especially for checking the robustness of results.
+
+```{r coerce, warning=FALSE}
+tibble::tibble(min = as.Date(battles$Date, min),
+               max = as.Date(battles$Date, max),
+               median = as.Date(battles$Date, median),
+               mean = as.Date(battles$Date, mean),
+               modal = as.Date(battles$Date, modal),
+               random = as.Date(battles$Date, random))
+```
+
+## Additional functionality
+
+Several other functions are offered in `{messydates}`.
+
+For example, we can run several logical tests to `mdate` variables.
+`is_messydate()` tests whether the object inherits the `mdate` class.
+`is_intersecting()` tests whether there is any intersection between two messy dates.
+`is_element()` similarly tests whether a messy date can be found within a messy date range or set.
+`is_similar()` tests whether two dates contain similar components.
+`is_precise()` tests whether certain date is precise.
+
+```{r logical, warning=FALSE}
+is_messydate(battles$Date)
+is_intersecting(as_messydate(battles$Date[1]), as_messydate(battles$Date[2]))
+is_element(as_messydate("2001-04-17"), as_messydate(battles$Date[2]))
+is_similar(as_messydate("2001-08-03"), as_messydate(battles$Date[1]))
+is_precise(as_messydate(battles$Date[2]))
+```
+
+Additionally, one can perform intersection, union, or 'join' of messydates.
+
+```{r set, warning=FALSE}
+md_intersect(as_messydate(battles$Date[9]), as_messydate(battles$Date[10]))
+md_union(as_messydate(battles$Date[17]), as_messydate(battles$Date[18]))
+md_multiset(as_messydate(battles$Date[1]), as_messydate(battles$Date[2]))
+```
+
+As well, we can do some arithmetic operations in the `mdate` variable.
+
+```{r operate}
+tibble::tibble("one day more" = battles$Date + 1,
+               "one day less" = battles$Date - "1 day")
+```

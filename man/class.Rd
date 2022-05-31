@@ -5,34 +5,38 @@
 \alias{class}
 \alias{new_messydate}
 \alias{validate_messydate}
-\alias{NA_messydt_}
-\title{A broader date class for messy dates}
+\alias{NA_mdate_}
+\title{A flexible date class for messy dates}
 \format{
-An object of class \code{messydt} of length 1.
+An object of class \code{mdate} of length 1.
 }
 \usage{
 new_messydate(x = character())
 
 validate_messydate(x)
 
-NA_messydt_
+NA_mdate_
 }
 \arguments{
-\item{x}{A character scalar or vector in the expected "yyyy-mm-dd" format
+\item{x}{A character scalar or vector in the expected \code{"yyyy-mm-dd"} format
 annotated, as necessary, according to ISO 8601-2_2019(E).}
 }
 \value{
-Object of class \code{messydt}
+Object of class \code{mdate}
 }
 \description{
-These functions create and validate a new date class for R
-consistent with
-\href{https://www.iso.org/standard/70908.html}{ISO 8601-2_2019(E)}.
-These recent extensions to standardised date notation
+Recent extensions to standardised date notation in
+\href{https://www.iso.org/standard/70908.html}{ISO 8601-2_2019(E)}
 create space for unspecified, uncertain, and approximate dates,
-as well as succinct representation of date ranges.
+as well as succinct representation of ranges of dates.
+These functions create and validate a new date class for R
+that can contain and parse these annotations,
+and are not typically user-facing.
+Please see \code{as_messydate()} for the user-facing coercion function.
 }
-\section{Date annotations}{
+\details{
+\subsection{Date annotations}{
+
 \emph{Unspecified date components}, such as when the day is unknown,
 can be represented by one or more \code{X}s in place of the digits.
 The modifier \code{*} is recommended to indicate that the entire
@@ -57,7 +61,8 @@ An additional modifier, \verb{\%}, is used to indicate
 a value that is both uncertain and approximate.
 }
 
-\section{Date sets}{
+\subsection{Date sets}{
+
 These functions also introduce standard notation
 for ranges of dates.
 Rather than the typical R notation for ranges,
@@ -75,8 +80,8 @@ And lastly, notation for sets of dates is also included.
 Here braces, \code{{}}, are used to mean "all members of the set",
 while brackets, \verb{[]}, are used to mean "one member of the set".
 }
-
+}
 \seealso{
-as_messydate
+messydate
 }
 \keyword{datasets}

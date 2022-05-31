@@ -14,7 +14,7 @@ TRUE by default.
 If FALSE ranges are returned in compact format.}
 }
 \value{
-A \code{messydt} vector
+A \code{mdate} vector
 }
 \description{
 This function operates as the opposite of \code{expand()}.

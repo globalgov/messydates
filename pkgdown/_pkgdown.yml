@@ -2,6 +2,7 @@ url: https://globalgov.github.io/messydates/
 development:
     mode: auto
 template:
+  # bootstrap: 5
   params:
     bootswatch: paper
 authors:
@@ -15,7 +16,9 @@ navbar:
     - reference
     - articles
     - news
-    right: github
+    right:
+    - search
+    - github
   components:
     home:
       icon: fa-home fa-lg
@@ -26,40 +29,33 @@ navbar:
     news:
       text: News
       href: news/index.html
+    github:
+      icon: "fab fa-github fa-lg"
+      href: https://github.com/globalgov/messydates
 reference:
-  - title: "Construction"
-    desc: "These functions create and print the `messydt` class:"
-    contents:
-      - new_messydate
-      - validate_messydate
   - title: "Coerce to"
-    desc: "These functions coerce dates to the `messydt` class:"
+    desc: "These functions construct and/or coerce dates to the `mdate` class:"
     contents:
-      - as_messydate
-      - make_messydate
+      - class
+      - messydate
+      - annotate
   - title: "Coerce from"
-    desc: "These functions coerce dates from the `messydt` class:"
+    desc: "These functions coerce dates from the `mdate` class into a single `Date` or other class:"
     contents:
       - starts_with("as\\.")
+      - resolve
   - title: "Manipulation"
-    desc: "These functions annotate, expand or contract objects of `messydt` class from/into a list:"
+    desc: "These functions expand or contract objects of `mdate` class from/into a list:"
     contents:
       - expand
       - contract
-      - annotate
   - title: "Operations"
-    desc: "These methods help operate on objects of the `messydt` class:"
+    desc: "These methods help operate on objects of the `mdate` class:"
     contents:
       - operate
       - set
       - logical
       - extract
-      - resequence
-      - interleave
-  - title: "Resolution"
-    desc: "These functions resolve objects from the `messydt` class into a single `Date` or other class:"
-    contents:
-      - resolve
   - title: "Data"
     desc: "Some test and/or example data:"
     contents:

@@ -8,7 +8,7 @@
 #' If the date is not 'messy' (i.e. has no annotations)
 #' then just that precise date is returned.
 #' This can be useful for various descriptive or inferential projects.
-#' @param ... a messydt object
+#' @param ... a mdate object
 #' @param na.rm Should NAs be removed? True by default.
 #' @importFrom stringr str_detect
 #' @return A single scalar or vector of dates
@@ -29,30 +29,34 @@ NULL
 
 #' @rdname resolve
 #' @export
-min.messydt <- function(..., na.rm = TRUE) {
+min.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(x) as.character(min(x, na.rm = na.rm)))
+  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+              recursive = FALSE)
+  y <- unlist(lapply(y, function(x) min(x, na.rm = na.rm)),
+              recursive = FALSE)
   y
 }
 
 #' @rdname resolve
 #' @export
-max.messydt <- function(..., na.rm = TRUE) {
+max.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(x) as.character(max(x, na.rm = na.rm)))
+  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+              recursive = FALSE)
+  y <- unlist(lapply(y, function(x) max(x, na.rm = na.rm)),
+              recursive = FALSE)
   y
 }
 
 #' @rdname resolve
 #' @importFrom stats median
 #' @export
-median.messydt <- function(..., na.rm = TRUE) {
+median.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(z) {
-
+  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+              recursive = FALSE)
+  y <- unlist(lapply(y, function(z) {
     if (length(z) %% 2 == 0) {
       z <- unlist(z[-1])
       z <- as.character(median(z, na.rm = na.rm))
@@ -62,7 +66,7 @@ median.messydt <- function(..., na.rm = TRUE) {
       z <- as.character(median(z, na.rm = na.rm))
       z
     }
-  })
+  }), recursive = FALSE)
   y
 }
 
@@ -72,18 +76,20 @@ median.messydt <- function(..., na.rm = TRUE) {
 #' Values of trim outside that range are taken as the nearest endpoint.
 #' @importFrom lubridate as_date
 #' @export
-mean.messydt <- function(..., trim = 0, na.rm = TRUE) {
+mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(x) {
+  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+              recursive = FALSE)
+  y <- unlist(lapply(y, function(x) {
     if (length(x) > 1 & stringr::str_detect(x[1], "^-", negate = TRUE)) {
       x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
     }
     if (length(x) > 1 & stringr::str_detect(x[1], "^-")) {
-      x <- paste0("-", as.character(mean(lubridate::as_date(x), trim = 0, na.rm = TRUE)))
+      x <- paste0("-", as.character(mean(lubridate::as_date(x),
+                                         trim = 0, na.rm = TRUE)))
     }
     x
-  })
+  }), recursive = FALSE)
   y
 }
 
@@ -93,17 +99,18 @@ modal <- function(..., na.rm = FALSE) UseMethod("modal")
 
 #' @rdname resolve
 #' @export
-modal.messydt <- function(..., na.rm = TRUE) {
+modal.mdate <- function(..., na.rm = TRUE) {
   x <- list(...)
-  y <- expand(x[[1]])
+  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+              recursive = FALSE)
   getmode <- function(v) {
     uniqv <- unique(v)
     uniqv[which.max(tabulate(match(v, uniqv)))]
   }
-  y <- sapply(y, function(x) {
+  y <- unlist(lapply(y, function(x) {
     if (length(x) > 1) x <- as.character(getmode(x))
     x
-  })
+  }), recursive = FALSE)
   y
 }
 
@@ -119,15 +126,16 @@ random <- function(..., size,
 
 #' @rdname resolve
 #' @export
-random.messydt <- function(...,
+random.mdate <- function(...,
                            size,
                            replace = FALSE,
                            prob = NULL) {
   x <- list(...)
-  y <- expand(x[[1]])
-  y <- sapply(y, function(x) {
+  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+              recursive = FALSE)
+  y <- unlist(lapply(y, function(x) {
     if (length(x) > 1) x <- as.character(sample(x, size = 1))
     x
-  })
+  }), recursive = FALSE)
   y
 }

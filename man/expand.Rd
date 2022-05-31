@@ -2,21 +2,24 @@
 % Please edit documentation in R/expand.R
 \name{expand}
 \alias{expand}
-\alias{expand.messydt}
+\alias{expand.mdate}
 \title{Expand messy dates to lists of dates}
 \usage{
 expand(x, approx_range)
 
-\method{expand}{messydt}(x, approx_range = 3)
+\method{expand}{mdate}(x, approx_range = 0)
 }
 \arguments{
-\item{x}{A \code{messydt} object.}
+\item{x}{A \code{mdate} object.}
 
-\item{approx_range}{Range to expand approximate dates to, by default 3.
-That is, 3 days for day approximation, 3 months for month approximation,
-3 years for year/whole date approximation, 3 years and 3 months for year-
-month approximation, and 3 months and 3 days for month-day approximation.
-If 0, returns original values and removes signs for aproximate dates.}
+\item{approx_range}{Range to expand approximate dates,
+or date components, annotated with '~', by default 0.
+That is, returns original values and removes signs for approximate dates.
+If 3, for example, adds 3 days for day approximation,
+3 months for month approximation,
+3 years for year/whole date approximation,
+3 years and 3 months for year-month approximation,
+and 3 months and 3 days for month-day approximation.}
 }
 \value{
 A list of dates, including all dates in each range or set.
@@ -24,15 +27,17 @@ A list of dates, including all dates in each range or set.
 \description{
 These functions expand on date ranges, sets of dates, and unspecified or
 approximate dates (annotated with '..', '{ , }', 'XX' or '~').
-As these dates may refer to several possible dates, the function "opens"
-these values to include all the possible dates implied.
+As these messydates may refer to several possible dates,
+the function "opens" these values to reveal a vector of all the possible
+dates implied.
 Imprecise dates (dates only containing information on year and/or month)
-are also expanded to include possible dates in that year and/or month.
-Annotation is removed from uncertain dates with unreliable sources ('?').
+are also expanded to include possible dates within that year and/or month.
+The function removes the annotation from dates with unreliable sources ('?'),
+before being expanded normally as though they were incomplete.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{messydt}: Expanding messydates
+\item \code{mdate}: Expanding messydates
 }}
 
 \examples{

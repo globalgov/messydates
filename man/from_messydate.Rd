@@ -2,22 +2,19 @@
 % Please edit documentation in R/coerce_from_messydate.R
 \name{from_messydate}
 \alias{from_messydate}
-\alias{as.Date.messydt}
-\alias{as.POSIXct.messydt}
-\alias{as.POSIXlt.messydt}
-\alias{negative_dates}
+\alias{as.Date.mdate}
+\alias{as.POSIXct.mdate}
+\alias{as.POSIXlt.mdate}
 \title{Coercion from messy dates}
 \usage{
-\method{as.Date}{messydt}(x, ..., FUN)
+\method{as.Date}{mdate}(x, ..., FUN)
 
-\method{as.POSIXct}{messydt}(x, ..., FUN)
+\method{as.POSIXct}{mdate}(x, ..., FUN)
 
-\method{as.POSIXlt}{messydt}(x, ..., FUN)
-
-negative_dates(x)
+\method{as.POSIXlt}{mdate}(x, ..., FUN)
 }
 \arguments{
-\item{x}{A \code{messydt} object}
+\item{x}{A \code{mdate} object}
 
 \item{...}{Arguments passed on to the S3 generics.}
 
@@ -30,9 +27,9 @@ For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
 A date object of \code{Date}, \code{POSIXct}, or \code{POSIXlt} class
 }
 \description{
-These functions coerce objects of \code{messydt} class to
+These functions coerce objects of \code{mdate} class to
 common date classes such as \code{Date}, \code{POSIXct}, and \code{POSIXlt}.
-Since \code{messydt} objects can hold multiple individual dates,
+Since \code{mdate} objects can hold multiple individual dates,
 however, an additional function must be passed as an argument
 so that these functions know how to coerce resolve multiple dates
 into a single date.
@@ -40,10 +37,10 @@ into a single date.
 For example, one might wish to use the earliest possible date
 in any ranges of dates (\code{min}), the latest possible date (\code{max}),
 some notion of a central tendency (\code{mean}, \code{median}, or \code{modal}),
-or even a \code{random} selection from amongst the candidate dates.
+or even a \code{random} selection from among the candidate dates.
 
 These functions then, building on \code{expand()} and the resolve functions,
-are particularly useful in converting back out of the \code{messydt} class
+are particularly useful in converting back out of the \code{mdate} class
 for use with existing methods and models,
 especially for checking the robustness of results.
 }

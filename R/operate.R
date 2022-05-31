@@ -17,14 +17,14 @@ NULL
 
 #' @rdname operate
 #' @export
-`+.messydt` <- function(e1, e2) {
+`+.mdate` <- function(e1, e2) {
   e2 <- parse_date_strings(e2)
   add(e1, e2)
 }
 
 #' @rdname operate
 #' @export
-`-.messydt` <- function(e1, e2) {
+`-.mdate` <- function(e1, e2) {
   e2 <- parse_date_strings(e2)
   subtract(e1, e2)
 }

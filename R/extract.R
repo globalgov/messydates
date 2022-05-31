@@ -4,7 +4,7 @@
 #' from messy dates, such as the `year()`, `month()`, and `day()`.
 #' `precision()` allows for the identification of the greatest level of
 #' precision in (currently) the first element of each date.
-#' @param x A `messydt` object
+#' @param x A `mdate` object
 #' @return `year()`, `month()`, and `day()` extraction return the integer
 #' for the requested date component.
 #' `precision()` returns the level of greatest precision for each date.
@@ -51,9 +51,7 @@ day <- function(x) {
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
 precision <- function(x) {
-
   x <- expand(x)
   out <- sum(lengths(x))
-
   out
 }

@@ -185,7 +185,7 @@ R> dates_comparison <- tibble::tribble(~Example, ~OriginalDate,
 # A tibble: 11 x 6
    Example             OriginalDate  base       lubridate  anytime    messydates
    <chr>               <chr>         <date>     <date>     <date>     <mdate>   
- 1 A normal date       2022-06-08    2022-06-08 2022-06-08 2022-06-08 2022-06-0~
+ 1 A normal date       2022-06-15    2022-06-15 2022-06-15 2022-06-15 2022-06-1~
  2 A future date       2599-12-31    2599-12-31 2599-12-31 2599-12-31 2599-12-3~
  3 A written date      First of Feb~ NA         NA         NA         2021-02-0~
  4 A historical date   476           NA         NA         NA         0476     ~
@@ -524,12 +524,12 @@ R> tibble::tibble(min = as.Date(dates_expand, min),
   min        max        median     mean       modal      random    
   <date>     <date>     <date>     <date>     <date>     <date>    
 1 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01
-2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-13
-3 2001-01-01 2001-12-31 2001-07-02 2001-07-02 2001-01-01 2001-01-31
-4 2001-01-01 2001-02-02 2001-01-17 2001-01-17 2001-01-01 2001-01-24
-5 2001-01-01 2001-02-02 2001-02-02 2001-01-17 2001-01-01 2001-02-02
-6 2001-01-31 2001-12-31 2001-07-31 2001-07-15 2001-01-31 2001-04-30
-7 -021-01-01 -021-12-31 -021-07-02 -021-07-02 -021-01-01 -021-07-10
+2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-26
+3 2001-01-01 2001-12-31 2001-07-02 2001-07-02 2001-01-01 2001-11-13
+4 2001-01-01 2001-02-02 2001-01-17 2001-01-17 2001-01-01 2001-01-12
+5 2001-01-01 2001-02-02 2001-02-02 2001-01-17 2001-01-01 2001-01-01
+6 2001-01-31 2001-12-31 2001-07-31 2001-07-15 2001-01-31 2001-12-31
+7 -021-01-01 -021-12-31 -021-07-02 -021-07-02 -021-01-01 -021-06-15
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -707,12 +707,12 @@ R> tibble::tibble(date = dates_expand, add = dates_expand + "1 day", subtract = 
 \hypertarget{case-study---2001-battles}{%
 \subsection{Case Study - 2001 Battles}\label{case-study---2001-battles}}
 
-Dates for some recent events can also be messy. Take, for example, the
-names and dates of battles in 2001 according to
+Dates, even for some recent events, can be messy. Take, for example, the
+dates of battles in 2001 according to
 \href{https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century}{Wikipedia}.
-The dates of these battles are often uncertain with different levels of
-date precision being reported. Below, we exemplify how \pkg{messydates}
-facilitates working with these dates.
+The dates of these battles are often uncertain, with different levels of
+date precision being reported. \pkg{messydates} facilitates working with
+these dates.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -776,29 +776,36 @@ generate inferences where getting ``timing'' right is important.
 
 Assume, for example, certain researcher is interested in the
 relationship between the United States (US) being a party in a conflict
-and the duration of the conflict. The researcher might theorize that
-conflicts involving the US are faster since the US has the most powerful
-military in the world. We can use the battles data above alongside
-\pkg{messydates} to create two different date variables to be our
-dependent variables that represent conflict time, one with an arbitrary
-cut of point (difference between the minimal and maximal values) and the
-other with random values (difference between two random values in the
-range for uncertain or approximate dates). We also create a dummy
-variable for whether the US was, or not, involved in the conflict to be
-our independent variable. With these variables in hand, we build two
-linear regression models correlating each of the dependent variables to
-the to conflict time.
+and the duration of the conflict in 2001. The researcher might theorize
+that conflicts involving the US have a shorter duration since the US has
+the most powerful military in the world. As well, this is relationship
+could be mediated by the number of parties involved in the conflict.
+That is, the number of actors involved in a conflict could have an
+effect on conflict time. Using \pkg{messydates}, we can create two
+different date variables in the battles data to represent conflict time,
+one with an arbitrary cut of point (difference between the minimal and
+maximal values) and the other with random values (difference between two
+random values in the range for uncertain or approximate dates). These
+will be our dependent variables. We can also create a dummy variable for
+whether the US was, or not, involved in the conflict to be our main
+independent variable. As a control, we also code the number of actors in
+the conflict. With these variables in hand, we build two linear
+regression models correlating each of the dependent variables to
+conflict time.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> library(stargazer)
 R> set.seed(3333)
 R> battles <- battles %>%
 +   mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
-+          random = ifelse(grepl("\\?|\\~", Date), abs(as.Date(Date, random) - as.Date(Date, random)), arbitrary),
-+          US_party = ifelse(grepl("US", Parties), 1, 0))
-R> arbitrary <- lm(arbitrary ~ US_party, battles)
-R> random <- lm(random ~ US_party, battles)
++          random = ifelse(grepl("\\?|\\~", Date),
++                          abs(as.Date(Date, random) - as.Date(Date, random)),
++                          arbitrary),
++          US_party = ifelse(grepl("US", Parties), 1, 0),
++          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
+R> arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
+R> random <- lm(random ~ US_party + n_actors, battles)
+R> library(stargazer)
 R> stargazer::stargazer(arbitrary, random, type = "text")
 \end{CodeInput}
 \begin{CodeOutput}
@@ -809,18 +816,21 @@ R> stargazer::stargazer(arbitrary, random, type = "text")
                                  arbitrary       random   
                                     (1)           (2)     
 ----------------------------------------------------------
-US_party                           6.989         2.451    
-                                  (8.899)       (3.999)   
+US_party                          10.802         1.419    
+                                 (14.399)       (6.484)   
                                                           
-Constant                           3.857         3.857    
-                                  (7.175)       (3.224)   
+n_actors                          -2.479         0.670    
+                                  (7.239)       (3.260)   
+                                                          
+Constant                           8.815         2.517    
+                                 (16.241)       (7.314)   
                                                           
 ----------------------------------------------------------
 Observations                        20             20     
-R2                                 0.033         0.020    
-Adjusted R2                       -0.021         -0.034   
-Residual Std. Error (df = 18)     18.983         8.530    
-F Statistic (df = 1; 18)           0.617         0.376    
+R2                                 0.040         0.023    
+Adjusted R2                       -0.073         -0.092   
+Residual Std. Error (df = 17)     19.467         8.766    
+F Statistic (df = 2; 17)           0.352         0.199    
 ==========================================================
 Note:                          *p<0.1; **p<0.05; ***p<0.01
 \end{CodeOutput}
@@ -828,10 +838,13 @@ Note:                          *p<0.1; **p<0.05; ***p<0.01
 
 Notice how the regression coefficients change when we pick random values
 within the range for the uncertain and approximate dates in the battles
-data, in comparison to setting arbitrary cut off points. However, in
-this case, we can say that the relationship between the US being a part
-of a battle in 2001 and the time of the conflict is positive but not
-statistically significant for either.
+data, in comparison to setting arbitrary cut off points. Although not
+statistically significant, the coefficient for US being a party in a
+conflict goes from being positive when we use arbitrary cut off points
+for uncertain dates, to negative when we we use random values within
+that range. In this case, it is hard to say whether the relationship
+between the US being a part of a battle in 2001 and the time of the
+conflict is positive or not.
 
 \hypertarget{acknowledgements}{%
 \section{Acknowledgements}\label{acknowledgements}}

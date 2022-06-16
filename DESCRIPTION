@@ -37,7 +37,8 @@ Imports:
     lubridate,
     tibble,
     dplyr,
-    skimr
+    ggplot2,
+    scales
 Suggests: 
     testthat (>= 3.0.0),
     covr,

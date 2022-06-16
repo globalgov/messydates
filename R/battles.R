@@ -8,4 +8,8 @@
 #'   \item{Battle}{name of the battle, character}
 #'   \item{Date}{date or date range, a mdate class vector}
 #' }
+#' @details
+#' ``` {r, echo = FALSE, warning = FALSE}
+#' descriptr::ds_screener(battles)
+#' ```
 "battles"

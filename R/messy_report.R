@@ -1,11 +1,11 @@
 #' Messy data report
 #'
 #' @param data A \code{tibble} or a \code{data.frame}.
-#' @param x An object of class \code{messy_report}.
-#' @param ... Further arguments to be passed to or from methods.
 #' @return \code{messy_report()()} returns a data report
 #' of class \code{"messy_report"}.
+#' @import ggplot2
 #' @importFrom dplyr %>%
+#' @importFrom scales percent_format
 #' @examples
 #' messy_report(battles)
 #' @export
@@ -41,7 +41,7 @@ print.messy_report <- function(x, ...) {
 
 #' @export
 plot.messy_report <- function(x, ...) {
-  `% Missing`  <- NULL
+  `% Missing`  <- y <- NULL
   mydat        <- data.frame(x = names(x$MissingPer), y = x$MissingPer)
   mydat$y      <- mydat$y / 100
   mydat$color  <- ifelse(mydat$y >= 0.1, ">= 10%", "< 10%")

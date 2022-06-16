@@ -8,10 +8,6 @@ messy_report(data)
 }
 \arguments{
 \item{data}{A \code{tibble} or a \code{data.frame}.}
-
-\item{x}{An object of class \code{messy_report}.}
-
-\item{...}{Further arguments to be passed to or from methods.}
 }
 \value{
 \code{messy_report()()} returns a data report

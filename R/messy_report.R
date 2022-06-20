@@ -1,18 +1,18 @@
-#' Messy data report
+#' mdate report
 #'
 #' @param data A \code{tibble} or a \code{data.frame}.
-#' @return \code{messy_report()()} returns a data report
-#' of class \code{"messy_report"}.
+#' @return \code{mreport()()} returns a data report
+#' of class \code{"mreport"}.
 #' @import ggplot2
 #' @importFrom dplyr %>%
 #' @importFrom scales percent_format
 #' @examples
-#' messy_report(battles)
+#' mreport(battles)
 #' @export
-messy_report <- function(data) UseMethod("messy_report")
+mreport <- function(data) UseMethod("mreport")
 
 #' @export
-messy_report.default <- function(data) {
+mreport.default <- function(data) {
   if (!is.data.frame(data)) {
     stop("Data must be a `data.frame` or `tibble`.")
   }
@@ -30,17 +30,17 @@ messy_report.default <- function(data) {
                  Count         = counts,
                  Missing       = mvalues,
                  MissingPer    = mvaluesper)
-  class(result) <- "messy_report"
+  class(result) <- "mreport"
   return(result)
 }
 
 #' @export
-print.messy_report <- function(x, ...) {
-  print_messy_report(x)
+print.mreport <- function(x, ...) {
+  print_mreport(x)
 }
 
 #' @export
-plot.messy_report <- function(x, ...) {
+plot.mreport <- function(x, ...) {
   `% Missing`  <- y <- NULL
   mydat        <- data.frame(x = names(x$MissingPer), y = x$MissingPer)
   mydat$y      <- mydat$y / 100
@@ -54,7 +54,7 @@ plot.messy_report <- function(x, ...) {
     ggplot2::scale_fill_manual(values = c("green", "red"))
 }
 
-print_messy_report <- function(x) {
+print_mreport <- function(x) {
   columns <- c("  Column Name  ", "  Data Type  ", "  Missing  ", "  Missing (%)  ")
   len_col <- as.vector(sapply(columns, nchar))
   x$Types <- lapply(x$Types, paste, collapse = ", ")

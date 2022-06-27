@@ -3,7 +3,6 @@
 #' @param data A \code{tibble} or a \code{data.frame}.
 #' @return \code{mreport()()} returns a data report
 #' of class \code{"mreport"}.
-#' @import ggplot2
 #' @importFrom dplyr %>%
 #' @importFrom scales percent_format
 #' @examples
@@ -23,13 +22,21 @@ mreport.default <- function(data) {
   counts   <- sapply(data, length)
   mvalues    <- sapply(data, function(z) sum(is.na(z)))
   mvaluesper <- round((mvalues / counts) * 100, 2)
+  minv <- sapply(data, function(x) ifelse(class(x) == "mdate",
+                                          as.character(as.Date(x, max)), min(x)))
+  minv <- ifelse(nchar(minv) > 11, "", minv)
+  maxv <- sapply(data, function(x) ifelse(class(x) == "mdate",
+                                          as.character(as.Date(x, max)), max(x)))
+  maxv <- ifelse(nchar(maxv) > 11, "", maxv)
   result <- list(Rows          = rows,
                  Columns       = cols,
                  Variables     = varnames,
                  Types         = datatype,
                  Count         = counts,
                  Missing       = mvalues,
-                 MissingPer    = mvaluesper)
+                 MissingPer    = mvaluesper,
+                 Minv = minv,
+                 Maxv = maxv)
   class(result) <- "mreport"
   return(result)
 }
@@ -39,26 +46,12 @@ print.mreport <- function(x, ...) {
   print_mreport(x)
 }
 
-#' @export
-plot.mreport <- function(x, ...) {
-  `% Missing`  <- y <- NULL
-  mydat        <- data.frame(x = names(x$MissingPer), y = x$MissingPer)
-  mydat$y      <- mydat$y / 100
-  mydat$color  <- ifelse(mydat$y >= 0.1, ">= 10%", "< 10%")
-  names(mydat) <- c("x", "y", "% Missing")
-  ggplot2::ggplot(mydat) +
-    ggplot2::geom_col(ggplot2::aes(x = stats::reorder(x, y), y = y, fill = `% Missing`)) +
-    ggplot2::scale_y_continuous(labels = scales::percent_format()) +
-    ggplot2::xlab("Column") + ggplot2::ylab("Percentage") +
-    ggplot2::ggtitle("Missing Values (%)") +
-    ggplot2::scale_fill_manual(values = c("green", "red"))
-}
-
 print_mreport <- function(x) {
-  columns <- c("  Column Name  ", "  Data Type  ", "  Missing  ", "  Missing (%)  ")
+  columns <- c("  Column Name  ", "  Data Type  ", "  Missing  ",
+               "  Missing (%)  ", "  Min Value  ", "  Max Value ")
   len_col <- as.vector(sapply(columns, nchar))
   x$Types <- lapply(x$Types, paste, collapse = ", ")
-  lengths <- list(x$Variables, x$Types, x$Missing, x$MissingPer)
+  lengths <- list(x$Variables, x$Types, x$Missing, x$MissingPer, x$Minv, x$Maxv)
   n <- length(columns)
   nlist <- list()
   for (i in seq_len(n)) {
@@ -69,7 +62,8 @@ print_mreport <- function(x) {
   cat(rep("-", dash), sep = "")
   cat("\n|")
   for (i in seq_len(n)) {
-    cat(format(columns[i], width = clengths[i], justify = "centre"), "|", sep = "")
+    cat(format(columns[i], width = clengths[i], justify = "centre"),
+        "|", sep = "")
   }
   cat("\n", rep("-", dash), sep = "")
   cat("\n")
@@ -77,7 +71,10 @@ print_mreport <- function(x) {
     cat("|", format(x$Variables[i], width = clengths[1], justify = "centre"), "|",
       format(x$Types[i], width = clengths[2], justify = "centre"), "|",
       format(as.character(x$Missing[i]), width = clengths[3], justify = "centre"), "|",
-      format(as.character(x$MissingPer[i]), width = clengths[4], justify = "centre"), "|\n", sep = "")
+      format(as.character(x$MissingPer[i]), width = clengths[4], justify = "centre"), "|",
+      format(as.character(x$Min[i]), width = clengths[5], justify = "centre"), "|",
+      format(as.character(x$Max[i]), width = clengths[6], justify = "centre"),
+      "|\n", sep = "")
   }
   cat(rep("-", dash), sep = "")
   cat("\n\n")

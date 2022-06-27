@@ -4,5 +4,5 @@ test_that("report function work properly", {
   names(type) <- c("Battle", "Date")
   expect_s3_class(report, "mreport")
   expect_equal(report$Types, type)
-  expect_length(report, 7)
+  expect_length(report, 9)
 })

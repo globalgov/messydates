@@ -53,7 +53,7 @@ However, this can create inferential issues when timing or sequence is important
 `{messydates}` assists with this problem by retaining and working
 with various kinds of date imprecision.
 
-```{r setup, echo=FALSE}
+```{r setup, echo=FALSE, include=FALSE}
 library(lubridate)
 library(tibble)
 library(dplyr)

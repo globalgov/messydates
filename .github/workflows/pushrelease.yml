@@ -40,11 +40,6 @@ jobs:
             any::rcmdcheck
             any::covr
             any::remotes
-            any::lubridate
-            any::tibble
-            any::dplyr
-            any::knitr
-            any::kableExtra
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
@@ -71,15 +66,17 @@ jobs:
         run: Rscript -e "covr::codecov()"
 
   release:
-    name: Bump version
-    build:
-     runs-on: ubuntu-latest
-     steps:
-      - uses: actions/checkout@v2
+    name: Bump version and release
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout one
+        uses: actions/checkout@master
         with:
           fetch-depth: '0'
+
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.36.0
+        uses: anothrNick/github-tag-action@1.39.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
@@ -105,7 +102,7 @@ jobs:
         run: ls -R
 
       - name: Rename Mac release
-        run: mv ./macOS/*.tgz messydates_macOS.tgz
+        run: mv ./macOS/*.tgz manydata_macOS.tgz
 
       - name: Upload Mac binary
         id: upload-mac
@@ -114,12 +111,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: messydates_macOS.tgz
-          asset_name: messydates_macOS.tgz
+          asset_path: manydata_macOS.tgz
+          asset_name: manydata_macOS.tgz
           asset_content_type: application/zip
 
       - name: Rename Linux release
-        run: mv ./linuxOS/*.tar.gz messydates_linuxOS.tar.gz
+        run: mv ./linuxOS/*.tar.gz manydata_linuxOS.tar.gz
 
       - name: Upload Linux binary
         id: upload-lin
@@ -128,12 +125,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: messydates_linuxOS.tar.gz
-          asset_name: messydates_linuxOS.tar.gz
+          asset_path: manydata_linuxOS.tar.gz
+          asset_name: manydata_linuxOS.tar.gz
           asset_content_type: application/zip
 
       - name: Rename Windows release
-        run: mv ./winOS/*.zip messydates_winOS.zip
+        run: mv ./winOS/*.zip manydata_winOS.zip
 
       - name: Upload Windows binary
         id: upload-win
@@ -142,8 +139,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: messydates_winOS.zip
-          asset_name: messydates_winOS.zip
+          asset_path: manydata_winOS.zip
+          asset_name: manydata_winOS.zip
           asset_content_type: application/zip
 
   render:
@@ -151,14 +148,22 @@ jobs:
     needs: build
     runs-on: macOS-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: r-lib/actions/setup-r@v1
+
+      - uses: r-lib/actions/setup-r@v2
+
       - uses: r-lib/actions/setup-pandoc@v1
 
-      # install packages needed
-      - name: install required packages
-        run: Rscript -e 'install.packages("rmarkdown")'
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 2
+          extra-packages: |
+            any::lubridate
+            any::tibble
+            any::dplyr
+            any::knitr
+            any::kableExtra
+          needs: check
 
       # Render README.md using rmarkdown
       - name: render README

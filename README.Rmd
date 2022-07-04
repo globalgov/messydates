@@ -65,7 +65,8 @@ library(kableExtra)
 `{messydates}` implements for R the extended annotation standard for dates,
 the Extended Date/Time Format (EDTF) outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
 `{messydates}` introduces a new `mdate` class that embeds these annotations,
-and offers a set of methods for constructing and coercing into and from the `mdate` class,
+and offers a set of methods for constructing and
+coercing into and from the `mdate` class,
 as well as tools for working with such 'messy' dates.
 
 ```{r comparison, warning=FALSE, message=FALSE}

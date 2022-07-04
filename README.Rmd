@@ -43,7 +43,8 @@ Although researchers generally recognise this messiness,
 many feel expected to force artificial precision or unfortunate imprecision 
 on temporal data to proceed with analysis.
 For example, if we only know something happened in `2021`,
-then we might revert to a panel data design _even if greater precision is available_,
+then we might revert to a panel data design
+_even if greater precision is available_,
 or opt to replace this date with the start of that year (`2021-01-01`),
 assuming that erring on the earlier (or later) side is more justifiable than 
 a random date within that month or year.
@@ -65,7 +66,8 @@ library(kableExtra)
 `{messydates}` implements for R the extended annotation standard for dates,
 the Extended Date/Time Format (EDTF) outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
 `{messydates}` introduces a new `mdate` class that embeds these annotations,
-and offers a set of methods for constructing and coercing into and from the `mdate` class,
+and offers a set of methods for constructing and
+coercing into and from the `mdate` class,
 as well as tools for working with such 'messy' dates.
 
 ```{r comparison, warning=FALSE, message=FALSE}
@@ -145,8 +147,8 @@ dates compatible with the messy annotated date.
 resolve_mdate <- pkg_comparison %>% 
   dplyr::select(messydates) %>% 
   dplyr::mutate(min = as.Date(messydates, min),
-                max = as.Date(messydates, max),
-                median = as.Date(messydates, median))
+         median = as.Date(messydates, median),
+         max = as.Date(messydates, max))
 ```
 
 ```{r workprint, echo = FALSE, results='asis'}

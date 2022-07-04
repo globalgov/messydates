@@ -350,8 +350,8 @@ across dates compatible with the messy annotated date.
 resolve_mdate <- pkg_comparison %>% 
   dplyr::select(messydates) %>% 
   dplyr::mutate(min = as.Date(messydates, min),
-                max = as.Date(messydates, max),
-                median = as.Date(messydates, median))
+         median = as.Date(messydates, median),
+         max = as.Date(messydates, max))
 #> Please specify 'approx_range' argument if you want approximate dates to also be expanded
 #> Please specify 'approx_range' argument if you want approximate dates to also be expanded
 #> Please specify 'approx_range' argument if you want approximate dates to also be expanded
@@ -367,10 +367,10 @@ messydates
 min
 </th>
 <th style="text-align:left;">
-max
+median
 </th>
 <th style="text-align:left;">
-median
+max
 </th>
 </tr>
 </thead>
@@ -425,10 +425,10 @@ median
 0476-01-01
 </td>
 <td style="text-align:left;">
-0476-12-31
+0476-07-02
 </td>
 <td style="text-align:left;">
-0476-07-02
+0476-12-31
 </td>
 </tr>
 <tr>
@@ -439,10 +439,10 @@ median
 -033-01-01
 </td>
 <td style="text-align:left;">
--033-12-31
+-033-07-02
 </td>
 <td style="text-align:left;">
--033-07-02
+-033-12-31
 </td>
 </tr>
 <tr>
@@ -453,10 +453,10 @@ median
 2012-01-12
 </td>
 <td style="text-align:left;">
-2012-01-12
+2012-01-13
 </td>
 <td style="text-align:left;">
-2012-01-12
+2012-01-13
 </td>
 </tr>
 <tr>
@@ -481,10 +481,10 @@ median
 2012-01-01
 </td>
 <td style="text-align:left;">
-2012-01-31
+2012-01-16
 </td>
 <td style="text-align:left;">
-2012-01-16
+2012-01-31
 </td>
 </tr>
 <tr>
@@ -512,7 +512,7 @@ median
 2020-01-01
 </td>
 <td style="text-align:left;">
-2019-12-02
+2020-01-01
 </td>
 </tr>
 <tr>
@@ -526,7 +526,7 @@ median
 2021-12-04
 </td>
 <td style="text-align:left;">
-2021-11-19
+2021-12-04
 </td>
 </tr>
 </tbody>

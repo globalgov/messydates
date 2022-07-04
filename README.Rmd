@@ -53,7 +53,6 @@ However, this can create inferential issues when timing or sequence is important
 with various kinds of date imprecision.
 
 ```{r setup, echo=FALSE}
-library(messydates)
 library(lubridate)
 library(tibble)
 library(dplyr)
@@ -83,7 +82,7 @@ pkg_comparison <- tibble::tribble(~Example, ~OriginalDate,
                                     "Range of dates", "2019-11-01:2020-01-01",
                                     "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
   dplyr::mutate(base = as.Date(OriginalDate),
-                lubridate = lubridate::as_date(OriginalDate),
+                lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
                 messydates = messydates::as_messydate(OriginalDate))
 ```
 
@@ -146,9 +145,8 @@ dates compatible with the messy annotated date.
 resolve_mdate <- pkg_comparison %>% 
   dplyr::select(messydates) %>% 
   dplyr::mutate(min = as.Date(messydates, min),
-         median = as.Date(messydates, median),
-         random = as.Date(messydates, random),
-         max = as.Date(messydates, max))
+                max = as.Date(messydates, max),
+                median = as.Date(messydates, median))
 ```
 
 ```{r workprint, echo = FALSE, results='asis'}

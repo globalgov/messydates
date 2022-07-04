@@ -17,7 +17,7 @@ NULL
 #' is_messydate(as_messydate("2012-01-01"))
 #' is_messydate(as.Date("2012-01-01"))
 #' @export
-is_messydate <- function(x){
+is_messydate <- function(x) {
   inherits(x, "mdate")
 }
 

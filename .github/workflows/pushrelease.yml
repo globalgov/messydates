@@ -40,6 +40,11 @@ jobs:
             any::rcmdcheck
             any::covr
             any::remotes
+            any::lubridate
+            any::tibble
+            any::dplyr
+            any::knitr
+            any::kableExtra
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
@@ -66,23 +71,18 @@ jobs:
         run: Rscript -e "covr::codecov()"
 
   release:
-    name: Bump version and release
-    needs: build
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout one
-        uses: actions/checkout@master
+    name: Bump version
+    build:
+     runs-on: ubuntu-latest
+     steps:
+      - uses: actions/checkout@v2
         with:
           fetch-depth: '0'
-
       - name: Bump version and push tag
-        id: newtag
-        uses: anothrNick/github-tag-action@1.39.0
+        uses: anothrNick/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
-          DEFAULT_BUMP: patch
-          RELEASE_BRANCHES: main
 
       - name: Checkout two
         uses: actions/checkout@v2

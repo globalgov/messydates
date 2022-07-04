@@ -47,9 +47,6 @@ working with various kinds of date imprecision.
 
     #> 
     #> Attaching package: 'lubridate'
-    #> The following objects are masked from 'package:messydates':
-    #> 
-    #>     day, month, year
     #> The following objects are masked from 'package:base':
     #> 
     #>     date, intersect, setdiff, union
@@ -90,7 +87,7 @@ pkg_comparison <- tibble::tribble(~Example, ~OriginalDate,
                                     "Range of dates", "2019-11-01:2020-01-01",
                                     "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
   dplyr::mutate(base = as.Date(OriginalDate),
-                lubridate = lubridate::as_date(OriginalDate),
+                lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
                 messydates = messydates::as_messydate(OriginalDate))
 ```
 
@@ -512,7 +509,7 @@ max
 2019-11-01
 </td>
 <td style="text-align:left;">
-2019-12-02
+2020-01-01
 </td>
 <td style="text-align:left;">
 2020-01-01
@@ -526,7 +523,7 @@ max
 2021-05-26
 </td>
 <td style="text-align:left;">
-2021-11-19
+2021-12-04
 </td>
 <td style="text-align:left;">
 2021-12-04

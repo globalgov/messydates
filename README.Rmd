@@ -43,7 +43,8 @@ Although researchers generally recognise this messiness,
 many feel expected to force artificial precision or unfortunate imprecision 
 on temporal data to proceed with analysis.
 For example, if we only know something happened in `2021`,
-then we might revert to a panel data design _even if greater precision is available_,
+then we might revert to a panel data design
+_even if greater precision is available_,
 or opt to replace this date with the start of that year (`2021-01-01`),
 assuming that erring on the earlier (or later) side is more justifiable than 
 a random date within that month or year.

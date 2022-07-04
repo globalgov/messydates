@@ -10,8 +10,8 @@
 #' The function removes the annotation from dates with unreliable sources ('?'),
 #' before being expanded normally as though they were incomplete.
 #' @param x A `mdate` object.
-#' @param approx_range Range to expand approximate dates,
-#' or date components, annotated with '~', by default 0.
+#' @param approx_range Range to expand approximate dates, or date components,
+#' annotated with '~', by default 0.
 #' That is, returns original values and removes signs for approximate dates.
 #' If 3, for example, adds 3 days for day approximation,
 #' 3 months for month approximation,

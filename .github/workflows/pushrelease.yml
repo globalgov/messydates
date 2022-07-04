@@ -71,8 +71,8 @@ jobs:
         run: Rscript -e "covr::codecov()"
 
   release:
-    name: Bump version
-    build:
+   build:
+     name: Bump version
      runs-on: ubuntu-latest
      steps:
       - uses: actions/checkout@v2

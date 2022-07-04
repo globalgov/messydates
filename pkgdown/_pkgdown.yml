@@ -55,6 +55,7 @@ reference:
       - operate
       - set
       - logical
+      - is_messydate
       - extract
   - title: "Data"
     desc: "Some test and/or example data:"

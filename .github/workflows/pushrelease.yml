@@ -76,6 +76,7 @@ jobs:
           fetch-depth: '0'
 
       - name: Bump version and push tag
+        id: newtag
         uses: anothrNick/github-tag-action@1.39.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -158,6 +159,7 @@ jobs:
         with:
           cache-version: 2
           extra-packages: |
+            any::messydates
             any::lubridate
             any::tibble
             any::dplyr

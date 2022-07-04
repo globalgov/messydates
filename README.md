@@ -47,6 +47,9 @@ working with various kinds of date imprecision.
 
     #> 
     #> Attaching package: 'lubridate'
+    #> The following objects are masked from 'package:messydates':
+    #> 
+    #>     day, month, year
     #> The following objects are masked from 'package:base':
     #> 
     #>     date, intersect, setdiff, union

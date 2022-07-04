@@ -10,8 +10,8 @@
 #' The function removes the annotation from dates with unreliable sources ('?'),
 #' before being expanded normally as though they were incomplete.
 #' @param x A `mdate` object.
-#' @param approx_range Range to expand approximate dates,
-#' or date components, annotated with '~', by default 0.
+#' @param approx_range Range to expand approximate dates, or date components,
+#' annotated with '~', by default 0.
 #' That is, returns original values and removes signs for approximate dates.
 #' If 3, for example, adds 3 days for day approximation,
 #' 3 months for month approximation,
@@ -271,7 +271,7 @@ expand_unspecified_ranges <- function(dates) {
   dates1 <- purrr::map_chr(dates, 1)
   dates1 <- ifelse(stringr::str_detect(dates1,
                                        "^([:digit:]{4})$|^-([:digit:]{4})$"),
-                  paste0(dates1, "-01-01"), dates1)
+                   paste0(dates1, "-01-01"), dates1)
   dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})-([:digit:]{2})$|^-([:digit:]{4})-([:digit:]{2})$"),
                    paste0(dates1, "-01"), dates1)
   dates2 <- purrr::map_chr(dates, 2)

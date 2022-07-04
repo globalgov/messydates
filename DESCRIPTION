@@ -1,7 +1,7 @@
 Package: messydates
 Title: A Flexible Class for Messy Dates
 Description: Contains a set of tools for constructing and coercing
-  into and from the mdate class. 
+  into and from the "mdate" class. 
   This date class implements ISO 8601-2:2019(E) and
   allows regular dates to be annotated 
   to express unspecified date components,
@@ -37,7 +37,8 @@ Imports:
     lubridate,
     tibble,
     dplyr,
-    skimr
+    ggplot2,
+    scales
 Suggests: 
     testthat (>= 3.0.0),
     covr,

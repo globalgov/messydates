@@ -12,8 +12,8 @@ expand(x, approx_range)
 \arguments{
 \item{x}{A \code{mdate} object.}
 
-\item{approx_range}{Range to expand approximate dates,
-or date components, annotated with '~', by default 0.
+\item{approx_range}{Range to expand approximate dates, or date components,
+annotated with '~', by default 0.
 That is, returns original values and removes signs for approximate dates.
 If 3, for example, adds 3 days for day approximation,
 3 months for month approximation,

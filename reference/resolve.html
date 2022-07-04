@@ -24,7 +24,7 @@ This can be useful for various descriptive or inferential projects."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -36,22 +36,21 @@ This can be useful for various descriptive or inferential projects."><!-- mathja
   </a>
 </li>
 <li>
+  <a href="../articles/messydates.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/messydates_intro.html">Working with messy dates</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/globalgov/messydates" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -77,77 +76,96 @@ This can be useful for various descriptive or inferential projects.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for messydt</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S3 method for messydt</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S3 method for messydt</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S3 method for messydt</span>
-<span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">...</span>, trim <span class="op">=</span> <span class="fl">0</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">modal</span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for messydt</span>
-<span class="fu">modal</span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">random</span><span class="op">(</span><span class="va">...</span>, <span class="va">size</span>, replace <span class="op">=</span> <span class="cn">FALSE</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="co"># S3 method for messydt</span>
-<span class="fu">random</span><span class="op">(</span><span class="va">...</span>, <span class="va">size</span>, replace <span class="op">=</span> <span class="cn">FALSE</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for mdate</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for mdate</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for mdate</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for mdate</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">...</span>, trim <span class="op">=</span> <span class="fl">0</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">modal</span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for mdate</span></span>
+<span><span class="fu">modal</span><span class="op">(</span><span class="va">...</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">random</span><span class="op">(</span><span class="va">...</span>, <span class="va">size</span>, replace <span class="op">=</span> <span class="cn">FALSE</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for mdate</span></span>
+<span><span class="fu">random</span><span class="op">(</span><span class="va">...</span>, <span class="va">size</span>, replace <span class="op">=</span> <span class="cn">FALSE</span>, prob <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>...</dt>
-<dd><p>a messydt object</p></dd>
+<dd><p>a mdate object</p></dd>
+
+
 <dt>na.rm</dt>
 <dd><p>Should NAs be removed? True by default.</p></dd>
+
+
 <dt>trim</dt>
 <dd><p>the fraction (0 to 0.5) of observations to be trimmed
 from each end of x before the mean is computed.
 Values of trim outside that range are taken as the nearest endpoint.</p></dd>
+
+
 <dt>size</dt>
 <dd><p>a non-negative integer giving the number of items to choose.</p></dd>
+
+
 <dt>replace</dt>
 <dd><p>should sampling be with replacement?</p></dd>
+
+
 <dt>prob</dt>
 <dd><p>a vector of probability weights
 for obtaining the elements of the vector being sampled.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A single scalar or vector of dates</p>
+    
+
+<p>A single scalar or vector of dates</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_messydate.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2008-03-25"</span>, <span class="st">"?2012-02-27"</span>, <span class="st">"2001-01?"</span>, <span class="st">"2001~"</span>,</span>
-<span class="r-in"><span class="st">"2001-01-01..2001-02-02"</span>, <span class="st">"{2001-01-01,2001-02-02}"</span>,</span>
-<span class="r-in"><span class="st">"{2001-01,2001-02-02}"</span>, <span class="st">"2008-XX-31"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">d</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  'messydt' chr [1:8] "2008-03-25" "?2012-02-27" "2001-01?" "2001~" ...</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-01" "2001~"      "2001-01-01"</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2008-03-25"</span>, <span class="st">"?2012-02-27"</span>, <span class="st">"2001-01?"</span>, <span class="st">"2001~"</span>,</span></span>
+<span class="r-in"><span><span class="st">"2001-01-01..2001-02-02"</span>, <span class="st">"{2001-01-01,2001-02-02}"</span>,</span></span>
+<span class="r-in"><span><span class="st">"{2001-01,2001-02-02}"</span>, <span class="st">"2008-XX-31"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">d</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr [1:8] "2008-03-25" "?2012-02-27" "2001-01?" "~2001" ...</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-01" "2001-01-01" "2001-01-01"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-01-01" "2001-01-01" "2008-01-31"</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-31" "2001~"      "2001-02-02"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-31" "2001-01-01" "2001-02-02"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-02-02" "2001-02-02" "2008-12-31"</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-16" "2001~"      "2001-01-17"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-16" "2001-01-01" "2001-01-17"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-01-17" "2001-01-16" "2008-07-15"</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-16" "2001~"      "2001-01-17"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-16" "2001-01-01" "2001-01-17"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-02-02" "2001-01-17" "2008-07-31"</span>
-<span class="r-in"><span class="fu">modal</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-01" "2001~"      "2001-01-01"</span>
+<span class="r-in"><span><span class="fu">modal</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-01" "2001-01-01" "2001-01-01"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-01-01" "2001-01-01" "2008-01-31"</span>
-<span class="r-in"><span class="fu">random</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-10" "2001~"      "2001-01-16"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-01-01" "2001-01-07" "2008-04-30"</span>
+<span class="r-in"><span><span class="fu">random</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2008-03-25" "2012-02-27" "2001-01-15" "2001-01-01" "2001-01-17"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "2001-02-02" "2001-01-25" "2008-03-31"</span>
 </code></pre></div>
     </div>
   </div>
@@ -162,7 +180,7 @@ for obtaining the elements of the vector being sampled.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

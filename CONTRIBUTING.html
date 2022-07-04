@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -29,22 +29,21 @@
   </a>
 </li>
 <li>
+  <a href="articles/messydates.html">Get started</a>
+</li>
+<li>
   <a href="reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="articles/messydates_intro.html">Working with messy dates</a>
-    </li>
-  </ul></li>
 <li>
   <a href="news/index.html">News</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/globalgov/messydates" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -57,7 +56,6 @@
     </div>
 
 <div id="contributing" class="section level1">
-
 <p>Contributions to <code>qData</code>, whether in the form of issue identification, bug fixes, new code or documentation are encouraged and welcome, both from research assistants and (early) users of the package:</p>
 <ul><li><a href="#issues">Submit an issue</a></li>
 <li><a href="#adding-new-code">Fix a bug or implement new features</a></li>
@@ -73,15 +71,15 @@
 <p>Independent or assigned code contributions are most welcome. When writing new code, please follow <a href="https://style.tidyverse.org/index.html" class="external-link">tidyverse style guide</a> which is based on <a href="https://google.github.io/styleguide/Rguide.xml" class="external-link">standard R guidelines</a>.</p>
 <p>It can help to use packages such as <code>lintr</code> and <code>goodpractice</code> to ensure these are followed. These packages are incorporated into the checks made when a pull request is made. The <code>styler</code> package fixes in a non-invasive way the code to adhere to the tidyverse formatting rules, and it also provides an RStudio Addins to help with this task. To run the <code>lintr</code> and <code>goodpractice</code> checks or use <code>styler</code> in a file run:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># basic lintr checking</span>
-<span class="fu">lintr</span><span class="fu">::</span><span class="fu">lint_package</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"qData/"</span><span class="op">)</span>
-
-<span class="co"># goodpractices checks. Exclude length 80</span>
-<span class="fu">goodpractice</span><span class="fu">::</span><span class="fu">gp</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"qData/"</span>,
-   checks <span class="op">=</span> <span class="fu">all_checks</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-
-<span class="co"># styler fix some of the styling issues</span>
-<span class="fu">styler</span><span class="fu">::</span><span class="fu">style_file</span><span class="op">(</span><span class="st">"filePath"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># basic lintr checking</span></span>
+<span><span class="fu">lintr</span><span class="fu">::</span><span class="fu">lint_package</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"qData/"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># goodpractices checks. Exclude length 80</span></span>
+<span><span class="fu">goodpractice</span><span class="fu">::</span><span class="fu">gp</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"qData/"</span>,</span>
+<span>   checks <span class="op">=</span> <span class="fu">all_checks</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># styler fix some of the styling issues</span></span>
+<span><span class="fu">styler</span><span class="fu">::</span><span class="fu">style_file</span><span class="op">(</span><span class="st">"filePath"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="pull-request-process">Pull request process<a class="anchor" aria-label="anchor" href="#pull-request-process"></a></h2>
@@ -191,7 +189,7 @@ testthat::test_dir("tests/testthat")</code></pre>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

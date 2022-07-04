@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -29,22 +29,21 @@
   </a>
 </li>
 <li>
+  <a href="../articles/messydates.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/messydates_intro.html">Working with messy dates</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/globalgov/messydates" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -57,36 +56,36 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="construction">Construction <a href="#construction" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>These functions create and print the <code>messydt</code> class:</p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="class.html">new_messydate()</a></code> <code><a href="class.html">validate_messydate()</a></code> <code><a href="class.html">NA_messydt_</a></code> </p>
-        </td>
-        <td><p>A broader date class for messy dates</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="coerce-to">Coerce to <a href="#coerce-to" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>These functions coerce dates to the <code>messydt</code> class:</p>
+          <p class="section-desc"></p><p>These functions construct and/or coerce dates to the <code>mdate</code> class:</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="as_messydate.html">as_messydate()</a></code> </p>
+          <p><code><a href="class.html">new_messydate()</a></code> <code><a href="class.html">validate_messydate()</a></code> <code><a href="class.html">NA_mdate_</a></code> </p>
         </td>
-        <td><p>Coercion to messy dates</p></td>
+        <td><p>A flexible date class for messy dates</p></td>
       </tr><tr><td>
-          <p><code><a href="make_messydate.html">make_messydate()</a></code> </p>
+          <p><code><a href="messydate.html">as_messydate()</a></code> <code><a href="messydate.html">make_messydate()</a></code> </p>
         </td>
-        <td><p>Make messy dates from multiple variables</p></td>
+        <td><p>Coercion from regular date classes to mdate</p></td>
+      </tr><tr><td>
+          <p><code><a href="annotate.html">on_or_before()</a></code> <code><a href="annotate.html">on_or_after()</a></code> <code><a href="annotate.html">as_approximate()</a></code> <code><a href="annotate.html">as_uncertain()</a></code> </p>
+        </td>
+        <td><p>Annotates dates as censored, uncertain, or approximate</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="coerce-from">Coerce from <a href="#coerce-from" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>These functions coerce dates from the <code>messydt</code> class:</p>
+          <p class="section-desc"></p><p>These functions coerce dates from the <code>mdate</code> class into a single <code>Date</code> or other class:</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="from_messydate.html">as.Date(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="from_messydate.html">as.POSIXct(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="from_messydate.html">as.POSIXlt(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="from_messydate.html">negative_dates()</a></code> </p>
+          <p><code><a href="from_messydate.html">as.Date(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="from_messydate.html">as.POSIXct(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="from_messydate.html">as.POSIXlt(<i>&lt;mdate&gt;</i>)</a></code> </p>
         </td>
         <td><p>Coercion from messy dates</p></td>
+      </tr><tr><td>
+          <p><code><a href="resolve.html">min(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="resolve.html">max(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="resolve.html">median(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="resolve.html">mean(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="resolve.html">modal()</a></code> <code><a href="resolve.html">random()</a></code> </p>
+        </td>
+        <td><p>Resolves messy dates into a single value</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="manipulation">Manipulation <a href="#manipulation" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>These functions annotate, expand or contract objects of <code>messydt</code> class from/into a list:</p>
+          <p class="section-desc"></p><p>These functions expand or contract objects of <code>mdate</code> class from/into a list:</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="expand.html">expand()</a></code> </p>
@@ -96,16 +95,12 @@
           <p><code><a href="contract.html">contract()</a></code> </p>
         </td>
         <td><p>Contract lists of dates into messy dates</p></td>
-      </tr><tr><td>
-          <p><code><a href="annotate.html">on_or_before()</a></code> <code><a href="annotate.html">on_or_after()</a></code> <code><a href="annotate.html">as_approximate()</a></code> <code><a href="annotate.html">as_uncertain()</a></code> </p>
-        </td>
-        <td><p>Annotates messy dates for uncertainty and/or approximation</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="operations">Operations <a href="#operations" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>These methods help operate on objects of the <code>messydt</code> class:</p>
+          <p class="section-desc"></p><p>These methods help operate on objects of the <code>mdate</code> class:</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="operate.html">`+`(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="operate.html">`-`(<i>&lt;messydt&gt;</i>)</a></code> </p>
+          <p><code><a href="operate.html">`+`(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="operate.html">`-`(<i>&lt;mdate&gt;</i>)</a></code> </p>
         </td>
         <td><p>Arithmetic operations for messydates</p></td>
       </tr><tr><td>
@@ -113,29 +108,17 @@
         </td>
         <td><p>Set operations for messy dates</p></td>
       </tr><tr><td>
-          <p><code><a href="logical.html">is_messydate()</a></code> <code><a href="logical.html">is_intersecting()</a></code> <code><a href="logical.html">is_element()</a></code> <code><a href="logical.html">is_similar()</a></code> </p>
+          <p><code><a href="logical.html">logical</a></code> </p>
+        </td>
+        <td><p>Logical tests on messy dates</p></td>
+      </tr><tr><td>
+          <p><code><a href="logical-class.html">is_messydate()</a></code> <code><a href="logical-class.html">is_intersecting()</a></code> <code><a href="logical-class.html">is_element()</a></code> <code><a href="logical-class.html">is_similar()</a></code> <code><a href="logical-class.html">is_precise()</a></code> </p>
         </td>
         <td><p>Logical tests on messy dates</p></td>
       </tr><tr><td>
           <p><code><a href="extract.html">year()</a></code> <code><a href="extract.html">month()</a></code> <code><a href="extract.html">day()</a></code> <code><a href="extract.html">precision()</a></code> </p>
         </td>
         <td><p>Extracting components from messy dates</p></td>
-      </tr><tr><td>
-          <p><code><a href="resequence.html">resequence()</a></code> </p>
-        </td>
-        <td><p>Resorting and filtering dates</p></td>
-      </tr><tr><td>
-          <p><code><a href="interleave.html">interleave()</a></code> </p>
-        </td>
-        <td><p>Function for interleaving two vectors by position</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="resolution">Resolution <a href="#resolution" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>These functions resolve objects from the <code>messydt</code> class into a single <code>Date</code> or other class:</p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="resolve.html">min(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="resolve.html">max(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="resolve.html">median(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="resolve.html">mean(<i>&lt;messydt&gt;</i>)</a></code> <code><a href="resolve.html">modal()</a></code> <code><a href="resolve.html">random()</a></code> </p>
-        </td>
-        <td><p>Resolves messy dates into a single value</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="data">Data <a href="#data" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Some test and/or example data:</p>
@@ -157,7 +140,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

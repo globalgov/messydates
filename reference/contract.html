@@ -19,7 +19,7 @@ of messy dates."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -31,22 +31,21 @@ of messy dates."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
   </a>
 </li>
 <li>
+  <a href="../articles/messydates.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/messydates_intro.html">Working with messy dates</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/globalgov/messydates" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -67,33 +66,39 @@ of messy dates.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">contract</span><span class="op">(</span><span class="va">x</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">contract</span><span class="op">(</span><span class="va">x</span>, collapse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A list of dates</p></dd>
+
+
 <dt>collapse</dt>
 <dd><p>Do you want ranges to be collapsed?
 TRUE by default.
 If FALSE ranges are returned in compact format.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>messydt</code> vector</p>
+    
+
+<p>A <code>mdate</code> vector</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_messydate.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2001-01-01"</span>, <span class="st">"2001-01"</span>, <span class="st">"2001"</span>,</span>
-<span class="r-in"><span class="st">"2001-01-01..2001-02-02"</span>, <span class="st">"{2001-10-01,2001-10-04}"</span>,</span>
-<span class="r-in"><span class="st">"{2001-01,2001-02-02}"</span>, <span class="st">"28 BC"</span>, <span class="st">"-2000-01-01"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="expand.html">expand</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu">contract</span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2001-01-01"</span>, <span class="st">"2001-01"</span>, <span class="st">"2001"</span>,</span></span>
+<span class="r-in"><span><span class="st">"2001-01-01..2001-02-02"</span>, <span class="st">"{2001-10-01,2001-10-04}"</span>,</span></span>
+<span class="r-in"><span><span class="st">"{2001-01,2001-02-02}"</span>, <span class="st">"28 BC"</span>, <span class="st">"-2000-01-01"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="expand.html">expand</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
+<span class="r-in"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu">contract</span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   d                       `contract(e)`          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;messydt&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;messydt&gt;</span>              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 2001-01-01              2001-01-01             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 2001-01                 2001-01                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 2001                    2001                   </span>
@@ -116,7 +121,7 @@ If FALSE ranges are returned in compact format.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

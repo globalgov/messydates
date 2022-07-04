@@ -8,20 +8,40 @@ Dark White #f3f3f3, used for discrete active things, like the active dropdown
                     menu link.
 */
 
+/* Changes Bootstrap 5 theme switch */
+p {
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+}
+
+ul, ol {
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+}
+
 h1 {
-  font-size: 40px;
+    font-size: 40px;
 }
 
 h2 {
-  font-size: 30px;
+    font-size: 30px;
 }
 
 h3 {
-  font-size: 17px;
+    font-size: 24px;
 }
 
-p {
-  font-size: 14px;
+h4 {
+    font-size: 18px;
+}
+
+/* Package name in the navbar*/
+.navbar-light .navbar-brand {
+  color: #C7A077;
+}
+/* Navbar menu names*/
+.navbar-light .navbar-nav .nav-link {
+  color: #C7A077;
 }
 
 .version {
@@ -30,7 +50,22 @@ p {
 
 body{
   font-family: 'Lato', sans-serif;
+  font-size: 1.05rem;
 }
+
+dd {
+  font-size: 14px;
+}
+
+/* Right column titles*/
+aside .h2 {
+  font-size: 1.275rem;
+}
+/* Right column ul*/
+aside ul {
+  font-size: 0.95rem;
+}
+/* End of changes Bootstrap 5 theme switch */
 
 /* ---- particles.js container ---- */
 #particles-js {
@@ -44,8 +79,8 @@ body{
   background-position: 50% 50%;
 }
 
-/*The code itself inline AND chunks*/
-code{
+/*The code itself inline*/
+p code {
   font-family: 'Ubuntu Mono', monospace;
   font-size: 14px;
   background-color: #f9f6fd;
@@ -53,11 +88,31 @@ code{
 
 pre code {
   font-size: 13px;
+  color: #f85e00;
 }
 
 /*Links in code and header*/
-code a, pre a{
+pre code a:any-link {
   color: #C7A077;
+}
+
+pre code span.fu {
+  color: #956e45;
+}
+
+#toc>.nav a.nav-link:hover, #toc>.nav a.nav-link:focus {
+  background-color: #ECCAA5;
+  color: #000;
+}
+
+#toc>.nav a.nav-link.active {
+  background-color: #C7A077;
+  color: #fff;
+}
+
+.navbar-light .navbar-nav .active>.nav-link {
+  background-color: #C7A077;
+  color: #fff;
 }
 
 .docs-link:hover{
@@ -67,11 +122,11 @@ code a, pre a{
 .docs-link{
   color: #C7A077;
 }
-/*Links in paragraphs*/
-p>a {
+/*Links in General*/
+a {
   color: #C7A077;
 }
-/*What is this?*/
+
 .panel-body>a {
   color: #C7A077;
 }
@@ -156,9 +211,38 @@ pre {
     background-color: #C7A077;
 }
 
+.navbar-dark .navbar-nav .nav-item>.nav-link:hover,
+.navbar-light .navbar-nav .nav-item>.nav-link:hover {
+    background-color: #FFECD9;
+    color: #000;
+}
+
+.dropdown-item:hover {
+  background-color: #FFECD9;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  color: black;
+  background-color: #FFECD9;
+}
+
+input[type="search"] {
+    border-color: #FFECD9;
+    width: 12rem;
+    height: 2.5rem;
+}
+
+.form-control:focus {
+    color: #343a40;
+    background-color: #fff;
+    border-color: #fee8d0;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgb(254 232 208);
+}
+
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-    color: #876949;
+  color: #876949;
 }
 /* Little arrow in the dropdown menu when active*/
 .navbar-default .navbar-nav > .dropdown > a .caret {
@@ -196,7 +280,7 @@ pre {
   color: #C7A077;
   font-size: 14px;
 }
-/*qPackage name in the navbar*/
+/*Package name in the navbar*/
 .navbar-default .navbar-link{
   color: #C7A077;
   font-size: 30px;

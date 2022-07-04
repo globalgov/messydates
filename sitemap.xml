@@ -19,7 +19,7 @@
     <loc>https://globalgov.github.io/messydates/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://globalgov.github.io/messydates/articles/messydates_intro.html</loc>
+    <loc>https://globalgov.github.io/messydates/articles/messydates.html</loc>
   </url>
   <url>
     <loc>https://globalgov.github.io/messydates/authors.html</loc>
@@ -35,9 +35,6 @@
   </url>
   <url>
     <loc>https://globalgov.github.io/messydates/reference/annotate.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/as_messydate.html</loc>
   </url>
   <url>
     <loc>https://globalgov.github.io/messydates/reference/battles.html</loc>
@@ -61,19 +58,16 @@
     <loc>https://globalgov.github.io/messydates/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://globalgov.github.io/messydates/reference/interleave.html</loc>
+    <loc>https://globalgov.github.io/messydates/reference/logical-class.html</loc>
   </url>
   <url>
     <loc>https://globalgov.github.io/messydates/reference/logical.html</loc>
   </url>
   <url>
-    <loc>https://globalgov.github.io/messydates/reference/make_messydate.html</loc>
+    <loc>https://globalgov.github.io/messydates/reference/messydate.html</loc>
   </url>
   <url>
     <loc>https://globalgov.github.io/messydates/reference/operate.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/resequence.html</loc>
   </url>
   <url>
     <loc>https://globalgov.github.io/messydates/reference/resolve.html</loc>

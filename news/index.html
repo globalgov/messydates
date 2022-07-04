@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -29,22 +29,21 @@
   </a>
 </li>
 <li>
+  <a href="../articles/messydates.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/messydates_intro.html">Working with messy dates</a>
-    </li>
-  </ul></li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/globalgov/messydates" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -58,31 +57,45 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.1" id="messydates-021">messydates 0.2.1<a class="anchor" aria-label="anchor" href="#messydates-021"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.0" id="messydates-030">messydates 0.3.0<small>2022-06-02</small><a class="anchor" aria-label="anchor" href="#messydates-030"></a></h2>
 <div class="section level3">
-<h3 id="package-0-2-1">Package<a class="anchor" aria-label="anchor" href="#package-0-2-1"></a></h3>
-<ul><li>Added a vignette for working with the <code>{messydates}</code> package</li>
+<h3 id="package-0-3-0">Package<a class="anchor" aria-label="anchor" href="#package-0-3-0"></a></h3>
+<ul><li>Closed #51 by changing object class name to <code>mdate</code><ul><li>Note that this is a <em>breaking</em> change</li></ul></li>
+<li>Closed #41 by creating <a href="https://docs.ropensci.org/skimr/" class="external-link">skimr</a> template for <code>mdate</code> class</li>
 </ul></div>
 <div class="section level3">
+<h3 id="functions-0-3-0">Functions<a class="anchor" aria-label="anchor" href="#functions-0-3-0"></a></h3>
+<ul><li>Updated coercion to messy dates<ul><li>Closed #26 by adding “resequence” argument to <code><a href="../reference/messydate.html">as_messydate()</a></code> allowing users to choose component order of ambiguous dates</li>
+<li>Closed #45 by improving how <code><a href="../reference/messydate.html">as_messydate()</a></code> re-orders 6 digit date components if necessary</li>
+<li>Closed #48 by adding zero padding incomplete date ranges and sets of dates</li>
+<li>Updated <code><a href="../reference/messydate.html">as_messydate()</a></code> to also extract dates from text strings</li>
+</ul></li>
+<li>Added <code><a href="../reference/logical-class.html">is_precise()</a></code> function that provides a logical test for precise dates</li>
+<li>Updated messy dates expansion<ul><li>Updated <code><a href="../reference/expand.html">expand()</a></code> to allow for the expansion of incomplete date ranges and sets of dates</li>
+<li>Closed #49 by updating resolve functions to only expand dates if they are not precise</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.1" id="messydates-021">messydates 0.2.1<small>2022-02-23</small><a class="anchor" aria-label="anchor" href="#messydates-021"></a></h2>
+<div class="section level3">
+<h3 id="package-0-2-1">Package<a class="anchor" aria-label="anchor" href="#package-0-2-1"></a></h3>
+<ul><li>Added a vignette for working with the <code>{messydates}</code> package</li></ul></div>
+<div class="section level3">
 <h3 id="functions-0-2-1">Functions<a class="anchor" aria-label="anchor" href="#functions-0-2-1"></a></h3>
-<ul><li>Closed #9 by adding arithmetic operations for working with “messydt” objects
-<ul><li>Added S3 methods for “+” and “-” operators</li>
+<ul><li>Closed #9 by adding arithmetic operations for working with <code>messydt</code> objects<ul><li>Added S3 methods for “+” and “-” operators</li>
 <li>Added <code>add()</code> and <code>subtract()</code> helper functions for arithmetic operations</li>
 </ul></li>
-<li>Updated <code><a href="../reference/expand.html">expand()</a></code> function
-<ul><li>Closed #31 by updating how approximate dates are expanded to account for leap years</li>
+<li>Updated <code><a href="../reference/expand.html">expand()</a></code> function<ul><li>Closed #31 by updating how approximate dates are expanded to account for leap years</li>
 <li>Closed #34 by updating <code><a href="../reference/expand.html">expand()</a></code> to manage negative dates</li>
 <li>Added <code>expand_negative_dates()</code> helper function for expanding ranges of negative dates</li>
 </ul></li>
-<li>Updated functions that coerce from “messydt” objects to “Date” to manage negative dates
-<ul><li>Added <code><a href="../reference/from_messydate.html">negative_dates()</a></code> helper function to coerce negative “messydt” dates</li>
-</ul></li>
+<li>Updated functions that coerce from <code>messydt</code> objects to <code>Date</code> to manage negative dates<ul><li>Added <code>negative_dates()</code> helper function to coerce negative <code>messydt</code> dates</li></ul></li>
 <li>Closed #39 by updating how resolve mean methods work for negative dates</li>
-<li>Closed #40 by updating contract function to manage the contraction of negative dates
-<ul><li>Added <code>compact_negative_dates()</code> helper function to compact negative date ranges</li>
+<li>Closed #40 by updating contract function to manage the contraction of negative dates<ul><li>Added <code>compact_negative_dates()</code> helper function to compact negative date ranges</li>
 <li>Added <code>is.sequence()</code> as a helper function to check if dates are a range</li>
 </ul></li>
-<li>Updated resequence script to export <code><a href="../reference/interleave.html">interleave()</a></code> function</li>
+<li>Updated resequence script to export <code>interleave()</code> function</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -92,8 +105,7 @@
 <ul><li>Added PANARCHIC project details to README file</li>
 <li>Added cheatsheet</li>
 <li>Added a new CSS style to website and updated functions displayed</li>
-<li>Addressed workflow actions issues
-<ul><li>Updated pushrelease.yml workflow actions file to stop installing <code>{messydates}</code> from Github</li>
+<li>Addressed workflow actions issues<ul><li>Updated pushrelease.yml workflow actions file to stop installing <code>{messydates}</code> from Github</li>
 <li>Updated README file to stop installing <code>{messydates}</code> from Github</li>
 </ul></li>
 <li>Fixed Codecov test coverage URL on README file for CRAN submission</li>
@@ -101,23 +113,21 @@
 <div class="section level3">
 <h3 id="functions-0-2-0">Functions<a class="anchor" aria-label="anchor" href="#functions-0-2-0"></a></h3>
 <ul><li>Expanded on messydates checks for class validity</li>
-<li>Fixed bugs for <code><a href="../reference/make_messydate.html">make_messydate()</a></code>
+<li>Fixed bugs for <code><a href="../reference/messydate.html">make_messydate()</a></code>
 </li>
-<li>Added annotation functions and standardized annotation so that it is consistent with ISO2019E standards.
-<ul><li><code><a href="../reference/annotate.html">on_or_before()</a></code></li>
+<li>Added annotation functions and standardized annotation so that it is consistent with ISO2019E standards.<ul><li><code><a href="../reference/annotate.html">on_or_before()</a></code></li>
 <li><code><a href="../reference/annotate.html">on_or_after()</a></code></li>
 <li><code><a href="../reference/annotate.html">as_approximate()</a></code></li>
 <li>
 <code><a href="../reference/annotate.html">as_uncertain()</a></code> (includes discrimination between month uncertainty and day and month uncertainty)</li>
 </ul></li>
-<li>Updated <code><a href="../reference/as_messydate.html">as_messydate()</a></code> by adding zero padding for month, day or year</li>
-<li>Updated <code><a href="../reference/resequence.html">resequence()</a></code> to work consistently with messydate objects</li>
+<li>Updated <code><a href="../reference/messydate.html">as_messydate()</a></code> by adding zero padding for month, day or year</li>
+<li>Updated <code>resequence()</code> to work consistently with messydate objects</li>
 <li>Updated <code><a href="../reference/expand.html">expand()</a></code> function to expand imprecise, unspecified, approximate, uncertain, and negative dates according to approximate ranges and added tests</li>
 <li>Updated <code><a href="../reference/extract.html">precision()</a></code> to return the lengths of expanded dates</li>
 <li>Updated <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median()</a></code> in resolve family of functions to work with changes to <code><a href="../reference/expand.html">expand()</a></code>
 </li>
-<li>Added tests for functions
-<ul><li>Added tests for <code><a href="../reference/expand.html">expand()</a></code>
+<li>Added tests for functions<ul><li>Added tests for <code><a href="../reference/expand.html">expand()</a></code>
 </li>
 <li>Added tests for <code><a href="../reference/contract.html">contract()</a></code>
 </li>
@@ -140,11 +150,10 @@
 <h2 class="page-header" data-toc-text="0.1.0" id="messydates-010">messydates 0.1.0<a class="anchor" aria-label="anchor" href="#messydates-010"></a></h2>
 <div class="section level3">
 <h3 id="package-0-1-0">Package<a class="anchor" aria-label="anchor" href="#package-0-1-0"></a></h3>
-<ul><li>Updated call to <code>messydt</code> class in DESCRIPTION file</li>
-</ul></div>
+<ul><li>Updated call to <code>messydt</code> class in DESCRIPTION file</li></ul></div>
 <div class="section level3">
 <h3 id="functions-0-1-0">Functions<a class="anchor" aria-label="anchor" href="#functions-0-1-0"></a></h3>
-<ul><li>Updated documentation for <code><a href="../reference/as_messydate.html">as_messydate()</a></code> functions</li>
+<ul><li>Updated documentation for <code><a href="../reference/messydate.html">as_messydate()</a></code> functions</li>
 <li>Updated documentation for <code><a href="../reference/expand.html">expand()</a></code> function</li>
 <li>Updated documentation for resolve family of functions</li>
 <li>Updated documentation for coerce from family of functions</li>
@@ -155,8 +164,7 @@
 <h2 class="page-header" data-toc-text="0.0.1" id="messydates-001">messydates 0.0.1<a class="anchor" aria-label="anchor" href="#messydates-001"></a></h2>
 <div class="section level3">
 <h3 id="package-0-0-1">Package<a class="anchor" aria-label="anchor" href="#package-0-0-1"></a></h3>
-<ul><li>Setup <code>{messydates}</code> package
-<ul><li>Added <code>DESCRIPTION</code> file</li>
+<ul><li>Setup <code>{messydates}</code> package<ul><li>Added <code>DESCRIPTION</code> file</li>
 <li>Added <code>R</code> folder</li>
 <li>Added <code>LICENSE</code> file</li>
 <li>Added <code>NAMESPACE</code> file</li>
@@ -170,57 +178,49 @@
 </ul></div>
 <div class="section level3">
 <h3 id="functions-0-0-1">Functions<a class="anchor" aria-label="anchor" href="#functions-0-0-1"></a></h3>
-<ul><li>Added a new messydt class which follows the latest ISO 8601 (2019) standards
-<ul><li>Added validation checks for messydt class</li>
+<ul><li>Added a new <code>messydt</code> class which follows the latest ISO 8601 (2019) standards<ul><li>Added validation checks for messydt class</li>
 <li>Added print methods for messydt class</li>
 </ul></li>
-<li>Added <code><a href="../reference/as_messydate.html">as_messydate()</a></code> function to coerce from date objects to messydate
-<ul><li>
-<code><a href="../reference/as_messydate.html">as_messydate()</a></code> standardises date order, separators and ambiguity</li>
+<li>Added <code><a href="../reference/messydate.html">as_messydate()</a></code> function to coerce from date objects to messydate<ul><li>
+<code><a href="../reference/messydate.html">as_messydate()</a></code> standardises date order, separators and ambiguity</li>
 <li>Added date class coercion</li>
 <li>Added POSIXct class coercion</li>
 <li>Added POSIXlt class coercion</li>
 <li>Added character class coercion</li>
 </ul></li>
-<li>Added functions to coerce from messydate objects to other date classes
-<ul><li>Added <code><a href="../reference/from_messydate.html">as.Date.messydt()</a></code> for coercing to date class</li>
-<li>Added <code><a href="../reference/from_messydate.html">as.POSIXct.messydt()</a></code> for coercing to POSIXct class</li>
-<li>Added <code><a href="../reference/from_messydate.html">as.POSIXlt.messydt()</a></code> for coercing to POSIXlt class</li>
+<li>Added functions to coerce from messydate objects to other date classes<ul><li>Added <code>as.Date.messydt()</code> for coercing to date class</li>
+<li>Added <code>as.POSIXct.messydt()</code> for coercing to POSIXct class</li>
+<li>Added <code>as.POSIXlt.messydt()</code> for coercing to POSIXlt class</li>
 </ul></li>
 <li>Added <code><a href="../reference/expand.html">expand()</a></code> function for expanding ranged and uncertain dates</li>
-<li>Added functions to resolve expanded dates
-<ul><li>Added <code><a href="../reference/resolve.html">min.messydt()</a></code> to get minimum value from expanded range</li>
-<li>Added <code><a href="../reference/resolve.html">max.messydt()</a></code> to get maximum value from expanded range</li>
-<li>Added <code><a href="../reference/resolve.html">median.messydt()</a></code> to get median value from expanded range</li>
-<li>Added <code><a href="../reference/resolve.html">mean.messydt()</a></code> to get mean value from expanded range</li>
-<li>Added <code><a href="../reference/resolve.html">modal.messydt()</a></code> to get mode value from expanded range</li>
+<li>Added functions to resolve expanded dates<ul><li>Added <code>min.messydt()</code> to get minimum value from expanded range</li>
+<li>Added <code>max.messydt()</code> to get maximum value from expanded range</li>
+<li>Added <code>median.messydt()</code> to get median value from expanded range</li>
+<li>Added <code>mean.messydt()</code> to get mean value from expanded range</li>
+<li>Added <code>modal.messydt()</code> to get mode value from expanded range</li>
 </ul></li>
 <li>Added <code><a href="../reference/contract.html">contract()</a></code> function for contracting expanded dates</li>
-<li>Added extract functions to get particular date components
-<ul><li>Added <code><a href="../reference/extract.html">year()</a></code> to extract year from date</li>
+<li>Added extract functions to get particular date components<ul><li>Added <code><a href="../reference/extract.html">year()</a></code> to extract year from date</li>
 <li>Added <code><a href="../reference/extract.html">month()</a></code> to extract month from date</li>
 <li>Added <code><a href="../reference/extract.html">day()</a></code> to extract day from date</li>
 </ul></li>
-<li>Added <code><a href="../reference/make_messydate.html">make_messydate()</a></code> function to get messy dates from multiple columns</li>
-<li>Added set functions for operations in sets of messy dates
-<ul><li>Added <code><a href="../reference/set.html">md_intersect()</a></code> to find intersection of sets of messy dates</li>
+<li>Added <code><a href="../reference/messydate.html">make_messydate()</a></code> function to get messy dates from multiple columns</li>
+<li>Added set functions for operations in sets of messy dates<ul><li>Added <code><a href="../reference/set.html">md_intersect()</a></code> to find intersection of sets of messy dates</li>
 <li>Added <code><a href="../reference/set.html">md_union()</a></code> to find union of sets of messy dates</li>
 <li>Added <code><a href="../reference/set.html">md_multiset()</a></code> to join two sets of messy dates</li>
 </ul></li>
-<li>Added logical function for various logical tests for messy date objects
-<ul><li>Added <code><a href="../reference/logical.html">is_messydate()</a></code> to test for messydt class</li>
-<li>Added <code><a href="../reference/logical.html">is_intersecting()</a></code> to test if dates intersect</li>
-<li>Added <code><a href="../reference/logical.html">is_element()</a></code> to test for multiple elements in dates</li>
-<li>Added <code><a href="../reference/logical.html">is_similar()</a></code> to test for similarities in dates</li>
+<li>Added logical function for various logical tests for messy date objects<ul><li>Added <code><a href="../reference/logical-class.html">is_messydate()</a></code> to test for messydt class</li>
+<li>Added <code><a href="../reference/logical-class.html">is_intersecting()</a></code> to test if dates intersect</li>
+<li>Added <code><a href="../reference/logical-class.html">is_element()</a></code> to test for multiple elements in dates</li>
+<li>Added <code><a href="../reference/logical-class.html">is_similar()</a></code> to test for similarities in dates</li>
 </ul></li>
-<li>Added tests for new functions
-<ul><li>Added tests for messydt class and <code>às_messydate()</code> function</li>
+<li>Added tests for new functions<ul><li>Added tests for messydt class and <code>às_messydate()</code> function</li>
 <li>Added tests for coerce from messy dates functions</li>
 <li>Added tests for coerce to messy dates functions</li>
 <li>Added tests for <code><a href="../reference/contract.html">contract()</a></code> function</li>
 <li>Added tests for <code><a href="../reference/expand.html">expand()</a></code> function</li>
 <li>Added tests for extract functions</li>
-<li>Added tests for <code><a href="../reference/make_messydate.html">make_messydate()</a></code> function</li>
+<li>Added tests for <code><a href="../reference/messydate.html">make_messydate()</a></code> function</li>
 <li>Added tests for resolve functions</li>
 <li>Added tests for set functions</li>
 </ul></li>
@@ -240,7 +240,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

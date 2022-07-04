@@ -1,10 +1,15 @@
-#' mdate report
+#' Data report for datasets with 'mdate' variables
 #'
-#' @param data A \code{tibble} or a \code{data.frame}.
-#' @return \code{mreport()()} returns a data report
-#' of class \code{"mreport"}.
+#' Create a properly formatted data report for datasets which contain 'mdate'
+#' class objects, alongside other object classes.
+#' @param data A `{tibble}` or a `{data.frame}`.
+#' @return A data report of class 'mreport'.
 #' @importFrom dplyr %>%
 #' @importFrom scales percent_format
+#' @details 'mreport' displays the variable's name,
+#' the variable type, the number of missing observations for variable,
+#' the percentage of missing observations in variable,
+#' the minimal value in variable, and the maximal value in variable.
 #' @examples
 #' mreport(battles)
 #' @export

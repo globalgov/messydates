@@ -33,13 +33,11 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' expand(d)
 #' @export
 expand.mdate <- function(x, approx_range = 0) {
-  x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
   if (approx_range == 0) {
     message("Please specify 'approx_range' argument if you want approximate dates to also be expanded")
-    x <- stringr::str_replace_all(x, "\\~|^\\.\\.|\\.\\.$", "")
-  } else {
-    x <- expand_approximate(x, approx_range)
   }
+  x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
+  x <- suppressWarnings(expand_approximate(x, approx_range))
   x <- expand_unspecified(x)
   x <- expand_negative(x)
   x <- expand_sets(x)
@@ -57,9 +55,9 @@ expand_approximate <- function(dates, approx_range) {
                     stringr::str_detect(dates, "\\.\\."),
                   str_replace_all(dates, "\\~", ""), dates)
   # expansion for approximate ranges not yet implemented
-  dates <- suppressWarnings(expand_approximate_years(dates, approx_range))
-  dates <- suppressWarnings(expand_approximate_months(dates, approx_range))
-  dates <- suppressWarnings(expand_approximate_days(dates, approx_range))
+  dates <- expand_approximate_years(dates, approx_range)
+  dates <- expand_approximate_months(dates, approx_range)
+  dates <- expand_approximate_days(dates, approx_range)
   dates <- unlist(dates)
   dates
 }
@@ -273,7 +271,7 @@ expand_unspecified_ranges <- function(dates) {
   dates1 <- purrr::map_chr(dates, 1)
   dates1 <- ifelse(stringr::str_detect(dates1,
                                        "^([:digit:]{4})$|^-([:digit:]{4})$"),
-                  paste0(dates1, "-01-01"), dates1)
+                   paste0(dates1, "-01-01"), dates1)
   dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})-([:digit:]{2})$|^-([:digit:]{4})-([:digit:]{2})$"),
                    paste0(dates1, "-01"), dates1)
   dates2 <- purrr::map_chr(dates, 2)

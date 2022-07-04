@@ -53,6 +53,7 @@ However, this can create inferential issues when timing or sequence is important
 with various kinds of date imprecision.
 
 ```{r setup, echo=FALSE}
+library(messydates)
 library(lubridate)
 library(tibble)
 library(dplyr)
@@ -84,7 +85,7 @@ pkg_comparison <- tibble::tribble(~Example, ~OriginalDate,
                                     "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
   dplyr::mutate(base = as.Date(OriginalDate),
                 lubridate = lubridate::as_date(OriginalDate),
-                messydates = as_messydate(OriginalDate))
+                messydates = messydates::as_messydate(OriginalDate))
 ```
 
 ```{r compprint, echo=FALSE, results='asis'}

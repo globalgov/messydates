@@ -24,21 +24,21 @@ mreport.default <- function(data) {
   rows     <- nrow(data)
   cols     <- ncol(data)
   varnames <- names(data)
-  datatype <- sapply(data, class)
-  counts   <- sapply(data, length)
-  mvalues    <- sapply(data, function(z) sum(is.na(z)))
+  datatype <- unlist(lapply(data, class))
+  counts   <- unlist(lapply(data, length))
+  mvalues    <- unlist(lapply(data, function(z) sum(is.na(z))))
   mvaluesper <- round((mvalues / counts) * 100, 2)
-  minv <- suppressWarnings(sapply(data, function(x) {
-    ifelse(class(x) == "mdate", min(as.character(stats::na.omit(as.Date(x,
-                                                                        min)))),
+  minv <- suppressWarnings(unlist(lapply(data, function(x) {
+    ifelse(class(x) == "mdate",
+           min(as.character(stats::na.omit(as.Date(x, min)))),
            min(stats::na.omit(x)))
-  }))
+  })))
   minv <- ifelse(nchar(minv) > 11, "NA", minv)
-  maxv <- suppressWarnings(sapply(data, function(x) {
-    ifelse(class(x) == "mdate", max(as.character(stats::na.omit(as.Date(x,
-                                                                        max)))),
+  maxv <- suppressWarnings(unlist(lapply(data, function(x) {
+    ifelse(class(x) == "mdate",
+           max(as.character(stats::na.omit(as.Date(x, max)))),
            max(stats::na.omit(x)))
-  }))
+  })))
   maxv <- ifelse(nchar(maxv) > 11, "NA", maxv)
   result <- list(Rows          = rows,
                  Columns       = cols,
@@ -61,13 +61,13 @@ print.mreport <- function(x, ...) {
 print_mreport <- function(x) {
   columns <- c("  Column Name  ", "  Data Type  ", "  Missing  ",
                "  Missing (%)  ", "  Min Value  ", "  Max Value ")
-  len_col <- as.vector(sapply(columns, nchar))
+  len_col <- as.vector(unlist(lapply(columns, nchar)))
   x$Types <- lapply(x$Types, paste, collapse = ", ")
   lengths <- list(x$Variables, x$Types, x$Missing, x$MissingPer, x$Minv, x$Maxv)
   n <- length(columns)
   nlist <- list()
   for (i in seq_len(n)) {
-    nlist[[i]] <- max(len_col[i], max(sapply(lengths[[i]], nchar)))
+    nlist[[i]] <- max(len_col[i], max(unlist(lapply(lengths[[i]], nchar))))
   }
   clengths <- unlist(nlist)
   dash <- sum(clengths) + 6

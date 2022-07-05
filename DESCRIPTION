@@ -37,7 +37,6 @@ Imports:
     lubridate,
     tibble,
     dplyr,
-    ggplot2,
     scales
 Suggests: 
     testthat (>= 3.0.0),

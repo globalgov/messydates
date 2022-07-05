@@ -19,17 +19,12 @@ A dataset containing the names and dates of battles in 2001,
 according to Wikipedia (https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{## ----------------------------------------------------------------------
-## |  Column Name  |  Data Type  |  Levels  |  Missing  |  Missing (\%)  |
-## ----------------------------------------------------------------------
-## |    Battle     |  character  |    NA    |     0     |       0       |
-## |     Date      |    mdate    |    NA    |     0     |       0       |
-## ----------------------------------------------------------------------
-## 
-##  Overall Missing Values           0 
-##  Percentage of Missing Values     0 \%
-##  Rows with Missing Values         0 
-##  Columns With Missing Values      0
+\if{html}{\out{<div class="sourceCode">}}\preformatted{## -------------------------------------------------------------------------------------
+## |  Column Name  |  Data Type  |  Missing  |  Missing (\%)  |  Min Value  |  Max Value |
+## -------------------------------------------------------------------------------------
+## |    Battle     |  character  |     0     |       0       |     NA      |     NA     |
+## |     Date      |    mdate    |     0     |       0       | 2001-03-08  | 2021-11-12 |
+## -------------------------------------------------------------------------------------
 }\if{html}{\out{</div>}}
 }
 \keyword{datasets}

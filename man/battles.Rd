@@ -9,6 +9,7 @@ A data frame with 20 rows and 2 variables:
 \describe{
 \item{Battle}{name of the battle, character}
 \item{Date}{date or date range, a mdate class vector}
+\item{Parties}{parties to the conflict, character}
 }
 }
 \usage{
@@ -23,7 +24,8 @@ according to Wikipedia (https://en.wikipedia.org/wiki/List_of_battles_in_the_21s
 ## |  Column Name  |  Data Type  |  Missing  |  Missing (\%)  |  Min Value  |  Max Value |
 ## -------------------------------------------------------------------------------------
 ## |    Battle     |  character  |     0     |       0       |     NA      |     NA     |
-## |     Date      |    mdate    |     0     |       0       | 2001-03-08  | 2021-11-12 |
+## |     Date      |    mdate    |     0     |       0       | 2001-03-08  | 2002-01-03 |
+## |    Parties    |  character  |     0     |       0       |    BD-ID    |     NA     |
 ## -------------------------------------------------------------------------------------
 }\if{html}{\out{</div>}}
 }

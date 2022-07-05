@@ -10,6 +10,6 @@
 #' }
 #' @details
 #' ``` {r, echo = FALSE, warning = FALSE}
-#' descriptr::ds_screener(battles)
+#' mreport(battles)
 #' ```
 "battles"

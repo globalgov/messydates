@@ -6,6 +6,7 @@
 #' @return A data report of class 'mreport'.
 #' @importFrom dplyr %>%
 #' @importFrom scales percent_format
+#' @importFrom stats na.omit
 #' @details 'mreport' displays the variable's name,
 #' the variable type, the number of missing observations for variable,
 #' the percentage of missing observations in variable,
@@ -27,12 +28,18 @@ mreport.default <- function(data) {
   counts   <- sapply(data, length)
   mvalues    <- sapply(data, function(z) sum(is.na(z)))
   mvaluesper <- round((mvalues / counts) * 100, 2)
-  minv <- sapply(data, function(x) ifelse(class(x) == "mdate",
-                                          as.character(as.Date(x, max)), min(x)))
-  minv <- ifelse(nchar(minv) > 11, "", minv)
-  maxv <- sapply(data, function(x) ifelse(class(x) == "mdate",
-                                          as.character(as.Date(x, max)), max(x)))
-  maxv <- ifelse(nchar(maxv) > 11, "", maxv)
+  minv <- suppressWarnings(sapply(data, function(x) {
+    ifelse(class(x) == "mdate", min(as.character(stats::na.omit(as.Date(x,
+                                                                        min)))),
+           min(stats::na.omit(x)))
+  }))
+  minv <- ifelse(nchar(minv) > 11, "NA", minv)
+  maxv <- suppressWarnings(sapply(data, function(x) {
+    ifelse(class(x) == "mdate", max(as.character(stats::na.omit(as.Date(x,
+                                                                        max)))),
+           max(stats::na.omit(x)))
+  }))
+  maxv <- ifelse(nchar(maxv) > 11, "NA", maxv)
   result <- list(Rows          = rows,
                  Columns       = cols,
                  Variables     = varnames,

@@ -14,7 +14,8 @@ expand(x, approx_range)
 
 \item{approx_range}{Range to expand approximate dates,
 or date components, annotated with '~', by default 0.
-That is, returns original values and removes signs for approximate dates.
+That is, removes signs for approximate dates and
+treats these dates as precise dates.
 If 3, for example, adds 3 days for day approximation,
 3 months for month approximation,
 3 years for year/whole date approximation,

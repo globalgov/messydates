@@ -78,7 +78,7 @@ As researchers, we often recognize this messiness but are forced to force non-ex
 library(messydates)
 suppressPackageStartupMessages(library(lubridate))
 suppressPackageStartupMessages(library(anytime))
-library(tibble)
+suppressPackageStartupMessages(library(tibble))
 suppressPackageStartupMessages(library(dplyr))
 dates_comparison <- tibble::tribble(~Example, ~OriginalDate,
                                     "A normal date", as.character(Sys.Date()),
@@ -184,35 +184,22 @@ tibble::tibble(date = dates_expand, add = dates_expand + "1 day", subtract = dat
 ## Case Study - 2001 Battles
 
 Dates, even for some recent events, can be messy. Take, for example, the dates of battles in 2001 according to [Wikipedia](https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
-The dates of these battles are often uncertain, with different levels of date precision being reported. \pkg{messydates} facilitates working with these dates.
+The dates of these battles are often uncertain, with different levels of date precision being reported. The dataset is included in \pkg{messydates}.
 
 ```{r data, warning=FALSE, message=FALSE}
-battles <- tibble::tribble(~Battle, ~Date, ~Parties,
-                           "Operation MH-2", "2001 March 8", "MK-National Libration Army(MK)",
-                           "2001 Bangladesh–India border clashes", "2001-04-16..2001-04-20", "BD-ID",
-                           "Operation Vaksince", "25-5-2001", "MK-National Libration Army(MK)",
-                           "Alkhan-Kala operation", "2001-6-22..2001-6-28", "RU-Chechen Republic",
-                           "Battle of Vedeno", "2001-8-13..2001-8-26", "RU-Chechen Insurgents", 
-                           "Operation Crescent Wind", "2001-10-7..2001-12?", "US/UK-Taliban",
-                           "Operation Rhino", "2001-10-19..2001-10-20", "US-Taliban",
-                           "Battle of Mazar-e-Sharif","2001-11-9", "US/Northern Alliance-Taliban/al-Qaeda", 
-                           "Siege of Kunduz", "2001-11-11..2001-11-23", "US/Northern Alliance-Taliban/al-Qaeda",
-                           "Battle of Herat", "Twelve of November of two thousand and twenty-one", "US/Northern Alliance/Iran-Taliban", 
-                           "Battle of Kabul", "2001-11-13..2001-11-14", "US/Northern Alliance-Taliban",
-                           "Battle of Tarin Kowt", "2001-11-13:2001-11-14", "US/Eastern Alliance-Taliban",
-                           "Operation Trent", "2001-11-~15..2001-11-~30", "US/UK-Taliban/al-Qaeda",
-                           "Battle of Kandahar", "2001-11-22..2001-12-07", "US/AU/Eastern Alliance-Taliban",
-                           "Battle of Qala-i-Jangi", "2001-11-25:2001-12-01", "US/UK/Northern Alliance-Taliban/al-Qaeda",
-                           "Battle of Tora Bora", "2001-12-12..2001-12-17", "US/Northern Alliance-Taliban/al-Qaeda",
-                           "Battle of Shawali Kowt", "2001-12-3", "US/Eastern Alliance-Taliban",
-                           "Battle of Sayyd Alma Kalay", "2001-12-4", "US/Eastern Alliance-Taliban",
-                           "Battle of Amami-Oshima", "2001-12-22", "JP-KP",
-                           "Tsotsin-Yurt operation", "2001-12-30:2002-01-03", "RU-Chechen Insurgents")
-battles$Date = as_messydate(battles$Date)
-tibble::tibble(battles)
+battles <- messydates::battles
+battles
 ```
 
-Getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (i.e. year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences where getting "timing" right is important.
+\pkg{messydates} facilitates working with these dates as we can, for example,
+check which dates are precise and get the median values for imprecise dates.
+
+```{r data, warning=FALSE, message=FALSE}
+messydates::is_precise(battles$Date)
+as.Date(battles$Date, median)
+```
+
+Moreover, getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (i.e. year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences where getting "timing" right is important.
 
 Assume, for example, certain researcher is interested in the relationship between the United States (US) being a party in a conflict and the duration of the conflict in 2001. The researcher might theorize that conflicts involving the US have a shorter duration since the US has the most powerful military in the world. As well, this is relationship could be mediated by the number of parties involved in the conflict. That is, the number of actors involved in a conflict could have an effect on conflict time. Using \pkg{messydates}, we can create two different date variables in the battles data to represent conflict time, one with an arbitrary cut of point (difference between the minimal and maximal values) and the other with random values (difference between two random values in the range for uncertain or approximate dates). These will be our dependent variables. We can also create a dummy variable for whether the US was, or not, involved in the conflict to be our main independent variable. As a control, we also code the number of actors in the conflict. With these variables in hand, we build two linear regression models correlating each of the dependent variables to conflict time.
 
@@ -225,13 +212,11 @@ battles <- battles %>%
                          arbitrary),
          US_party = ifelse(grepl("US", Parties), 1, 0),
          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
-arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
-random <- lm(random ~ US_party + n_actors, battles)
-library(stargazer)
-stargazer::stargazer(arbitrary, random, type = "text")
+lm(arbitrary ~ US_party + n_actors, battles)
+lm(random ~ US_party + n_actors, battles)
 ```
 
-Notice how the regression coefficients change when we pick random values within the range for the uncertain and approximate dates in the battles data, in comparison to setting arbitrary cut off points. Although not statistically significant, the coefficient for US being a party in a conflict goes from being positive when we use arbitrary cut off points for uncertain dates, to negative when we we use random values within that range. In this case, it is hard to say whether the relationship between the US being a part of a battle in 2001 and the time of the conflict is positive or not.
+Notice how the regression coefficients change when we pick random values within the range for the uncertain and approximate dates in the battles data, in comparison to setting arbitrary cut off points. Although not statistically significant, the coefficient for US being a party in a conflict decreases considerably when we we use random values within that range. In this case, it is hard to say whether there is a relationship between the US being a part of a battle in 2001 and the time of the conflict.
 
 # Acknowledgements
 

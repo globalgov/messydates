@@ -1,4 +1,5 @@
 test_that("report function work properly", {
+  expect_error(mreport("a"), "Data must be a `data.frame` or `tibble`.")
   report <- mreport(battles)
   column <- c("Battle", "Date", "Parties")
   type <- c("character", "mdate", "character")
@@ -11,6 +12,7 @@ test_that("report function work properly", {
   names(missingp) <- c("Battle", "Date", "Parties")
   names(min) <- c("Battle", "Date", "Parties")
   names(max) <- c("Battle", "Date", "Parties")
+  expect_true(is.list(report))
   expect_s3_class(mreport(battles), "mreport")
   expect_equal(report$Rows, 20)
   expect_equal(report$Columns, 3)

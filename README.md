@@ -45,25 +45,6 @@ However, this can create inferential issues when timing or sequence is
 important. `{messydates}` assists with this problem by retaining and
 working with various kinds of date imprecision.
 
-    #> 
-    #> Attaching package: 'lubridate'
-    #> The following objects are masked from 'package:base':
-    #> 
-    #>     date, intersect, setdiff, union
-    #> 
-    #> Attaching package: 'dplyr'
-    #> The following objects are masked from 'package:stats':
-    #> 
-    #>     filter, lag
-    #> The following objects are masked from 'package:base':
-    #> 
-    #>     intersect, setdiff, setequal, union
-    #> 
-    #> Attaching package: 'kableExtra'
-    #> The following object is masked from 'package:dplyr':
-    #> 
-    #>     group_rows
-
 ## A quick overview
 
 `{messydates}` implements for R the extended annotation standard for
@@ -352,9 +333,6 @@ resolve_mdate <- pkg_comparison %>%
   dplyr::mutate(min = as.Date(messydates, min),
          median = as.Date(messydates, median),
          max = as.Date(messydates, max))
-#> Please specify 'approx_range' argument if you want approximate dates to also be expanded
-#> Please specify 'approx_range' argument if you want approximate dates to also be expanded
-#> Please specify 'approx_range' argument if you want approximate dates to also be expanded
 ```
 
 <table class="table table-striped" style="margin-left: auto; margin-right: auto;">
@@ -453,10 +431,10 @@ max
 2012-01-12
 </td>
 <td style="text-align:left;">
-2012-01-13
+2012-01-12
 </td>
 <td style="text-align:left;">
-2012-01-13
+2012-01-12
 </td>
 </tr>
 <tr>
@@ -509,7 +487,7 @@ max
 2019-11-01
 </td>
 <td style="text-align:left;">
-2020-01-01
+2019-12-02
 </td>
 <td style="text-align:left;">
 2020-01-01
@@ -523,7 +501,7 @@ max
 2021-05-26
 </td>
 <td style="text-align:left;">
-2021-12-04
+2021-11-19
 </td>
 <td style="text-align:left;">
 2021-12-04

@@ -57,7 +57,8 @@ reference:
       - logical
       - is_messydate
       - extract
-  - title: "Data"
-    desc: "Some test and/or example data:"
+  - title: "Reporting Data"
+    desc: "Function to help report on 'mdate' and example data:"
     contents:
+      - mreport
       - battles

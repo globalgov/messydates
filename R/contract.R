@@ -10,7 +10,7 @@
 #' @return A `mdate` vector
 #' @importFrom tibble tibble
 #' @importFrom lubridate NA_Date_
-#' @importFrom stringr str_replace_all str_detect
+#' @importFrom stringr str_replace_all str_detect str_count str_replace str_extract
 #' @importFrom dplyr lead last first
 #' @examples
 #' d <- as_messydate(c("2001-01-01", "2001-01", "2001",
@@ -58,6 +58,11 @@ compact_ranges <- function(x) {
 
 collapse_sets <- function(x) {
   x <- lapply(x, paste, collapse = ",")
+  x <- ifelse(stringr::str_count(x, ",") == 11 &
+                stringr::str_detect(x, "-01-") &
+                stringr::str_detect(x, "-12-"),
+              stringr::str_replace(stringr::str_extract(x, "[^,]*"),
+                                   "-01-", "-XX-"), x)
   x <- ifelse(stringr::str_detect(x, ","), paste0("{", x, "}"), x)
   x
 }

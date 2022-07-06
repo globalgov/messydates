@@ -3,7 +3,7 @@
 ## Package
 
 * Updated README by removing unattractive package startup messages
-* Updated `battles` data included in package
+* Updated `battles` data by adding 'parties' variable
 
 ## Functions
 

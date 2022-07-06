@@ -28,27 +28,13 @@ mreport.default <- function(data) {
   counts   <- unlist(lapply(data, length))
   mvalues    <- unlist(lapply(data, function(z) sum(is.na(z))))
   mvaluesper <- round((mvalues / counts) * 100, 2)
-  minv <- suppressWarnings(unlist(lapply(data, function(x) {
-    ifelse(class(x) == "mdate",
-           min(as.character(stats::na.omit(as.Date(x, min)))),
-           min(stats::na.omit(x)))
-  })))
-  minv <- ifelse(nchar(minv) > 11, "NA", minv)
-  maxv <- suppressWarnings(unlist(lapply(data, function(x) {
-    ifelse(class(x) == "mdate",
-           max(as.character(stats::na.omit(as.Date(x, max)))),
-           max(stats::na.omit(x)))
-  })))
-  maxv <- ifelse(nchar(maxv) > 11, "NA", maxv)
   result <- list(Rows          = rows,
                  Columns       = cols,
                  Variables     = varnames,
                  Types         = datatype,
                  Count         = counts,
                  Missing       = mvalues,
-                 MissingPer    = mvaluesper,
-                 Minv = minv,
-                 Maxv = maxv)
+                 MissingPer    = mvaluesper)
   class(result) <- "mreport"
   return(result)
 }
@@ -59,11 +45,11 @@ print.mreport <- function(x, ...) {
 }
 
 print_mreport <- function(x) {
-  columns <- c("  Column Name  ", "  Data Type  ", "  Missing  ",
-               "  Missing (%)  ", "  Min Value  ", "  Max Value ")
+  columns <- c("  Column Name  ", "  Data Type  ", "  Observations  ",
+               "  Missing  ", "  Missing (%)  ")
   len_col <- as.vector(unlist(lapply(columns, nchar)))
   x$Types <- lapply(x$Types, paste, collapse = ", ")
-  lengths <- list(x$Variables, x$Types, x$Missing, x$MissingPer, x$Minv, x$Maxv)
+  lengths <- list(x$Variables, x$Types, x$Count, x$Missing, x$MissingPer)
   n <- length(columns)
   nlist <- list()
   for (i in seq_len(n)) {
@@ -82,10 +68,9 @@ print_mreport <- function(x) {
   for (i in seq_len(x$Columns)) {
     cat("|", format(x$Variables[i], width = clengths[1], justify = "centre"), "|",
       format(x$Types[i], width = clengths[2], justify = "centre"), "|",
-      format(as.character(x$Missing[i]), width = clengths[3], justify = "centre"), "|",
-      format(as.character(x$MissingPer[i]), width = clengths[4], justify = "centre"), "|",
-      format(as.character(x$Min[i]), width = clengths[5], justify = "centre"), "|",
-      format(as.character(x$Max[i]), width = clengths[6], justify = "centre"),
+      format(x$Count[i], width = clengths[3], justify = "centre"), "|",
+      format(as.character(x$Missing[i]), width = clengths[4], justify = "centre"), "|",
+      format(as.character(x$MissingPer[i]), width = clengths[5], justify = "centre"),
       "|\n", sep = "")
   }
   cat(rep("-", dash), sep = "")

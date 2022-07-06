@@ -18,9 +18,9 @@ author:
       | Graduate Institute of
       | International and Development Studies
 title:
-  formatted: "Working with Missing, Approximate, Uncertain, Sets and Ranges of Dates with \\pkg{messydates}"
+  formatted: "Working with Unspecified, Approximate, Uncertain, Sets and Ranges of Dates with \\pkg{messydates}"
   # If you use tex in the formatted title, also supply version without
-  plain:     "Working with Unspecified, Approximate, Uncertain, Sets and Ranges of Dates with messydates"
+  plain: "Working with Unspecified, Approximate, Uncertain, Sets and Ranges of Dates with messydates"
   # For running headers, if needed
   short:     "\\pkg{messydates}: An R package for ISO's Extended Date/Time Format"
 abstract: >
@@ -42,6 +42,11 @@ bibliography: references.bib
 
 ```{r, setup, include=FALSE}
 options(prompt = 'R> ', continue = '+ ')
+library(messydates)
+suppressPackageStartupMessages(library(lubridate))
+suppressPackageStartupMessages(library(anytime))
+suppressPackageStartupMessages(library(tibble))
+suppressPackageStartupMessages(library(dplyr))
 ```
 
 # Introduction
@@ -50,7 +55,7 @@ Dates are often messy. Whether historical (or ancient), future, or even recent, 
 
 \pkg{messydates} implements the extended annotation standard for dates, the Extended Date/Time Format (EDTF), outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) for R. These include standardised notation for:
 
--   unspecified date( component)s, e.g. `2012-XX-01` for the first of some unknown month in 2012 or 2012-01 for some unknown day in January 2012
+-   unspecified date( component)s, e.g. `2012-XX-01` for the first of some unknown month in 2012 or `2012-01` for some unknown day in January 2012
 -   approximate date( component)s, e.g. `2012-01-12~` for approximately the 12th of January 2012
 -   uncertain date( component)s, e.g. `2012-01-12?` where this data point is based on an unreliable source
 -   sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date can be both 1 January 2012 and 12 January 2012
@@ -75,11 +80,6 @@ As researchers, we often recognize this messiness but are forced to force non-ex
 \pkg{messydates} contains a set of tools for constructing and coercing into and from the `mdate` class. This date class implements ISO 8601-2:2019(E) and allows regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates. The function `as_messydate()` handles the coercion to `mdate` class.
 
 ```{r comparison, warning=FALSE}
-library(messydates)
-suppressPackageStartupMessages(library(lubridate))
-suppressPackageStartupMessages(library(anytime))
-suppressPackageStartupMessages(library(tibble))
-suppressPackageStartupMessages(library(dplyr))
 dates_comparison <- tibble::tribble(~Example, ~OriginalDate,
                                     "A normal date", as.character(Sys.Date()),
                                     "A future date", "2599-12-31",
@@ -105,11 +105,12 @@ Some datasets have, for example, an arbitrary cut off point for start and end po
 
 ```{r annotate, warning=FALSE}
 dates_annotate <- tibble::tibble(Beg = as_messydate(c("1816-01-01", "1916-01-01", "2016-01-01")),
-                                 End = as_messydate(c("1816-12-31", "1916-12-31", "2016-12-31")))
-dplyr::mutate(dates_annotate, Beg = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg))
-dplyr::mutate(dates_annotate, End = ifelse(End >= "2016-01-01", on_or_after(End), End))
-dplyr::mutate(dates_annotate, Beg = ifelse(Beg == "1916-01-01", as_approximate(Beg), Beg))
-dplyr::mutate(dates_annotate, End = ifelse(End == "1916-12-31", as_uncertain(End), End))
+                                 End = as_messydate(c("1816-12-31", "1916-12-31", "2016-12-31"))) %>% 
+  dplyr::mutate(on_or_before = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg),
+                on_or_after = ifelse(End >= "2016-01-01", on_or_after(End), End),
+                as_approximate = ifelse(End >= "2016-01-01", on_or_after(End), End),
+                as_uncertain = ifelse(End == "1916-12-31", as_uncertain(End), End)) %>% 
+  print()
 ```
 
 ## Expand
@@ -117,9 +118,8 @@ dplyr::mutate(dates_annotate, End = ifelse(End == "1916-12-31", as_uncertain(End
 Expand functions transform date ranges, sets of dates, and unspecified or approximate dates (annotated with '..', '{ , }', 'XX' or '\~') into lists of dates. As these dates may refer to several possible dates, the function "opens" these values to include all the possible dates implied.
 
 ```{r expand, warning=FALSE}
-dates_expand <- as_messydate(c("2001-01-01", "2001-01?", "2001",
-                               "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-                               "2001-XX-31", "21 BC"))
+dates_expand <- as_messydate(c("2001-01-01", "2001-01", "2001-01-01..2001-02-01",
+                               "{2001-01-01,2001-02-01}", "2001-XX-01"))
 expand(dates_expand)
 ```
 
@@ -183,28 +183,26 @@ tibble::tibble(date = dates_expand, add = dates_expand + "1 day", subtract = dat
 
 ## Case Study - 2001 Battles
 
-Dates, even for some recent events, can be messy. Take, for example, the dates of battles in 2001 according to [Wikipedia](https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
-The dates of these battles are often uncertain, with different levels of date precision being reported. The dataset is included in \pkg{messydates}.
+Dates, even for some recent events, can be messy. Take the dates of battles in 2001 according to [Wikipedia](https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century) included in \pkg{messydates}.
+The dates of these battles are often approximate (i.e. the day in which a battle started or ended is not precise) or come from unreliable sources (i.e. the date is precise but not trustworthy).
 
 ```{r data, warning=FALSE, message=FALSE}
 battles <- messydates::battles
 battles
 ```
 
-\pkg{messydates} facilitates working with these dates as we can, for example,
-check which dates are precise and get the median values for imprecise dates.
+\pkg{messydates} facilitates working with these dates as we can, for example, check which dates are precise, get the median values for imprecise dates and find the longest battle in 2001.
 
-```{r data, warning=FALSE, message=FALSE}
+```{r working with dates, warning=FALSE, message=FALSE}
 messydates::is_precise(battles$Date)
 as.Date(battles$Date, median)
+as.numeric(as.Date(battles$Date, max) - as.Date(battles$Date, min))
 ```
 
-Moreover, getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (i.e. year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences where getting "timing" right is important.
+Getting the timing can be important for researchers, however, when faced with date imprecision, researchers usually have to chose between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates) or work imprecise dates (e.g. keep the year only). Yet, both choices may lead to bias results. This is especially true if researchers' are looking to generate inferences. Let's assume, for instance, certain researcher is interested in the relationship between the United States (US) being a party to a conflict and the duration of the conflict in 2001. The researcher theorizes that conflicts involving the US have a shorter duration because the US has the most powerful military in the world. But this relationship could be mediated by the number of parties involved in the conflict. Using \pkg{messydates}, we can create two different date variables in the battles data to be our dependent variables representing conflict time, one variable with an arbitrary cut of point and the other variable with random values for uncertain or approximate dates. As our independent variable, we create a dummy variable for whether the US was involved in the conflict. As our control, we code the number of actors in the conflict. With these variables we build two linear regression models, one using the arbitrary dates and the other the random dates.
 
-Assume, for example, certain researcher is interested in the relationship between the United States (US) being a party in a conflict and the duration of the conflict in 2001. The researcher might theorize that conflicts involving the US have a shorter duration since the US has the most powerful military in the world. As well, this is relationship could be mediated by the number of parties involved in the conflict. That is, the number of actors involved in a conflict could have an effect on conflict time. Using \pkg{messydates}, we can create two different date variables in the battles data to represent conflict time, one with an arbitrary cut of point (difference between the minimal and maximal values) and the other with random values (difference between two random values in the range for uncertain or approximate dates). These will be our dependent variables. We can also create a dummy variable for whether the US was, or not, involved in the conflict to be our main independent variable. As a control, we also code the number of actors in the conflict. With these variables in hand, we build two linear regression models correlating each of the dependent variables to conflict time.
-
-```{r case study, warning=FALSE, message=FALSE}
-set.seed(3333)
+```{r lm, warning=FALSE, message=FALSE}
+set.seed(1301)
 battles <- battles %>%
   mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
          random = ifelse(grepl("\\?|\\~", Date),
@@ -216,7 +214,7 @@ lm(arbitrary ~ US_party + n_actors, battles)
 lm(random ~ US_party + n_actors, battles)
 ```
 
-Notice how the regression coefficients change when we pick random values within the range for the uncertain and approximate dates in the battles data, in comparison to setting arbitrary cut off points. Although not statistically significant, the coefficient for US being a party in a conflict decreases considerably when we we use random values within that range. In this case, it is hard to say whether there is a relationship between the US being a part of a battle in 2001 and the time of the conflict.
+Notice how the regression coefficients change when we pick random values within the range for the uncertain and approximate dates in the battles data, in comparison to setting arbitrary cut off points. Although not statistically significant, the coefficient for US being a party in a conflict change considerably, going from being positive to becoming negative, when we we use random values within that range. In this case, it is hard to say whether there is a relationship between the US being a part of a battle in 2001 and the time of the conflict.
 
 # Acknowledgements
 

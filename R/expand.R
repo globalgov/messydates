@@ -43,7 +43,7 @@ expand.mdate <- function(x, approx_range = 0) {
   x <- expand_unspecified(x)
   x <- expand_negative(x)
   x <- expand_sets(x)
-  x <- suppressWarnings(expand_ranges(x))
+  x <- expand_ranges(x)
   x
 }
 
@@ -132,10 +132,10 @@ expand_sets <- function(dates) {
 }
 
 expand_ranges <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
-                    nchar(dates) < 17,
-                  expand_unspecified_ranges(dates), dates)
-  dates <- lapply(dates, function(x) {
+  dates <- suppressWarnings(ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
+                                     nchar(dates) < 17,
+                                   expand_unspecified_ranges(dates), dates))
+  dates <- suppressWarnings(lapply(dates, function(x) {
     x <- stringr::str_split(x, "\\.\\.")
     x <- lapply(x, function(y) {
       if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
@@ -144,7 +144,7 @@ expand_ranges <- function(dates) {
     })
     x <- ifelse(stringr::str_detect(x, "\\%"), expand_negative_dates(x), x)
     unlist(x)
-  })
+  }))
   dates
 }
 

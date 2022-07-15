@@ -79,10 +79,12 @@ happened within a particular period, an unreliable source means a date
 should be flagged as uncertain, or sources offer multiple, competing
 dates.
 
-\pkg{messydates} implements the extended annotation standard for dates,
-the Extended Date/Time Format (EDTF), outlined in
-\href{https://www.iso.org/standard/70908.html}{ISO 8601-2\_2019(E)} for
-R. These include standardised notation for:
+\pkg{messydates} implements for R the Extended Date/Time Format (EDTF)
+annotations set by the International Organization for Standardization
+(ISO) outlined in \href{https://www.iso.org/standard/70908.html}{ISO
+8601-2\_2019(E)}. The standardised extended format allow for unambiguous
+interpretation of dates and guarantee interoperability. These include
+notation for:
 
 \begin{itemize}
 \tightlist
@@ -111,14 +113,14 @@ dates to be annotated to express unspecified date components,
 approximate or uncertain date components, date ranges, and sets of
 dates.
 
-Importantly, the package also includes a function for unpacking or
-expanding sets or ranges of dates into all dates consistent with how the
-date or set of dates is specified or annotated. Methods are also offered
-that can be used to make explicit how researchers convert date
-imprecision into precise dates for analysis, such as getting the
-\texttt{min()}, \texttt{max()}, or even a \texttt{random()} date from
-among the dates consistent with a set or range of dates. This greatly
-facilitates research transparency as well as robustness checks.
+The package also includes a function for unpacking or expanding sets or
+ranges of dates into all dates consistent with how the date or set of
+dates is specified or annotated. Methods are also offered that can be
+used to make explicit how researchers convert date imprecision into
+precise dates for analysis, such as getting the \texttt{min()},
+\texttt{max()}, or even a \texttt{random()} date from among the dates
+consistent with a set or range of dates. This greatly facilitates
+research transparency as well as robustness checks.
 
 \hypertarget{motivation}{%
 \subsection{Motivation}\label{motivation}}
@@ -158,31 +160,30 @@ handles the coercion to \texttt{mdate} class.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> dates_comparison <- tibble::tribble(~Example, ~OriginalDate,
-+                                     "A normal date", as.character(Sys.Date()),
-+                                     "A future date", "2599-12-31",
-+                                     "A written date", "First of February, two thousand and twenty-one",
-+                                     "A historical date", "476",
-+                                     "An era date", "33 BC",
-+                                     "An approximate date", "2012-01-12~",
-+                                     "An uncertain date", "2001-01-01?",
-+                                     "An unspecified date", "2012-01",
-+                                     "A censored date", "..2012-01-12", 
-+                                     "A range of dates", "2019-11-01:2020-01-01",
-+                                     "A set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
-+   dplyr::mutate(base = as.Date(OriginalDate),
-+                 lubridate = lubridate::as_date(OriginalDate),
-+                 anytime = anytime::anydate(OriginalDate),
-+                 messydates = messydates::as_messydate(OriginalDate)) %>%
-+   print()
+R> tibble::tribble(~Example, ~Date,
++                 "A normal date", as.character(Sys.Date()),
++                 "A future date", "2599-12-31",
++                 "A written date", "This is the first day of February, two thousand and twenty-one",
++                 "A historical date", "476",
++                 "An era date", "33 BC",
++                 "An approximate date", "2012-01-12~",
++                 "An uncertain date", "2001-01-01?",
++                 "An unspecified date", "2012-01",
++                 "A censored date", "..2012-01-12",
++                 "A range of dates", "2019-11-01:2020-01-01",
++                 "A set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
++   dplyr::mutate(base = as.Date(Date),
++                 lubridate = lubridate::as_date(Date),
++                 anytime = anytime::anydate(Date),
++                 messydates = messydates::as_messydate(Date))
 \end{CodeInput}
 \begin{CodeOutput}
 # A tibble: 11 x 6
-   Example             OriginalDate  base       lubridate  anytime    messydates
+   Example             Date          base       lubridate  anytime    messydates
    <chr>               <chr>         <date>     <date>     <date>     <mdate>   
  1 A normal date       2022-07-15    2022-07-15 2022-07-15 2022-07-15 2022-07-1~
  2 A future date       2599-12-31    2599-12-31 2599-12-31 2599-12-31 2599-12-3~
- 3 A written date      First of Feb~ NA         NA         NA         2021-02-0~
+ 3 A written date      This is the ~ NA         NA         NA         2021-02-0~
  4 A historical date   476           NA         NA         NA         0476     ~
  5 An era date         33 BC         NA         NA         NA         -0033    ~
  6 An approximate date 2012-01-12~   2012-01-12 2012-01-12 2012-01-12 2012-01-1~
@@ -214,13 +215,12 @@ dubious date (e.g.~\texttt{1916-10-10?}) or date component
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> dates_annotate <- tibble::tibble(Beg = as_messydate(c("1816-01-01", "1916-01-01", "2016-01-01")),
-+                                  End = as_messydate(c("1816-12-31", "1916-12-31", "2016-12-31"))) %>% 
+R> tibble::tibble(Beg = as_messydate(c("1816-01-01", "1916-01-01", "2016-01-01")),
++                End = as_messydate(c("1816-12-31", "1916-12-31", "2016-12-31"))) %>% 
 +   dplyr::mutate(on_or_before = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg),
 +                 on_or_after = ifelse(End >= "2016-01-01", on_or_after(End), End),
 +                 as_approximate = ifelse(End >= "2016-01-01", on_or_after(End), End),
-+                 as_uncertain = ifelse(End == "1916-12-31", as_uncertain(End), End)) %>% 
-+   print()
++                 as_uncertain = ifelse(End == "1916-12-31", as_uncertain(End), End))
 \end{CodeInput}
 \begin{CodeOutput}
 # A tibble: 3 x 6
@@ -288,17 +288,10 @@ annotation of \pkg{messydates}.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> tibble::tibble(contract = contract(expand(dates_expand)))
+R> contract(expand(dates_expand))
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 5 x 1
-  contract               
-  <mdate>                
-1 2001-01-01             
-2 2001-01                
-3 2001-01-01..2001-02-01 
-4 {2001-01-01,2001-02-01}
-5 2001-XX-01             
+ 'mdate' chr [1:5] "2001-01-01" "2001-01" "2001-01-01..2001-02-01" ...
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -309,16 +302,12 @@ Coercion functions coerce objects of \texttt{mdate} class to common date
 classes such as \texttt{Date}, \texttt{POSIXct}, and \texttt{POSIXlt}.
 Since \texttt{mdate} objects can hold multiple individual dates, an
 additional function must be passed as an argument so that multiple dates
-are ``resolved'' into a single date.
-
-For example, one might wish to use the earliest possible date in any
-ranges of dates (\texttt{min}), the latest possible date (\texttt{max}),
-some notion of a central tendency (\texttt{mean}, \texttt{median}, or
+are ``resolved'' into a single date. For example, one might wish to use
+the earliest possible date in a range, or set, of expanded dates
+(\texttt{min}), or the latest possible date (\texttt{max}), or some
+notion of a central tendency (\texttt{mean}, \texttt{median}, or
 \texttt{modal}), or even a \texttt{random} selection from amongst the
 candidate dates.
-
-These functions are particularly useful for use with existing methods
-and models, especially for checking the robustness of results.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -334,10 +323,10 @@ R> tibble::tibble(min = as.Date(dates_expand, min),
   min        max        median     mean       modal      random    
   <date>     <date>     <date>     <date>     <date>     <date>    
 1 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01
-2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-25
-3 2001-01-01 2001-02-01 2001-01-17 2001-01-16 2001-01-01 2001-01-07
+2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-24
+3 2001-01-01 2001-02-01 2001-01-17 2001-01-16 2001-01-01 2001-01-03
 4 2001-01-01 2001-02-01 2001-02-01 2001-01-16 2001-01-01 2001-01-01
-5 2001-01-01 2001-12-01 2001-07-01 2001-06-16 2001-01-01 2001-05-01
+5 2001-01-01 2001-12-01 2001-07-01 2001-06-16 2001-01-01 2001-09-01
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -470,7 +459,9 @@ vector.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> tibble::tibble(date = dates_expand, add = dates_expand + "1 day", subtract = dates_expand - "1 year")
+R> tibble::tibble(date = dates_expand,
++                add = dates_expand + "1 day",
++                subtract = dates_expand - "1 year")
 \end{CodeInput}
 \begin{CodeOutput}
 # A tibble: 5 x 3
@@ -491,9 +482,9 @@ Dates, even for some recent events, can be messy. Take the dates of
 battles in 2001 according to
 \href{https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century}{Wikipedia}
 included in \pkg{messydates}. The dates of these battles are often
-approximate (i.e.~the day in which a battle started or ended is not
-precise) or come from unreliable sources (i.e.~the date is precise but
-not trustworthy).
+approximate (i.e.~the day in which a battle started or ended is unknown)
+or come from unreliable sources (i.e.~the date might not be
+trustworthy).
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -571,11 +562,13 @@ involved in the conflict. Using \pkg{messydates}, we can create two
 different date variables in the battles data to be our dependent
 variables representing conflict time, one variable with an arbitrary cut
 of point and the other variable with random values for uncertain or
-approximate dates. As our independent variable, we create a dummy
-variable for whether the US was involved in the conflict. As our
-control, we code the number of actors in the conflict. With these
-variables we build two linear regression models, one using the arbitrary
-dates and the other the random dates.
+approximate dates. The ability to resolve uncertain or approximate dates
+differently is particularly useful for checking the robustness of
+results. As our independent variable, we create a dummy variable for
+whether the US was involved in the conflict. As our control, we code the
+number of actors in the conflict. With these variables we build two
+linear regression models, one using the arbitrary dates and the other
+the random dates.
 
 \begin{CodeChunk}
 \begin{CodeInput}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.6)  6 JUL 2022 13:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.6)  15 JUL 2022 11:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -676,26 +676,26 @@ Package xcolor Warning: Incompatible color definition on input line 23.
 
 )
 
-Package xcolor Warning: Incompatible color definition on input line 635.
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
-Package xcolor Warning: Incompatible color definition on input line 635.
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 635--635
+Underfull \hbox (badness 10000) in paragraph at lines 636--636
 
  []
 
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/m/it' tried instead on input line 635.
+(Font)              Font shape `T1/pzc/m/it' tried instead on input line 636.
 
-Package xcolor Warning: Incompatible color definition on input line 635.
-
-
-Package xcolor Warning: Incompatible color definition on input line 635.
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
-Package xcolor Warning: Incompatible color definition on input line 635.
+Package xcolor Warning: Incompatible color definition on input line 636.
+
+
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -723,7 +723,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  99i,9n,103p,389b,618s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmb10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbo10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtto10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on article.pdf (11 pages, 347056 bytes).
+Output written on article.pdf (11 pages, 347072 bytes).
 PDF statistics:
  226 PDF objects out of 1000 (max. 8388607)
  185 compressed objects within 2 object streams

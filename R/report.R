@@ -40,10 +40,6 @@ mreport.default <- function(data) {
 
 #' @export
 print.mreport <- function(x, ...) {
-  print_mreport(x)
-}
-
-print_mreport <- function(x) {
   columns <- c("  Column Name  ", "  Data Type  ", "  Observations  ",
                "  Missing  ", "  Missing (%)  ")
   len_col <- as.vector(unlist(lapply(columns, nchar)))

@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 ## Why this package?
 
 Existing packages for working with dates in R expect them to be _tidy_.
-That is, they should be in or coercible to the standard ISO format `yyyy-mm-dd`.
+That is, they should be in or coercible to the standard `yyyy-mm-dd` format.
 
 But dates are often **_messy_**.
 Sometimes we only know the year when something happened,
@@ -63,11 +63,11 @@ library(kableExtra)
 
 ## A quick overview
 
-`{messydates}` implements for R the extended annotation standard for dates,
-the Extended Date/Time Format (EDTF) outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
+`{messydates}` implements for R the Extended Date/Time Format (EDTF) annotations
+set by the International Organization for Standardization (ISO) 
+outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
 `{messydates}` introduces a new `mdate` class that embeds these annotations,
-and offers a set of methods for constructing and
-coercing into and from the `mdate` class,
+and offers a set of methods for constructing and coercing into and from the `mdate` class,
 as well as tools for working with such 'messy' dates.
 
 ```{r comparison, warning=FALSE, message=FALSE}

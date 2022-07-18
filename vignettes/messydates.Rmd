@@ -20,13 +20,17 @@ or different sources offer multiple, competing dates.
 
 The goal of `{messydates}` is to help with this problem by retaining and working
 with various kinds of date imprecision.
-\pkg{messydates} contains a set of tools for constructing and coercing into and from the `mdate` class.
-This date class implements [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) allowing regular dates to be annotated to express unspecified date components, approximate or uncertain date components, date ranges, and sets of dates.
+\pkg{messydates} contains a set of tools for constructing and coercing
+into and from the `mdate` class.
+This date class implements [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html)
+allowing regular dates to be annotated to express unspecified date components,
+approximate or uncertain date components, date ranges, and sets of dates.
 
 # Working with messydates: 2001 Battles
 
 Take, for example, the names and dates of battles in 2001 according to [Wikipedia](https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
-The dates of these battles are often uncertain with different levels of date precision being reported.
+The dates of these battles are often uncertain or approximate with different
+levels of date precision being reported.
 
 ```{r data, warning=FALSE}
 battles <- tibble::tribble(~Battle, ~Date,
@@ -70,8 +74,10 @@ tibble::tibble(battles)
 
 The annotate functions in `{messydates}` help annotate censored, uncertain, and approximate
 dates according to [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) standards.
-Some datasets might have an arbitrary cut off point for start and end points, that is, they are censored.
-But these are often coded as precise dates when they are not necessarily the real start or end dates.
+Some datasets might have an arbitrary cut off point for start and end points,
+that is, they are censored.
+But these are often coded as precise dates when they are not necessarily
+the real start or end dates.
 Inaccurate start or end dates can be represented by an ".." affix
 indicating "on or before", if used as a prefix,
 or indicating "on or after", if used as a suffix.
@@ -91,7 +97,7 @@ month, or day components, or whole dates to estimate values that are possibly co
 Day, month, or year, uncertainty can also be indicated by adding a `?`
 to a possibly dubious date or date component.
 If we are not sure about the reliability of the sources for the
-"Battle of Shawali Kowt" and that we think the date for the "Battle of Sayyd Alma Kalay" is approximate,
+"Battle of Shawali Kowt" and that we think the declared date for the battle is approximate,
 we can use `as_uncertain()` or `as_approximate()` to annotate these dates.
 
 ```{r approximate, warning=FALSE}
@@ -102,7 +108,8 @@ tibble::tibble(battles)
 
 ## Expand
 
-Expand functions transform date ranges (annotated with '..'), sets of dates (annotated with '{ , }'),
+Expand functions transform date ranges (annotated with '..'),
+sets of dates (annotated with '{ , }'),
 and unspecified (missing date components or annotated with 'XX'), or 
 approximate dates (annotated '~') into lists of dates.
 As these dates may refer to several possible dates,
@@ -113,7 +120,8 @@ Let's expand the dates in the Battles dataset.
 expand(battles$Date)
 ```
 
-Note that to expand approximate dates one needs to declare the range to expand approximate dates using the 'approx_range' argument in `expand()`
+Note that to expand approximate dates one needs to declare the range to
+expand approximate dates using the 'approx_range' argument in `expand()`
 
 ```{r expand_approx, eval=FALSE}
 expand(battles$Date, approx_range = 1)

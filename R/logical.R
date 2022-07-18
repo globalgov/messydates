@@ -56,11 +56,28 @@ is_similar <- function(x, y) {
 
 #' @describeIn logical tests whether a date is precise (i.e. an 8 digit date).
 #'   Non-precise dates contain markers that they are approximate (i.e. ~),
-#'   unreliable (i.e. % or ?), or incomplete dates (i.e. year only).
+#'   unreliable (i.e. ?), are incomplete dates (i.e. year only),
+#'   or date ranges and sets.
 #' @examples
 #' is_precise(as_messydate(c("2012-06-02", "2012-06")))
 #' @export
 is_precise <- function(x) {
   stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
                       |^-[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$")
+}
+
+#' @describeIn logical tests whether a date is uncertain (i.e. contains ?).
+#' @examples
+#' is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
+#' @export
+is_uncertain <- function(x) {
+  stringr::str_detect(x, "\\?")
+}
+
+#' @describeIn logical tests whether a date is approximate (i.e. contains ~).
+#' @examples
+#' is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+#' @export
+is_approximate <- function(x) {
+  stringr::str_detect(x, "\\~")
 }

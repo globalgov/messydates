@@ -101,7 +101,7 @@ notation for:
   point is based on an unreliable source
 \item
   sets of dates, e.g.~\texttt{\{2012-01-01,2012-01-12\}} where the date
-  can be both 1 January 2012 and 12 January 2012
+  can be either 1 January 2012 and 12 January 2012
 \item
   ranges of dates, e.g.~\texttt{2012-01-01..2012-01-12} for all dates
   between the 1 January 2012 and 12 January 2012 inclusive
@@ -120,12 +120,13 @@ used to make explicit how researchers convert date imprecision into
 precise dates for analysis, such as getting the \texttt{min()},
 \texttt{max()}, or even a \texttt{random()} date from among the dates
 consistent with a set or range of dates. This greatly facilitates
-research transparency as well as robustness checks.
+research transparency as well as robustness checks as we will
+demonstrate below.
 
 \hypertarget{motivation}{%
 \subsection{Motivation}\label{motivation}}
 
-As researchers, we often recognize this messiness but are forced to
+As researchers, we often recognize this messiness but are required to
 force non-existent precision on data so we can proceed with analysis.
 For example, if we only know something happened in a given month or
 year, we might just opt for the start of that month
@@ -140,11 +141,13 @@ retaining and working with various kinds of date imprecision.
 packages}\label{relationship-to-other-packages}}
 
 \pkg{messydates} offers a new date class, but one that comes with
-methods for converting from and into common date classes such as
-\texttt{Date}, \texttt{POSIXct}, and \texttt{POSIXlt.} It is thus fully
+methods for converting from and into \texttt{base}, date classes such as
+\texttt{Date}, \texttt{POSIXct}, and \texttt{POSIXlt}. It is thus fully
 compatible with packages such as \pkg{lubridate}
 \citep{grolemundDatesTimesMade2011} and \pkg{anytime}
-\citep{eddelbuettelAnytimeEasierDate2019}.
+\citep{eddelbuettelAnytimeEasierDate2019}. \pkg{messydates} is,
+therefore, compatible (perhaps with an additional coercion step) with
+all contemporary R packages for analysis.
 
 \section[R code]{\proglang{R} code}\label{r-code}
 
@@ -288,10 +291,18 @@ annotation of \pkg{messydates}.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> contract(expand(dates_expand))
+R> tibble::tibble('Original Dates' = dates_expand,
++                'Contracted Dates' = contract(expand(dates_expand)))
 \end{CodeInput}
 \begin{CodeOutput}
- 'mdate' chr [1:5] "2001-01-01" "2001-01" "2001-01-01..2001-02-01" ...
+# A tibble: 5 x 2
+  `Original Dates`        `Contracted Dates`     
+  <mdate>                 <mdate>                
+1 2001-01-01              2001-01-01             
+2 2001-01                 2001-01                
+3 2001-01-01..2001-02-01  2001-01-01..2001-02-01 
+4 {2001-01-01,2001-02-01} {2001-01-01,2001-02-01}
+5 2001-XX-01              2001-XX-01             
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -323,10 +334,10 @@ R> tibble::tibble(min = as.Date(dates_expand, min),
   min        max        median     mean       modal      random    
   <date>     <date>     <date>     <date>     <date>     <date>    
 1 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01
-2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-21
-3 2001-01-01 2001-02-01 2001-01-17 2001-01-16 2001-01-01 2001-01-27
+2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-04
+3 2001-01-01 2001-02-01 2001-01-17 2001-01-16 2001-01-01 2001-01-06
 4 2001-01-01 2001-02-01 2001-02-01 2001-01-16 2001-01-01 2001-01-01
-5 2001-01-01 2001-12-01 2001-07-01 2001-06-16 2001-01-01 2001-03-01
+5 2001-01-01 2001-12-01 2001-07-01 2001-06-16 2001-01-01 2001-10-01
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -547,28 +558,27 @@ R> as.numeric(as.Date(battles$Date, max) - as.Date(battles$Date, min))
 \end{CodeOutput}
 \end{CodeChunk}
 
-Getting the timing can be important for researchers, however, when faced
-with date imprecision, researchers usually have to chose between making
+Getting the timing can be important for researchers. However, when faced
+with date imprecision, researchers usually have to choose between making
 arbitrary choices (e.g.~adding ``-01-01'' to all incomplete dates) or
-work imprecise dates (e.g.~keep the year only). Yet, both choices may
-lead to bias results. This is especially true if researchers' are
-looking to generate inferences. Let's assume, for instance, certain
-researcher is interested in the relationship between the United States
-(US) being a party to a conflict and the duration of the conflict in
-2001. The researcher hypothesizes that conflicts involving the US have a
-shorter duration because the US has the most powerful military in the
-world. A relationship could be mediated by the number of parties
-involved in the conflict. Using \pkg{messydates}, we can create two
-different date variables in the battles data to be our dependent
-variables representing conflict time, one variable with an arbitrary cut
-of point and the other variable with random values for uncertain or
-approximate dates. The ability to resolve uncertain or approximate dates
-differently is particularly useful for checking the robustness of
-results. As our independent variable, we create a dummy variable for
-whether the US was involved in the conflict. As our control, we code the
-number of actors in the conflict. With these variables we build two
-linear regression models, one using the arbitrary dates and the other
-the random dates.
+work with imprecise dates (e.g.~keep the year only). Yet, either choice
+may lead to biased results. This is especially true if researchers are
+looking to generate inferences. Assume we are interested in the
+relationship between the United States (US) being a party to a conflict
+and the duration of the conflict in 2001. We hypothesize that conflicts
+involving the US have a shorter duration because the US has the most
+powerful military in the world. A relationship that could be mediated by
+the number of parties involved in the conflict. Using \pkg{messydates},
+we can create two different date variables in the battles data to be our
+dependent variables representing conflict time, one variable with an
+arbitrary cut off point and the other variable with random values for
+uncertain or approximate dates. The ability to resolve uncertain or
+approximate dates differently is particularly useful for checking the
+robustness of results. As our independent variable, we create a dummy
+variable for whether the US was involved in the conflict. As our
+control, we code the number of actors in the conflict. With these
+variables we build two linear regression models, one using the arbitrary
+dates and the other the random dates.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -580,29 +590,26 @@ R> battles <- battles %>%
 +                          arbitrary),
 +          US_party = ifelse(grepl("US", Parties), 1, 0),
 +          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
-R> lm(arbitrary ~ US_party + n_actors, battles)
+R> arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
+R> random <- lm(random ~ US_party + n_actors, battles)
+R> plot(random)
 \end{CodeInput}
-\begin{CodeOutput}
 
-Call:
-lm(formula = arbitrary ~ US_party + n_actors, data = battles)
 
-Coefficients:
-(Intercept)     US_party     n_actors  
-      8.815       10.802       -2.479  
-\end{CodeOutput}
-\begin{CodeInput}
-R> lm(random ~ US_party + n_actors, battles)
-\end{CodeInput}
-\begin{CodeOutput}
+\begin{center}\includegraphics{article_files/figure-latex/lm-1} \end{center}
 
-Call:
-lm(formula = random ~ US_party + n_actors, data = battles)
 
-Coefficients:
-(Intercept)     US_party     n_actors  
-      0.538       -1.410        1.660  
-\end{CodeOutput}
+
+\begin{center}\includegraphics{article_files/figure-latex/lm-2} \end{center}
+
+
+
+\begin{center}\includegraphics{article_files/figure-latex/lm-3} \end{center}
+
+
+
+\begin{center}\includegraphics{article_files/figure-latex/lm-4} \end{center}
+
 \end{CodeChunk}
 
 Notice how the regression coefficients change when we pick random values

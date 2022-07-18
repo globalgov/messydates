@@ -97,7 +97,7 @@ month, or day components, or whole dates to estimate values that are possibly co
 Day, month, or year, uncertainty can also be indicated by adding a `?`
 to a possibly dubious date or date component.
 If we are not sure about the reliability of the sources for the
-"Battle of Shawali Kowt" and that we think the declared date for the battle is approximate,
+"Battle of Shawali Kowt" and we think the declared date for the battle is approximate,
 we can use `as_uncertain()` or `as_approximate()` to annotate these dates.
 
 ```{r approximate, warning=FALSE}

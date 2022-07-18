@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.15)  18 JUL 2022 14:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.15)  18 JUL 2022 16:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -612,16 +612,16 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 {/Users/henriquesposito/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./jsslogo.jpg>]
 
-Package xcolor Warning: Incompatible color definition on input line 146.
-
-
-Package xcolor Warning: Incompatible color definition on input line 146.
-
-
 Package xcolor Warning: Incompatible color definition on input line 147.
 
 
 Package xcolor Warning: Incompatible color definition on input line 147.
+
+
+Package xcolor Warning: Incompatible color definition on input line 148.
+
+
+Package xcolor Warning: Incompatible color definition on input line 148.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -649,25 +649,61 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [6]
-
-Package xcolor Warning: Incompatible color definition on input line 483.
-
-
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 7
  []
 
 [7]
+
+Package xcolor Warning: Incompatible color definition on input line 494.
+
+
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 8 []
  []
 
 [8]
+<article_files/figure-latex/lm-1.pdf, id=133, 353.32pt x 264.99pt>
+File: article_files/figure-latex/lm-1.pdf Graphic file (type pdf)
+<use article_files/figure-latex/lm-1.pdf>
+Package pdftex.def Info: article_files/figure-latex/lm-1.pdf  used on input line 599.
+(pdftex.def)             Requested size: 354.12434pt x 265.59586pt.
+
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/lmr/m/n/10.95 9
  []
 
-[9] (./article.bbl
+[9]
+<article_files/figure-latex/lm-2.pdf, id=138, 353.32pt x 264.99pt>
+File: article_files/figure-latex/lm-2.pdf Graphic file (type pdf)
+<use article_files/figure-latex/lm-2.pdf>
+Package pdftex.def Info: article_files/figure-latex/lm-2.pdf  used on input line 603.
+(pdftex.def)             Requested size: 354.12434pt x 265.59586pt.
+<article_files/figure-latex/lm-3.pdf, id=139, 353.32pt x 264.99pt>
+File: article_files/figure-latex/lm-3.pdf Graphic file (type pdf)
+<use article_files/figure-latex/lm-3.pdf>
+Package pdftex.def Info: article_files/figure-latex/lm-3.pdf  used on input line 607.
+(pdftex.def)             Requested size: 354.12434pt x 265.59586pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/lmr/m/n/10.95 10 []
+ []
+
+[10 <./article_files/figure-latex/lm-1.pdf> <./article_files/figure-latex/lm-2.pdf>]
+<article_files/figure-latex/lm-4.pdf, id=155, 353.32pt x 264.99pt>
+File: article_files/figure-latex/lm-4.pdf Graphic file (type pdf)
+<use article_files/figure-latex/lm-4.pdf>
+Package pdftex.def Info: article_files/figure-latex/lm-4.pdf  used on input line 611.
+(pdftex.def)             Requested size: 354.12434pt x 265.59586pt.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/lmr/m/n/10.95 11
+ []
+
+[11 <./article_files/figure-latex/lm-3.pdf> <./article_files/figure-latex/lm-4.pdf>] (./article.bbl
 
 Package xcolor Warning: Incompatible color definition on input line 22.
 
@@ -676,49 +712,49 @@ Package xcolor Warning: Incompatible color definition on input line 23.
 
 )
 
-Package xcolor Warning: Incompatible color definition on input line 629.
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
-Package xcolor Warning: Incompatible color definition on input line 629.
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 629--629
+Underfull \hbox (badness 10000) in paragraph at lines 636--636
 
  []
 
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/m/it' tried instead on input line 629.
+(Font)              Font shape `T1/pzc/m/it' tried instead on input line 636.
 
-Package xcolor Warning: Incompatible color definition on input line 629.
-
-
-Package xcolor Warning: Incompatible color definition on input line 629.
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
-Package xcolor Warning: Incompatible color definition on input line 629.
+Package xcolor Warning: Incompatible color definition on input line 636.
+
+
+Package xcolor Warning: Incompatible color definition on input line 636.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/lmr/m/n/10.95 10 []
+\T1/lmr/m/n/10.95 12 []
  []
 
-[10] (./article.aux)
+[12] (./article.aux)
 Package rerunfilecheck Info: File `article.out' has not changed.
 (rerunfilecheck)             Checksum: 295D53B56048E788CDF11A94046E01DB;1881.
  ) 
 Here is how much of TeX's memory you used:
- 21046 strings out of 479983
- 405605 string characters out of 5886392
- 666346 words of memory out of 5000000
- 38792 multiletter control sequences out of 15000+600000
+ 21085 strings out of 479983
+ 407034 string characters out of 5886392
+ 665346 words of memory out of 5000000
+ 38824 multiletter control sequences out of 15000+600000
  544166 words of font info for 66 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,9n,103p,389b,615s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,9n,103p,389b,626s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmb10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbo10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtto10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on article.pdf (10 pages, 346404 bytes).
+Output written on article.pdf (12 pages, 369377 bytes).
 PDF statistics:
- 221 PDF objects out of 1000 (max. 8388607)
- 181 compressed objects within 2 object streams
- 48 named destinations out of 1000 (max. 500000)
- 114 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 255 PDF objects out of 1000 (max. 8388607)
+ 204 compressed objects within 3 object streams
+ 50 named destinations out of 1000 (max. 500000)
+ 134 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -68,7 +68,7 @@ These include notation for:
 -   unspecified date( component)s, e.g. `2012-XX-01` for the first of some unknown month in 2012 or `2012-01` for some unknown day in January 2012
 -   approximate date( component)s, e.g. `2012-01-12~` for approximately the 12th of January 2012
 -   uncertain date( component)s, e.g. `2012-01-12?` where this data point is based on an unreliable source
--   sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date can be both 1 January 2012 and 12 January 2012
+-   sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date can be either 1 January 2012 and 12 January 2012
 -   ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between the 1 January 2012 and 12 January 2012 inclusive
 
 \pkg{messydates} contains a set of tools for constructing and coercing into
@@ -83,11 +83,12 @@ Methods are also offered that can be used to make explicit how researchers
 convert date imprecision into precise dates for analysis,
 such as getting the `min()`, `max()`, or even a `random()` date
 from among the dates consistent with a set or range of dates.
-This greatly facilitates research transparency as well as robustness checks.
+This greatly facilitates research transparency as well as robustness checks
+as we will demonstrate below.
 
 ## Motivation
 
-As researchers, we often recognize this messiness but are forced to
+As researchers, we often recognize this messiness but are required to
 force non-existent precision on data so we can proceed with analysis.
 For example, if we only know something happened in a given month or year,
 we might just opt for the start of that month (e.g. `2021-07-01`) or year (`2021-01-01`), assuming that to err on the earlier (or later) side is a justifiable bias.
@@ -98,10 +99,12 @@ working with various kinds of date imprecision.
 ## Relationship to other packages
 
 \pkg{messydates} offers a new date class,
-but one that comes with methods for converting from and into
-common date classes such as `Date`, `POSIXct`, and `POSIXlt.` 
-It is thus fully compatible with packages such as \pkg{lubridate} [@grolemundDatesTimesMade2011] 
+but one that comes with methods for converting from and into `base`,
+date classes such as `Date`, `POSIXct`, and `POSIXlt`.
+It is thus fully compatible with packages such as \pkg{lubridate} [@grolemundDatesTimesMade2011]
 and \pkg{anytime} [@eddelbuettelAnytimeEasierDate2019].
+\pkg{messydates} is, therefore, compatible (perhaps with an additional coercion step)
+with all contemporary R packages for analysis.
 
 # \proglang{R} code {#r-code short-title="R code"}
 
@@ -175,7 +178,8 @@ The `contract()` function operates as the opposite of `expand()`.
 It contracts a list of dates into the abbreviated annotation of \pkg{messydates}.
 
 ```{r contract, warning=FALSE, message=FALSE}
-contract(expand(dates_expand))
+tibble::tibble('Original Dates' = dates_expand,
+               'Contracted Dates' = contract(expand(dates_expand)))
 ```
 
 ## Coerce from messydates
@@ -205,9 +209,8 @@ Several other functions are also offered in the \pkg{messydates} package.
 
 For example, one can check various logical tests for messy date objects.
 `is_messydate()` tests whether the object inherits the `mdate` class.
-`is_intersecting()` tests whether there is any intersection between two messy dates. `
-is_element()` similarly tests whether a messy date can be found within
-a messy date range or set.
+`is_intersecting()` tests whether there is any intersection between two messy dates. 
+`is_element()` similarly tests whether a messy date can be found within a messy date range or set.
 `is_similar()` tests whether two dates contain similar components.
 `is_precise()` tests for whether date is precise.
 
@@ -268,21 +271,20 @@ as.Date(battles$Date, median)
 as.numeric(as.Date(battles$Date, max) - as.Date(battles$Date, min))
 ```
 
-Getting the timing can be important for researchers, however,
-when faced with date imprecision, researchers usually have to chose
+Getting the timing can be important for researchers.
+However, when faced with date imprecision, researchers usually have to choose
 between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates)
-or work imprecise dates (e.g. keep the year only).
-Yet, both choices may lead to bias results.
-This is especially true if researchers' are looking to generate inferences.
-Let's assume, for instance, certain researcher is interested in the
-relationship between the United States (US) being a party to a conflict and the
-duration of the conflict in 2001.
-The researcher hypothesizes that conflicts involving the US have
+or work with imprecise dates (e.g. keep the year only).
+Yet, either choice may lead to biased results.
+This is especially true if researchers are looking to generate inferences.
+Assume we are interested in the relationship between the United States (US)
+being a party to a conflict and the duration of the conflict in 2001.
+We hypothesize that conflicts involving the US have
 a shorter duration because the US has the most powerful military in the world.
-A relationship could be mediated by the number of parties involved in the conflict.
+A relationship that could be mediated by the number of parties involved in the conflict.
 Using \pkg{messydates}, we can create two different date variables
 in the battles data to be our dependent variables representing conflict time,
-one variable with an arbitrary cut of point and the other variable
+one variable with an arbitrary cut off point and the other variable
 with random values for uncertain or approximate dates.
 The ability to resolve uncertain or approximate dates differently is
 particularly useful for checking the robustness of results.
@@ -301,8 +303,9 @@ battles <- battles %>%
                          arbitrary),
          US_party = ifelse(grepl("US", Parties), 1, 0),
          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
-lm(arbitrary ~ US_party + n_actors, battles)
-lm(random ~ US_party + n_actors, battles)
+arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
+random <- lm(random ~ US_party + n_actors, battles)
+plot(random)
 ```
 
 Notice how the regression coefficients change when we pick random values

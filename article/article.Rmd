@@ -303,9 +303,8 @@ battles <- battles %>%
                          arbitrary),
          US_party = ifelse(grepl("US", Parties), 1, 0),
          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
-arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
-random <- lm(random ~ US_party + n_actors, battles)
-plot(random)
+lm(arbitrary ~ US_party + n_actors, battles)
+lm(random ~ US_party + n_actors, battles)
 ```
 
 Notice how the regression coefficients change when we pick random values

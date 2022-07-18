@@ -334,10 +334,10 @@ R> tibble::tibble(min = as.Date(dates_expand, min),
   min        max        median     mean       modal      random    
   <date>     <date>     <date>     <date>     <date>     <date>    
 1 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01
-2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-04
-3 2001-01-01 2001-02-01 2001-01-17 2001-01-16 2001-01-01 2001-01-06
+2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-25
+3 2001-01-01 2001-02-01 2001-01-17 2001-01-16 2001-01-01 2001-01-10
 4 2001-01-01 2001-02-01 2001-02-01 2001-01-16 2001-01-01 2001-01-01
-5 2001-01-01 2001-12-01 2001-07-01 2001-06-16 2001-01-01 2001-10-01
+5 2001-01-01 2001-12-01 2001-07-01 2001-06-16 2001-01-01 2001-01-01
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -590,26 +590,29 @@ R> battles <- battles %>%
 +                          arbitrary),
 +          US_party = ifelse(grepl("US", Parties), 1, 0),
 +          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
-R> arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
-R> random <- lm(random ~ US_party + n_actors, battles)
-R> plot(random)
+R> lm(arbitrary ~ US_party + n_actors, battles)
 \end{CodeInput}
+\begin{CodeOutput}
 
+Call:
+lm(formula = arbitrary ~ US_party + n_actors, data = battles)
 
-\begin{center}\includegraphics{article_files/figure-latex/lm-1} \end{center}
+Coefficients:
+(Intercept)     US_party     n_actors  
+      8.815       10.802       -2.479  
+\end{CodeOutput}
+\begin{CodeInput}
+R> lm(random ~ US_party + n_actors, battles)
+\end{CodeInput}
+\begin{CodeOutput}
 
+Call:
+lm(formula = random ~ US_party + n_actors, data = battles)
 
-
-\begin{center}\includegraphics{article_files/figure-latex/lm-2} \end{center}
-
-
-
-\begin{center}\includegraphics{article_files/figure-latex/lm-3} \end{center}
-
-
-
-\begin{center}\includegraphics{article_files/figure-latex/lm-4} \end{center}
-
+Coefficients:
+(Intercept)     US_party     n_actors  
+      0.538       -1.410        1.660  
+\end{CodeOutput}
 \end{CodeChunk}
 
 Notice how the regression coefficients change when we pick random values

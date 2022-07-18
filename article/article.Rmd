@@ -296,7 +296,7 @@ one using the arbitrary dates and the other the random dates.
 set.seed(1301)
 battles <- battles %>%
   mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
-         random = ifelse(grepl("\\?|\\~", Date),
+         random = ifelse(is_uncertain(Date)|is_approximate(Date),
                          abs(as.Date(Date, random) - as.Date(Date, random)),
                          arbitrary),
          US_party = ifelse(grepl("US", Parties), 1, 0),

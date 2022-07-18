@@ -18,9 +18,9 @@ class objects, alongside other object classes.
 }
 \details{
 'mreport' displays the variable's name,
-the variable type, the number of missing observations for variable,
-the percentage of missing observations in variable,
-the minimal value in variable, and the maximal value in variable.
+the variable type, the number of observations per variable,
+the number of missing observations for variable,
+and the percentage of missing observations in variable.
 }
 \examples{
 mreport(battles)

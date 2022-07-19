@@ -232,9 +232,9 @@ inter alia, messy date class objects.
 Or 'join' that retains all elements, even if duplicated, with `md_multiset`.
 
 ```{r set, warning=FALSE}
-md_intersect(as_messydate("2001-01-01..2001-01-20"),as_messydate("2001-01"))
-md_union(as_messydate("2001-01-01..2001-01-20"),as_messydate("2001-01"))
-md_multiset(as_messydate("2001-01-01..2001-01-20"),as_messydate("2001-01"))
+md_intersect(as_messydate("2001-01-01..2001-01-20"), as_messydate("2001-01"))
+md_union(as_messydate("2001-01-01..2001-01-20"), as_messydate("2001-01"))
+md_multiset(as_messydate("2001-01-01..2001-01-20"), as_messydate("2001-01"))
 ```
 
 As well, some arithmetic operations are available for messydates.

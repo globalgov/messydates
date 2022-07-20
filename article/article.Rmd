@@ -305,6 +305,7 @@ battles <- battles %>%
          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
 lm(arbitrary ~ US_party + n_actors, battles)
 lm(random ~ US_party + n_actors, battles)
+plot(lm(arbitrary ~ US_party + n_actors, battles), which = 4)
 ```
 
 Notice how the regression coefficients change when we pick random values
@@ -313,8 +314,10 @@ in comparison to setting arbitrary cut off points.
 Although not statistically significant, the coefficient for US being a party
 in a conflict change considerably, going from being positive to becoming negative,
 when we we use random values within that range.
-In this case, it is hard to say whether there is a positive or negative relationship
-between the US being a part of a battle in 2001 and the time of the conflict.
+In this case, setting arbitrary cut off points to dates introduces a highly
+influential outlier observation that affects the model coefficients.
+Hence, it is hard to say whether there is a relationship between the US being
+an actor involved in one of the battles in 2001 and its duration.
 
 # Acknowledgements
 

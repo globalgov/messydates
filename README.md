@@ -21,8 +21,8 @@ Practices](https://bestpractices.coreinfrastructure.org/projects/5061/badge)](ht
 ## Why this package?
 
 Existing packages for working with dates in R expect them to be *tidy*.
-That is, they should be in or coercible to the standard ISO format
-`yyyy-mm-dd`.
+That is, they should be in or coercible to the standard `yyyy-mm-dd`
+format.
 
 But dates are often ***messy***. Sometimes we only know the year when
 something happened, leaving other components of the date, such as the
@@ -47,8 +47,9 @@ working with various kinds of date imprecision.
 
 ## A quick overview
 
-`{messydates}` implements for R the extended annotation standard for
-dates, the Extended Date/Time Format (EDTF) outlined in [ISO
+`{messydates}` implements for R the Extended Date/Time Format (EDTF)
+annotations set by the International Organization for Standardization
+(ISO) outlined in [ISO
 8601-2_2019(E)](https://www.iso.org/standard/70908.html). `{messydates}`
 introduces a new `mdate` class that embeds these annotations, and offers
 a set of methods for constructing and coercing into and from the `mdate`

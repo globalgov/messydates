@@ -81,6 +81,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+          DEFAULT_BUMP: patch
 
       - name: Checkout two
         uses: actions/checkout@v2
@@ -159,13 +160,15 @@ jobs:
         with:
           cache-version: 2
           extra-packages: |
-            any::messydates
             any::lubridate
             any::tibble
             any::dplyr
             any::knitr
             any::kableExtra
           needs: check
+
+      - name: Install package
+        run: R CMD INSTALL .
 
       # Render README.md using rmarkdown
       - name: render README

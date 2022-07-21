@@ -19,7 +19,7 @@ ranges of dates, negative dates, and date sets."><!-- mathjax --><script src="ht
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -96,37 +96,33 @@ ranges of dates, negative dates, and date sets.</p>
 <span class="r-in"><span><span class="st">"2001-01-01..2001-02-02"</span>, <span class="st">"{2001-01-01,2001-02-02}"</span>,</span></span>
 <span class="r-in"><span><span class="st">"2008-XX-31"</span>, <span class="st">"..2002-02-03"</span>, <span class="st">"2001-01-03.."</span>, <span class="st">"28 BC"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>date <span class="op">=</span> <span class="va">d</span>, add <span class="op">=</span> <span class="va">d</span> <span class="op">+</span> <span class="fl">1</span>, subtract <span class="op">=</span> <span class="va">d</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    date                    add                                          subtract</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                                      <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2008-03-25              2008-03-26                                 … 2008-03…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> -2012-02-27             -2012-02-26                                … -2012-0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2001-01?                2001-01-02..2001-02-01                     … 2000-12…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ~2001                   2001-01-02                                 … 2000-12…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2001-01-01..2001-02-02  2001-01-02..2001-02-03                     … 2000-12…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> {2001-01-01,2001-02-02} {2001-01-02,2001-02-03}                    … {2000-1…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2008-XX-31              {2008-02-01,2008-02-29,2008-04-01,2008-05-0… {2008-0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ..2002-02-03            ..2002-02-04                               … ..2002-…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2001-01-03..            2001-01-04..                               … 2001-01…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -0028                   -0027-12-31..-0028-12-30                   … -0028-0…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    date                    add                      subtract                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2008-03-25              2008-03-26               2008-03-24              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> -2012-02-27             -2012-02-26              -2012-02-28             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2001-01?                2001-01-02..2001-02-01   2000-12-31..2001-01-30  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ~2001                   2001-01-02..2002-01-01   2000-12-31..2001-12-30  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2001-01-01..2001-02-02  2001-01-02..2001-02-03   2000-12-31..2001-02-01  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> {2001-01-01,2001-02-02} {2001-01-02,2001-02-03}  {2000-12-31,2001-02-01} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2008-XX-31              2008-02-01               2008-XX-30              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ..2002-02-03            ..2002-02-04             ..2002-02-02            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2001-01-03..            2001-01-04..             2001-01-02..            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -0028                   -0027-12-31..-0028-12-30 -0028-01-02..-0029-01-01</span>
 <span class="r-in"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>date <span class="op">=</span> <span class="va">d</span>, add <span class="op">=</span> <span class="va">d</span> <span class="op">+</span> <span class="st">"1 year"</span>, subtract <span class="op">=</span> <span class="va">d</span> <span class="op">-</span> <span class="st">"1 year"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    date                    add                                          subtract</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                                      <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2008-03-25              2009-03-25                                 … 2007-03…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> -2012-02-27             -2011-02-27                                … -2013-0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2001-01?                2002-01                                    … 2000-01…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ~2001                   2002-01-01                                 … 2000-01…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2001-01-01..2001-02-02  2002-01-01..2002-02-02                     … 2000-01…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> {2001-01-01,2001-02-02} {2002-01-01,2002-02-02}                    … {2000-0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2008-XX-31              {2009-01-30,2009-02-27,2009-03-31,2009-04-3… {2007-0…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ..2002-02-03            ..2003-02-03                               … ..2001-…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2001-01-03..            2002-01-03..                               … 2000-01…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -0028                   -0027-01-01..-0028-01-01                   … -0028-1…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    date                    add                      subtract                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;mdate&gt;</span>                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2008-03-25              2009-03-25               2007-03-26              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> -2012-02-27             -2011-02-27              -2013-02-26             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2001-01?                2002-01                  2000-01-02..2000-02-01  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ~2001                   2002                     2000-01-02..2000-12-31  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2001-01-01..2001-02-02  2002-01-01..2002-02-02   2000-01-02..2000-02-03  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> {2001-01-01,2001-02-02} {2002-01-01,2002-02-02}  {2000-01-02,2000-02-03} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2008-XX-31              2009-XX-30               2007-XX-31              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ..2002-02-03            ..2003-02-03             ..2001-02-03            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2001-01-03..            2002-01-03..             2000-01-04..            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -0028                   -0027-01-01..-0028-01-01 -0028-12-31..-0029-12-31</span>
 </code></pre></div>
     </div>
   </div>
@@ -141,7 +137,7 @@ ranges of dates, negative dates, and date sets.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -30,7 +30,7 @@ especially for checking the robustness of results."><!-- mathjax --><script src=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -125,33 +125,24 @@ For example, <code><a href="https://rdrr.io/r/base/Extremes.html" class="externa
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, <span class="va">min</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-01"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01"</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-01"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, <span class="va">max</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-31"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, <span class="va">median</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-16"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, <span class="va">modal</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-01"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, <span class="va">random</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-01"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-07"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"1000 BC"</span><span class="op">)</span>, <span class="va">max</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-12-31"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"1000 BC"</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-07-02"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"1000 BC"</span><span class="op">)</span>, <span class="va">median</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-07-02"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-1000"</span>, <span class="st">"2020"</span><span class="op">)</span><span class="op">)</span>, <span class="va">min</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-01-01" "2020-01-01" </span>
 </code></pre></div>
     </div>
@@ -167,7 +158,7 @@ For example, <code><a href="https://rdrr.io/r/base/Extremes.html" class="externa
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

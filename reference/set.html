@@ -20,7 +20,7 @@ please use md_multiset."><!-- mathjax --><script src="https://cdnjs.cloudflare.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -99,15 +99,11 @@ or a common mode for union.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">md_intersect</span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span>,<span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "2012-01-01" "2012-01-02" "2012-01-03" "2012-01-04" "2012-01-05"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "2012-01-06" "2012-01-07" "2012-01-08" "2012-01-09" "2012-01-10"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11] "2012-01-11" "2012-01-12" "2012-01-13" "2012-01-14" "2012-01-15"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [16] "2012-01-16" "2012-01-17" "2012-01-18" "2012-01-19" "2012-01-20"</span>
 <span class="r-in"><span><span class="fu">md_union</span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span>,<span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "2012-01-01" "2012-01-02" "2012-01-03" "2012-01-04" "2012-01-05"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "2012-01-06" "2012-01-07" "2012-01-08" "2012-01-09" "2012-01-10"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11] "2012-01-11" "2012-01-12" "2012-01-13" "2012-01-14" "2012-01-15"</span>
@@ -116,8 +112,6 @@ or a common mode for union.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] "2012-01-26" "2012-01-27" "2012-01-28" "2012-01-29" "2012-01-30"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [31] "2012-01-31"</span>
 <span class="r-in"><span><span class="fu">md_multiset</span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span>,<span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please specify 'approx_range' argument if you want approximate dates to also be expanded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "2012-01-01" "2012-01-02" "2012-01-03" "2012-01-04" "2012-01-05"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "2012-01-06" "2012-01-07" "2012-01-08" "2012-01-09" "2012-01-10"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11] "2012-01-11" "2012-01-12" "2012-01-13" "2012-01-14" "2012-01-15"</span>
@@ -143,7 +137,7 @@ or a common mode for union.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

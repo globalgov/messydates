@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
         <td><p>Annotates dates as censored, uncertain, or approximate</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="coerce-from">Coerce from <a href="#coerce-from" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>These functions coerce dates from the <code>mdate</code> class into a single <code>Date</code> or other class:</p>
+          <p class="section-desc"></p><p>These functions coerce dates from the <code>mdate</code> class into a single <code>Date</code>:</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="from_messydate.html">as.Date(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="from_messydate.html">as.POSIXct(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="from_messydate.html">as.POSIXlt(<i>&lt;mdate&gt;</i>)</a></code> </p>
@@ -112,7 +112,7 @@
         </td>
         <td><p>Logical tests on messy dates</p></td>
       </tr><tr><td>
-          <p><code><a href="logical-class.html">is_messydate()</a></code> <code><a href="logical-class.html">is_intersecting()</a></code> <code><a href="logical-class.html">is_element()</a></code> <code><a href="logical-class.html">is_similar()</a></code> <code><a href="logical-class.html">is_precise()</a></code> </p>
+          <p><code><a href="logical-class.html">is_messydate()</a></code> <code><a href="logical-class.html">is_intersecting()</a></code> <code><a href="logical-class.html">is_element()</a></code> <code><a href="logical-class.html">is_similar()</a></code> <code><a href="logical-class.html">is_precise()</a></code> <code><a href="logical-class.html">is_uncertain()</a></code> <code><a href="logical-class.html">is_approximate()</a></code> </p>
         </td>
         <td><p>Logical tests on messy dates</p></td>
       </tr><tr><td>
@@ -121,9 +121,13 @@
         <td><p>Extracting components from messy dates</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="data">Data <a href="#data" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Some test and/or example data:</p>
+          <p class="section-desc"></p><p>Working with ‘messy’ data:</p>
         </th>
       </tr></tbody><tbody><tr><td>
+          <p><code><a href="mreport.html">mreport()</a></code> </p>
+        </td>
+        <td><p>Data report for datasets with 'mdate' variables</p></td>
+      </tr><tr><td>
           <p><code><a href="battles.html">battles</a></code> </p>
         </td>
         <td><p>Dates of battles in 2001</p></td>
@@ -140,7 +144,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

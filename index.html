@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -90,37 +90,16 @@
 <div class="section level2">
 <h2 id="why-this-package">Why this package?<a class="anchor" aria-label="anchor" href="#why-this-package"></a>
 </h2>
-<p>Existing packages for working with dates in R expect them to be <em>tidy</em>. That is, they should be in or coercible to the standard ISO format <code>yyyy-mm-dd</code>.</p>
+<p>Existing packages for working with dates in R expect them to be <em>tidy</em>. That is, they should be in or coercible to the standard <code>yyyy-mm-dd</code> format.</p>
 <p>But dates are often <strong><em>messy</em></strong>. Sometimes we only know the year when something happened, leaving other components of the date, such as the month or day, <em>unspecified</em>. This is often the case with historical dates, for instance. Sometimes we can only say <em>approximately</em> when an event occurred, that it occurred <em>before</em> or <em>after</em> a certain date, or we recognise that our best estimate comes from a <em>dubious</em> source. Other times there exists a <em>set</em> or <em>range</em> of possible dates for an event.</p>
 <p>Although researchers generally recognise this messiness, many feel expected to force artificial precision or unfortunate imprecision on temporal data to proceed with analysis. For example, if we only know something happened in <code>2021</code>, then we might revert to a panel data design <em>even if greater precision is available</em>, or opt to replace this date with the start of that year (<code>2021-01-01</code>), assuming that erring on the earlier (or later) side is more justifiable than a random date within that month or year.</p>
 <p>However, this can create inferential issues when timing or sequence is important. <code>{messydates}</code> assists with this problem by retaining and working with various kinds of date imprecision.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#&gt; </span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; Attaching package: 'lubridate'</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#&gt; The following objects are masked from 'package:messydates':</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#&gt; </span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#&gt;     day, month, year</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#&gt; </span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#&gt;     date, intersect, setdiff, union</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#&gt; </span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#&gt; </span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#&gt;     filter, lag</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#&gt; </span></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; </span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; Attaching package: 'kableExtra'</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a><span class="co">#&gt; </span></span>
-<span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt;     group_rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="a-quick-overview">A quick overview<a class="anchor" aria-label="anchor" href="#a-quick-overview"></a>
 </h2>
-<p><code>{messydates}</code> implements for R the extended annotation standard for dates, the Extended Date/Time Format (EDTF) outlined in <a href="https://www.iso.org/standard/70908.html" class="external-link">ISO 8601-2_2019(E)</a>. <code>{messydates}</code> introduces a new <code>mdate</code> class that embeds these annotations, and offers a set of methods for constructing and coercing into and from the <code>mdate</code> class, as well as tools for working with such ‘messy’ dates.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p><code>{messydates}</code> implements for R the Extended Date/Time Format (EDTF) annotations set by the International Organization for Standardization (ISO) outlined in <a href="https://www.iso.org/standard/70908.html" class="external-link">ISO 8601-2_2019(E)</a>. <code>{messydates}</code> introduces a new <code>mdate</code> class that embeds these annotations, and offers a set of methods for constructing and coercing into and from the <code>mdate</code> class, as well as tools for working with such ‘messy’ dates.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pkg_comparison</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">Example</span>, <span class="op">~</span><span class="va">OriginalDate</span>,</span>
 <span>                                    <span class="st">"Normal date"</span>, <span class="st">"2010-01-01"</span>,</span>
 <span>                                    <span class="st">"Future date"</span>, <span class="st">"2599-12-31"</span>,</span>
@@ -134,7 +113,7 @@
 <span>                                    <span class="st">"Range of dates"</span>, <span class="st">"2019-11-01:2020-01-01"</span>,</span>
 <span>                                    <span class="st">"Set of dates"</span>, <span class="st">"2021-5-26, 2021-11-19, 2021-12-4"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">OriginalDate</span><span class="op">)</span>,</span>
-<span>                lubridate <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_date</a></span><span class="op">(</span><span class="va">OriginalDate</span><span class="op">)</span>,</span>
+<span>                lubridate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_date</a></span><span class="op">(</span><span class="va">OriginalDate</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                messydates <span class="op">=</span> <span class="fu">messydates</span><span class="fu">::</span><span class="fu"><a href="reference/messydate.html">as_messydate</a></span><span class="op">(</span><span class="va">OriginalDate</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -236,15 +215,12 @@
 <p>The first way that <code>{messydates}</code> assists researchers that use dates in <code>mdate</code> class is to provide methods for converting back into common date classes such as <code>Date</code>, <code>POSIXct</code>, and <code>POSIXlt</code>. It is thus fully compatible with packages such as <a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a> and <code>{anydate}</code>.</p>
 <p>As messy date annotations can indicate multiple possible dates, <code>{messydates}</code> allows e.g. ranges or sets of dates to be unpacked or expanded into all compatible dates.</p>
 <p>Since most methods of analysis or modelling expect single date observations, we offer ways to resolve this multiplicity when coercing <code>mdate</code>-class objects into other date formats. For example, researcher might explicitly choose to favour the <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min()</a></code>, <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max()</a></code>, <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median()</a></code>, or even a <code><a href="reference/resolve.html">random()</a></code> date. This greatly facilitates research transparency by demanding a conscious choice from researchers, as well as supporting robustness checks by enabling description or inference across dates compatible with the messy annotated date.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resolve_mdate</span> <span class="op">&lt;-</span> <span class="va">pkg_comparison</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">messydates</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">messydates</span>, <span class="va">min</span><span class="op">)</span>,</span>
 <span>         median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">messydates</span>, <span class="va">median</span><span class="op">)</span>,</span>
-<span>         max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">messydates</span>, <span class="va">max</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Please specify 'approx_range' argument if you want approximate dates to also be expanded</span></span>
-<span><span class="co">#&gt; Please specify 'approx_range' argument if you want approximate dates to also be expanded</span></span>
-<span><span class="co">#&gt; Please specify 'approx_range' argument if you want approximate dates to also be expanded</span></span></code></pre></div>
+<span>         max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">messydates</span>, <span class="va">max</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
 <th style="text-align:left;">messydates</th>
@@ -286,8 +262,8 @@
 <tr>
 <td style="text-align:left;">2012-01-12~</td>
 <td style="text-align:left;">2012-01-12</td>
-<td style="text-align:left;">2012-01-13</td>
-<td style="text-align:left;">2012-01-13</td>
+<td style="text-align:left;">2012-01-12</td>
+<td style="text-align:left;">2012-01-12</td>
 </tr>
 <tr>
 <td style="text-align:left;">2001-01-01?</td>
@@ -335,10 +311,10 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>The easiest way to install <code>{messydates}</code> is directly from CRAN:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"messydates"</span><span class="op">)</span></span></code></pre></div>
 <p>However, you may also install the development version from <a href="https://github.com/" class="external-link">GitHub</a>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"globalgov/messydates"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -404,7 +380,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

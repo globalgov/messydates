@@ -5,3 +5,11 @@
 docs
 iso_standards*
 *.DS_Store
+article/article.log
+article/article.pdf
+article/article.tex
+article/jss.bst
+article/jss.cls
+article/jsslogo.jpg
+article/references.bib
+article/article_files

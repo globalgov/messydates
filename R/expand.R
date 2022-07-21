@@ -10,9 +10,10 @@
 #' The function removes the annotation from dates with unreliable sources ('?'),
 #' before being expanded normally as though they were incomplete.
 #' @param x A `mdate` object.
-#' @param approx_range Range to expand approximate dates, or date components,
-#' annotated with '~', by default 0.
-#' That is, returns original values and removes signs for approximate dates.
+#' @param approx_range Range to expand approximate dates,
+#' or date components, annotated with '~', by default 0.
+#' That is, removes signs for approximate dates and
+#' treats these dates as precise dates.
 #' If 3, for example, adds 3 days for day approximation,
 #' 3 months for month approximation,
 #' 3 years for year/whole date approximation,
@@ -33,15 +34,16 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' expand(d)
 #' @export
 expand.mdate <- function(x, approx_range = 0) {
-  if (approx_range == 0) {
-    message("Please specify 'approx_range' argument if you want approximate dates to also be expanded")
-  }
   x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
-  x <- suppressWarnings(expand_approximate(x, approx_range))
+  if (approx_range == 0) {
+    x <- stringr::str_replace_all(x, "\\~|^\\.\\.|\\.\\.$", "")
+  } else {
+    x <- expand_approximate(x, approx_range)
+  }
   x <- expand_unspecified(x)
   x <- expand_negative(x)
   x <- expand_sets(x)
-  x <- suppressWarnings(expand_ranges(x))
+  x <- expand_ranges(x)
   x
 }
 
@@ -55,9 +57,9 @@ expand_approximate <- function(dates, approx_range) {
                     stringr::str_detect(dates, "\\.\\."),
                   str_replace_all(dates, "\\~", ""), dates)
   # expansion for approximate ranges not yet implemented
-  dates <- expand_approximate_years(dates, approx_range)
-  dates <- expand_approximate_months(dates, approx_range)
-  dates <- expand_approximate_days(dates, approx_range)
+  dates <- suppressWarnings(expand_approximate_years(dates, approx_range))
+  dates <- suppressWarnings(expand_approximate_months(dates, approx_range))
+  dates <- suppressWarnings(expand_approximate_days(dates, approx_range))
   dates <- unlist(dates)
   dates
 }
@@ -130,10 +132,10 @@ expand_sets <- function(dates) {
 }
 
 expand_ranges <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
-                    nchar(dates) < 17,
-                  expand_unspecified_ranges(dates), dates)
-  dates <- lapply(dates, function(x) {
+  dates <- suppressWarnings(ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
+                                     nchar(dates) < 17,
+                                   expand_unspecified_ranges(dates), dates))
+  dates <- suppressWarnings(lapply(dates, function(x) {
     x <- stringr::str_split(x, "\\.\\.")
     x <- lapply(x, function(y) {
       if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
@@ -142,7 +144,7 @@ expand_ranges <- function(dates) {
     })
     x <- ifelse(stringr::str_detect(x, "\\%"), expand_negative_dates(x), x)
     unlist(x)
-  })
+  }))
   dates
 }
 
@@ -271,7 +273,7 @@ expand_unspecified_ranges <- function(dates) {
   dates1 <- purrr::map_chr(dates, 1)
   dates1 <- ifelse(stringr::str_detect(dates1,
                                        "^([:digit:]{4})$|^-([:digit:]{4})$"),
-                   paste0(dates1, "-01-01"), dates1)
+                  paste0(dates1, "-01-01"), dates1)
   dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})-([:digit:]{2})$|^-([:digit:]{4})-([:digit:]{2})$"),
                    paste0(dates1, "-01"), dates1)
   dates2 <- purrr::map_chr(dates, 2)

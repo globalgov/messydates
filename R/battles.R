@@ -7,9 +7,10 @@
 #' \describe{
 #'   \item{Battle}{name of the battle, character}
 #'   \item{Date}{date or date range, a mdate class vector}
+#'   \item{Parties}{parties to the conflict, character}
 #' }
 #' @details
 #' ``` {r, echo = FALSE, warning = FALSE}
-#' descriptr::ds_screener(battles)
+#' mreport(battles)
 #' ```
 "battles"

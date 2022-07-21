@@ -6,6 +6,8 @@
 \alias{is_element}
 \alias{is_similar}
 \alias{is_precise}
+\alias{is_uncertain}
+\alias{is_approximate}
 \title{Logical tests on messy dates}
 \usage{
 is_messydate(x)
@@ -17,6 +19,10 @@ is_element(x, y)
 is_similar(x, y)
 
 is_precise(x)
+
+is_uncertain(x)
+
+is_approximate(x)
 }
 \arguments{
 \item{x, y}{\code{mdate} or other class objects}
@@ -43,7 +49,12 @@ This can be useful for identifying dates that may be typos of one another.
 
 \item \code{is_precise}: tests whether a date is precise (i.e. an 8 digit date).
 Non-precise dates contain markers that they are approximate (i.e. ~),
-unreliable (i.e. \% or ?), or incomplete dates (i.e. year only).
+unreliable (i.e. ?), are incomplete dates (i.e. year only),
+or date ranges and sets.
+
+\item \code{is_uncertain}: tests whether a date is uncertain (i.e. contains ?).
+
+\item \code{is_approximate}: tests whether a date is approximate (i.e. contains ~).
 }}
 
 \examples{
@@ -58,4 +69,6 @@ is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
 is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 is_precise(as_messydate(c("2012-06-02", "2012-06")))
+is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
+is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
 }

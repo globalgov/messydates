@@ -40,7 +40,7 @@ reference:
       - messydate
       - annotate
   - title: "Coerce from"
-    desc: "These functions coerce dates from the `mdate` class into a single `Date` or other class:"
+    desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:
       - starts_with("as\\.")
       - resolve
@@ -58,6 +58,7 @@ reference:
       - is_messydate
       - extract
   - title: "Data"
-    desc: "Some test and/or example data:"
+    desc: "Working with 'messy' data:"
     contents:
+      - mreport
       - battles

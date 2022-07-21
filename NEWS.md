@@ -1,3 +1,17 @@
+# messydates 0.3.1
+
+## Package
+
+* Updated README by removing unattractive package startup messages
+* Updated `battles` data by adding 'parties' variable
+
+## Functions
+
+* Closed #54 by adding new `mreport()` function to properly report on data containing 'mdate' variables
+* Updated `expand()` function
+  * Fixed bug with the expansion of approximate dates
+  * Removed unnecessary function message
+
 # messydates 0.3.0
 
 ## Package

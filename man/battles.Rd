@@ -9,6 +9,7 @@ A data frame with 20 rows and 2 variables:
 \describe{
 \item{Battle}{name of the battle, character}
 \item{Date}{date or date range, a mdate class vector}
+\item{Parties}{parties to the conflict, character}
 }
 }
 \usage{
@@ -19,17 +20,13 @@ A dataset containing the names and dates of battles in 2001,
 according to Wikipedia (https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{## ----------------------------------------------------------------------
-## |  Column Name  |  Data Type  |  Levels  |  Missing  |  Missing (\%)  |
-## ----------------------------------------------------------------------
-## |    Battle     |  character  |    NA    |     0     |       0       |
-## |     Date      |    mdate    |    NA    |     0     |       0       |
-## ----------------------------------------------------------------------
-## 
-##  Overall Missing Values           0 
-##  Percentage of Missing Values     0 \%
-##  Rows with Missing Values         0 
-##  Columns With Missing Values      0
+\if{html}{\out{<div class="sourceCode">}}\preformatted{## ----------------------------------------------------------------------------
+## |  Column Name  |  Data Type  |  Observations  |  Missing  |  Missing (\%)  |
+## ----------------------------------------------------------------------------
+## |    Battle     |  character  |              20|     0     |       0       |
+## |     Date      |    mdate    |              20|     0     |       0       |
+## |    Parties    |  character  |              20|     0     |       0       |
+## ----------------------------------------------------------------------------
 }\if{html}{\out{</div>}}
 }
 \keyword{datasets}

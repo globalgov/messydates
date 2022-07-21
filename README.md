@@ -21,8 +21,8 @@ Practices](https://bestpractices.coreinfrastructure.org/projects/5061/badge)](ht
 ## Why this package?
 
 Existing packages for working with dates in R expect them to be *tidy*.
-That is, they should be in or coercible to the standard ISO format
-`yyyy-mm-dd`.
+That is, they should be in or coercible to the standard `yyyy-mm-dd`
+format.
 
 But dates are often ***messy***. Sometimes we only know the year when
 something happened, leaving other components of the date, such as the
@@ -45,32 +45,11 @@ However, this can create inferential issues when timing or sequence is
 important. `{messydates}` assists with this problem by retaining and
 working with various kinds of date imprecision.
 
-    #> 
-    #> Attaching package: 'lubridate'
-    #> The following objects are masked from 'package:messydates':
-    #> 
-    #>     day, month, year
-    #> The following objects are masked from 'package:base':
-    #> 
-    #>     date, intersect, setdiff, union
-    #> 
-    #> Attaching package: 'dplyr'
-    #> The following objects are masked from 'package:stats':
-    #> 
-    #>     filter, lag
-    #> The following objects are masked from 'package:base':
-    #> 
-    #>     intersect, setdiff, setequal, union
-    #> 
-    #> Attaching package: 'kableExtra'
-    #> The following object is masked from 'package:dplyr':
-    #> 
-    #>     group_rows
-
 ## A quick overview
 
-`{messydates}` implements for R the extended annotation standard for
-dates, the Extended Date/Time Format (EDTF) outlined in [ISO
+`{messydates}` implements for R the Extended Date/Time Format (EDTF)
+annotations set by the International Organization for Standardization
+(ISO) outlined in [ISO
 8601-2_2019(E)](https://www.iso.org/standard/70908.html). `{messydates}`
 introduces a new `mdate` class that embeds these annotations, and offers
 a set of methods for constructing and coercing into and from the `mdate`
@@ -90,7 +69,7 @@ pkg_comparison <- tibble::tribble(~Example, ~OriginalDate,
                                     "Range of dates", "2019-11-01:2020-01-01",
                                     "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
   dplyr::mutate(base = as.Date(OriginalDate),
-                lubridate = lubridate::as_date(OriginalDate),
+                lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
                 messydates = messydates::as_messydate(OriginalDate))
 ```
 
@@ -355,9 +334,6 @@ resolve_mdate <- pkg_comparison %>%
   dplyr::mutate(min = as.Date(messydates, min),
          median = as.Date(messydates, median),
          max = as.Date(messydates, max))
-#> Please specify 'approx_range' argument if you want approximate dates to also be expanded
-#> Please specify 'approx_range' argument if you want approximate dates to also be expanded
-#> Please specify 'approx_range' argument if you want approximate dates to also be expanded
 ```
 
 <table class="table table-striped" style="margin-left: auto; margin-right: auto;">
@@ -456,10 +432,10 @@ max
 2012-01-12
 </td>
 <td style="text-align:left;">
-2012-01-13
+2012-01-12
 </td>
 <td style="text-align:left;">
-2012-01-13
+2012-01-12
 </td>
 </tr>
 <tr>

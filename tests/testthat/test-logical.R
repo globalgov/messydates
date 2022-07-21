@@ -25,3 +25,13 @@ test_that("is_precise works", {
   expect_true(is_precise(as_messydate("2012-06-02")))
   expect_false(is_precise(as_messydate("2012?-06-22")))
 })
+
+test_that("is_uncertain works", {
+  expect_true(is_uncertain(as_messydate("2012-06-02?")))
+  expect_false(is_uncertain(as_messydate("2012-06-22")))
+})
+
+test_that("is_approximate works", {
+  expect_true(is_approximate(as_messydate("2012-06-02~")))
+  expect_false(is_approximate(as_messydate("2012-06-22")))
+})

@@ -13,12 +13,14 @@
 #'   `NULL` by default.
 #'   Other options include: 'dmy', 'ymd', 'ym', 'my' and 'interactive'
 #'   If 'dmy', ambiguous dates are converted from DD-MM-YY format,
-#'   for 6 digit dates, or DD-MM-YYYY format, for 8 digit dates.
-#'   If 'ymd', ambiguous dates are converted from YY-MM-DD format,
+#'   for 6 digit dates, or DD-MM-YYYY format, for 8 digit dates,
+#'   to YY-MM-DD or YYYY-DD-MM format.
+#'   If 'ymd', ambiguous dates are converted to YY-MM-DD format,
 #'   for 6 digit dates, or YYYY-DD-MM format, for 8 digit dates.
-#'   If 'ym', ambiguous 6 digit dates are converted from YYYY-MM format.
-#'   If 'my', ambiguous 6 digit dates are converted from MM-YYYY format.
-#'   If `interactive`, it prompts users to select the existing
+#'   If 'my', ambiguous 6 digit dates are converted from MM-YYYY format
+#'   to YYYY-MM.
+#'   If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
+#'   If 'interactive', it prompts users to select the existing
 #'   component order of ambiguous dates,
 #'   based on which the date is reordered into YY-MM-DD format
 #'   and further completed to YYYY-MM-DD format if they choose to do so.

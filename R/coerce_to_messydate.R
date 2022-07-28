@@ -125,6 +125,12 @@ standardise_date_separators <- function(dates) {
 }
 
 daymonthyear <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\3-\\2-\\1"), dates)
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
                   paste0(substr(dates, 5, 8), "-", substr(dates, 3, 4), "-",
                          substr(dates, 1, 2)), dates)

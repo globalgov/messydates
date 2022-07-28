@@ -20,8 +20,8 @@ test_that("Coercion from other date classes into messydt works", {
 test_that("resequence argument works properly", {
   expect_equal(as_messydate(c("121008", "20121008"), resequence = "ymd"),
                as_messydate(c("12-10-08", "2012-10-08")))
-  expect_equal(as_messydate(c("081012", "08102012"), resequence = "dmy"),
-               as_messydate(c("12-10-08", "2012-10-08")))
+  expect_equal(as_messydate(c("081012", "08102012", "08-10-12"), resequence = "dmy"),
+               as_messydate(c("12-10-08", "2012-10-08", "12-10-08")))
   expect_equal(as_messydate("201212", resequence = "ym"),
                as_messydate("2012-12"))
   expect_equal(as_messydate("201212", resequence = "my"),

@@ -18,7 +18,7 @@ as_messydate(x, resequence = FALSE)
 
 \method{as_messydate}{POSIXlt}(x, resequence = FALSE)
 
-\method{as_messydate}{character}(x, resequence = FALSE)
+\method{as_messydate}{character}(x, resequence = NULL)
 
 make_messydate(..., resequence = FALSE)
 }
@@ -27,11 +27,18 @@ make_messydate(..., resequence = FALSE)
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
 \item{resequence}{Users have the option to choose the
-order for ambiguous 6 digit dates (e.g. "11-01-12"),
-and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
-\code{FALSE} by default.
-If \code{TRUE}, it prompts users to select the existing component order of ambiguous
-6 digit dates, based on which the date is reordered into YY-MM-DD format
+order for ambiguous dates (e.g. "11-01-12" or "20112112").
+\code{NULL} by default.
+Other options include: 'dmy', 'ymd', 'ym', 'my' and 'interactive'
+If 'dmy', ambiguous dates are converted from DD-MM-YY format,
+for 6 digit dates, or DD-MM-YYYY format, for 8 digit dates.
+If 'ymd', ambiguous dates are converted from YY-MM-DD format,
+for 6 digit dates, or YYYY-DD-MM format, for 8 digit dates.
+If 'ym', ambiguous 6 digit dates are converted from YYYY-MM format.
+If 'my', ambiguous 6 digit dates are converted from MM-YYYY format.
+If \code{interactive}, it prompts users to select the existing
+component order of ambiguous dates,
+based on which the date is reordered into YY-MM-DD format
 and further completed to YYYY-MM-DD format if they choose to do so.}
 
 \item{...}{One (yyyy-mm-dd) or three (yyyy, mm, dd) variables}
@@ -75,7 +82,9 @@ as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
 as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
+as_messydate(c("210201", "20210201"), resequence = "ymd")
+as_messydate(c("010221", "01022021"), resequence = "dmy")
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
-# resequence = TRUE)
+# resequence = "interactive")
 make_messydate("2010", "10", "10")
 }

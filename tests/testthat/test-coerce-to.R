@@ -22,6 +22,8 @@ test_that("resequence argument works properly", {
                as_messydate(c("12-10-08", "2012-10-08")))
   expect_equal(as_messydate(c("081012", "08102012", "08-10-12"), resequence = "dmy"),
                as_messydate(c("12-10-08", "2012-10-08", "12-10-08")))
+  expect_equal(as_messydate(c("03312022", "043097"), resequence = "mdy"),
+               as_messydate(c("2022-03-31", "97-04-30")))
   expect_equal(as_messydate("201212", resequence = "ym"),
                as_messydate("2012-12"))
   expect_equal(as_messydate("201212", resequence = "my"),

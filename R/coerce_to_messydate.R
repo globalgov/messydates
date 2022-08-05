@@ -8,15 +8,18 @@
 #' though this is a work-in-progress and currently only works in English.
 #' @param x A scalar or vector of a class that can be coerced into `mdate`,
 #'   such as `Date`, `POSIXct`, `POSIXlt`, or character.
-#' @param resequence Users have the option to choose the
-#'   order for ambiguous dates (e.g. "11-01-12" or "20112112").
+#' @param resequence Users have the option to choose the order for
+#'   ambiguous dates with or without separators (e.g. "11-01-12" or "20112112").
 #'   `NULL` by default.
-#'   Other options include: 'dmy', 'ymd', 'ym', 'my' and 'interactive'
-#'   If 'dmy', ambiguous dates are converted from DD-MM-YY format,
-#'   for 6 digit dates, or DD-MM-YYYY format, for 8 digit dates,
-#'   to YY-MM-DD or YYYY-DD-MM format.
-#'   If 'ymd', ambiguous dates are converted to YY-MM-DD format,
-#'   for 6 digit dates, or YYYY-DD-MM format, for 8 digit dates.
+#'   Other options include: 'dmy', 'ymd', 'mdy', 'ym', 'my' and 'interactive'
+#'   If 'dmy', dates are converted from DDMMYY format for 6 digit dates,
+#'   or DDMMYYYY format for 8 digit dates.
+#'   If 'ymd', dates are converted from YYMMDD format for 6 digit dates,
+#'   or YYYYMMDD format for 8 digit dates.
+#'   If 'mdy', dates are converted from MMDDYY format for 6 digit dates
+#'   or MMDDYYYY format for 8 digit dates.
+#'   For these three options, ambiguous dates are converted to YY-MM-DD format
+#'   for 6 digit dates, or YYYY-MM-DD format for 8 digit dates.
 #'   If 'my', ambiguous 6 digit dates are converted from MM-YYYY format
 #'   to YYYY-MM.
 #'   If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
@@ -44,8 +47,9 @@ NULL
 #' as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
 #' as_messydate(c("210201", "20210201"), resequence = "ymd")
 #' as_messydate(c("010221", "01022021"), resequence = "dmy")
-#' # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
-#' # resequence = "interactive")
+#' as_messydate(c("020121", "02012021"), resequence = "dmy")
+#' as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
+#' resequence = "interactive")
 #' @export
 as_messydate <- function(x, resequence = FALSE)
   UseMethod("as_messydate")
@@ -91,6 +95,8 @@ as_messydate.character <- function(x, resequence = NULL) {
       d <- yearmonth(d)
     } else if (resequence == "my") {
       d <- monthyear(d)
+    } else if (resequence == "mdy") {
+      d <- monthdayyear(d)
     }
   }
   d <- standardise_date_order(d)
@@ -139,6 +145,22 @@ daymonthyear <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 5, 6), "-", substr(dates, 3, 4), "-",
                          substr(dates, 1, 2)), dates)
+  dates
+}
+
+monthdayyear <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\3-\\1-\\2"), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+                  paste0(substr(dates, 5, 8), "-", substr(dates, 1, 2), "-",
+                         substr(dates, 3, 4)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 5, 6), "-", substr(dates, 1, 2), "-",
+                         substr(dates, 3, 4)), dates)
   dates
 }
 

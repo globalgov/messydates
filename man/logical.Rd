@@ -2,50 +2,13 @@
 % Please edit documentation in R/logical.R
 \name{logical}
 \alias{logical}
-\alias{is_messydate}
-\alias{is_intersecting}
-\alias{is_element}
-\alias{is_similar}
-\alias{is_uncertain}
 \title{Logical tests on messy dates}
-\usage{
-is_messydate(x)
-
-is_intersecting(x, y)
-
-is_element(x, y)
-
-is_similar(x, y)
-
-is_uncertain(x)
-}
 \arguments{
-\item{x, y}{Messy date or other class objects}
+\item{x, y}{\code{mdate} or other class objects}
 }
 \value{
-A logical vector the length of the messy dates passed.
+A logical vector the same length as the \code{mdate} passed.
 }
 \description{
 These functions provide various logical tests for messy date objects.
-\code{is_messydate()} tests whether the object inherits the \code{messydt} class.
-If a more rigorous validation is required, see \code{validate_messydate()}.
-\code{is_intersecting()} tests whether there is any intersection between
-two messy dates, leveraging \code{intersect()}.
-\code{is_element()} similarly tests whether a messy date can be found
-within a messy date range or set.
-\code{is_similar()} tests whether two dates contain similar components.
-This can be useful for identifying dates that may be typos of one another.
-}
-\examples{
-is_messydate(as_messydate("2012-01-01"))
-is_messydate(as.Date("2012-01-01"))
-is_intersecting(as_messydate("2012-01"),
-as_messydate("2012-01-01..2012-02-22"))
-is_intersecting(as_messydate("2012-01"),
-as_messydate("2012-02-01..2012-02-22"))
-is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
-is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
-is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
-is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
-is_uncertain(as_messydate(c("2012-06-02", "2012-06")))
 }

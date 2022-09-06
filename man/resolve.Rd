@@ -2,34 +2,34 @@
 % Please edit documentation in R/resolve.R
 \name{resolve}
 \alias{resolve}
-\alias{min.messydt}
-\alias{max.messydt}
-\alias{median.messydt}
-\alias{mean.messydt}
+\alias{min.mdate}
+\alias{max.mdate}
+\alias{median.mdate}
+\alias{mean.mdate}
 \alias{modal}
-\alias{modal.messydt}
+\alias{modal.mdate}
 \alias{random}
-\alias{random.messydt}
+\alias{random.mdate}
 \title{Resolves messy dates into a single value}
 \usage{
-\method{min}{messydt}(..., na.rm = TRUE)
+\method{min}{mdate}(..., na.rm = TRUE)
 
-\method{max}{messydt}(..., na.rm = TRUE)
+\method{max}{mdate}(..., na.rm = TRUE)
 
-\method{median}{messydt}(..., na.rm = TRUE)
+\method{median}{mdate}(..., na.rm = TRUE)
 
-\method{mean}{messydt}(..., trim = 0, na.rm = TRUE)
+\method{mean}{mdate}(..., trim = 0, na.rm = TRUE)
 
 modal(..., na.rm = FALSE)
 
-\method{modal}{messydt}(..., na.rm = TRUE)
+\method{modal}{mdate}(..., na.rm = TRUE)
 
 random(..., size, replace = FALSE, prob = NULL)
 
-\method{random}{messydt}(..., size, replace = FALSE, prob = NULL)
+\method{random}{mdate}(..., size, replace = FALSE, prob = NULL)
 }
 \arguments{
-\item{...}{a messydt object}
+\item{...}{a mdate object}
 
 \item{na.rm}{Should NAs be removed? True by default.}
 

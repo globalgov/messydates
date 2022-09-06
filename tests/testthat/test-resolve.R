@@ -1,8 +1,10 @@
 test_that("Resolve dates works properly for date ranges", {
   range <- as_messydate("2014-01-01..2014-01-31")
+  range2 <- as_messydate("2014-01-01..2014-01-30")
   expect_equal(as.character(min(range)), "2014-01-01")
   expect_equal(as.character(max(range)), "2014-01-31")
   expect_equal(as.character(median(range)), "2014-01-16")
+  expect_equal(as.character(median(range2)), "2014-01-16")
   expect_equal(as.character(mean(range)), "2014-01-16")
   expect_equal(as.character(modal(range)), "2014-01-01")
   expect_length(random(range), 1)

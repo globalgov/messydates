@@ -2,13 +2,13 @@
 % Please edit documentation in R/operate.R
 \name{operate}
 \alias{operate}
-\alias{+.messydt}
-\alias{-.messydt}
+\alias{+.mdate}
+\alias{-.mdate}
 \title{Arithmetic operations for messydates}
 \usage{
-\method{+}{messydt}(e1, e2)
+\method{+}{mdate}(e1, e2)
 
-\method{-}{messydt}(e1, e2)
+\method{-}{mdate}(e1, e2)
 }
 \arguments{
 \item{e1}{A messydate object}

@@ -1,15 +1,17 @@
-#' A broader date class for messy dates
+#' A flexible date class for messy dates
 #'
 #' @description
-#' These functions create and validate a new date class for R
-#' consistent with
-#' [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
-#' These recent extensions to standardised date notation
+#' Recent extensions to standardised date notation in
+#' [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html)
 #' create space for unspecified, uncertain, and approximate dates,
-#' as well as succinct representation of date ranges.
+#' as well as succinct representation of ranges of dates.
+#' These functions create and validate a new date class for R
+#' that can contain and parse these annotations,
+#' and are not typically user-facing.
+#' Please see `as_messydate()` for the user-facing coercion function.
 #'
 #' @details
-#' # Date annotations
+#' ## Date annotations
 #'
 #' _Unspecified date components_, such as when the day is unknown,
 #' can be represented by one or more `X`s in place of the digits.
@@ -34,7 +36,7 @@
 #' An additional modifier, `%`, is used to indicate
 #' a value that is both uncertain and approximate.
 #'
-#' # Date sets
+#' ## Date sets
 #'
 #' These functions also introduce standard notation
 #' for ranges of dates.
@@ -52,11 +54,11 @@
 #' And lastly, notation for sets of dates is also included.
 #' Here braces, `{}`, are used to mean "all members of the set",
 #' while brackets, `[]`, are used to mean "one member of the set".
-#' @param x A character scalar or vector in the expected "yyyy-mm-dd" format
+#' @param x A character scalar or vector in the expected `"yyyy-mm-dd"` format
 #' annotated, as necessary, according to ISO 8601-2_2019(E).
-#' @return Object of class `messydt`
+#' @return Object of class `mdate`
 #' @name class
-#' @seealso as_messydate
+#' @seealso messydate
 NULL
 #> NULL
 
@@ -64,7 +66,7 @@ NULL
 #' @export
 new_messydate <- function(x = character()) {
   stopifnot(is.character(x))
-  structure(x, class = c("messydt"))
+  structure(x, class = c("mdate"))
 }
 
 #' @rdname class
@@ -82,14 +84,14 @@ validate_messydate <- function(x) {
 
   if (!all(grepl("[0-9]", values))) {
     stop(
-      "Messydt object requires at least one specified date component.",
+      "mdate object requires at least one specified date component.",
       call. = FALSE
     )
     }
 
   if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|,|;|>|<|_|\\^|'|&|\\$|#", values))) {
     stop(
-      "Messydt object can only consist of numbers and
+      "mdate object can only consist of numbers and
       some special symbols: []{}..X%?~",
       call. = FALSE
     )
@@ -99,10 +101,10 @@ validate_messydate <- function(x) {
 
 #' @importFrom utils str
 #' @export
-print.messydt <- function(x, ...) {
+print.mdate <- function(x, ...) {
   str(x)
 }
 
 #' @rdname class
 #' @export
-NA_messydt_ <- structure(NA_real_, class = "messydt")
+NA_mdate_ <- structure(NA_real_, class = "mdate")

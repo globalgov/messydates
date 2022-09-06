@@ -11,3 +11,4 @@
 ^iso_standards
 ^CRAN-SUBMISSION$
 ^article$
+^.DS_Store$

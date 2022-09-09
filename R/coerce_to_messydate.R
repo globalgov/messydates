@@ -111,7 +111,8 @@ as_messydate.character <- function(x, resequence = NULL) {
 
 # Helper functions
 standardise_text <- function(v) {
-  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})"),
+  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})") &
+                    !grepl("bce$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
   dates
 }
@@ -252,11 +253,11 @@ standardise_unspecifieds <- function(dates) {
 }
 
 standardise_date_input <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "(bc|BC|Bc|bC)"),
+  dates <- ifelse(stringr::str_detect(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
                   as_bc_dates(dates), dates)
   dates <- ifelse(stringr::str_detect(dates, "(ad|AD|Ad|aD)"),
                   as_ac_dates(dates), dates)
-  dates <- gsub(" ", "", dates)
+  dates <- trimws(dates, "both")
   dates
 }
 
@@ -270,6 +271,7 @@ standardise_widths <- function(dates) {
                   paste0("{", dates, "}"), dates)
   dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
+  dates <- trimws(dates, "both")
   dates
 }
 
@@ -317,11 +319,11 @@ extract_from_text <- function(v) {
 }
 
 as_bc_dates <- function(dates) {
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 2,
+  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 2,
                   st_negative_range(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") > 2,
+  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") > 2,
                   st_negative_sets(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 1,
+  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 1,
                   st_negative(dates), dates)
 }
 
@@ -332,14 +334,14 @@ as_ac_dates <- function(dates) {
 }
 
 st_negative_range <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
   dates <- gsub(" ", "", dates)
   dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
                   "..-", strsplit(dates, "\\.\\.")[[1]][2])
 }
 
 st_negative_sets <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
   dates <- gsub(" ", "", dates)
   dates <- unlist(strsplit(dates, "\\,"))
   dates <- ifelse(length(dates) > 1,
@@ -348,7 +350,7 @@ st_negative_sets <- function(dates) {
 }
 
 st_negative <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
   dates <- stringr::str_trim(dates, side = "both")
   dates <- paste0("-", dates)
 }

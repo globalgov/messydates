@@ -255,8 +255,7 @@ standardise_unspecifieds <- function(dates) {
 standardise_date_input <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
                   as_bc_dates(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "(ad|AD|Ad|aD|CE|Ce|ce)"),
-                  as_ac_dates(dates), dates)
+  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD|CE|Ce|ce)")
   dates <- trimws(dates, "both")
   dates
 }
@@ -325,12 +324,6 @@ as_bc_dates <- function(dates) {
                   st_negative_sets(dates), dates)
   dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 1,
                   st_negative(dates), dates)
-}
-
-as_ac_dates <- function(dates) {
-  # remove after christ letters
-  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD)")
-  dates <- stringr::str_trim(dates, side = "both")
 }
 
 st_negative_range <- function(dates) {

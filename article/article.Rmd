@@ -65,25 +65,25 @@ The standardised extended format allow for unambiguous interpretation of dates
 and guarantee interoperability.
 These include notation for:
 
--   unspecified date( component)s, e.g. `2012-XX-01` for the first of some unknown month in 2012 or `2012-01` for some unknown day in January 2012
--   approximate date( component)s, e.g. `2012-01-12~` for approximately the 12th of January 2012
--   uncertain date( component)s, e.g. `2012-01-12?` where this data point is based on an unreliable source
+-   unspecified date(component)s, e.g. `2012-XX-01` for the first of some unknown month in 2012 or `2012-01` for some unknown day in January 2012
+-   approximate date(component)s, e.g. `2012-01-12~` for approximately the 12th of January 2012
+-   uncertain date(component)s, e.g. `2012-01-12?` where this data point is based on an unreliable source
 -   sets of dates, e.g. `{2012-01-01,2012-01-12}` where the date can be either 1 January 2012 and 12 January 2012
 -   ranges of dates, e.g. `2012-01-01..2012-01-12` for all dates between the 1 January 2012 and 12 January 2012 inclusive
 
 \pkg{messydates} contains a set of tools for constructing and coercing into
 and from the `mdate` class.
-This date class allows regular dates to be annotated to express unspecified date components,
+This date class allows regular dates to be annotated to express unspecified,
 approximate or uncertain date components, date ranges, and sets of dates.
 
-The package also includes a function for unpacking or expanding sets
+The package includes functions for expanding sets
 or ranges of dates into all dates consistent with how the date or set of dates
-is specified or annotated.
+are specified or annotated.
 Methods are also offered that can be used to make explicit how researchers
 convert date imprecision into precise dates for analysis,
 such as getting the `min()`, `max()`, or even a `random()` date
-from among the dates consistent with a set or range of dates.
-This greatly facilitates research transparency as well as robustness checks
+from among the dates in a set or range of dates.
+This greatly facilitates research transparency and robustness checks
 as we will demonstrate below.
 
 ## Motivation
@@ -99,7 +99,7 @@ working with various kinds of date imprecision.
 ## Relationship to other packages
 
 \pkg{messydates} offers a new date class,
-but one that comes with methods for converting from and into `base`,
+but one that comes with methods for converting from and into `base`
 date classes such as `Date`, `POSIXct`, and `POSIXlt`.
 It is thus fully compatible with packages such as \pkg{lubridate} [@grolemundDatesTimesMade2011]
 and \pkg{anytime} [@eddelbuettelAnytimeEasierDate2019].
@@ -115,7 +115,7 @@ coercing into and from the `mdate` class.
 This date class implements ISO 8601-2:2019(E) and allows regular dates to be
 annotated to express unspecified date components,
 approximate or uncertain date components, date ranges, and sets of dates.
-The function `as_messydate()` handles the coercion to `mdate` class.
+The function `as_messydate()` handles the coercion to the `mdate` class.
 
 ```{r comparison, warning=FALSE}
 tibble::tribble(~Example, ~Date,
@@ -139,9 +139,9 @@ tibble::tribble(~Example, ~Date,
 ## Annotate
 
 Some datasets have, for example, an arbitrary cut off point for start and end points, 
-but these are often coded as precise dates when they are not necessarily 
+but these are often coded as precise dates when they are not 
 the real start or end dates.
-The annotate functions helps annotate uncertainty and approximation to dates.
+\pkg{messydates} helps annotate uncertainty and approximation to dates.
 Inaccurate start or end dates can be represented by an affix
 indicating "on or before", if used as a prefix (e.g. `..1816-01-01`),
 or indicating "on or after", if used as a suffix (e.g. `2016-12-31..`).
@@ -162,7 +162,7 @@ tibble::tibble(Beg = as_messydate(c("1816-01-01", "1916-01-01", "2016-01-01")),
 
 ## Expand
 
-Expand functions transform date ranges, sets of dates, and unspecified or approximate dates (annotated with '..', '{ , }', 'XX' or '\~') into lists of dates.
+The `expand()´ function transform date ranges, sets of dates, and unspecified or approximate dates (annotated with '..', '{ , }', 'XX' or '\~') into lists of dates.
 As these dates may refer to several possible dates,
 the function "opens" these values to include all the possible dates implied.
 
@@ -175,7 +175,7 @@ expand(dates_expand)
 ## Contract
 
 The `contract()` function operates as the opposite of `expand()`.
-It contracts a list of dates into the abbreviated annotation of \pkg{messydates}.
+It contracts a list of dates into their abbreviated annotations.
 
 ```{r contract, warning=FALSE, message=FALSE}
 tibble::tibble('Original Dates' = dates_expand,
@@ -184,7 +184,7 @@ tibble::tibble('Original Dates' = dates_expand,
 
 ## Coerce from messydates
 
-Coercion functions coerce objects of `mdate` class to common date classes
+Coercion functions coerce objects of `mdate` class objects to common date classes
 such as `Date`, `POSIXct`, and `POSIXlt`.
 Since `mdate` objects can hold multiple individual dates,
 an additional function must be passed as an argument so
@@ -205,14 +205,13 @@ tibble::tibble(min = as.Date(dates_expand, min),
 
 ## Additional functionality 
 
-Several other functions are also offered in the \pkg{messydates} package.
+Several other functions are also offered in the \pkg{messydates} package.For example, one can run various logical tests for checking `mdate` objects:
 
-For example, one can check various logical tests for messy date objects.
-`is_messydate()` tests whether the object inherits the `mdate` class.
-`is_intersecting()` tests whether there is any intersection between two messy dates. 
-`is_element()` similarly tests whether a messy date can be found within a messy date range or set.
-`is_similar()` tests whether two dates contain similar components.
-`is_precise()` tests for whether date is precise.
+-   `is_messydate()` tests whether the object inherits the `mdate` class
+-   `is_intersecting()` tests whether there is any intersection between two `mdate` objects
+-   `is_element()` similarly tests whether an `mdate` can be found within an `mdate` range or set
+-   `is_similar()` tests whether two `mdate` contain similar components
+-   `is_precise()` tests for whether `mdate` is precise
 
 ```{r logical, warning=FALSE}
 is_messydate(as_messydate("2001-01-01"))
@@ -227,9 +226,8 @@ is_precise(as_messydate("2001-06-02"))
 is_precise(as_messydate("2001-02"))
 ```
 
-Additionally, one can perform intersection (`md_intersect()`) and union (`md_union()`) on,
-inter alia, messy date class objects.
-Or 'join' that retains all elements, even if duplicated, with `md_multiset`.
+Additionally, one can perform intersection (`md_intersect()`) and union (`md_union()`) on, inter alia, messy date class objects.
+Or perform a 'join' that retains all elements, even if duplicated, with `md_multiset`.
 
 ```{r set, warning=FALSE}
 md_intersect(as_messydate("2001-01-01..2001-01-20"), as_messydate("2001-01"))
@@ -237,12 +235,12 @@ md_union(as_messydate("2001-01-01..2001-01-20"), as_messydate("2001-01"))
 md_multiset(as_messydate("2001-01-01..2001-01-20"), as_messydate("2001-01"))
 ```
 
-As well, some arithmetic operations are available for messydates.
-For instance, one can add or subtract one year to all messy dates in a vector.
+Some arithmetic operations are available for messydates.
+For instance, one can add, or subtract, a day or one year to one, or all, `mdate` objects in a vector.
 
 ```{r operate, warning=FALSE, message=FALSE}
 tibble::tibble(date = dates_expand,
-               add = dates_expand + "1 day",
+               add = dates_expand + 1,
                subtract = dates_expand - "1 year")
 ```
 
@@ -262,8 +260,7 @@ battles
 ```
 
 \pkg{messydates} facilitates working with these dates as we can, for example,
-check which dates are precise, get the median values for imprecise dates,
-and find the longest battle in 2001.
+check date precision, get the median values, and find the longest battle in 2001.
 
 ```{r working with dates, warning=FALSE, message=FALSE}
 messydates::is_precise(battles$Date)
@@ -271,28 +268,23 @@ as.Date(battles$Date, median)
 as.numeric(as.Date(battles$Date, max) - as.Date(battles$Date, min))
 ```
 
-Getting the timing can be important for researchers.
-However, when faced with date imprecision, researchers usually have to choose
-between making arbitrary choices (e.g. adding "-01-01" to all incomplete dates)
-or work with imprecise dates (e.g. keep the year only).
-Yet, either choice may lead to biased results.
-This is especially true if researchers are looking to generate inferences.
+Getting the timing right can be important for researchers.
+This is especially true if researchers are looking to generate robust inferences.
+Until now, when faced with date imprecision, researchers usually have to choose
+between making arbitrary choices (e.g. adding "-01-01" to non-precise dates)
+or work with imprecise dates (e.g. year only).
+Either choice may lead to biased results.
 Assume we are interested in the relationship between the United States (US)
 being a party to a conflict and the duration of the conflict in 2001.
 We hypothesize that conflicts involving the US have
-a shorter duration because the US has the most powerful military in the world.
-A relationship that could be mediated by the number of parties involved in the conflict.
-Using \pkg{messydates}, we can create two different date variables
-in the battles data to be our dependent variables representing conflict time,
-one variable with an arbitrary cut off point and the other variable
+a shorter duration because the US military capabilities.
+Using \pkg{messydates} we create two different variables representing conflict time from the 2001 battles data to be our dependent variables;
+one variable with arbitrary cut off points and the other variable
 with random values for uncertain or approximate dates.
-The ability to resolve uncertain or approximate dates differently is
-particularly useful for checking the robustness of results.
-As our independent variable, we create a dummy variable for whether the US
+As our independent variable, we create a binary variable for whether the US
 was involved in the conflict.
-As our control, we code the number of actors in the conflict.
-With these variables we build two linear regression models,
-one using the arbitrary dates and the other the random dates.
+As a control, we code the number of actors in the conflict.
+With these variables we run two simple linear regression models.
 
 ```{r lm, warning=FALSE, message=FALSE}
 set.seed(1301)
@@ -305,17 +297,20 @@ battles <- battles %>%
          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
 lm(arbitrary ~ US_party + n_actors, battles)
 lm(random ~ US_party + n_actors, battles)
+```
+
+Notice how the regression coefficients change in the two models.
+Although not statistically significant, the coefficient for US being a party
+in a conflict goes from being positive,
+when calculated using arbitrary cut off dates, 
+to being negative, when calculated using random dates.
+In this case, setting arbitrary cut off points to dates introduces highly
+influential outliers (see Cook's distance below).
+
+```{r outliers, warning=FALSE, message=FALSE}
 plot(lm(arbitrary ~ US_party + n_actors, battles), which = 4)
 ```
 
-Notice how the regression coefficients change when we pick random values
-within the range for the uncertain and approximate dates in the battles data,
-in comparison to setting arbitrary cut off points.
-Although not statistically significant, the coefficient for US being a party
-in a conflict change considerably, going from being positive to becoming negative,
-when we we use random values within that range.
-In this case, setting arbitrary cut off points to dates introduces a highly
-influential outlier observation that affects the model coefficients.
 Hence, it is hard to say whether there is a relationship between the US being
 an actor involved in one of the battles in 2001 and its duration.
 

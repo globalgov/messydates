@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.2)  6 SEP 2022 18:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.9.2)  9 SEP 2022 07:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -612,16 +612,16 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 {/Users/henriquesposito/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./jsslogo.jpg>]
 
-Package xcolor Warning: Incompatible color definition on input line 147.
+Package xcolor Warning: Incompatible color definition on input line 145.
 
 
-Package xcolor Warning: Incompatible color definition on input line 147.
+Package xcolor Warning: Incompatible color definition on input line 145.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 146.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 146.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -655,7 +655,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [7]
 
-Package xcolor Warning: Incompatible color definition on input line 495.
+Package xcolor Warning: Incompatible color definition on input line 503.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -668,17 +668,17 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [9]
-<article_files/figure-latex/lm-1.pdf, id=137, 353.32pt x 264.99pt>
-File: article_files/figure-latex/lm-1.pdf Graphic file (type pdf)
-<use article_files/figure-latex/lm-1.pdf>
-Package pdftex.def Info: article_files/figure-latex/lm-1.pdf  used on input line 622.
+<article_files/figure-latex/outliers-1.pdf, id=137, 353.32pt x 264.99pt>
+File: article_files/figure-latex/outliers-1.pdf Graphic file (type pdf)
+<use article_files/figure-latex/outliers-1.pdf>
+Package pdftex.def Info: article_files/figure-latex/outliers-1.pdf  used on input line 636.
 (pdftex.def)             Requested size: 354.12434pt x 265.59586pt.
 (./article.bbl
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/lmr/m/n/10.95 10 []
  []
 
-[10 <./article_files/figure-latex/lm-1.pdf>]
+[10 <./article_files/figure-latex/outliers-1.pdf>]
 
 Package xcolor Warning: Incompatible color definition on input line 22.
 
@@ -687,26 +687,26 @@ Package xcolor Warning: Incompatible color definition on input line 23.
 
 )
 
-Package xcolor Warning: Incompatible color definition on input line 648.
+Package xcolor Warning: Incompatible color definition on input line 654.
 
 
-Package xcolor Warning: Incompatible color definition on input line 648.
+Package xcolor Warning: Incompatible color definition on input line 654.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 648--648
+Underfull \hbox (badness 10000) in paragraph at lines 654--654
 
  []
 
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/m/it' tried instead on input line 648.
+(Font)              Font shape `T1/pzc/m/it' tried instead on input line 654.
 
-Package xcolor Warning: Incompatible color definition on input line 648.
-
-
-Package xcolor Warning: Incompatible color definition on input line 648.
+Package xcolor Warning: Incompatible color definition on input line 654.
 
 
-Package xcolor Warning: Incompatible color definition on input line 648.
+Package xcolor Warning: Incompatible color definition on input line 654.
+
+
+Package xcolor Warning: Incompatible color definition on input line 654.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -718,15 +718,15 @@ Package rerunfilecheck Info: File `article.out' has not changed.
 (rerunfilecheck)             Checksum: 295D53B56048E788CDF11A94046E01DB;1881.
  ) 
 Here is how much of TeX's memory you used:
- 21059 strings out of 477035
- 406040 string characters out of 5826727
- 707304 words of memory out of 5000000
- 41747 multiletter control sequences out of 15000+600000
+ 21060 strings out of 477035
+ 406111 string characters out of 5826727
+ 707303 words of memory out of 5000000
+ 41748 multiletter control sequences out of 15000+600000
  544166 words of font info for 66 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,9n,103p,389b,626s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,9n,103p,389b,618s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmb10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbo10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtto10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on article.pdf (11 pages, 351723 bytes).
+Output written on article.pdf (11 pages, 351805 bytes).
 PDF statistics:
  232 PDF objects out of 1000 (max. 8388607)
  189 compressed objects within 2 object streams

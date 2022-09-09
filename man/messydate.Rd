@@ -26,15 +26,18 @@ make_messydate(..., resequence = FALSE)
 \item{x}{A scalar or vector of a class that can be coerced into \code{mdate},
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
-\item{resequence}{Users have the option to choose the
-order for ambiguous dates (e.g. "11-01-12" or "20112112").
+\item{resequence}{Users have the option to choose the order for
+ambiguous dates with or without separators (e.g. "11-01-12" or "20112112").
 \code{NULL} by default.
-Other options include: 'dmy', 'ymd', 'ym', 'my' and 'interactive'
-If 'dmy', ambiguous dates are converted from DD-MM-YY format,
-for 6 digit dates, or DD-MM-YYYY format, for 8 digit dates,
-to YY-MM-DD or YYYY-DD-MM format.
-If 'ymd', ambiguous dates are converted to YY-MM-DD format,
-for 6 digit dates, or YYYY-DD-MM format, for 8 digit dates.
+Other options include: 'dmy', 'ymd', 'mdy', 'ym', 'my' and 'interactive'
+If 'dmy', dates are converted from DDMMYY format for 6 digit dates,
+or DDMMYYYY format for 8 digit dates.
+If 'ymd', dates are converted from YYMMDD format for 6 digit dates,
+or YYYYMMDD format for 8 digit dates.
+If 'mdy', dates are converted from MMDDYY format for 6 digit dates
+or MMDDYYYY format for 8 digit dates.
+For these three options, ambiguous dates are converted to YY-MM-DD format
+for 6 digit dates, or YYYY-MM-DD format for 8 digit dates.
 If 'my', ambiguous 6 digit dates are converted from MM-YYYY format
 to YYYY-MM.
 If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.

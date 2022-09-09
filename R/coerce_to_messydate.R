@@ -47,9 +47,8 @@ NULL
 #' as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
 #' as_messydate(c("210201", "20210201"), resequence = "ymd")
 #' as_messydate(c("010221", "01022021"), resequence = "dmy")
-#' as_messydate(c("020121", "02012021"), resequence = "dmy")
-#' as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
-#' resequence = "interactive")
+#' # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
+#' # resequence = "interactive")
 #' @export
 as_messydate <- function(x, resequence = FALSE)
   UseMethod("as_messydate")
@@ -148,22 +147,6 @@ daymonthyear <- function(dates) {
   dates
 }
 
-monthdayyear <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
-                                           "\\3-\\1-\\2"), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
-                  paste0(substr(dates, 5, 8), "-", substr(dates, 1, 2), "-",
-                         substr(dates, 3, 4)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
-                  paste0(substr(dates, 5, 6), "-", substr(dates, 1, 2), "-",
-                         substr(dates, 3, 4)), dates)
-  dates
-}
-
 yearmonthday <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
                   paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
@@ -183,6 +166,22 @@ yearmonth <- function(dates) {
 monthyear <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 3, 6), "-", substr(dates, 1, 2)), dates)
+  dates
+}
+
+monthdayyear <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\3-\\1-\\2"), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+                  paste0(substr(dates, 5, 8), "-", substr(dates, 1, 2), "-",
+                         substr(dates, 3, 4)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 5, 6), "-", substr(dates, 1, 2), "-",
+                         substr(dates, 3, 4)), dates)
   dates
 }
 

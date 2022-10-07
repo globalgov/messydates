@@ -35,28 +35,28 @@ These functions provide various logical tests for messy date objects.
 }
 \section{Functions}{
 \itemize{
-\item \code{is_messydate}: tests whether the object inherits the \code{mdate} class.
+\item \code{is_messydate()}: tests whether the object inherits the \code{mdate} class.
 If more rigorous validation is required, see \code{validate_messydate()}.
 
-\item \code{is_intersecting}: tests whether there is any intersection between
+\item \code{is_intersecting()}: tests whether there is any intersection between
 two messy dates, leveraging \code{intersect()}.
 
-\item \code{is_element}: tests whether a messy date can be found
+\item \code{is_element()}: tests whether a messy date can be found
 within a messy date range or set.
 
-\item \code{is_similar}: tests whether two dates contain similar components.
+\item \code{is_similar()}: tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.
 
-\item \code{is_precise}: tests whether a date is precise (i.e. an 8 digit date).
+\item \code{is_precise()}: tests whether a date is precise (i.e. an 8 digit date).
 Non-precise dates contain markers that they are approximate (i.e. ~),
 unreliable (i.e. ?), are incomplete dates (i.e. year only),
 or date ranges and sets.
 
-\item \code{is_uncertain}: tests whether a date is uncertain (i.e. contains ?).
+\item \code{is_uncertain()}: tests whether a date is uncertain (i.e. contains ?).
 
-\item \code{is_approximate}: tests whether a date is approximate (i.e. contains ~).
+\item \code{is_approximate()}: tests whether a date is approximate (i.e. contains ~).
+
 }}
-
 \examples{
 is_messydate(as_messydate("2012-01-01"))
 is_messydate(as.Date("2012-01-01"))

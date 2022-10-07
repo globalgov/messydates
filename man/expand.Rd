@@ -38,9 +38,9 @@ before being expanded normally as though they were incomplete.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{mdate}: Expanding messydates
-}}
+\item \code{expand(mdate)}: Expanding messydates
 
+}}
 \examples{
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",

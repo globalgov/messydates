@@ -28,13 +28,13 @@ please use \code{md_multiset}.
 }
 \section{Functions}{
 \itemize{
-\item \code{md_intersect}: Find intersection of sets of messy dates
+\item \code{md_intersect()}: Find intersection of sets of messy dates
 
-\item \code{md_union}: Find union of sets of messy dates
+\item \code{md_union()}: Find union of sets of messy dates
 
-\item \code{md_multiset}: Join two sets of messy dates
+\item \code{md_multiset()}: Join two sets of messy dates
+
 }}
-
 \examples{
 md_intersect(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
 md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))

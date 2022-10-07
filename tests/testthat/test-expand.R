@@ -20,7 +20,7 @@ test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_equal(lengths(expand(negative)), 366)
   expect_equal(as.character(expand(unspecified_range)[[1]][1]), "2010-01-01")
   expect_equal(lengths(expand(unspecified_range)), 365)
-  skip_on_os("linux")
+  skip_on_cran()
   expect_equal(as.character(expand(negative)[[1]][1]), "-0020-01-01")
   expect_equal(lengths(expand(negative_incomplete_range)), 730)
   expect_equal(lengths(expand(negative_incomplete_set)), 730)

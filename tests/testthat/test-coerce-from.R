@@ -13,6 +13,6 @@ test_that("Coercion from other date classes into messydt works", {
   expect_equal(as.Date(as_messydate("2010-10-10"), random), date)
   expect_error(as.POSIXct(as_messydate("-2012"), min))
   expect_error(as.POSIXlt(as_messydate("-2012"), min))
-  skip_on_os("linux")
+  skip_on_cran()
   expect_equal(as.character(as.Date(negative, min)), "-028-01-01")
 })

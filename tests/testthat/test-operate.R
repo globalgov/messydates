@@ -11,7 +11,7 @@ s <- as_messydate(c("2008-03-22", "-2012-03-01", "2000-12-29..2001-01-28",
                     "2000-12-31..", "-0028-01-04..-0029-01-03"))
 
 test_that("operations works properly", {
-  skip_on_os("linux")
+  skip_on_cran()
   expect_equal(add(d, 3), a)
   expect_equal(d + 3, a)
   expect_equal(subtract(d, 3), s)

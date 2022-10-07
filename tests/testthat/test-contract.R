@@ -11,7 +11,7 @@ dd <- as_messydate(c("2001-01-01", "2001-01-01..2001-01-31",
 e <- expand(d)
 
 test_that("contract works properly", {
-  skip_on_os("linux")
+  skip_on_cran()
   expect_equal(contract(e), d)
   expect_equal(contract(e, collapse = FALSE), dd)
 })

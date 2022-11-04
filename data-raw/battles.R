@@ -19,7 +19,9 @@ battles <- tibble::tribble(~Battle, ~Date, ~Parties,
                            "Battle of Shawali Kowt", "2001-12-3", "US/Eastern Alliance-Taliban",
                            "Battle of Sayyd Alma Kalay", "2001-12-4", "US/Eastern Alliance-Taliban",
                            "Battle of Amami-Oshima", "2001-12-22", "JP-KP",
-                           "Tsotsin-Yurt operation", "2001-12-30:2002-01-03", "RU-Chechen Insurgents")
-battles$Date <- as_messydate(battles$Date)
+                           "Tsotsin-Yurt operation", "2001-12-30:2002-01-03", "RU-Chechen Insurgents") %>%
+  mutate(US_party = ifelse(grepl("US", Parties), 1, 0),
+         n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
+battles$Date <- messydates::as_messydate(battles$Date)
 battles
 usethis::use_data(battles, overwrite = TRUE)

@@ -49,19 +49,19 @@ though this is a work-in-progress and currently only works in English.
 }
 \section{Functions}{
 \itemize{
-\item \code{as_messydate}: Core \code{mdate} class coercion function
+\item \code{as_messydate()}: Core \code{mdate} class coercion function
 
-\item \code{as_messydate.Date}: Coerce from \code{Date} to \code{mdate} class
+\item \code{as_messydate(Date)}: Coerce from \code{Date} to \code{mdate} class
 
-\item \code{as_messydate.POSIXct}: Coerce from \code{POSIXct} to \code{mdate} class
+\item \code{as_messydate(POSIXct)}: Coerce from \code{POSIXct} to \code{mdate} class
 
-\item \code{as_messydate.POSIXlt}: Coerce from \code{POSIXlt} to \code{mdate} class
+\item \code{as_messydate(POSIXlt)}: Coerce from \code{POSIXlt} to \code{mdate} class
 
-\item \code{as_messydate.character}: Coerce character date objects to \code{mdate} class
+\item \code{as_messydate(character)}: Coerce character date objects to \code{mdate} class
 
-\item \code{make_messydate}: Composes \code{mdate} from multiple variables
+\item \code{make_messydate()}: Composes \code{mdate} from multiple variables
+
 }}
-
 \examples{
 as_messydate("2021")
 as_messydate("2021-02")

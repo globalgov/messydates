@@ -2,12 +2,15 @@
 #'
 #' A dataset containing the names and dates of battles in 2001,
 #' according to Wikipedia (https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
+#' The data was retrieved on 2022-07-18.
 #'
 #' @format A data frame with 20 rows and 2 variables:
 #' \describe{
 #'   \item{Battle}{name of the battle, character}
 #'   \item{Date}{date or date range, a mdate class vector}
 #'   \item{Parties}{parties to the conflict, character}
+#'   \item{US_party}{is the US part to the conflict, numeric}
+#'   \item{n_actors}{number of parties involved in the conflict, numeric}
 #' }
 #' @details
 #' ``` {r, echo = FALSE, warning = FALSE}

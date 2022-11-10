@@ -1,7 +1,7 @@
 ## code to prepare `battles` dataset
 battles <- tibble::tribble(~Battle, ~Date, ~Parties,
                            "Operation MH-2", "2001 March 8", "MK-National Libration Army(MK)",
-                           "2001 Bangladesh–India border clashes", "2001-04-16..2001-04-20", "BD-ID",
+                           "Bangladesh–India border clashes", "2001-04-16..2001-04-20", "BD-ID",
                            "Operation Vaksince", "25-5-2001", "MK-National Libration Army(MK)",
                            "Alkhan-Kala operation", "2001-6-22..2001-6-28", "RU-Chechen Republic",
                            "Battle of Vedeno", "2001-8-13..2001-8-26", "RU-Chechen Insurgents",

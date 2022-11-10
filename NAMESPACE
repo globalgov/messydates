@@ -34,10 +34,6 @@ export(is_precise)
 export(is_similar)
 export(is_uncertain)
 export(make_messydate)
-<<<<<<< HEAD
-export(maxmax)
-=======
->>>>>>> 2210d97cf225ca9a77061dbe92dd67c84c716a58
 export(md_intersect)
 export(md_multiset)
 export(md_union)

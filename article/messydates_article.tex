@@ -66,6 +66,17 @@ Switzerland\\
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
+% From pandoc table feature
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 
 
 
@@ -78,71 +89,76 @@ Switzerland\\
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-While there are several different
-
-Messy dates include some degree of imprecision such that existing
-
 Dates are often messy. Whether historical (or ancient), future, or even
-recent, we often only know approximately when an event occurred, that it
-happened within a particular period, an unreliable source means a date
-should be flagged as uncertain, or sources offer multiple, competing
-dates.
+recent, we sometimes only know approximately when an event occurred,
+that it happened within a particular period, or sources offer multiple
+competing dates. Messy dates are dates that include some degree of
+imprecision.
 
 \pkg{messydates} implements for R the Extended Date/Time Format (EDTF)
 annotations set by the International Organization for Standardization
 (ISO) outlined in \href{https://www.iso.org/standard/70908.html}{ISO
-8601-2\_2019(E)}. The standardised extended format allow for unambiguous
-interpretation of dates and guarantee interoperability. These include
-notation for:
+8601-2\_2019(E)}. The extended format allows for standardised annotation
+of date imprecision so interpretation is unambiguous and
+interoperability is guaranteed. These include notation for:
 
-\begin{itemize}
-\tightlist
-\item
-  unspecified date(component)s, e.g.~\texttt{2012-XX-01} for the first
-  of some unknown month in 2012 or \texttt{2012-01} for some unknown day
-  in January 2012
-\item
-  approximate date(component)s,
-  e.g.~\texttt{2012-01-12\textasciitilde{}} for approximately the 12th
-  of January 2012
-\item
-  uncertain date(component)s, e.g.~\texttt{2012-01-12?} where this data
-  point is based on an unreliable source
-\item
-  sets of dates, e.g.~\texttt{\{2012-01-01,2012-01-12\}} where the date
-  can be either 1 January 2012 and 12 January 2012
-\item
-  ranges of dates, e.g.~\texttt{2012-01-01..2012-01-12} for all dates
-  between the 1 January 2012 and 12 January 2012 inclusive
-\end{itemize}
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2593}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1358}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1852}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4198}}@{}}
+\toprule
+\begin{minipage}[b]{\linewidth}\centering
+Date type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Annotation
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Example
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Explanation
+\end{minipage} \\
+\midrule
+\endhead
+unspecified date(component)s & \texttt{X} & \texttt{2012-XX-01} & The
+first day of some unknown month \\
+approximate date(component)s & \texttt{\textasciitilde{}} &
+\texttt{2012-01-12\textasciitilde{}} & Approximately the 12th of January
+2012 \\
+uncertain date(component)s & \texttt{?} & \texttt{2012-01-12?} & The
+data point is based on an unreliable source \\
+sets of dates & \texttt{\{\}} & \texttt{\{2012-01-01,\ 2012-01-12\}} &
+Date can be either 1 January 2012 and 12 January 2012 \\
+ranges of dates & \texttt{..} & \texttt{2012-01-01..\ 2012-01-12} & All
+dates between the 1 January 2012 and 12 January 2012 \\
+\bottomrule
+\end{longtable}
 
 \pkg{messydates} contains a set of tools for constructing and coercing
-into and from the \texttt{mdate} class. This date class allows regular
-dates to be annotated to express unspecified, approximate or uncertain
-date components, date ranges, and sets of dates.
-
-The package includes functions for expanding sets or ranges of dates
-into all dates consistent with how the date or set of dates are
-specified or annotated. Methods are also offered that can be used to
-make explicit how researchers convert date imprecision into precise
-dates for analysis, such as getting the \texttt{min()}, \texttt{max()},
-or even a \texttt{random()} date from among the dates in a set or range
-of dates.
+dates into, and from, the \texttt{mdate} S3 class. The new date class
+allows regular dates to be annotated to express unspecified date
+components, approximate or uncertain dates, date ranges, and sets of
+dates, according to ISO standards. The package also includes functions
+for expanding sets or ranges of dates into all dates consistent with how
+the dates are specified or annotated. Methods are offered that can be
+used to make explicit how researchers convert date imprecision into
+precise dates for analysis, such as getting the \texttt{min()},
+\texttt{max()}, or even a \texttt{random()} date from among the dates in
+a set or range of dates.
 
 \hypertarget{motivation}{%
 \subsection{Motivation}\label{motivation}}
 
-Researchers often recognize this messiness but feel required to force
-non-existent precision on data so we can proceed with analysis. For
-example, if we only know something happened in a given month or year, we
-might just opt for the start of that month (e.g.~\texttt{2021-07-01}) or
-year (\texttt{2021-01-01}), assuming that to err on the earlier (or
-later) side is a justifiable bias. Or they might opt for the end of the
-time element because whatever they believe happened at least is known to
-have happened by then. However, this can create issues for inference in
-which sequence or timing is important. The goal of \pkg{messydates} is
-to help with this problem by retaining and working with various kinds of
-date imprecision.
+Researchers often recognize date messiness, but feel required to force
+non-existent precision on data so that they can proceed with analysis.
+For example, if researchers know something happened in a given month or
+year, they might opt for the start of that month
+(e.g.~\texttt{2021-07-01}) or year (\texttt{2021}), assuming that to err
+on the earlier (or later) side is a justifiable bias. Or researchers
+might opt for the end of the time element because whatever they believe
+happened at least is known to have happened by then. However, this can
+create issues for inferences in which sequence or timing is important.
+The goal of \pkg{messydates} is to help researchers retain and work with
+various kinds of date imprecision.
 
 \hypertarget{relationship-to-other-packages}{%
 \subsection{Relationship to other
@@ -158,91 +174,85 @@ therefore, compatible with all contemporary R packages for analysis.
 
 \section[R code]{\proglang{R} code}\label{r-code}
 
-\hypertarget{a-new-class}{%
-\subsection{A new class}\label{a-new-class}}
+\hypertarget{annotate}{%
+\subsection{Annotate}\label{annotate}}
 
 \pkg{messydates} contains a set of tools for constructing and coercing
-into and from the \texttt{mdate} class. This date class implements ISO
-8601-2:2019(E) and allows regular dates to be annotated to express
+into and from the \texttt{mdate} S3 class. This date class implements
+ISO 8601-2:2019(E) and allows regular dates to be annotated to express
 unspecified date components, approximate or uncertain date components,
-date ranges, and sets of dates. The function \texttt{as\_messydate()}
-handles the coercion to the \texttt{mdate} class.
+date ranges, and sets of dates. Inaccurate start or end dates can be
+represented by an affix indicating ``on or before'', if used as a prefix
+(e.g.~\texttt{..1816-01-01}), or indicating ``on or after'', if used as
+a suffix (e.g.~\texttt{2016-12-31..}). Approximate date components are
+indicated by adding a \texttt{\textasciitilde{}} before year, month, or
+day components (e.g.~\texttt{2003-\textasciitilde{}03-03}) to estimate
+components that are possibly correct. Approximate dates are indicated by
+adding a \texttt{\textasciitilde{}} after the date
+(e.g.~\texttt{2003-03-03\textasciitilde{}}), Day, month, or year,
+uncertainty can be indicated by adding a \texttt{?} before a specific
+date component (e.g.~\texttt{?1916-10-10}). Date uncertainty can be
+indicated by adding a \texttt{?} after the date
+(e.g.~\texttt{1916-10-10?}).
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> library(messydates)
+R> tibble::tibble("Approximate date" = messydates::as_approximate(Sys.Date()), 
++                "Uncertain date" = messydates::as_uncertain(Sys.Date()),
++                "Censored (before) date" = messydates::on_or_before(Sys.Date()),
++                "Censored (after) date" = messydates::on_or_after(Sys.Date()))
+\end{CodeInput}
+\begin{CodeOutput}
+# A tibble: 1 x 4
+  `Approximate date` `Uncertain date` `Censored (before) date` Censored (after~1
+  <mdate>            <mdate>          <mdate>                  <mdate>          
+1 2022-11-10~        2022-11-10?      ..2022-11-10             2022-11-10..     
+# ... with abbreviated variable name 1: `Censored (after) date`
+\end{CodeOutput}
+\end{CodeChunk}
+
+\hypertarget{coercion-to-messydates}{%
+\subsection{Coercion to messydates}\label{coercion-to-messydates}}
+
+The function \texttt{as\_messydate()} handles the coercion to the
+\texttt{mdate} class in one step. The coercion step automatically
+standardises separators, reorder components, and adds annotations for
+ranges and sets of dates when needed.
 
 \begin{CodeChunk}
 \begin{CodeInput}
 R> tibble::tribble(~Example, ~Date,
 +                 "Normal date", as.character(Sys.Date()),
-+                 "Future date", "2599-12-31",
-+                 "Written date", "This is the first day of February, two thousand and twenty-one",
++                 "Future date", "9999-12-12",
++                 "DD/MM/YYYY", "31/10/2021",
++                 "Wrong date", "2021-31-10",
 +                 "Historical date", "476",
 +                 "Era date", "33 BC",
-+                 "Approximate date", "2012-01-12~",
-+                 "Uncertain date", "2001-01-01?",
 +                 "Unspecified date", "2012-01",
-+                 "Censored date", "..2012-01-12",
 +                 "Range of dates", "2019-11-01:2020-01-01",
-+                 "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
++                 "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4",
++                 "Written date", "This is the first day of February, two thousand and twenty-one") %>%
 +   dplyr::mutate(base = as.Date(Date),
 +                 lubridate = lubridate::as_date(Date),
 +                 anytime = anytime::anydate(Date),
 +                 messydates = messydates::as_messydate(Date))
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 11 x 6
+# A tibble: 10 x 6
    Example          Date                base       lubridate  anytime    messy~1
    <chr>            <chr>               <date>     <date>     <date>     <mdate>
- 1 Normal date      2022-10-24          2022-10-24 2022-10-24 2022-10-24 2022-1~
- 2 Future date      2599-12-31          2599-12-31 2599-12-31 2599-12-31 2599-1~
- 3 Written date     This is the first ~ NA         NA         NA         2021-0~
- 4 Historical date  476                 NA         NA         NA         0476  ~
- 5 Era date         33 BC               NA         NA         NA         -0033 ~
- 6 Approximate date 2012-01-12~         2012-01-12 2012-01-12 2012-01-12 2012-0~
- 7 Uncertain date   2001-01-01?         2001-01-01 2001-01-01 2001-01-01 2001-0~
- 8 Unspecified date 2012-01             NA         2020-12-01 2012-01-01 2012-0~
- 9 Censored date    ..2012-01-12        NA         2012-01-12 NA         ..2012~
-10 Range of dates   2019-11-01:2020-01~ 2019-11-01 2019-11-01 2019-11-01 2019-1~
-11 Set of dates     2021-5-26, 2021-11~ 2021-05-26 NA         2021-05-26 {2021-~
+ 1 Normal date      2022-11-10          2022-11-10 2022-11-10 2022-11-10 2022-1~
+ 2 Future date      9999-12-12          9999-12-12 9999-12-12 9999-12-12 9999-1~
+ 3 DD/MM/YYYY       31/10/2021          NA         NA         NA         2021-1~
+ 4 Wrong date       2021-31-10          NA         NA         NA         2021-3~
+ 5 Historical date  476                 NA         NA         NA         0476  ~
+ 6 Era date         33 BC               NA         NA         NA         -0033 ~
+ 7 Unspecified date 2012-01             NA         2020-12-01 2012-01-01 2012-0~
+ 8 Range of dates   2019-11-01:2020-01~ 2019-11-01 2019-11-01 2019-11-01 2019-1~
+ 9 Set of dates     2021-5-26, 2021-11~ 2021-05-26 NA         2021-05-26 {2021-~
+10 Written date     This is the first ~ NA         NA         NA         2021-0~
 # ... with abbreviated variable name 1: messydates
-\end{CodeOutput}
-\end{CodeChunk}
-
-\hypertarget{recognition}{%
-\subsection{Recognition}\label{recognition}}
-
-\hypertarget{annotate}{%
-\subsection{Annotate}\label{annotate}}
-
-Some datasets have, for example, an arbitrary cut off point for start
-and end points, but these are often coded as precise dates when they are
-not the real start or end dates. \pkg{messydates} helps annotate
-uncertainty and approximation to dates. Inaccurate start or end dates
-can be represented by an affix indicating ``on or before'', if used as a
-prefix (e.g.~\texttt{..1816-01-01}), or indicating ``on or after'', if
-used as a suffix (e.g.~\texttt{2016-12-31..}). Approximate dates are
-indicated by adding a \texttt{\textasciitilde{}} to year, month, or day
-components, as well as groups of components or whole dates to estimate
-values that are possibly correct
-(e.g.~\texttt{2003-03-03\textasciitilde{}}). Day, month, or year,
-uncertainty can be indicated by adding a \texttt{?} to a possibly
-dubious date (e.g.~\texttt{1916-10-10?}) or date component
-(e.g.~\texttt{1916-?10-10}).
-
-\begin{CodeChunk}
-\begin{CodeInput}
-R> tibble::tibble(Beg = as_messydate(c("1816-01-01", "1916-01-01", "2016-01-01")),
-+                End = as_messydate(c("1816-12-31", "1916-12-31", "2016-12-31"))) %>% 
-+   dplyr::mutate(on_or_before = ifelse(Beg <= "1816-01-01", on_or_before(Beg), Beg),
-+                 on_or_after = ifelse(End >= "2016-01-01", on_or_after(End), End),
-+                 as_approximate = ifelse(End >= "2016-01-01", on_or_after(End), End),
-+                 as_uncertain = ifelse(End == "1916-12-31", as_uncertain(End), End))
-\end{CodeInput}
-\begin{CodeOutput}
-# A tibble: 3 x 6
-  Beg        End        on_or_before on_or_after  as_approximate as_uncertain
-  <mdate>    <mdate>    <chr>        <chr>        <chr>          <chr>       
-1 1816-01-01 1816-12-31 ..1816-01-01 1816-12-31   1816-12-31     1816-12-31  
-2 1916-01-01 1916-12-31 1916-01-01   1916-12-31   1916-12-31     1916-12-31? 
-3 2016-01-01 2016-12-31 2016-01-01   2016-12-31.. 2016-12-31..   2016-12-31  
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -250,22 +260,19 @@ R> tibble::tibble(Beg = as_messydate(c("1816-01-01", "1916-01-01", "2016-01-01")
 \subsection{Expand}\label{expand}}
 
 The `expand()´ function transforms date ranges, sets of dates, and
-unspecified or approximate dates (annotated with `..', `\{ , \}', `XX'
-or `\textasciitilde{}') into lists of dates. As these dates may refer to
-several possible dates, the function ``expands'' these shorthands to
-include all the possible dates implied.
+unspecified or approximate dates (annotated with `..', `\{ , \}', or
+`XX') into lists of dates. As these dates may refer to several possible
+dates, the function ``expands'' these shorthands to include all the
+possible dates implied.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> dates_expand <- as_messydate(c("2001-01-01", "2001-01", "2001-01-01..2001-02-01",
+R> dates_expand <- as_messydate(c("2001-01", "2001-01-01..2001-02-01",
 +                                "{2001-01-01,2001-02-01}", "2001-XX-01"))
 R> expand(dates_expand)
 \end{CodeInput}
 \begin{CodeOutput}
 [[1]]
-[1] "2001-01-01"
-
-[[2]]
  [1] "2001-01-01" "2001-01-02" "2001-01-03" "2001-01-04" "2001-01-05"
  [6] "2001-01-06" "2001-01-07" "2001-01-08" "2001-01-09" "2001-01-10"
 [11] "2001-01-11" "2001-01-12" "2001-01-13" "2001-01-14" "2001-01-15"
@@ -274,7 +281,7 @@ R> expand(dates_expand)
 [26] "2001-01-26" "2001-01-27" "2001-01-28" "2001-01-29" "2001-01-30"
 [31] "2001-01-31"
 
-[[3]]
+[[2]]
  [1] "2001-01-01" "2001-01-02" "2001-01-03" "2001-01-04" "2001-01-05"
  [6] "2001-01-06" "2001-01-07" "2001-01-08" "2001-01-09" "2001-01-10"
 [11] "2001-01-11" "2001-01-12" "2001-01-13" "2001-01-14" "2001-01-15"
@@ -283,10 +290,10 @@ R> expand(dates_expand)
 [26] "2001-01-26" "2001-01-27" "2001-01-28" "2001-01-29" "2001-01-30"
 [31] "2001-01-31" "2001-02-01"
 
-[[4]]
+[[3]]
 [1] "2001-01-01" "2001-02-01"
 
-[[5]]
+[[4]]
  [1] "2001-01-01" "2001-02-01" "2001-03-01" "2001-04-01" "2001-05-01"
  [6] "2001-06-01" "2001-07-01" "2001-08-01" "2001-09-01" "2001-10-01"
 [11] "2001-11-01" "2001-12-01"
@@ -306,19 +313,18 @@ R> tibble::tibble('Original Dates' = dates_expand,
 +                'Contracted Dates' = contract(expand(dates_expand)))
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 5 x 2
+# A tibble: 4 x 2
   `Original Dates`        `Contracted Dates`     
   <mdate>                 <mdate>                
-1 2001-01-01              2001-01-01             
-2 2001-01                 2001-01                
-3 2001-01-01..2001-02-01  2001-01-01..2001-02-01 
-4 {2001-01-01,2001-02-01} {2001-01-01,2001-02-01}
-5 2001-XX-01              2001-XX-01             
+1 2001-01                 2001-01                
+2 2001-01-01..2001-02-01  2001-01-01..2001-02-01 
+3 {2001-01-01,2001-02-01} {2001-01-01,2001-02-01}
+4 2001-XX-01              2001-XX-01             
 \end{CodeOutput}
 \end{CodeChunk}
 
-\hypertarget{coerce-from-messydates}{%
-\subsection{Coerce from messydates}\label{coerce-from-messydates}}
+\hypertarget{coercion-from-messydates}{%
+\subsection{Coercion from messydates}\label{coercion-from-messydates}}
 
 Coercion functions coerce objects of \texttt{mdate} class objects to
 common date classes such as \texttt{Date}, \texttt{POSIXct}, and
@@ -329,26 +335,24 @@ one might wish to use the earliest possible date in a range, or set, of
 expanded dates (\texttt{min}), or the latest possible date
 (\texttt{max}), or some notion of a central tendency (\texttt{mean},
 \texttt{median}, or \texttt{modal}), or even a \texttt{random} selection
-from amongst the candidate dates.
+from among the candidate dates.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> tibble::tibble(min = as.Date(dates_expand, min),
-+                max = as.Date(dates_expand, max),
-+                median = as.Date(dates_expand, median),
-+                mean = as.Date(dates_expand, mean),
-+                modal = as.Date(dates_expand, modal),
-+                random = as.Date(dates_expand, random))
+R> set.seed(1301)
+R> tibble::tibble(Date = messydates::as_messydate("2001-01"),
++                min = as.Date(Date, min),
++                max = as.Date(Date, max),
++                median = as.Date(Date, median),
++                mean = as.Date(Date, mean),
++                modal = as.Date(Date, modal),
++                random = as.Date(Date, random))
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 5 x 6
-  min        max        median     mean       modal      random    
-  <date>     <date>     <date>     <date>     <date>     <date>    
-1 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01 2001-01-01
-2 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-26
-3 2001-01-01 2001-02-01 2001-01-17 2001-01-16 2001-01-01 2001-01-06
-4 2001-01-01 2001-02-01 2001-02-01 2001-01-16 2001-01-01 2001-01-01
-5 2001-01-01 2001-12-01 2001-07-01 2001-06-16 2001-01-01 2001-10-01
+# A tibble: 1 x 7
+  Date    min        max        median     mean       modal      random    
+  <mdate> <date>     <date>     <date>     <date>     <date>     <date>    
+1 2001-01 2001-01-01 2001-01-31 2001-01-16 2001-01-16 2001-01-01 2001-01-23
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -356,7 +360,7 @@ R> tibble::tibble(min = as.Date(dates_expand, min),
 \subsection{Additional functionality}\label{additional-functionality}}
 
 Several other functions are also offered in the \pkg{messydates}
-package.For example, one can run various logical tests for checking
+package. For example, one can run various logical tests for checking
 \texttt{mdate} objects:
 
 \begin{itemize}
@@ -371,8 +375,8 @@ package.For example, one can run various logical tests for checking
   \texttt{is\_element()} similarly tests whether an \texttt{mdate} can
   be found within an \texttt{mdate} range or set
 \item
-  \texttt{is\_similar()} tests whether two \texttt{mdate} contain
-  similar components
+  \texttt{is\_similar()} tests whether two \texttt{mdate} share one, or
+  more, common components
 \item
   \texttt{is\_precise()} tests for whether \texttt{mdate} is precise
 \end{itemize}
@@ -380,18 +384,6 @@ package.For example, one can run various logical tests for checking
 \begin{CodeChunk}
 \begin{CodeInput}
 R> is_messydate(as_messydate("2001-01-01"))
-\end{CodeInput}
-\begin{CodeOutput}
-[1] TRUE
-\end{CodeOutput}
-\begin{CodeInput}
-R> is_messydate(as.Date("2001-01-01"))
-\end{CodeInput}
-\begin{CodeOutput}
-[1] FALSE
-\end{CodeOutput}
-\begin{CodeInput}
-R> is_intersecting(as_messydate("2001-01"), as_messydate("2001-01-01..2001-02-22"))
 \end{CodeInput}
 \begin{CodeOutput}
 [1] TRUE
@@ -409,25 +401,7 @@ R> is_element(as_messydate("2001-01-01"), as_messydate("2001-01"))
 [1] TRUE
 \end{CodeOutput}
 \begin{CodeInput}
-R> is_element(as_messydate("2001-01-01"), as_messydate("2001-02"))
-\end{CodeInput}
-\begin{CodeOutput}
-[1] FALSE
-\end{CodeOutput}
-\begin{CodeInput}
 R> is_similar(as_messydate("2001-06-02"), as_messydate("2001-02-06"))
-\end{CodeInput}
-\begin{CodeOutput}
-[1] TRUE
-\end{CodeOutput}
-\begin{CodeInput}
-R> is_similar(as_messydate("2001-06-22"), as_messydate("2001-02-06"))
-\end{CodeInput}
-\begin{CodeOutput}
-[1] FALSE
-\end{CodeOutput}
-\begin{CodeInput}
-R> is_precise(as_messydate("2001-06-02"))
 \end{CodeInput}
 \begin{CodeOutput}
 [1] TRUE
@@ -485,9 +459,10 @@ R> md_multiset(as_messydate("2001-01-01..2001-01-20"), as_messydate("2001-01"))
 \end{CodeOutput}
 \end{CodeChunk}
 
-Some arithmetic operations are available for messydates. For instance,
-one can add, or subtract, a day or one year to one, or all,
-\texttt{mdate} objects in a vector.
+Certain arithmetic operations are available for messydates. For
+instance, one can add, or subtract, a day (e.g.~1 or ``1 day'') or one
+year (e.g.~365 or ``1 year'') to one, or all, \texttt{mdate} objects in
+a vector.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -496,14 +471,13 @@ R> tibble::tibble(date = dates_expand,
 +                subtract = dates_expand - "1 year")
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 5 x 3
+# A tibble: 4 x 3
   date                    add                     subtract               
   <mdate>                 <mdate>                 <mdate>                
-1 2001-01-01              2001-01-02              2000-01-02             
-2 2001-01                 2001-01-02..2001-02-01  2000-01-02..2000-02-01 
-3 2001-01-01..2001-02-01  2001-01-02..2001-02-02  2000-01-02..2000-02-02 
-4 {2001-01-01,2001-02-01} {2001-01-02,2001-02-02} {2000-01-02,2000-02-02}
-5 2001-XX-01              2001-XX-02              2000-XX-02             
+1 2001-01                 2001-01-02..2001-02-01  2000-01-02..2000-02-01 
+2 2001-01-01..2001-02-01  2001-01-02..2001-02-02  2000-01-02..2000-02-02 
+3 {2001-01-01,2001-02-01} {2001-01-02,2001-02-02} {2000-01-02,2000-02-02}
+4 2001-XX-01              2001-XX-02              2000-XX-02             
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -512,11 +486,11 @@ R> tibble::tibble(date = dates_expand,
 
 Dates, even for some recent events, can be messy. Take the dates of
 battles in 2001 according to
-\href{https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century}{Wikipedia}
-included in \pkg{messydates}. The dates of these battles are often
-approximate (i.e.~the day in which a battle started or ended is unknown)
-or come from unreliable sources (i.e.~the date might not be
-trustworthy).
+\href{https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century}{Wikipedia},
+retrieved on 2022-07-18, included in \pkg{messydates}. The dates of
+these battles are sometimes approximate (i.e.~the day in which a battle
+started or ended is unknown) or come from unreliable sources (i.e.~the
+date source might not be trustworthy).
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -525,51 +499,30 @@ R> battles$precise <- is_precise(battles$Date)
 R> battles
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 20 x 4
-   Battle                               Date                     Parties precise
-   <chr>                                <mdate>                  <chr>   <lgl>  
- 1 Operation MH-2                       2001-03-08               MK-Nat~ TRUE   
- 2 2001 Bangladesh–India border clashes 2001-04-16..2001-04-20   BD-ID   FALSE  
- 3 Operation Vaksince                   2001-05-25               MK-Nat~ TRUE   
- 4 Alkhan-Kala operation                2001-06-22..2001-06-28   RU-Che~ FALSE  
- 5 Battle of Vedeno                     2001-08-13..2001-08-26   RU-Che~ FALSE  
- 6 Operation Crescent Wind              2001-10-7..2001-12?      US/UK-~ FALSE  
- 7 Operation Rhino                      2001-10-19..2001-10-20   US-Tal~ FALSE  
- 8 Battle of Mazar-e-Sharif             2001-11-09               US/Nor~ TRUE   
- 9 Siege of Kunduz                      2001-11-11..2001-11-23   US/Nor~ FALSE  
-10 Battle of Herat                      2001-11-12               US/Nor~ TRUE   
-11 Battle of Kabul                      2001-11-13..2001-11-14   US/Nor~ FALSE  
-12 Battle of Tarin Kowt                 2001-11-13..2001-11-14   US/Eas~ FALSE  
-13 Operation Trent                      2001-11-~15..2001-11-~30 US/UK-~ FALSE  
-14 Battle of Kandahar                   2001-11-22..2001-12-07   US/AU/~ FALSE  
-15 Battle of Qala-i-Jangi               2001-11-25..2001-12-01   US/UK/~ FALSE  
-16 Battle of Tora Bora                  2001-12-12..2001-12-17   US/Nor~ FALSE  
-17 Battle of Shawali Kowt               2001-12-03               US/Eas~ TRUE   
-18 Battle of Sayyd Alma Kalay           2001-12-04               US/Eas~ TRUE   
-19 Battle of Amami-Oshima               2001-12-22               JP-KP   TRUE   
-20 Tsotsin-Yurt operation               2001-12-30..2002-01-03   RU-Che~ FALSE  
-\end{CodeOutput}
-\end{CodeChunk}
-
-\pkg{messydates} facilitates working with these dates as we can, for
-example, check date precision, get the median values, and find the
-longest battle in 2001.
-
-\begin{CodeChunk}
-\begin{CodeInput}
-R> as.Date(battles$Date, median)
-\end{CodeInput}
-\begin{CodeOutput}
- [1] "2001-03-08" "2001-04-18" "2001-05-25" "2001-06-25" "2001-08-20"
- [6] "2001-11-19" "2001-10-20" "2001-11-09" "2001-11-17" "2001-11-12"
-[11] "2001-11-14" "2001-11-14" "2001-11-23" "2001-11-30" "2001-11-28"
-[16] "2001-12-15" "2001-12-03" "2001-12-04" "2001-12-22" "2002-01-01"
-\end{CodeOutput}
-\begin{CodeInput}
-R> as.numeric(as.Date(battles$Date, max) - as.Date(battles$Date, min))
-\end{CodeInput}
-\begin{CodeOutput}
- [1]  0  4  0  6 13 85  1  0 12  0  1  1 15 15  6  5  0  0  0  4
+# A tibble: 20 x 6
+   Battle                          Date          Parties US_pa~1 n_act~2 precise
+   <chr>                           <mdate>       <chr>     <dbl>   <dbl> <lgl>  
+ 1 Operation MH-2                  2001-03-08  ~ MK-Nat~       0       2 TRUE   
+ 2 Bangladesh–India border clashes 2001-04-16..~ BD-ID         0       2 FALSE  
+ 3 Operation Vaksince              2001-05-25  ~ MK-Nat~       0       2 TRUE   
+ 4 Alkhan-Kala operation           2001-06-22..~ RU-Che~       0       2 FALSE  
+ 5 Battle of Vedeno                2001-08-13..~ RU-Che~       0       2 FALSE  
+ 6 Operation Crescent Wind         2001-10-7..2~ US/UK-~       1       3 FALSE  
+ 7 Operation Rhino                 2001-10-19..~ US-Tal~       1       2 FALSE  
+ 8 Battle of Mazar-e-Sharif        2001-11-09  ~ US/Nor~       1       4 TRUE   
+ 9 Siege of Kunduz                 2001-11-11..~ US/Nor~       1       4 FALSE  
+10 Battle of Herat                 2001-11-12  ~ US/Nor~       1       4 TRUE   
+11 Battle of Kabul                 2001-11-13..~ US/Nor~       1       3 FALSE  
+12 Battle of Tarin Kowt            2001-11-13..~ US/Eas~       1       3 FALSE  
+13 Operation Trent                 2001-11-~15.~ US/UK-~       1       4 FALSE  
+14 Battle of Kandahar              2001-11-22..~ US/AU/~       1       4 FALSE  
+15 Battle of Qala-i-Jangi          2001-11-25..~ US/UK/~       1       5 FALSE  
+16 Battle of Tora Bora             2001-12-12..~ US/Nor~       1       4 FALSE  
+17 Battle of Shawali Kowt          2001-12-03  ~ US/Eas~       1       3 TRUE   
+18 Battle of Sayyd Alma Kalay      2001-12-04  ~ US/Eas~       1       3 TRUE   
+19 Battle of Amami-Oshima          2001-12-22  ~ JP-KP         0       2 TRUE   
+20 Tsotsin-Yurt operation          2001-12-30..~ RU-Che~       0       2 FALSE  
+# ... with abbreviated variable names 1: US_party, 2: n_actors
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -577,19 +530,54 @@ Getting the timing right can be important for researchers. This is
 especially true if researchers are looking to generate robust
 inferences. Until now, when faced with date imprecision, researchers
 usually have to choose between making arbitrary choices (e.g.~adding
-``-01-01'' to non-precise dates) or work with imprecise dates (e.g.~year
-only). Either choice may lead to biased results. Assume we are
-interested in the relationship between the United States (US) being a
-party to a conflict and the duration of the conflict in 2001. We
-hypothesize that conflicts involving the US have a shorter duration
-because of US military capabilities. Using \pkg{messydates} we create
-two different variables representing conflict time from the 2001 battles
-data to be our dependent variables; one variable with arbitrary cut off
-points and the other variable with random values for uncertain or
-approximate dates. As our independent variable, we create a binary
-variable for whether the US was involved in the conflict. As a control,
-we code the number of actors in the conflict. With these variables we
-run two simple linear regression models.
+``-01-01'' to year only dates) or work with imprecise dates (e.g.~year
+only). Either choice may lead to biased results. \pkg{messydates}
+facilitates working with these dates. We can easily find the maximum
+length of the battles in in 2001.
+
+\begin{CodeChunk}
+\begin{CodeInput}
+R> battles$length <- as.Date(battles$Date, max) - as.Date(battles$Date, min)
+R> battles[, c("Battle", "Date", "length")]
+\end{CodeInput}
+\begin{CodeOutput}
+# A tibble: 20 x 3
+   Battle                          Date                     length 
+   <chr>                           <mdate>                  <drtn> 
+ 1 Operation MH-2                  2001-03-08                0 days
+ 2 Bangladesh–India border clashes 2001-04-16..2001-04-20    4 days
+ 3 Operation Vaksince              2001-05-25                0 days
+ 4 Alkhan-Kala operation           2001-06-22..2001-06-28    6 days
+ 5 Battle of Vedeno                2001-08-13..2001-08-26   13 days
+ 6 Operation Crescent Wind         2001-10-7..2001-12?      85 days
+ 7 Operation Rhino                 2001-10-19..2001-10-20    1 days
+ 8 Battle of Mazar-e-Sharif        2001-11-09                0 days
+ 9 Siege of Kunduz                 2001-11-11..2001-11-23   12 days
+10 Battle of Herat                 2001-11-12                0 days
+11 Battle of Kabul                 2001-11-13..2001-11-14    1 days
+12 Battle of Tarin Kowt            2001-11-13..2001-11-14    1 days
+13 Operation Trent                 2001-11-~15..2001-11-~30 15 days
+14 Battle of Kandahar              2001-11-22..2001-12-07   15 days
+15 Battle of Qala-i-Jangi          2001-11-25..2001-12-01    6 days
+16 Battle of Tora Bora             2001-12-12..2001-12-17    5 days
+17 Battle of Shawali Kowt          2001-12-03                0 days
+18 Battle of Sayyd Alma Kalay      2001-12-04                0 days
+19 Battle of Amami-Oshima          2001-12-22                0 days
+20 Tsotsin-Yurt operation          2001-12-30..2002-01-03    4 days
+\end{CodeOutput}
+\end{CodeChunk}
+
+Assume we are interested in the relationship between the United States
+(US) being a party to a conflict and the duration of the conflict in
+2001. We hypothesize that conflicts involving the US have a shorter
+duration because of the US military capabilities. Using \pkg{messydates}
+we create two different variables representing conflict time from the
+2001 battles data to be our dependent variables; one variable with
+arbitrary cut off points and the other variable with random values for
+uncertain or approximate dates. Whether the US was involved in the
+conflict is our independent variable. We also control for the number of
+actors involved in the conflict. With these variables we run two simple
+linear regression models.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -598,31 +586,36 @@ R> battles <- battles %>%
 +   mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
 +          random = ifelse(is_uncertain(Date)|is_approximate(Date),
 +                          abs(as.Date(Date, random) - as.Date(Date, random)),
-+                          arbitrary),
-+          US_party = ifelse(grepl("US", Parties), 1, 0),
-+          n_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
-R> lm(arbitrary ~ US_party + n_actors, battles)
++                          arbitrary))
+R> arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
+R> random <- lm(random ~ US_party + n_actors, battles)
+R> stargazer::stargazer(arbitrary, random, type = "text")
 \end{CodeInput}
 \begin{CodeOutput}
 
-Call:
-lm(formula = arbitrary ~ US_party + n_actors, data = battles)
-
-Coefficients:
-(Intercept)     US_party     n_actors  
-      8.815       10.802       -2.479  
-\end{CodeOutput}
-\begin{CodeInput}
-R> lm(random ~ US_party + n_actors, battles)
-\end{CodeInput}
-\begin{CodeOutput}
-
-Call:
-lm(formula = random ~ US_party + n_actors, data = battles)
-
-Coefficients:
-(Intercept)     US_party     n_actors  
-      0.538       -1.410        1.660  
+==========================================================
+                                  Dependent variable:     
+                              ----------------------------
+                                 arbitrary       random   
+                                    (1)           (2)     
+----------------------------------------------------------
+US_party                          10.802         -1.410   
+                                 (14.399)       (4.528)   
+                                                          
+n_actors                          -2.479         1.660    
+                                  (7.239)       (2.276)   
+                                                          
+Constant                           8.815         0.538    
+                                 (16.241)       (5.107)   
+                                                          
+----------------------------------------------------------
+Observations                        20             20     
+R2                                 0.040         0.039    
+Adjusted R2                       -0.073         -0.074   
+Residual Std. Error (df = 17)     19.467         6.121    
+F Statistic (df = 2; 17)           0.352         0.345    
+==========================================================
+Note:                          *p<0.1; **p<0.05; ***p<0.01
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -631,7 +624,9 @@ two models. Although not statistically significant, the coefficient for
 US being a party in a conflict goes from being positive, when calculated
 using arbitrary cut off dates, to being negative, when calculated using
 random dates. In this case, setting arbitrary cut off points to dates
-introduces highly influential outliers (see Cook's distance below).
+introduces highly influential outliers (see the Cook's distance plot
+below). That is, these outlier observations drive coefficient scores up
+when, in reality, we are not sure they accurately represent the timing.
 
 \begin{CodeChunk}
 \begin{CodeInput}
@@ -643,11 +638,19 @@ R> plot(lm(arbitrary ~ US_party + n_actors, battles), which = 4)
 
 \end{CodeChunk}
 
-Hence, it is hard to say whether there is a relationship between the US
-being an actor involved in one of the battles in 2001 and its duration.
-
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
+
+Dates are often messy. Researchers recognize date messiness, but thanks
+to \pkg{messydates}, are no longer required to force non-existent
+precision on data to proceed with analysis. \pkg{messydates} implements
+for R the `mdate' class to help researchers retain and work with various
+kinds of date imprecision. The class allows regular dates to be
+annotated to express unspecified, approximate or uncertain date
+components, date ranges, and sets of dates, according to ISO standards.
+\pkg{messydates} includes functions for expanding, and contracting,
+annotated sets or ranges of dates. Methods for explicitly resolving
+annotated sets or range of dates into precise dates are also offered.
 
 \hypertarget{acknowledgements}{%
 \section{Acknowledgements}\label{acknowledgements}}

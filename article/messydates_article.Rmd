@@ -69,8 +69,8 @@ Messy dates are dates that include some degree of imprecision.
 
 <!-- introduce ISO details only as part of the solution? -->
 
-\pkg{messydates} implements for R the Extended Date/Time Format (EDTF) annotations
-set by the International Organization for Standardization (ISO) 
+\pkg{messydates} implements for R the Extended Date/Time Format (EDTF)
+annotations set by the International Organization for Standardization (ISO) 
 outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
 The extended format allows for standardised annotation of date imprecision so
 interpretation is unambiguous and interoperability is guaranteed.
@@ -229,8 +229,8 @@ As these dates may refer to several possible dates, the function "expands" these
 shorthands to include all the possible dates implied.
 
 ```{r expand, message=FALSE, warning=FALSE}
-dates_expand <- as_messydate(c("2001-01", "2001-01-01..2001-02-01",
-                               "{2001-01-01,2001-02-01}", "2001-XX-01"))
+dates_expand <- as_messydate(c("2001-01", "2001-01-01..2001-01-12",
+                               "{2001-01-01,2001-02-01..2001-02-03}", "2001-XX-01"))
 expand(dates_expand)
 ```
 
@@ -329,7 +329,7 @@ or come from unreliable sources (i.e. the date source might not be trustworthy).
 ```{r data, warning=FALSE, message=FALSE}
 battles <- messydates::battles
 battles$precise <- is_precise(battles$Date)
-battles
+battles[, c("Battle", "Date", "precise")]
 ```
 
 Getting the timing right can be important for researchers.
@@ -359,6 +359,7 @@ one variable with arbitrary cut off points and the other variable
 with random values for uncertain or approximate dates.
 Whether the US was involved in the conflict is our independent variable.
 We also control for the number of actors involved in the conflict.
+These variables are included in the 2001 battles data.
 <!-- can we just add US party and n_actors to the original data to make the code below a little neater? -->
 With these variables we run two simple linear regression models.
 
@@ -393,7 +394,7 @@ plot(lm(arbitrary ~ US_party + n_actors, battles), which = 4)
 
 <!-- need to add a stronger conclusion here -->
 Dates are often messy.
-Researchers recognize date messiness, but thanks to \pkg{messydates},
+Researchers recognize date messiness and, thanks to \pkg{messydates},
 are no longer required to force non-existent precision on data to proceed with analysis.
 \pkg{messydates} implements for R the 'mdate' class to help researchers
 retain and work with various kinds of date imprecision.

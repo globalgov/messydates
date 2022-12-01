@@ -107,7 +107,7 @@ interoperability is guaranteed. These include notation for:
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1358}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1852}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4198}}@{}}
-\toprule
+\toprule()
 \begin{minipage}[b]{\linewidth}\centering
 Date type
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -117,7 +117,7 @@ Example
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Explanation
 \end{minipage} \\
-\midrule
+\midrule()
 \endhead
 unspecified date(component)s & \texttt{X} & \texttt{2012-XX-01} & The
 first day of some unknown month \\
@@ -130,7 +130,7 @@ sets of dates & \texttt{\{\}} & \texttt{\{2012-01-01,\ 2012-01-12\}} &
 Date can be either 1 January 2012 and 12 January 2012 \\
 ranges of dates & \texttt{..} & \texttt{2012-01-01..\ 2012-01-12} & All
 dates between the 1 January 2012 and 12 January 2012 \\
-\bottomrule
+\bottomrule()
 \end{longtable}
 
 \pkg{messydates} contains a set of tools for constructing and coercing
@@ -200,15 +200,14 @@ indicated by adding a \texttt{?} after the date
 R> library(messydates)
 R> tibble::tibble("Approximate date" = messydates::as_approximate(Sys.Date()), 
 +                "Uncertain date" = messydates::as_uncertain(Sys.Date()),
-+                "Censored (before) date" = messydates::on_or_before(Sys.Date()),
-+                "Censored (after) date" = messydates::on_or_after(Sys.Date()))
++                "Censored (before)" = messydates::on_or_before(Sys.Date()),
++                "Censored (after)" = messydates::on_or_after(Sys.Date()))
 \end{CodeInput}
 \begin{CodeOutput}
 # A tibble: 1 x 4
-  `Approximate date` `Uncertain date` `Censored (before) date` Censored (after~1
-  <mdate>            <mdate>          <mdate>                  <mdate>          
-1 2022-11-11~        2022-11-11?      ..2022-11-11             2022-11-11..     
-# ... with abbreviated variable name 1: `Censored (after) date`
+  `Approximate date` `Uncertain date` `Censored (before)` `Censored (after)`
+  <mdate>            <mdate>          <mdate>             <mdate>           
+1 2022-12-01~        2022-12-01?      ..2022-12-01        2022-12-01..      
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -235,14 +234,14 @@ R> tibble::tribble(~Example, ~Date,
 +                 "Written date", "This is the first day of February, two thousand and twenty-one") %>%
 +   dplyr::mutate(base = as.Date(Date),
 +                 lubridate = lubridate::as_date(Date),
-+                 anytime = anytime::anydate(Date),
++                 anytime = anytime::anydate(Date), #Do we need anytime?
 +                 messydates = messydates::as_messydate(Date))
 \end{CodeInput}
 \begin{CodeOutput}
 # A tibble: 10 x 6
    Example          Date                base       lubridate  anytime    messy~1
    <chr>            <chr>               <date>     <date>     <date>     <mdate>
- 1 Normal date      2022-11-11          2022-11-11 2022-11-11 2022-11-11 2022-1~
+ 1 Normal date      2022-12-01          2022-12-01 2022-12-01 2022-12-01 2022-1~
  2 Future date      9999-12-12          9999-12-12 9999-12-12 9999-12-12 9999-1~
  3 DD/MM/YYYY       31/10/2021          NA         NA         NA         2021-1~
  4 Wrong date       2021-31-10          NA         NA         NA         2021-3~

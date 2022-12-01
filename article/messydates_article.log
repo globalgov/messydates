@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.10.19)  11 NOV 2022 17:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.1)  1 DEC 2022 18:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **messydates_article.tex
 (./messydates_article.tex
-LaTeX2e <2022-06-01> patch level 5
-L3 programming layer <2022-09-28> (./jss.cls
+LaTeX2e <2022-11-01>
+L3 programming layer <2022-11-02> (./jss.cls
 Document Class: jss 2020/12/09 3.2 jss class by Achim Zeileis
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
@@ -22,7 +22,7 @@ File: size11.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
 \c@table=\count192
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
-\bibindent=\dimen138
+\bibindent=\dimen140
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty
@@ -38,8 +38,6 @@ File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 Package graphics Info: Driver file: pdftex.def on input line 107.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
-\stockwidth=\dimen139
-\stockheight=\dimen140
 ))
 \Gin@req@height=\dimen141
 \Gin@req@width=\dimen142
@@ -109,7 +107,7 @@ LaTeX Info: Redefining \cite on input line 694.
 )
 \footerskip=\skip51
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
-Package: hyperref 2022-09-22 v7.00t Hypertext links for LaTeX
+Package: hyperref 2022-11-13 v7.00u Hypertext links for LaTeX
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
 Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
@@ -149,7 +147,7 @@ Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 \Hy@linkcounter=\count198
 \Hy@pagecounter=\count199
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
-File: pd1enc.def 2022-09-22 v7.00t Hyperref: PDFDocEncoding definition (HO)
+File: pd1enc.def 2022-11-13 v7.00u Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
@@ -159,7 +157,7 @@ Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
 \Hy@SavedSpaceFactor=\count266
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
-File: puenc.def 2022-09-22 v7.00t Hyperref: PDF Unicode definition (HO)
+File: puenc.def 2022-11-13 v7.00u Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 )
@@ -202,7 +200,7 @@ package with kernel methods
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
-File: hpdftex.def 2022-09-22 v7.00t Hyperref driver for pdfTeX
+File: hpdftex.def 2022-11-13 v7.00u Hyperref driver for pdfTeX
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty
 Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend package
 with kernel methods
@@ -700,7 +698,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [3]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 262.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 261.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -720,7 +718,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [6]
 
-Package xcolor Warning: Incompatible color definition on input line 486.
+Package xcolor Warning: Incompatible color definition on input line 485.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -741,7 +739,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 <messydates_article_files/figure-latex/outliers-1.pdf, id=142, 353.32pt x 264.99pt>
 File: messydates_article_files/figure-latex/outliers-1.pdf Graphic file (type pdf)
 <use messydates_article_files/figure-latex/outliers-1.pdf>
-Package pdftex.def Info: messydates_article_files/figure-latex/outliers-1.pdf  used on input line 634.
+Package pdftex.def Info: messydates_article_files/figure-latex/outliers-1.pdf  used on input line 633.
 (pdftex.def)             Requested size: 354.12434pt x 265.59586pt.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -757,26 +755,26 @@ Package xcolor Warning: Incompatible color definition on input line 23.
 
 )
 
-Package xcolor Warning: Incompatible color definition on input line 663.
+Package xcolor Warning: Incompatible color definition on input line 662.
 
 
-Package xcolor Warning: Incompatible color definition on input line 663.
+Package xcolor Warning: Incompatible color definition on input line 662.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 663--663
+Underfull \hbox (badness 10000) in paragraph at lines 662--662
 
  []
 
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/m/it' tried instead on input line 663.
+(Font)              Font shape `T1/pzc/m/it' tried instead on input line 662.
 
-Package xcolor Warning: Incompatible color definition on input line 663.
-
-
-Package xcolor Warning: Incompatible color definition on input line 663.
+Package xcolor Warning: Incompatible color definition on input line 662.
 
 
-Package xcolor Warning: Incompatible color definition on input line 663.
+Package xcolor Warning: Incompatible color definition on input line 662.
+
+
+Package xcolor Warning: Incompatible color definition on input line 662.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -788,15 +786,15 @@ Package rerunfilecheck Info: File `messydates_article.out' has not changed.
 (rerunfilecheck)             Checksum: E10D7CA3F345D34643E76331AB1C4457;2066.
  ) 
 Here is how much of TeX's memory you used:
- 21770 strings out of 477031
- 417346 string characters out of 5826632
- 721080 words of memory out of 5000000
- 42436 multiletter control sequences out of 15000+600000
+ 21772 strings out of 476931
+ 417374 string characters out of 5823846
+ 722784 words of memory out of 5000000
+ 42538 multiletter control sequences out of 15000+600000
  544166 words of font info for 66 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,9n,103p,400b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,9n,103p,400b,620s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmb10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbo10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtto10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on messydates_article.pdf (11 pages, 354305 bytes).
+Output written on messydates_article.pdf (11 pages, 354765 bytes).
 PDF statistics:
  239 PDF objects out of 1000 (max. 8388607)
  196 compressed objects within 2 object streams

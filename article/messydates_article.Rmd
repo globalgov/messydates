@@ -183,8 +183,8 @@ Date uncertainty can be indicated by adding a `?` after the date (e.g. `1916-10-
 library(messydates)
 tibble::tibble("Approximate date" = messydates::as_approximate(Sys.Date()), 
                "Uncertain date" = messydates::as_uncertain(Sys.Date()),
-               "Censored (before) date" = messydates::on_or_before(Sys.Date()),
-               "Censored (after) date" = messydates::on_or_after(Sys.Date()))
+               "Censored (before)" = messydates::on_or_before(Sys.Date()),
+               "Censored (after)" = messydates::on_or_after(Sys.Date()))
 ```
 
 <!-- consider renaming 'on_or_after' as it doesn't fit the rest of the syntax. I thought maybe 'on_or_after' could be 'as_since()' and 'on_or_before' could be 'as_by()'? -->
@@ -200,6 +200,9 @@ and adds annotations for ranges and sets of dates when needed.
 <!-- We are technically using the ISO "recommended" one,
 so we might not need to be specific ...
 Also, we often return dates that only have year or are missing components...-->
+<!-- One more thing, I think we need a prettier table below,
+but I am having issue transforming the table below into latex
+in this rticles template. -->
 
 ```{r comparison, message=FALSE, warning=FALSE}
 tibble::tribble(~Example, ~Date,
@@ -215,7 +218,7 @@ tibble::tribble(~Example, ~Date,
                 "Written date", "This is the first day of February, two thousand and twenty-one") %>%
   dplyr::mutate(base = as.Date(Date),
                 lubridate = lubridate::as_date(Date),
-                anytime = anytime::anydate(Date),
+                anytime = anytime::anydate(Date), #Do we need anytime?
                 messydates = messydates::as_messydate(Date))
 ```
 

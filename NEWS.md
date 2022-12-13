@@ -1,3 +1,15 @@
+# messydates 0.3.2
+
+## Package
+
+* Closed #64 by updating failing tests
+* Closed #65 by updating cheatsheet for new package changes
+
+## Functions
+
+* Closed #62 by adding "resequence" as an argument to ´as_messydates()´ for explicit date format conversion, if necessary
+* Closed #63 by fixing issues with unnecessary white spaces added in date conversion
+
 # messydates 0.3.1
 
 ## Package

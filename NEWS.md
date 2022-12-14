@@ -2,7 +2,7 @@
 
 ## Package
 
-* Closed #64 by updating failing tests
+* Closed #64 by updating failing tests to test for other aspects instead of the printing of negative dates across OS
 * Closed #65 by updating cheatsheet for new package changes
 
 ## Functions

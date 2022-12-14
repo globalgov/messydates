@@ -2,7 +2,6 @@ date <- as.Date("2010-10-10")
 POSIXct <- as.POSIXct("2010-10-20 CEST")
 POSIXlt <- as.POSIXlt("2010-10-15 CEST")
 messy <- as_messydate("2010-10-10..2010-10-20")
-negative <- as_messydate("28 BC")
 
 test_that("Coercion from other date classes into messydt works", {
   expect_equal(as.character(as.Date(as_messydate("1000 BC"), max)), "-1000-12-31")
@@ -13,6 +12,4 @@ test_that("Coercion from other date classes into messydt works", {
   expect_equal(as.Date(as_messydate("2010-10-10"), random), date)
   expect_error(as.POSIXct(as_messydate("-2012"), min))
   expect_error(as.POSIXlt(as_messydate("-2012"), min))
-  skip_on_os("linux")
-  expect_equal(as.character(as.Date(negative, min)), "-028-01-01")
 })

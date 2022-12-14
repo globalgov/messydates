@@ -18,7 +18,7 @@ as_messydate(x, resequence = FALSE)
 
 \method{as_messydate}{POSIXlt}(x, resequence = FALSE)
 
-\method{as_messydate}{character}(x, resequence = FALSE)
+\method{as_messydate}{character}(x, resequence = NULL)
 
 make_messydate(..., resequence = FALSE)
 }
@@ -26,12 +26,24 @@ make_messydate(..., resequence = FALSE)
 \item{x}{A scalar or vector of a class that can be coerced into \code{mdate},
 such as \code{Date}, \code{POSIXct}, \code{POSIXlt}, or character.}
 
-\item{resequence}{Users have the option to choose the
-order for ambiguous 6 digit dates (e.g. "11-01-12"),
-and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
-\code{FALSE} by default.
-If \code{TRUE}, it prompts users to select the existing component order of ambiguous
-6 digit dates, based on which the date is reordered into YY-MM-DD format
+\item{resequence}{Users have the option to choose the order for
+ambiguous dates with or without separators (e.g. "11-01-12" or "20112112").
+\code{NULL} by default.
+Other options include: 'dmy', 'ymd', 'mdy', 'ym', 'my' and 'interactive'
+If 'dmy', dates are converted from DDMMYY format for 6 digit dates,
+or DDMMYYYY format for 8 digit dates.
+If 'ymd', dates are converted from YYMMDD format for 6 digit dates,
+or YYYYMMDD format for 8 digit dates.
+If 'mdy', dates are converted from MMDDYY format for 6 digit dates
+or MMDDYYYY format for 8 digit dates.
+For these three options, ambiguous dates are converted to YY-MM-DD format
+for 6 digit dates, or YYYY-MM-DD format for 8 digit dates.
+If 'my', ambiguous 6 digit dates are converted from MM-YYYY format
+to YYYY-MM.
+If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
+If 'interactive', it prompts users to select the existing
+component order of ambiguous dates,
+based on which the date is reordered into YYYY-MM-DD format
 and further completed to YYYY-MM-DD format if they choose to do so.}
 
 \item{...}{One (yyyy-mm-dd) or three (yyyy, mm, dd) variables}
@@ -49,19 +61,19 @@ though this is a work-in-progress and currently only works in English.
 }
 \section{Functions}{
 \itemize{
-\item \code{as_messydate}: Core \code{mdate} class coercion function
+\item \code{as_messydate()}: Core \code{mdate} class coercion function
 
-\item \code{as_messydate.Date}: Coerce from \code{Date} to \code{mdate} class
+\item \code{as_messydate(Date)}: Coerce from \code{Date} to \code{mdate} class
 
-\item \code{as_messydate.POSIXct}: Coerce from \code{POSIXct} to \code{mdate} class
+\item \code{as_messydate(POSIXct)}: Coerce from \code{POSIXct} to \code{mdate} class
 
-\item \code{as_messydate.POSIXlt}: Coerce from \code{POSIXlt} to \code{mdate} class
+\item \code{as_messydate(POSIXlt)}: Coerce from \code{POSIXlt} to \code{mdate} class
 
-\item \code{as_messydate.character}: Coerce character date objects to \code{mdate} class
+\item \code{as_messydate(character)}: Coerce character date objects to \code{mdate} class
 
-\item \code{make_messydate}: Composes \code{mdate} from multiple variables
+\item \code{make_messydate()}: Composes \code{mdate} from multiple variables
+
 }}
-
 \examples{
 as_messydate("2021")
 as_messydate("2021-02")
@@ -75,7 +87,9 @@ as_messydate("2021-02-01\%")
 as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
 as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
+as_messydate(c("210201", "20210201"), resequence = "ymd")
+as_messydate(c("010221", "01022021"), resequence = "dmy")
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
-# resequence = TRUE)
+# resequence = "interactive")
 make_messydate("2010", "10", "10")
 }

@@ -52,15 +52,15 @@ component (e.g. \code{1916-?10-10}).
 }
 \section{Functions}{
 \itemize{
-\item \code{on_or_before}: prefixes dates with ".." where start date is uncertain
+\item \code{on_or_before()}: prefixes dates with ".." where start date is uncertain
 
-\item \code{on_or_after}: suffixes dates with ".." where end date is uncertain
+\item \code{on_or_after()}: suffixes dates with ".." where end date is uncertain
 
-\item \code{as_approximate}: adds tildes to indicate approximate dates/date components
+\item \code{as_approximate()}: adds tildes to indicate approximate dates/date components
 
-\item \code{as_uncertain}: adds question marks to indicate dubious dates/date components.
+\item \code{as_uncertain()}: adds question marks to indicate dubious dates/date components.
+
 }}
-
 \examples{
 data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
   End = c("1816-12-31", "1916-12-31", "2016-12-31"))

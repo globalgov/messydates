@@ -8,12 +8,24 @@
 #' though this is a work-in-progress and currently only works in English.
 #' @param x A scalar or vector of a class that can be coerced into `mdate`,
 #'   such as `Date`, `POSIXct`, `POSIXlt`, or character.
-#' @param resequence Users have the option to choose the
-#'   order for ambiguous 6 digit dates (e.g. "11-01-12"),
-#'   and to expand these dates into precise dates (i.e. YYYY-MM-DD format).
-#'   `FALSE` by default.
-#'   If `TRUE`, it prompts users to select the existing component order of ambiguous
-#'   6 digit dates, based on which the date is reordered into YY-MM-DD format
+#' @param resequence Users have the option to choose the order for
+#'   ambiguous dates with or without separators (e.g. "11-01-12" or "20112112").
+#'   `NULL` by default.
+#'   Other options include: 'dmy', 'ymd', 'mdy', 'ym', 'my' and 'interactive'
+#'   If 'dmy', dates are converted from DDMMYY format for 6 digit dates,
+#'   or DDMMYYYY format for 8 digit dates.
+#'   If 'ymd', dates are converted from YYMMDD format for 6 digit dates,
+#'   or YYYYMMDD format for 8 digit dates.
+#'   If 'mdy', dates are converted from MMDDYY format for 6 digit dates
+#'   or MMDDYYYY format for 8 digit dates.
+#'   For these three options, ambiguous dates are converted to YY-MM-DD format
+#'   for 6 digit dates, or YYYY-MM-DD format for 8 digit dates.
+#'   If 'my', ambiguous 6 digit dates are converted from MM-YYYY format
+#'   to YYYY-MM.
+#'   If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
+#'   If 'interactive', it prompts users to select the existing
+#'   component order of ambiguous dates,
+#'   based on which the date is reordered into YYYY-MM-DD format
 #'   and further completed to YYYY-MM-DD format if they choose to do so.
 #' @return A `mdate` class object
 #' @name messydate
@@ -33,8 +45,10 @@ NULL
 #' as_messydate("2021-02-01..2021-02-28")
 #' as_messydate("{2021-02-01,2021-02-28}")
 #' as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
+#' as_messydate(c("210201", "20210201"), resequence = "ymd")
+#' as_messydate(c("010221", "01022021"), resequence = "dmy")
 #' # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
-#' # resequence = TRUE)
+#' # resequence = "interactive")
 #' @export
 as_messydate <- function(x, resequence = FALSE)
   UseMethod("as_messydate")
@@ -60,13 +74,32 @@ as_messydate.POSIXlt <- function(x, resequence = FALSE) {
   new_messydate(x)
 }
 
+#' @export
+as_messydate.mdate <- function(x, resequence = FALSE) {
+  x <- as.character(x) # For updating 'mdate' variables
+  new_messydate(x)
+}
+
 #' @describeIn messydate Coerce character date objects to `mdate` class
 #' @export
-as_messydate.character <- function(x, resequence = FALSE) {
+as_messydate.character <- function(x, resequence = NULL) {
   d <- standardise_text(x)
   d <- standardise_date_separators(d)
+  if (!is.null(resequence)) {
+    if (resequence == "dmy") {
+      d <- daymonthyear(d)
+    } else if (resequence == "ymd") {
+      d <- yearmonthday(d)
+    } else if (resequence == "ym") {
+      d <- yearmonth(d)
+    } else if (resequence == "my") {
+      d <- monthyear(d)
+    } else if (resequence == "mdy") {
+      d <- monthdayyear(d)
+    }
+  }
   d <- standardise_date_order(d)
-  if (isTRUE(resequence)) {
+  if (isTRUE(resequence == "interactive")) {
     d <- ask_user(d)
   }
   d <- standardise_ranges(d)
@@ -78,7 +111,8 @@ as_messydate.character <- function(x, resequence = FALSE) {
 
 # Helper functions
 standardise_text <- function(v) {
-  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})"),
+  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})") &
+                    !grepl("bce$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
   dates
 }
@@ -98,7 +132,69 @@ standardise_date_separators <- function(dates) {
   dates
 }
 
+daymonthyear <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\3-\\2-\\1"), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+                  paste0(substr(dates, 5, 8), "-", substr(dates, 3, 4), "-",
+                         substr(dates, 1, 2)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 5, 6), "-", substr(dates, 3, 4), "-",
+                         substr(dates, 1, 2)), dates)
+  dates
+}
+
+yearmonthday <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+                  paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
+                         substr(dates, 7, 8)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 1, 2), "-", substr(dates, 3, 4), "-",
+                         substr(dates, 5, 6)), dates)
+  dates
+}
+
+yearmonth <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6)), dates)
+  dates
+}
+
+monthyear <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 3, 6), "-", substr(dates, 1, 2)), dates)
+  dates
+}
+
+monthdayyear <- function(dates) {
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\3-\\1-\\2"), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+                  paste0(substr(dates, 5, 8), "-", substr(dates, 1, 2), "-",
+                         substr(dates, 3, 4)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 5, 6), "-", substr(dates, 1, 2), "-",
+                         substr(dates, 3, 4)), dates)
+  dates
+}
+
 standardise_date_order <- function(dates) {
+  # if resequence argument is not specified, assumes ymd format
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+                  paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
+                         substr(dates, 7, 8)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 5, 6), "-", substr(dates, 3, 4), "-",
+                         substr(dates, 1, 2)), dates)
+  # detects and reorders inconsistencies
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
                   stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)", "\\3-\\1-\\2"),
@@ -147,15 +243,20 @@ standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-XX$", "")
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
                   paste0("~", stringr::str_remove(dates, "\\~")), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+                  paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
+                         substr(dates, 7, 8)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+                  paste0(substr(dates, 1, 2), "-", substr(dates, 3, 4), "-",
+                         substr(dates, 5, 6)), dates)
   dates
 }
 
 standardise_date_input <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "(bc|BC|Bc|bC)"),
+  dates <- ifelse(stringr::str_detect(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
                   as_bc_dates(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "(ad|AD|Ad|aD)"),
-                  as_ac_dates(dates), dates)
-  dates <- gsub(" ", "", dates)
+  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD|CE|Ce|ce)")
+  dates <- trimws(dates, "both")
   dates
 }
 
@@ -169,6 +270,7 @@ standardise_widths <- function(dates) {
                   paste0("{", dates, "}"), dates)
   dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
+  dates <- trimws(dates, "both")
   dates
 }
 
@@ -216,29 +318,23 @@ extract_from_text <- function(v) {
 }
 
 as_bc_dates <- function(dates) {
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 2,
+  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 2,
                   st_negative_range(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") > 2,
+  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") > 2,
                   st_negative_sets(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(bc|BC|Bc|bC)") == 1,
+  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 1,
                   st_negative(dates), dates)
 }
 
-as_ac_dates <- function(dates) {
-  # remove after christ letters
-  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD)")
-  dates <- stringr::str_trim(dates, side = "both")
-}
-
 st_negative_range <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
   dates <- gsub(" ", "", dates)
   dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
                   "..-", strsplit(dates, "\\.\\.")[[1]][2])
 }
 
 st_negative_sets <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
   dates <- gsub(" ", "", dates)
   dates <- unlist(strsplit(dates, "\\,"))
   dates <- ifelse(length(dates) > 1,
@@ -247,7 +343,7 @@ st_negative_sets <- function(dates) {
 }
 
 st_negative <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(bc|BC|Bc|bC)")
+  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
   dates <- stringr::str_trim(dates, side = "both")
   dates <- paste0("-", dates)
 }

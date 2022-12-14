@@ -20,13 +20,13 @@ A dataset containing the names and dates of battles in 2001,
 according to Wikipedia (https://en.wikipedia.org/wiki/List_of_battles_in_the_21st_century).
 }
 \details{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{## ----------------------------------------------------------------------------
-## |  Column Name  |  Data Type  |  Observations  |  Missing  |  Missing (\%)  |
-## ----------------------------------------------------------------------------
-## |    Battle     |  character  |              20|     0     |       0       |
-## |     Date      |    mdate    |              20|     0     |       0       |
-## |    Parties    |  character  |              20|     0     |       0       |
-## ----------------------------------------------------------------------------
+\if{html}{\out{<div class="sourceCode">}}\preformatted{#> ----------------------------------------------------------------------------
+#> |  Column Name  |  Data Type  |  Observations  |  Missing  |  Missing (\%)  |
+#> ----------------------------------------------------------------------------
+#> |    Battle     |  character  |              20|     0     |       0       |
+#> |     Date      |    mdate    |              20|     0     |       0       |
+#> |    Parties    |  character  |              20|     0     |       0       |
+#> ----------------------------------------------------------------------------
 }\if{html}{\out{</div>}}
 }
 \keyword{datasets}

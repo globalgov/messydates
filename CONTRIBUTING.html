@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -56,6 +56,7 @@
     </div>
 
 <div id="contributing" class="section level1">
+
 <p>Contributions to <code>qData</code>, whether in the form of issue identification, bug fixes, new code or documentation are encouraged and welcome, both from research assistants and (early) users of the package:</p>
 <ul><li><a href="#issues">Submit an issue</a></li>
 <li><a href="#adding-new-code">Fix a bug or implement new features</a></li>
@@ -170,7 +171,7 @@ testthat::test_dir("tests/testthat")</code></pre>
 </div>
 <div class="section level2">
 <h2 id="for-developers-using-macos">For developers using MacOS<a class="anchor" aria-label="anchor" href="#for-developers-using-macos"></a></h2>
-<p>Develops using MacOS might meet problems compiling the packages since the compiling configuration of R in MacOS is usually incorrect. If one meet an error with error info “/usr/bin/ld: cannot find -lgfortran”, then he can either correct the configuration himself or follows the following steps to solve the problem: 1. Run “.libPaths()” command in R and get a path, e.g. one might get “/Library/Frameworks/R.framework/Versions/3.6/Resources/library” 2. If the path one get in the first step is “something/library”, then open the file “something/etc/Makeconf” and comment out the line starting with “FLIBS”. e.g. one might open the file " /Library/Frameworks/R.framework/Versions/3.6/Resources/etc/Makeconf" and change the line “FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin15/6.1.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm” to “#FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin15/6.1.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath - lm”</p>
+<p>Develops using MacOS might meet problems compiling the packages since the compiling configuration of R in MacOS is usually incorrect. If one meet an error with error info “/usr/bin/ld: cannot find -lgfortran”, then he can either correct the configuration himself or follows the following steps to solve the problem: 1. Run “.libPaths()” command in R and get a path, e.g. one might get “/Library/Frameworks/R.framework/Versions/3.6/Resources/library” 2. If the path one get in the first step is “something/library”, then open the file “something/etc/Makeconf” and comment out the line starting with “FLIBS”. e.g. one might open the file ” /Library/Frameworks/R.framework/Versions/3.6/Resources/etc/Makeconf” and change the line “FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin15/6.1.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm” to “#FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin15/6.1.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath - lm”</p>
 </div>
 </div>
 

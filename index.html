@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -87,6 +87,7 @@
 <div class="page-header"><h1 id="messydates-">messydates <img src="reference/figures/messydates_hexlogo.png" align="right" width="220"><a class="anchor" aria-label="anchor" href="#messydates-"></a>
 </h1></div>
 <!-- badges: start -->
+
 <div class="section level2">
 <h2 id="why-this-package">Why this package?<a class="anchor" aria-label="anchor" href="#why-this-package"></a>
 </h2>
@@ -117,89 +118,209 @@
 <span>                messydates <span class="op">=</span> <span class="fu">messydates</span><span class="fu">::</span><span class="fu"><a href="reference/messydate.html">as_messydate</a></span><span class="op">(</span><span class="va">OriginalDate</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
-<th style="text-align:left;">Example</th>
-<th style="text-align:left;">OriginalDate</th>
-<th style="text-align:left;">base</th>
-<th style="text-align:left;">lubridate</th>
-<th style="text-align:left;">messydates</th>
+<th style="text-align:left;">
+Example
+</th>
+<th style="text-align:left;">
+OriginalDate
+</th>
+<th style="text-align:left;">
+base
+</th>
+<th style="text-align:left;">
+lubridate
+</th>
+<th style="text-align:left;">
+messydates
+</th>
 </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:left;">Normal date</td>
-<td style="text-align:left;">2010-01-01</td>
-<td style="text-align:left;color: black !important;">2010-01-01</td>
-<td style="text-align:left;color: black !important;">2010-01-01</td>
-<td style="text-align:left;color: black !important;">2010-01-01</td>
+<td style="text-align:left;">
+Normal date
+</td>
+<td style="text-align:left;">
+2010-01-01
+</td>
+<td style="text-align:left;color: black !important;">
+2010-01-01
+</td>
+<td style="text-align:left;color: black !important;">
+2010-01-01
+</td>
+<td style="text-align:left;color: black !important;">
+2010-01-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Future date</td>
-<td style="text-align:left;">2599-12-31</td>
-<td style="text-align:left;color: black !important;">2599-12-31</td>
-<td style="text-align:left;color: black !important;">2599-12-31</td>
-<td style="text-align:left;color: black !important;">2599-12-31</td>
+<td style="text-align:left;">
+Future date
+</td>
+<td style="text-align:left;">
+2599-12-31
+</td>
+<td style="text-align:left;color: black !important;">
+2599-12-31
+</td>
+<td style="text-align:left;color: black !important;">
+2599-12-31
+</td>
+<td style="text-align:left;color: black !important;">
+2599-12-31
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Written date</td>
-<td style="text-align:left;">First of February, two thousand and twenty-one</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: black !important;">2021-02-01</td>
+<td style="text-align:left;">
+Written date
+</td>
+<td style="text-align:left;">
+First of February, two thousand and twenty-one
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+2021-02-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Historical date</td>
-<td style="text-align:left;">476</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: black !important;">0476</td>
+<td style="text-align:left;">
+Historical date
+</td>
+<td style="text-align:left;">
+476
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+0476
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Era date</td>
-<td style="text-align:left;">33 BC</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: black !important;">-0033</td>
+<td style="text-align:left;">
+Era date
+</td>
+<td style="text-align:left;">
+33 BC
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+-0033
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Approximate date</td>
-<td style="text-align:left;">2012-01-12~</td>
-<td style="text-align:left;color: red !important;">2012-01-12</td>
-<td style="text-align:left;color: red !important;">2012-01-12</td>
-<td style="text-align:left;color: black !important;">2012-01-12~</td>
+<td style="text-align:left;">
+Approximate date
+</td>
+<td style="text-align:left;">
+2012-01-12~
+</td>
+<td style="text-align:left;color: red !important;">
+2012-01-12
+</td>
+<td style="text-align:left;color: red !important;">
+2012-01-12
+</td>
+<td style="text-align:left;color: black !important;">
+2012-01-12~
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Uncertain date</td>
-<td style="text-align:left;">2001-01-01?</td>
-<td style="text-align:left;color: red !important;">2001-01-01</td>
-<td style="text-align:left;color: red !important;">2001-01-01</td>
-<td style="text-align:left;color: black !important;">2001-01-01?</td>
+<td style="text-align:left;">
+Uncertain date
+</td>
+<td style="text-align:left;">
+2001-01-01?
+</td>
+<td style="text-align:left;color: red !important;">
+2001-01-01
+</td>
+<td style="text-align:left;color: red !important;">
+2001-01-01
+</td>
+<td style="text-align:left;color: black !important;">
+2001-01-01?
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Unspecified date</td>
-<td style="text-align:left;">2012-01</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: red !important;">2020-12-01</td>
-<td style="text-align:left;color: black !important;">2012-01</td>
+<td style="text-align:left;">
+Unspecified date
+</td>
+<td style="text-align:left;">
+2012-01
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+2020-12-01
+</td>
+<td style="text-align:left;color: black !important;">
+2012-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Censored date</td>
-<td style="text-align:left;">..2012-01-12</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: red !important;">2012-01-12</td>
-<td style="text-align:left;color: black !important;">..2012-01-12</td>
+<td style="text-align:left;">
+Censored date
+</td>
+<td style="text-align:left;">
+..2012-01-12
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+2012-01-12
+</td>
+<td style="text-align:left;color: black !important;">
+..2012-01-12
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Range of dates</td>
-<td style="text-align:left;">2019-11-01:2020-01-01</td>
-<td style="text-align:left;color: red !important;">2019-11-01</td>
-<td style="text-align:left;color: red !important;">2019-11-01</td>
-<td style="text-align:left;color: black !important;">2019-11-01..2020-01-01</td>
+<td style="text-align:left;">
+Range of dates
+</td>
+<td style="text-align:left;">
+2019-11-01:2020-01-01
+</td>
+<td style="text-align:left;color: red !important;">
+2019-11-01
+</td>
+<td style="text-align:left;color: red !important;">
+2019-11-01
+</td>
+<td style="text-align:left;color: black !important;">
+2019-11-01..2020-01-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">Set of dates</td>
-<td style="text-align:left;">2021-5-26, 2021-11-19, 2021-12-4</td>
-<td style="text-align:left;color: red !important;">2021-05-26</td>
-<td style="text-align:left;color: red !important;">NA</td>
-<td style="text-align:left;color: black !important;">{2021-05-26,2021-11-19,2021-12-04}</td>
+<td style="text-align:left;">
+Set of dates
+</td>
+<td style="text-align:left;">
+2021-5-26, 2021-11-19, 2021-12-4
+</td>
+<td style="text-align:left;color: red !important;">
+2021-05-26
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+{2021-05-26,2021-11-19,2021-12-04}
+</td>
 </tr>
 </tbody>
 </table>
@@ -223,77 +344,173 @@
 <span>         max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">messydates</span>, <span class="va">max</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
-<th style="text-align:left;">messydates</th>
-<th style="text-align:left;">min</th>
-<th style="text-align:left;">median</th>
-<th style="text-align:left;">max</th>
+<th style="text-align:left;">
+messydates
+</th>
+<th style="text-align:left;">
+min
+</th>
+<th style="text-align:left;">
+median
+</th>
+<th style="text-align:left;">
+max
+</th>
 </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:left;">2010-01-01</td>
-<td style="text-align:left;">2010-01-01</td>
-<td style="text-align:left;">2010-01-01</td>
-<td style="text-align:left;">2010-01-01</td>
+<td style="text-align:left;">
+2010-01-01
+</td>
+<td style="text-align:left;">
+2010-01-01
+</td>
+<td style="text-align:left;">
+2010-01-01
+</td>
+<td style="text-align:left;">
+2010-01-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">2599-12-31</td>
-<td style="text-align:left;">2599-12-31</td>
-<td style="text-align:left;">2599-12-31</td>
-<td style="text-align:left;">2599-12-31</td>
+<td style="text-align:left;">
+2599-12-31
+</td>
+<td style="text-align:left;">
+2599-12-31
+</td>
+<td style="text-align:left;">
+2599-12-31
+</td>
+<td style="text-align:left;">
+2599-12-31
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">2021-02-01</td>
-<td style="text-align:left;">2021-02-01</td>
-<td style="text-align:left;">2021-02-01</td>
-<td style="text-align:left;">2021-02-01</td>
+<td style="text-align:left;">
+2021-02-01
+</td>
+<td style="text-align:left;">
+2021-02-01
+</td>
+<td style="text-align:left;">
+2021-02-01
+</td>
+<td style="text-align:left;">
+2021-02-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">0476</td>
-<td style="text-align:left;">0476-01-01</td>
-<td style="text-align:left;">0476-07-02</td>
-<td style="text-align:left;">0476-12-31</td>
+<td style="text-align:left;">
+0476
+</td>
+<td style="text-align:left;">
+0476-01-01
+</td>
+<td style="text-align:left;">
+0476-07-02
+</td>
+<td style="text-align:left;">
+0476-12-31
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">-0033</td>
-<td style="text-align:left;">-033-01-01</td>
-<td style="text-align:left;">-033-07-02</td>
-<td style="text-align:left;">-033-12-31</td>
+<td style="text-align:left;">
+-0033
+</td>
+<td style="text-align:left;">
+-033-01-01
+</td>
+<td style="text-align:left;">
+-033-07-02
+</td>
+<td style="text-align:left;">
+-033-12-31
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">2012-01-12~</td>
-<td style="text-align:left;">2012-01-12</td>
-<td style="text-align:left;">2012-01-12</td>
-<td style="text-align:left;">2012-01-12</td>
+<td style="text-align:left;">
+2012-01-12~
+</td>
+<td style="text-align:left;">
+2012-01-12
+</td>
+<td style="text-align:left;">
+2012-01-12
+</td>
+<td style="text-align:left;">
+2012-01-12
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">2001-01-01?</td>
-<td style="text-align:left;">2001-01-01</td>
-<td style="text-align:left;">2001-01-01</td>
-<td style="text-align:left;">2001-01-01</td>
+<td style="text-align:left;">
+2001-01-01?
+</td>
+<td style="text-align:left;">
+2001-01-01
+</td>
+<td style="text-align:left;">
+2001-01-01
+</td>
+<td style="text-align:left;">
+2001-01-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">2012-01</td>
-<td style="text-align:left;">2012-01-01</td>
-<td style="text-align:left;">2012-01-16</td>
-<td style="text-align:left;">2012-01-31</td>
+<td style="text-align:left;">
+2012-01
+</td>
+<td style="text-align:left;">
+2012-01-01
+</td>
+<td style="text-align:left;">
+2012-01-16
+</td>
+<td style="text-align:left;">
+2012-01-31
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">..2012-01-12</td>
-<td style="text-align:left;">2012-01-12</td>
-<td style="text-align:left;">2012-01-12</td>
-<td style="text-align:left;">2012-01-12</td>
+<td style="text-align:left;">
+..2012-01-12
+</td>
+<td style="text-align:left;">
+2012-01-12
+</td>
+<td style="text-align:left;">
+2012-01-12
+</td>
+<td style="text-align:left;">
+2012-01-12
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">2019-11-01..2020-01-01</td>
-<td style="text-align:left;">2019-11-01</td>
-<td style="text-align:left;">2019-12-02</td>
-<td style="text-align:left;">2020-01-01</td>
+<td style="text-align:left;">
+2019-11-01..2020-01-01
+</td>
+<td style="text-align:left;">
+2019-11-01
+</td>
+<td style="text-align:left;">
+2019-12-02
+</td>
+<td style="text-align:left;">
+2020-01-01
+</td>
 </tr>
 <tr>
-<td style="text-align:left;">{2021-05-26,2021-11-19,2021-12-04}</td>
-<td style="text-align:left;">2021-05-26</td>
-<td style="text-align:left;">2021-11-19</td>
-<td style="text-align:left;">2021-12-04</td>
+<td style="text-align:left;">
+{2021-05-26,2021-11-19,2021-12-04}
+</td>
+<td style="text-align:left;">
+2021-05-26
+</td>
+<td style="text-align:left;">
+2021-11-19
+</td>
+<td style="text-align:left;">
+2021-12-04
+</td>
 </tr>
 </tbody>
 </table>

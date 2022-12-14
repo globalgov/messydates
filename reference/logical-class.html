@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -92,20 +92,20 @@
     <div id="functions">
     <h2>Functions</h2>
     
-<ul><li><p><code>is_messydate</code>: tests whether the object inherits the <code>mdate</code> class.
+<ul><li><p><code>is_messydate()</code>: tests whether the object inherits the <code>mdate</code> class.
 If more rigorous validation is required, see <code><a href="class.html">validate_messydate()</a></code>.</p></li>
-<li><p><code>is_intersecting</code>: tests whether there is any intersection between
+<li><p><code>is_intersecting()</code>: tests whether there is any intersection between
 two messy dates, leveraging <code><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect()</a></code>.</p></li>
-<li><p><code>is_element</code>: tests whether a messy date can be found
+<li><p><code>is_element()</code>: tests whether a messy date can be found
 within a messy date range or set.</p></li>
-<li><p><code>is_similar</code>: tests whether two dates contain similar components.
+<li><p><code>is_similar()</code>: tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.</p></li>
-<li><p><code>is_precise</code>: tests whether a date is precise (i.e. an 8 digit date).
+<li><p><code>is_precise()</code>: tests whether a date is precise (i.e. an 8 digit date).
 Non-precise dates contain markers that they are approximate (i.e. ~),
 unreliable (i.e. ?), are incomplete dates (i.e. year only),
 or date ranges and sets.</p></li>
-<li><p><code>is_uncertain</code>: tests whether a date is uncertain (i.e. contains ?).</p></li>
-<li><p><code>is_approximate</code>: tests whether a date is approximate (i.e. contains ~).</p></li>
+<li><p><code>is_uncertain()</code>: tests whether a date is uncertain (i.e. contains ?).</p></li>
+<li><p><code>is_approximate()</code>: tests whether a date is approximate (i.e. contains ~).</p></li>
 </ul></div>
 
     <div id="ref-examples">

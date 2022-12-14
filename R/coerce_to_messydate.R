@@ -25,7 +25,7 @@
 #'   If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
 #'   If 'interactive', it prompts users to select the existing
 #'   component order of ambiguous dates,
-#'   based on which the date is reordered into YY-MM-DD format
+#'   based on which the date is reordered into YYYY-MM-DD format
 #'   and further completed to YYYY-MM-DD format if they choose to do so.
 #' @return A `mdate` class object
 #' @name messydate

@@ -1,3 +1,9 @@
+# messydates 0.3.3
+
+## Package
+
+* Moved cheatsheet.pdf to 'inst' folder instead of the 'man' folder
+
 # messydates 0.3.2
 
 ## Package

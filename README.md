@@ -1,5 +1,5 @@
 
-# messydates <img src="man/figures/messydates_hexlogo.png" align="right" width="220"/>
+# messydates <img src="inst/figures/messydates_hexlogo.png" align="right" width="220"/>
 
 <!-- badges: start -->
 
@@ -534,7 +534,7 @@ Please see the cheat sheet and [the messydates
 website](https://globalgov.github.io/messydates/) for more information
 about how to use `{messydates}`.
 
-<a href="https://github.com/globalgov/messydates/blob/main/man/figures/cheatsheet.pdf"><img src="https://raw.githubusercontent.com/globalgov/messydates/main/man/figures/cheatsheet.png" width="525" height="378"/></a>
+<a href="https://github.com/globalgov/messydates/blob/main/inst/figures/cheatsheet.pdf"><img src="https://raw.githubusercontent.com/globalgov/messydates/main/inst/figures/cheatsheet.png" width="525" height="378"/></a>
 
 ## Installation
 

@@ -9,8 +9,8 @@ Description: Contains a set of tools for constructing and coercing
   date ranges, and sets of dates. 
   This is useful for describing and analysing temporal information,
   whether historical or recent, where date precision may vary.
-Version: 0.3.2
-Date: 2022-12-14
+Version: 0.3.3
+Date: 2022-12-15
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",

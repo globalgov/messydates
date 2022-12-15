@@ -3,6 +3,7 @@
 ^README\.Rmd$
 ^LICENSE\.md$
 ^docs$
+^inst$
 ^pkgdown$
 ^\.github$
 ^cran-comments\.md$

@@ -1,6 +1,6 @@
 This is a resubmission. In this version I have:
 
-* Moved hexlogos and cheatsheet to 'inst' folder instead of the 'man' folder
+* Moved cheatsheet.pdf to 'inst' folder instead of the 'man' folder
 
 ## Test environments
 

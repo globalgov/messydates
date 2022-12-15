@@ -2,7 +2,7 @@
 
 ## Package
 
-* Moved hexlogos and cheatsheet to 'inst' folder instead of the 'man' folder
+* Moved cheatsheet.pdf to 'inst' folder instead of the 'man' folder
 
 # messydates 0.3.2
 

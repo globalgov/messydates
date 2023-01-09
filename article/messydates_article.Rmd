@@ -45,6 +45,8 @@ bibliography: references.bib
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 options(prompt = 'R> ', continue = '+ ')
+library(remotes)
+remotes::install_github("globalgov/messydates", ref = "Develop")
 library(lubridate)
 library(anytime)
 library(tibble)
@@ -373,8 +375,8 @@ battles <- battles %>%
          random = ifelse(is_uncertain(Date)|is_approximate(Date),
                          abs(as.Date(Date, random) - as.Date(Date, random)),
                          arbitrary))
-arbitrary <- lm(arbitrary ~ US_party + n_actors, battles)
-random <- lm(random ~ US_party + n_actors, battles)
+arbitrary <- lm(arbitrary ~ US_party + N_actors, battles)
+random <- lm(random ~ US_party + N_actors, battles)
 stargazer::stargazer(arbitrary, random, type = "text")
 ```
 
@@ -390,7 +392,7 @@ in reality, we are not sure they accurately represent the timing.
 <!-- explain the ramifications of that -->
 
 ```{r outliers, warning=FALSE, message=FALSE}
-plot(lm(arbitrary ~ US_party + n_actors, battles), which = 4)
+plot(lm(arbitrary ~ US_party + N_actors, battles), which = 4)
 ```
 
 # Conclusion

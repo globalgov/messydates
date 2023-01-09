@@ -1,4 +1,5 @@
 ## code to prepare `battles` dataset
+library(dplyr)
 battles <- tibble::tribble(~Battle, ~Date, ~Parties,
                            "Operation MH-2", "2001 March 8", "MK-National Libration Army(MK)",
                            "2001 Bangladesh–India border clashes", "2001-04-16..2001-04-20", "BD-ID",
@@ -19,7 +20,9 @@ battles <- tibble::tribble(~Battle, ~Date, ~Parties,
                            "Battle of Shawali Kowt", "2001-12-3", "US/Eastern Alliance-Taliban",
                            "Battle of Sayyd Alma Kalay", "2001-12-4", "US/Eastern Alliance-Taliban",
                            "Battle of Amami-Oshima", "2001-12-22", "JP-KP",
-                           "Tsotsin-Yurt operation", "2001-12-30:2002-01-03", "RU-Chechen Insurgents")
+                           "Tsotsin-Yurt operation", "2001-12-30:2002-01-03", "RU-Chechen Insurgents") %>%
+  dplyr::mutate(US_party = ifelse(grepl("US", Parties), 1, 0),
+                N_actors = c(2, 2, 2, 2, 2, 3, 2, 4, 4, 4, 3, 3, 4, 4, 5, 4, 3, 3, 2, 2))
 battles$Date <- as_messydate(battles$Date)
 battles
 usethis::use_data(battles, overwrite = TRUE)

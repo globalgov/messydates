@@ -123,12 +123,14 @@ standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates, "\\/", "-")
   dates <- stringr::str_remove_all(dates, "\\(|\\)|\\{|\\}|\\[|\\]")
   dates <- stringr::str_trim(dates, side = "both")
-  # Adds zero padding to days and months
+  # Adds zero padding to days, months, and ranges
   dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
   dates <- stringr::str_replace_all(dates, "([:digit:]{2})-([:digit:])$",
                                     "\\1-0\\2")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-([:digit:]{2})",
                                     "0\\1-\\2")
+  dates <- stringr::str_replace_all(dates, "-([:digit:])\\.\\.", "-0\\1\\.\\.")
+  dates <- stringr::str_replace_all(dates, "\\.\\.([:digit:])-", "\\.\\.0\\1-")
   dates
 }
 
@@ -192,13 +194,19 @@ standardise_date_order <- function(dates) {
                   paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
                          substr(dates, 7, 8)), dates)
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
-                  paste0(substr(dates, 5, 6), "-", substr(dates, 3, 4), "-",
-                         substr(dates, 1, 2)), dates)
+                  paste0(substr(dates, 1, 2), "-", substr(dates, 3, 4), "-",
+                         substr(dates, 5, 6)), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
+                  stringr::str_replace_all(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "\\1-\\3-\\2"), dates)
   # detects and reorders inconsistencies
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)", "\\3-\\1-\\2"),
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)", "\\3-\\2-\\1"))
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                                           "\\3-\\1-\\2"),
+                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                                           "\\3-\\2-\\1"))
   dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 13 &
                     as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}$"))) > 31,
@@ -243,12 +251,6 @@ standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-XX$", "")
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
                   paste0("~", stringr::str_remove(dates, "\\~")), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
-                  paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
-                         substr(dates, 7, 8)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
-                  paste0(substr(dates, 1, 2), "-", substr(dates, 3, 4), "-",
-                         substr(dates, 5, 6)), dates)
   dates
 }
 

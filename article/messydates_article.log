@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.1)  9 JAN 2023 11:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.9)  9 JAN 2023 14:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **messydates_article.tex
 (./messydates_article.tex
-LaTeX2e <2022-11-01>
-L3 programming layer <2022-11-02> (./jss.cls
+LaTeX2e <2022-11-01> patch level 1
+L3 programming layer <2022-12-17> (./jss.cls
 Document Class: jss 2020/12/09 3.2 jss class by Achim Zeileis
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
@@ -20,8 +20,8 @@ File: size11.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
 \c@subparagraph=\count190
 \c@figure=\count191
 \c@table=\count192
-\abovecaptionskip=\skip47
-\belowcaptionskip=\skip48
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
 \bibindent=\dimen140
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
@@ -100,12 +100,12 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
-\bibhang=\skip49
-\bibsep=\skip50
+\bibhang=\skip50
+\bibsep=\skip51
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count196
 )
-\footerskip=\skip51
+\footerskip=\skip52
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2022-11-13 v7.00u Hypertext links for LaTeX
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
@@ -214,14 +214,14 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 285.
 )
-\Hy@SectionHShift=\skip52
+\Hy@SectionHShift=\skip53
 )
-\preXLskip=\skip53
-\preLskip=\skip54
-\preMskip=\skip55
-\preSskip=\skip56
-\postMskip=\skip57
-\postSskip=\skip58
+\preXLskip=\skip54
+\preLskip=\skip55
+\preMskip=\skip56
+\preSskip=\skip57
+\postMskip=\skip58
+\postSskip=\skip59
 
 Package hyperref Warning: Option `hyperindex' has already been used,
 (hyperref)                setting the option has no effect on input line 447.
@@ -441,7 +441,7 @@ File: pgfmoduleparser.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \pgf@lib@svg@count=\count296
 \pgf@lib@svg@max@num=\count297
 ))
-\@curXheight=\skip59
+\@curXheight=\skip60
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/generic/thumbpdf/thumbpdf.sty
 Package: thumbpdf 2018/09/07 v3.17 Inclusion of thumbnails (HO)
 THUMBPDF: Compressed PDF objects of PDF 1.5 are not supported
@@ -451,10 +451,10 @@ Package: inputenc 2021/02/14 v1.3d Input encoding file
 \inpenc@posthook=\toks30
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2021-09-01 v4.17 Multi-page Table package (DPC)
-\LTleft=\skip60
-\LTright=\skip61
-\LTpre=\skip62
-\LTpost=\skip63
+\LTleft=\skip61
+\LTright=\skip62
+\LTpre=\skip63
+\LTpost=\skip64
 \LTchunksize=\count298
 \LTcapwidth=\dimen257
 \LT@head=\box63
@@ -492,8 +492,8 @@ Package: array 2022/09/04 v2.5g Tabular extension package (FMi)
 \ar@mcellbox=\box68
 \extrarowheight=\dimen272
 \NC@list=\toks32
-\extratabsurround=\skip64
-\backup@length=\skip65
+\extratabsurround=\skip65
+\backup@length=\skip66
 \ar@cellbox=\box69
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/tools/calc.sty
 Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
@@ -501,12 +501,12 @@ Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
 \calc@Bcount=\count308
 \calc@Adimen=\dimen273
 \calc@Bdimen=\dimen274
-\calc@Askip=\skip66
-\calc@Bskip=\skip67
+\calc@Askip=\skip67
+\calc@Bskip=\skip68
 LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
 \calc@Ccount=\count309
-\calc@Cskip=\skip68
+\calc@Cskip=\skip69
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count310
@@ -516,7 +516,7 @@ Package: footnote 1997/01/28 1.13 Save footnotes around boxes
 \fn@width=\dimen275
 ) (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2022/04/08 v2.17n AMS math features
-\@mathmargin=\skip69
+\@mathmargin=\skip70
 For additional information on amsmath, use the `?' option.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2021/08/26 v2.01 AMS text
@@ -572,8 +572,8 @@ LaTeX Info: Redefining \Relbar on input line 971.
 \totwidth@=\dimen283
 \lineht@=\dimen284
 \@envbody=\toks36
-\multlinegap=\skip70
-\multlinetaggap=\skip71
+\multlinegap=\skip71
+\multlinetaggap=\skip72
 \mathdisplay@stack=\toks37
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
@@ -698,7 +698,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [3]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 261.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 265.
 (/Users/henriquesposito/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -718,7 +718,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [6]
 
-Package xcolor Warning: Incompatible color definition on input line 485.
+Package xcolor Warning: Incompatible color definition on input line 489.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -739,7 +739,7 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 <messydates_article_files/figure-latex/outliers-1.pdf, id=142, 353.32pt x 264.99pt>
 File: messydates_article_files/figure-latex/outliers-1.pdf Graphic file (type pdf)
 <use messydates_article_files/figure-latex/outliers-1.pdf>
-Package pdftex.def Info: messydates_article_files/figure-latex/outliers-1.pdf  used on input line 633.
+Package pdftex.def Info: messydates_article_files/figure-latex/outliers-1.pdf  used on input line 637.
 (pdftex.def)             Requested size: 354.12434pt x 265.59586pt.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -755,26 +755,26 @@ Package xcolor Warning: Incompatible color definition on input line 23.
 
 )
 
-Package xcolor Warning: Incompatible color definition on input line 662.
+Package xcolor Warning: Incompatible color definition on input line 666.
 
 
-Package xcolor Warning: Incompatible color definition on input line 662.
+Package xcolor Warning: Incompatible color definition on input line 666.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 662--662
+Underfull \hbox (badness 10000) in paragraph at lines 666--666
 
  []
 
 LaTeX Font Info:    Font shape `T1/pzc/m/n' in size <13> not available
-(Font)              Font shape `T1/pzc/m/it' tried instead on input line 662.
+(Font)              Font shape `T1/pzc/m/it' tried instead on input line 666.
 
-Package xcolor Warning: Incompatible color definition on input line 662.
-
-
-Package xcolor Warning: Incompatible color definition on input line 662.
+Package xcolor Warning: Incompatible color definition on input line 666.
 
 
-Package xcolor Warning: Incompatible color definition on input line 662.
+Package xcolor Warning: Incompatible color definition on input line 666.
+
+
+Package xcolor Warning: Incompatible color definition on input line 666.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -786,15 +786,15 @@ Package rerunfilecheck Info: File `messydates_article.out' has not changed.
 (rerunfilecheck)             Checksum: E10D7CA3F345D34643E76331AB1C4457;2066.
  ) 
 Here is how much of TeX's memory you used:
- 21772 strings out of 476931
- 417374 string characters out of 5823846
- 723784 words of memory out of 5000000
- 42538 multiletter control sequences out of 15000+600000
- 544166 words of font info for 66 fonts, out of 8000000 for 9000
+ 21771 strings out of 478053
+ 417361 string characters out of 5839309
+ 1863793 words of memory out of 5000000
+ 41415 multiletter control sequences out of 15000+600000
+ 587194 words of font info for 70 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,9n,103p,400b,620s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,9n,103p,400b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}</Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmb10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbo10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmro10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtto10.pfb></Users/henriquesposito/Library/TinyTeX/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on messydates_article.pdf (11 pages, 354782 bytes).
+Output written on messydates_article.pdf (11 pages, 354340 bytes).
 PDF statistics:
  239 PDF objects out of 1000 (max. 8388607)
  196 compressed objects within 2 object streams

@@ -207,21 +207,22 @@ but I am having issue transforming the table below into latex
 in this rticles template. -->
 
 ```{r comparison, message=FALSE, warning=FALSE}
-tibble::tribble(~Example, ~Date,
-                "Normal date", as.character(Sys.Date()),
-                "Future date", "9999-12-12",
-                "DD/MM/YYYY", "31/10/2021",
-                "Wrong date", "2021-31-10",
+tibble::tribble(~Example, ~OriginalDate,
+                "Normal date", "2012-01-01",
+                "Future date", "2599-12-31",
                 "Historical date", "476",
                 "Era date", "33 BC",
+                "Written date", "First of February, two thousand and twelve",
+                "DMY date", "10-31-2012",
+                "MDY date", "31-10-2012",
+                "Wrongly specified date", "2012-31-10",
+                "Approximate date", "2012-01-12~",
+                "Uncertain date", "2012-01-01?",
                 "Unspecified date", "2012-01",
-                "Range of dates", "2019-11-01:2020-01-01",
-                "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4",
-                "Written date", "This is the first day of February, two thousand and twenty-one") %>%
-  dplyr::mutate(base = as.Date(Date),
-                lubridate = lubridate::as_date(Date),
-                anytime = anytime::anydate(Date), #Do we need anytime?
-                messydates = messydates::as_messydate(Date))
+                "Censored date", "..2012-01-12",
+                "Range of dates", "2012-11-01:2012-12-01",
+                "Set of dates", "2012-5-26, 2012-11-19, 2012-12-4") %>%
+  dplyr::mutate(messydates = messydates::as_messydate(OriginalDate))
 ```
 
 <!-- maybe divide this table up into date recognition and date annotation? -->

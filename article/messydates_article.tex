@@ -221,37 +221,41 @@ ranges and sets of dates when needed.
 
 \begin{CodeChunk}
 \begin{CodeInput}
-R> tibble::tribble(~Example, ~Date,
-+                 "Normal date", as.character(Sys.Date()),
-+                 "Future date", "9999-12-12",
-+                 "DD/MM/YYYY", "31/10/2021",
-+                 "Wrong date", "2021-31-10",
+R> tibble::tribble(~Example, ~OriginalDate,
++                 "Normal date", "2012-01-01",
++                 "Future date", "2599-12-31",
 +                 "Historical date", "476",
 +                 "Era date", "33 BC",
++                 "Written date", "First of February, two thousand and twelve",
++                 "DMY date", "10-31-2012",
++                 "MDY date", "31-10-2012",
++                 "Wrongly specified date", "2012-31-10",
++                 "Approximate date", "2012-01-12~",
++                 "Uncertain date", "2012-01-01?",
 +                 "Unspecified date", "2012-01",
-+                 "Range of dates", "2019-11-01:2020-01-01",
-+                 "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4",
-+                 "Written date", "This is the first day of February, two thousand and twenty-one") %>%
-+   dplyr::mutate(base = as.Date(Date),
-+                 lubridate = lubridate::as_date(Date),
-+                 anytime = anytime::anydate(Date), #Do we need anytime?
-+                 messydates = messydates::as_messydate(Date))
++                 "Censored date", "..2012-01-12",
++                 "Range of dates", "2012-11-01:2012-12-01",
++                 "Set of dates", "2012-5-26, 2012-11-19, 2012-12-4") %>%
++   dplyr::mutate(messydates = messydates::as_messydate(OriginalDate))
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 10 x 6
-   Example          Date                base       lubridate  anytime    messy~1
-   <chr>            <chr>               <date>     <date>     <date>     <mdate>
- 1 Normal date      2023-01-09          2023-01-09 2023-01-09 2023-01-09 2023-0~
- 2 Future date      9999-12-12          9999-12-12 9999-12-12 9999-12-12 9999-1~
- 3 DD/MM/YYYY       31/10/2021          NA         NA         NA         2021-1~
- 4 Wrong date       2021-31-10          NA         NA         NA         2021-1~
- 5 Historical date  476                 NA         NA         NA         0476  ~
- 6 Era date         33 BC               NA         NA         NA         -0033 ~
- 7 Unspecified date 2012-01             NA         2020-12-01 2012-01-01 2012-0~
- 8 Range of dates   2019-11-01:2020-01~ 2019-11-01 2019-11-01 2019-11-01 2019-1~
- 9 Set of dates     2021-5-26, 2021-11~ 2021-05-26 NA         2021-05-26 {2021-~
-10 Written date     This is the first ~ NA         NA         NA         2021-0~
-# ... with abbreviated variable name 1: messydates
+# A tibble: 14 x 3
+   Example                OriginalDate                               messydates 
+   <chr>                  <chr>                                      <mdate>    
+ 1 Normal date            2012-01-01                                 2012-01-01~
+ 2 Future date            2599-12-31                                 2599-12-31~
+ 3 Historical date        476                                        0476      ~
+ 4 Era date               33 BC                                      -0033     ~
+ 5 Written date           First of February, two thousand and twelve 2012-02-01~
+ 6 DMY date               10-31-2012                                 2012-10-31~
+ 7 MDY date               31-10-2012                                 2012-10-31~
+ 8 Wrongly specified date 2012-31-10                                 2012-10-31~
+ 9 Approximate date       2012-01-12~                                2012-01-12~
+10 Uncertain date         2012-01-01?                                2012-01-01~
+11 Unspecified date       2012-01                                    2012-01   ~
+12 Censored date          ..2012-01-12                               ..2012-01-~
+13 Range of dates         2012-11-01:2012-12-01                      2012-11-01~
+14 Set of dates           2012-5-26, 2012-11-19, 2012-12-4           {2012-05-2~
 \end{CodeOutput}
 \end{CodeChunk}
 

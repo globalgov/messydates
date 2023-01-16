@@ -236,6 +236,7 @@ shorthands to include all the possible dates implied.
 
 ```{r expand, message=FALSE, warning=FALSE}
 dates_expand <- as_messydate(c("2001-01", "2001-01-01..2001-01-12",
+                               "{2001-01-01, 2001-01-02, 2001-01-03}",
                                "{2001-01-01,2001-02-01..2001-02-03}", "2001-XX-01"))
 expand(dates_expand)
 ```
@@ -248,7 +249,7 @@ It contracts a list of dates into their abbreviated annotations.
 
 ```{r contract, warning=FALSE, message=FALSE}
 tibble::tibble('Original Dates' = dates_expand,
-               'Contracted Dates' = contract(expand(dates_expand)))
+               'Contracted Dates' = contract(dates_expand))
 ```
 
 ## Coercion from messydates

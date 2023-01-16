@@ -207,7 +207,7 @@ R> tibble::tibble("Approximate date" = messydates::as_approximate(Sys.Date()),
 # A tibble: 1 x 4
   `Approximate date` `Uncertain date` `Censored (before)` `Censored (after)`
   <mdate>            <mdate>          <mdate>             <mdate>           
-1 2023-01-09~        2023-01-09?      ..2023-01-09        2023-01-09..      
+1 2023-01-16~        2023-01-16?      ..2023-01-16        2023-01-16..      
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -271,6 +271,7 @@ possible dates implied.
 \begin{CodeChunk}
 \begin{CodeInput}
 R> dates_expand <- as_messydate(c("2001-01", "2001-01-01..2001-01-12",
++                                "{2001-01-01, 2001-01-02, 2001-01-03}",
 +                                "{2001-01-01,2001-02-01..2001-02-03}", "2001-XX-01"))
 R> expand(dates_expand)
 \end{CodeInput}
@@ -290,9 +291,12 @@ R> expand(dates_expand)
 [11] "2001-01-11" "2001-01-12"
 
 [[3]]
-[1] "2001-01-01" "2001-02-01" "2001-02-02" "2001-02-03"
+[1] "2001-01-01" "2001-01-02" "2001-01-03"
 
 [[4]]
+[1] "2001-01-01" "2001-02-01" "2001-02-02" "2001-02-03"
+
+[[5]]
  [1] "2001-01-01" "2001-02-01" "2001-03-01" "2001-04-01" "2001-05-01"
  [6] "2001-06-01" "2001-07-01" "2001-08-01" "2001-09-01" "2001-10-01"
 [11] "2001-11-01" "2001-12-01"
@@ -309,16 +313,17 @@ annotations.
 \begin{CodeChunk}
 \begin{CodeInput}
 R> tibble::tibble('Original Dates' = dates_expand,
-+                'Contracted Dates' = contract(expand(dates_expand)))
++                'Contracted Dates' = contract(dates_expand))
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 4 x 2
+# A tibble: 5 x 2
   `Original Dates`                    `Contracted Dates`                 
   <mdate>                             <mdate>                            
 1 2001-01                             2001-01                            
 2 2001-01-01..2001-01-12              2001-01-01..2001-01-12             
-3 {2001-01-01,2001-02-01..2001-02-03} {2001-01-01,2001-02-01..2001-02-03}
-4 2001-XX-01                          2001-XX-01                         
+3 {2001-01-01,2001-01-02,2001-01-03}  2001-01-01..2001-01-03             
+4 {2001-01-01,2001-02-01..2001-02-03} {2001-01-01,2001-02-01..2001-02-03}
+5 2001-XX-01                          2001-XX-01                         
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -470,13 +475,14 @@ R> tibble::tibble(date = dates_expand,
 +                subtract = dates_expand - "1 year")
 \end{CodeInput}
 \begin{CodeOutput}
-# A tibble: 4 x 3
+# A tibble: 5 x 3
   date                                add                                subtr~1
   <mdate>                             <mdate>                            <mdate>
 1 2001-01                             2001-01-02..2001-02-01           ~ 2000-0~
 2 2001-01-01..2001-01-12              2001-01-02..2001-01-13           ~ 2000-0~
-3 {2001-01-01,2001-02-01..2001-02-03} {2001-01-02,2001-02-02..2001-02-0~ {2000-~
-4 2001-XX-01                          2001-XX-02                       ~ 2000-X~
+3 {2001-01-01,2001-01-02,2001-01-03}  2001-01-02..2001-01-04           ~ 2000-0~
+4 {2001-01-01,2001-02-01..2001-02-03} {2001-01-02,2001-02-02..2001-02-0~ {2000-~
+5 2001-XX-01                          2001-XX-02                       ~ 2000-X~
 # ... with abbreviated variable name 1: subtract
 \end{CodeOutput}
 \end{CodeChunk}

@@ -13,4 +13,6 @@ e <- expand(d)
 test_that("contract works properly", {
   expect_equal(contract(e), d)
   expect_equal(contract(e, collapse = FALSE), dd)
+  expect_equal(contract(as_messydate("{2001-01-01, 2001-01-02, 2001-01-03}")),
+               as_messydate("2001-01-01..2001-01-03"))
 })

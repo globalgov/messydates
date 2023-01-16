@@ -21,10 +21,14 @@ This function operates as the opposite of \code{expand()}.
 It contracts a list of dates into the abbreviated annotation
 of messy dates.
 }
+\details{
+The ´contract()´ function first \code{expand()} 'mdate' objects
+to then display their most succinct representation.
+}
 \examples{
 d <- as_messydate(c("2001-01-01", "2001-01", "2001",
 "2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}",
-"{2001-01,2001-02-02}", "28 BC", "-2000-01-01"))
-e <- expand(d)
-tibble::tibble(d, contract(e))
+"{2001-01,2001-02-02}", "28 BC", "-2000-01-01",
+"{2001-01-01, 2001-01-02, 2001-01-03}"))
+tibble::tibble(d, contract(d))
 }

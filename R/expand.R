@@ -34,7 +34,7 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' expand(d)
 #' @export
 expand.mdate <- function(x, approx_range = 0) {
-  if (is_messydate(x) == FALSE) {
+  if (!is_messydate(x)) {
     x <- as_messydate(x)
   }
   x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")

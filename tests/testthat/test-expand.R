@@ -1,3 +1,5 @@
+regular_date <- as.Date("2010-01-01")
+text_date <- "Second of February, two thousand and twenty-two"
 range <- as_messydate("2014-01-01..2014-01-03")
 approximate <- as_messydate(c("~1999", "1999-10~", "1999-10-~11"))
 unspecified <- as_messydate("2008-XX-03")
@@ -8,6 +10,8 @@ negative_incomplete_range <- as_messydate("200 BC:199 BC")
 negative_incomplete_set <- as_messydate("{-200, -199}")
 
 test_that("Expand dates works properly for date ranges and unspecified dates", {
+  expect_equal(expand(regular_date), expand(as_messydate(regular_date)))
+  expect_length(expand(text_date), 1)
   expect_equal(as.character(expand(range)),
                "c(\"2014-01-01\", \"2014-01-02\", \"2014-01-03\")")
   expect_equal(as.character(expand(approximate)[[1]][1]), "1999-01-01")

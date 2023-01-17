@@ -1,5 +1,5 @@
 ## code to prepare `battles` dataset
-library(dplyr)
+#library(dplyr)
 battles <- tibble::tribble(~Battle, ~Date, ~Parties,
                            "Operation MH-2", "2001 March 8", "MK-National Libration Army(MK)",
                            "2001 Bangladesh–India border clashes", "2001-04-16..2001-04-20", "BD-ID",

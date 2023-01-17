@@ -12,6 +12,7 @@
   * Fixed bugs with zero padding for ranges of dates
   * Fixed bugs with the re-ordering of months and day components for wrongly specified dates
 * Closed #69 by updating ´contract()´ function to 'expand' dates before 'contracting' them
+* Updated ´expand()´ function to handle, and properly convert, date objects that are not 'mdate'
 
 # messydates 0.3.3
 

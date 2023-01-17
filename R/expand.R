@@ -32,6 +32,7 @@
 #' @export
 expand <- function(x, approx_range = 0) {
   if (!is_messydate(x)) {
+    message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
   }
   x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")

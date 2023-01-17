@@ -1,3 +1,18 @@
+# messydates 0.3.4
+
+## Package
+
+* Updated 'battles' internal data
+  * Corrected issues with zero padding for certain date ranges
+  * Added additional variables for replication purposes
+
+## Functions
+
+* Closed #68 by updating ´as_messydate()´ function
+  * Fixed bugs with zero padding for ranges of dates
+  * Fixed bugs with the re-ordering of months and day components for wrongly specified dates
+* Closed #69 by updating ´contract()´ function to 'expand' dates before 'contracting' them
+
 # messydates 0.3.3
 
 ## Package

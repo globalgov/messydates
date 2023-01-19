@@ -1,7 +1,3 @@
-This is a resubmission. In this version I have:
-
-* Moved cheatsheet.pdf to 'inst' folder instead of the 'man' folder
-
 ## Test environments
 
 * local R installation, x86_64-apple-darwin17.0, R 4.2.0

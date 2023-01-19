@@ -25,7 +25,7 @@ before being expanded normally as though they were incomplete."><!-- mathjax -->
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -78,16 +78,14 @@ before being expanded normally as though they were incomplete.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">expand</span><span class="op">(</span><span class="va">x</span>, <span class="va">approx_range</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for mdate</span></span>
-<span><span class="fu">expand</span><span class="op">(</span><span class="va">x</span>, approx_range <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">expand</span><span class="op">(</span><span class="va">x</span>, approx_range <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>A <code>mdate</code> object.</p></dd>
+<dd><p>A <code>mdate</code> object.
+If not an 'mdate' object, conversion is handled first with ´as_messydate()´.</p></dd>
 
 
 <dt>approx_range</dt>
@@ -108,11 +106,6 @@ and 3 months and 3 days for month-day approximation.</p></dd>
 
 <p>A list of dates, including all dates in each range or set.</p>
     </div>
-    <div id="methods-by-class-">
-    <h2>Methods (by class)</h2>
-    
-<ul><li><p><code>expand(mdate)</code>: Expanding messydates</p></li>
-</ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -332,7 +325,7 @@ and 3 months and 3 days for month-day approximation.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

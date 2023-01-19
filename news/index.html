@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -57,7 +57,26 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.3" id="messydates-033">messydates 0.3.3<a class="anchor" aria-label="anchor" href="#messydates-033"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.4" id="messydates-034">messydates 0.3.4<a class="anchor" aria-label="anchor" href="#messydates-034"></a></h2>
+<div class="section level3">
+<h3 id="package-0-3-4">Package<a class="anchor" aria-label="anchor" href="#package-0-3-4"></a></h3>
+<ul><li>Updated ‘battles’ internal data
+<ul><li>Corrected issues with zero padding for certain date ranges</li>
+<li>Added ‘US_party’ and ‘N_actors’ additional variables for replication purposes</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="functions-0-3-4">Functions<a class="anchor" aria-label="anchor" href="#functions-0-3-4"></a></h3>
+<ul><li>Closed #68 by updating <code><a href="../reference/messydate.html">as_messydate()</a></code> function
+<ul><li>Fixed bugs with zero padding for ranges of dates</li>
+<li>Fixed bugs with the re-ordering of months and day components for incorrectly specified dates</li>
+</ul></li>
+<li>Closed #69 by updating <code><a href="../reference/contract.html">contract()</a></code> function to ‘expand’ dates before ‘contracting’ them</li>
+<li>Updated <code><a href="../reference/expand.html">expand()</a></code> function to handle, and properly convert, date objects that are not ‘mdate’</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.3" id="messydates-033">messydates 0.3.3<small>2022-12-20</small><a class="anchor" aria-label="anchor" href="#messydates-033"></a></h2>
 <div class="section level3">
 <h3 id="package-0-3-3">Package<a class="anchor" aria-label="anchor" href="#package-0-3-3"></a></h3>
 <ul><li>Moved cheatsheet.pdf to ‘inst’ folder instead of the ‘man’ folder</li>
@@ -72,7 +91,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="functions-0-3-2">Functions<a class="anchor" aria-label="anchor" href="#functions-0-3-2"></a></h3>
-<ul><li>Closed #62 by adding “resequence” as an argument to ´as_messydates()´ for explicit date format conversion, if necessary</li>
+<ul><li>Closed #62 by adding “resequence” as an argument to <code>as_messydates()</code> for explicit date format conversion, if necessary</li>
 <li>Closed #63 by fixing issues with unnecessary white spaces added in date conversion</li>
 </ul></div>
 </div>
@@ -299,7 +318,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

@@ -57,17 +57,20 @@ class, as well as tools for working with such ‘messy’ dates.
 
 ``` r
 pkg_comparison <- tibble::tribble(~Example, ~OriginalDate,
-                                    "Normal date", "2010-01-01",
-                                    "Future date", "2599-12-31",
-                                    "Written date", "First of February, two thousand and twenty-one",
-                                    "Historical date", "476",
-                                    "Era date", "33 BC",
-                                    "Approximate date", "2012-01-12~",
-                                    "Uncertain date", "2001-01-01?",
-                                    "Unspecified date", "2012-01",
-                                    "Censored date", "..2012-01-12", 
-                                    "Range of dates", "2019-11-01:2020-01-01",
-                                    "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
+                                  "Normal date", "2012-01-01",
+                                  "Future date", "2599-12-31",
+                                  "Historical date", "476",
+                                  "Era date", "33 BC",
+                                  "Written date", "First of February, two thousand and twelve",
+                                  "DMY date", "10-31-2012",
+                                  "MDY date", "31-10-2012",
+                                  "Wrongly specified date", "2012-31-10",
+                                  "Approximate date", "2012-01-12~",
+                                  "Uncertain date", "2012-01-01?",
+                                  "Unspecified date", "2012-01",
+                                  "Censored date", "..2012-01-12", 
+                                  "Range of dates", "2012-11-01:2012-12-01",
+                                  "Set of dates", "2012-5-26, 2012-11-19, 2012-12-4") %>%
   dplyr::mutate(base = as.Date(OriginalDate),
                 lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
                 messydates = messydates::as_messydate(OriginalDate))
@@ -99,16 +102,16 @@ messydates
 Normal date
 </td>
 <td style="text-align:left;">
-2010-01-01
+2012-01-01
 </td>
 <td style="text-align:left;color: black !important;">
-2010-01-01
+2012-01-01
 </td>
 <td style="text-align:left;color: black !important;">
-2010-01-01
+2012-01-01
 </td>
 <td style="text-align:left;color: black !important;">
-2010-01-01
+2012-01-01
 </td>
 </tr>
 <tr>
@@ -126,23 +129,6 @@ Future date
 </td>
 <td style="text-align:left;color: black !important;">
 2599-12-31
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Written date
-</td>
-<td style="text-align:left;">
-First of February, two thousand and twenty-one
-</td>
-<td style="text-align:left;color: red !important;">
-NA
-</td>
-<td style="text-align:left;color: red !important;">
-NA
-</td>
-<td style="text-align:left;color: black !important;">
-2021-02-01
 </td>
 </tr>
 <tr>
@@ -181,6 +167,74 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
+Written date
+</td>
+<td style="text-align:left;">
+First of February, two thousand and twelve
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+2012-02-01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DMY date
+</td>
+<td style="text-align:left;">
+10-31-2012
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+2012-10-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MDY date
+</td>
+<td style="text-align:left;">
+31-10-2012
+</td>
+<td style="text-align:left;color: red !important;">
+0031-10-20
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+2012-10-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wrongly specified date
+</td>
+<td style="text-align:left;">
+2012-31-10
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: black !important;">
+2012-10-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Approximate date
 </td>
 <td style="text-align:left;">
@@ -201,16 +255,16 @@ Approximate date
 Uncertain date
 </td>
 <td style="text-align:left;">
-2001-01-01?
+2012-01-01?
 </td>
 <td style="text-align:left;color: red !important;">
-2001-01-01
+2012-01-01
 </td>
 <td style="text-align:left;color: red !important;">
-2001-01-01
+2012-01-01
 </td>
 <td style="text-align:left;color: black !important;">
-2001-01-01?
+2012-01-01?
 </td>
 </tr>
 <tr>
@@ -252,16 +306,16 @@ NA
 Range of dates
 </td>
 <td style="text-align:left;">
-2019-11-01:2020-01-01
+2012-11-01:2012-12-01
 </td>
 <td style="text-align:left;color: red !important;">
-2019-11-01
+2012-11-01
 </td>
 <td style="text-align:left;color: red !important;">
-2019-11-01
+2012-11-01
 </td>
 <td style="text-align:left;color: black !important;">
-2019-11-01..2020-01-01
+2012-11-01..2012-12-01
 </td>
 </tr>
 <tr>
@@ -269,16 +323,16 @@ Range of dates
 Set of dates
 </td>
 <td style="text-align:left;">
-2021-5-26, 2021-11-19, 2021-12-4
+2012-5-26, 2012-11-19, 2012-12-4
 </td>
 <td style="text-align:left;color: red !important;">
-2021-05-26
+2012-05-26
 </td>
 <td style="text-align:left;color: red !important;">
 NA
 </td>
 <td style="text-align:left;color: black !important;">
-{2021-05-26,2021-11-19,2021-12-04}
+{2012-05-26,2012-11-19,2012-12-04}
 </td>
 </tr>
 </tbody>
@@ -356,44 +410,30 @@ max
 <tbody>
 <tr>
 <td style="text-align:left;">
-2010-01-01
+2012-01-01
 </td>
 <td style="text-align:left;">
-2010-01-01
+2012-01-01
 </td>
 <td style="text-align:left;">
-2010-01-01
+2012-01-01
 </td>
 <td style="text-align:left;">
-2010-01-01
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2599-12-31
-</td>
-<td style="text-align:left;">
-2599-12-31
-</td>
-<td style="text-align:left;">
-2599-12-31
-</td>
-<td style="text-align:left;">
-2599-12-31
+2012-01-01
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-2021-02-01
+2599-12-31
 </td>
 <td style="text-align:left;">
-2021-02-01
+2599-12-31
 </td>
 <td style="text-align:left;">
-2021-02-01
+2599-12-31
 </td>
 <td style="text-align:left;">
-2021-02-01
+2599-12-31
 </td>
 </tr>
 <tr>
@@ -426,6 +466,62 @@ max
 </tr>
 <tr>
 <td style="text-align:left;">
+2012-02-01
+</td>
+<td style="text-align:left;">
+2012-02-01
+</td>
+<td style="text-align:left;">
+2012-02-01
+</td>
+<td style="text-align:left;">
+2012-02-01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+<td style="text-align:left;">
+2012-10-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 2012-01-12\~
 </td>
 <td style="text-align:left;">
@@ -440,16 +536,16 @@ max
 </tr>
 <tr>
 <td style="text-align:left;">
-2001-01-01?
+2012-01-01?
 </td>
 <td style="text-align:left;">
-2001-01-01
+2012-01-01
 </td>
 <td style="text-align:left;">
-2001-01-01
+2012-01-01
 </td>
 <td style="text-align:left;">
-2001-01-01
+2012-01-01
 </td>
 </tr>
 <tr>
@@ -482,30 +578,30 @@ max
 </tr>
 <tr>
 <td style="text-align:left;">
-2019-11-01..2020-01-01
+2012-11-01..2012-12-01
 </td>
 <td style="text-align:left;">
-2019-11-01
+2012-11-01
 </td>
 <td style="text-align:left;">
-2019-12-02
+2012-11-16
 </td>
 <td style="text-align:left;">
-2020-01-01
+2012-12-01
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-{2021-05-26,2021-11-19,2021-12-04}
+{2012-05-26,2012-11-19,2012-12-04}
 </td>
 <td style="text-align:left;">
-2021-05-26
+2012-05-26
 </td>
 <td style="text-align:left;">
-2021-11-19
+2012-11-19
 </td>
 <td style="text-align:left;">
-2021-12-04
+2012-12-04
 </td>
 </tr>
 </tbody>

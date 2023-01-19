@@ -2,15 +2,13 @@
 % Please edit documentation in R/expand.R
 \name{expand}
 \alias{expand}
-\alias{expand.mdate}
 \title{Expand messy dates to lists of dates}
 \usage{
-expand(x, approx_range)
-
-\method{expand}{mdate}(x, approx_range = 0)
+expand(x, approx_range = 0)
 }
 \arguments{
-\item{x}{A \code{mdate} object.}
+\item{x}{A \code{mdate} object.
+If not an 'mdate' object, conversion is handled first with ´as_messydate()´.}
 
 \item{approx_range}{Range to expand approximate dates,
 or date components, annotated with '~', by default 0.
@@ -36,11 +34,6 @@ are also expanded to include possible dates within that year and/or month.
 The function removes the annotation from dates with unreliable sources ('?'),
 before being expanded normally as though they were incomplete.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{expand(mdate)}: Expanding messydates
-
-}}
 \examples{
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",

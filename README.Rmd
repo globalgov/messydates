@@ -72,17 +72,20 @@ as well as tools for working with such 'messy' dates.
 
 ```{r comparison, warning=FALSE, message=FALSE}
 pkg_comparison <- tibble::tribble(~Example, ~OriginalDate,
-                                    "Normal date", "2010-01-01",
-                                    "Future date", "2599-12-31",
-                                    "Written date", "First of February, two thousand and twenty-one",
-                                    "Historical date", "476",
-                                    "Era date", "33 BC",
-                                    "Approximate date", "2012-01-12~",
-                                    "Uncertain date", "2001-01-01?",
-                                    "Unspecified date", "2012-01",
-                                    "Censored date", "..2012-01-12", 
-                                    "Range of dates", "2019-11-01:2020-01-01",
-                                    "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
+                                  "Normal date", "2012-01-01",
+                                  "Future date", "2599-12-31",
+                                  "Historical date", "476",
+                                  "Era date", "33 BC",
+                                  "Written date", "First of February, two thousand and twelve",
+                                  "DMY date", "10-31-2012",
+                                  "MDY date", "31-10-2012",
+                                  "Wrongly specified date", "2012-31-10",
+                                  "Approximate date", "2012-01-12~",
+                                  "Uncertain date", "2012-01-01?",
+                                  "Unspecified date", "2012-01",
+                                  "Censored date", "..2012-01-12", 
+                                  "Range of dates", "2012-11-01:2012-12-01",
+                                  "Set of dates", "2012-5-26, 2012-11-19, 2012-12-4") %>%
   dplyr::mutate(base = as.Date(OriginalDate),
                 lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
                 messydates = messydates::as_messydate(OriginalDate))

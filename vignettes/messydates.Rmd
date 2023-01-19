@@ -117,7 +117,7 @@ picking the most succinct representation of dates possible.
 We can contract back the dates in the Battles data previously expanded.
 
 ```{r contract, warning=FALSE}
-tibble::tibble(contract = contract(expand(battles$Date)))
+tibble::tibble(contract = contract(battles$Date))
 ```
 
 ## Coerce from messydates

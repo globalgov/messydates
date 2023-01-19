@@ -10,6 +10,7 @@
 #' The function removes the annotation from dates with unreliable sources ('?'),
 #' before being expanded normally as though they were incomplete.
 #' @param x A `mdate` object.
+#' If not an 'mdate' object, conversion is handled first with ´as_messydate()´.
 #' @param approx_range Range to expand approximate dates,
 #' or date components, annotated with '~', by default 0.
 #' That is, removes signs for approximate dates and
@@ -20,10 +21,6 @@
 #' 3 years and 3 months for year-month approximation,
 #' and 3 months and 3 days for month-day approximation.
 #' @return A list of dates, including all dates in each range or set.
-#' @export
-expand <- function(x, approx_range) UseMethod("expand")
-
-#' @describeIn expand Expanding messydates
 #' @importFrom stringr str_replace_all str_split str_detect
 #' str_extract str_remove_all
 #' @importFrom lubridate as_date ymd years
@@ -33,7 +30,11 @@ expand <- function(x, approx_range) UseMethod("expand")
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 #' expand(d)
 #' @export
-expand.mdate <- function(x, approx_range = 0) {
+expand <- function(x, approx_range = 0) {
+  if (!is_messydate(x)) {
+    message("Date object(s) converted to 'mdate' class")
+    x <- as_messydate(x)
+  }
   x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
   if (approx_range == 0) {
     x <- stringr::str_replace_all(x, "\\~|^\\.\\.|\\.\\.$", "")

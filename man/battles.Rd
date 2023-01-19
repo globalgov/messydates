@@ -10,6 +10,8 @@ A data frame with 20 rows and 2 variables:
 \item{Battle}{name of the battle, character}
 \item{Date}{date or date range, a mdate class vector}
 \item{Parties}{parties to the conflict, character}
+\item{US_party}{is the US a party to the battle, numeric}
+\item{N_actors}{number of actors to conflict, numeric}
 }
 }
 \usage{
@@ -26,6 +28,8 @@ according to Wikipedia (https://en.wikipedia.org/wiki/List_of_battles_in_the_21s
 #> |    Battle     |  character  |              20|     0     |       0       |
 #> |     Date      |    mdate    |              20|     0     |       0       |
 #> |    Parties    |  character  |              20|     0     |       0       |
+#> |   US_party    |   numeric   |              20|     0     |       0       |
+#> |   N_actors    |   numeric   |              20|     0     |       0       |
 #> ----------------------------------------------------------------------------
 }\if{html}{\out{</div>}}
 }

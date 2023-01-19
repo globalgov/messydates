@@ -8,6 +8,8 @@
 #'   \item{Battle}{name of the battle, character}
 #'   \item{Date}{date or date range, a mdate class vector}
 #'   \item{Parties}{parties to the conflict, character}
+#'   \item{US_party}{is the US a party to the battle, numeric}
+#'   \item{N_actors}{number of actors to conflict, numeric}
 #' }
 #' @details
 #' ``` {r, echo = FALSE, warning = FALSE}

@@ -22,7 +22,7 @@
 #' tibble::tibble(d, contract(d))
 #' @export
 contract <- function(x, collapse = TRUE) {
-  if (class(x) != "list") {
+  if (!inherits(x, 'list')) {
     x <- expand(x)
   }
   x <- compact_negative_dates(x)

@@ -1,3 +1,9 @@
+# messydates 0.3.5
+
+## Functions
+
+* Updated how ´contract()´ function checks if 'mdate' object has been expanded 
+
 # messydates 0.3.4
 
 ## Package

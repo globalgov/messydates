@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 docs
+CRAN-SUBMISSION
 iso_standards*
 *.DS_Store
 article/article.log

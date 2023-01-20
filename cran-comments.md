@@ -1,6 +1,7 @@
 This is a resubmission. In this version I have:
 
-* Moved cheatsheet.pdf to 'inst' folder instead of the 'man' folder
+Updated how ´contract()´ function checks if 'mdate' object has been expanded
+to avoid comparing class to string
 
 ## Test environments
 

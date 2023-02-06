@@ -17,6 +17,12 @@ test_that("Coercion from other date classes into messydt works", {
   expect_equal(as_messydate(month_text), messy)
 })
 
+test_that("Coercion of unespecified date components are properly handled", {
+  unspecified <- c("1908-??-??", "1908-10-??", "1908/X/X", "1908/?/?")
+  b <- as_messydate(c("1908", "1908-10", "1908", "1908"))
+  expect_equal(as_messydate(unspecified), b)
+})
+
 test_that("resequence argument works properly", {
   expect_equal(as_messydate(c("121008", "20121008"), resequence = "ymd"),
                as_messydate(c("12-10-08", "2012-10-08")))

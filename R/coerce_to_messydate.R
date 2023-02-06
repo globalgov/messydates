@@ -245,10 +245,10 @@ standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "^NA", "XXXX")
   dates <- stringr::str_replace_all(dates, "-NA", "-XX")
   dates <- stringr::str_replace_all(dates, "0000", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-00-|-0-|-0$|-00$", "-XX-")
+  dates <- stringr::str_replace_all(dates, "-00-|-0-|-0$|-00$|-\\?\\?-", "-XX-")
   dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-\\?\\?", "-XX")
-  dates <- stringr::str_replace_all(dates, "-XX$", "")
+  dates <- stringr::str_replace_all(dates, "-X-X$|-XX-XX$|-XX$|-XX-\\?\\?$|
+                                    |-\\?-\\?$|-\\?\\?$|-\\?\\?-\\?\\?$", "")
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
                   paste0("~", stringr::str_remove(dates, "\\~")), dates)
   dates

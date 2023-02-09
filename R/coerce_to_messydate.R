@@ -112,7 +112,7 @@ as_messydate.character <- function(x, resequence = NULL) {
 # Helper functions
 standardise_text <- function(v) {
   dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})") &
-                    !grepl("bce$", v, ignore.case = TRUE),
+                    !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
   dates
 }
@@ -247,6 +247,12 @@ standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "0000", "XXXX")
   dates <- stringr::str_replace_all(dates, "-00-|-0-|-0$|-00$|-\\?\\?-", "-XX-")
   dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
+  dates <- stringr::str_replace_all(dates, "^(XX)-([:digit:]{4}$)", "\\2")
+  dates <- stringr::str_replace_all(dates, "^(XX)-(XX)-([:digit:]{4}$)", "\\3")
+  dates <- stringr::str_replace_all(dates, "^(XX)-([:digit:]{2})-([:digit:]{4}$)",
+                                    "\\3-\\2")
+  dates <- stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-(XXXX$)",
+                                    "\\3-\\2-\\1")
   dates <- stringr::str_replace_all(dates, "-X-X$|-XX-XX$|-XX$|-XX-\\?\\?$|
                                     |-\\?-\\?$|-\\?\\?$|-\\?\\?-\\?\\?$", "")
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),

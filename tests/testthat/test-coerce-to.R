@@ -18,8 +18,10 @@ test_that("Coercion from other date classes into messydt works", {
 })
 
 test_that("Coercion of unespecified date components are properly handled", {
-  unspecified <- c("1908-??-??", "1908-10-??", "1908/X/X", "1908/?/?")
-  b <- as_messydate(c("1908", "1908-10", "1908", "1908"))
+  unspecified <- c("1908-??-??", "1908-10-??", "1908/X/X", "1908/?/?",  "XX-1998",
+                   "XXXX-01-01", "01-01-XXXX", "XX-10-1998", "XX-XX-1998")
+  b <- as_messydate(c("1908", "1908-10", "1908", "1908", "1998",
+                      "XXXX-01-01", "XXXX-01-01", "1998-10", "1998"))
   expect_equal(as_messydate(unspecified), b)
 })
 

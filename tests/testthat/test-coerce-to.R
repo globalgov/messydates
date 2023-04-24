@@ -49,3 +49,11 @@ test_that("dates are properly extracted from text", {
                             "twenty second day of November 2022")),
                as_messydate(c("1947-10-30", "1947-10-30", "1947-10-21", "22-11-2022")))
 })
+
+month_dates <- c("Sep 13, 1988", "Jul 11, 2003", "May 28, 1996", "Oct 2, 2009",
+                 "1990, Apr 20", "2006, 22 Nov", "1996, Oct 25", "1997, 2 Dec")
+dmy <- c("1988-09-13", "2003-07-11", "1996-05-28", "2009-10-02",
+         "1990-04-20", "2006-11-22", "1996-10-25", "02-12-1997")
+test_that("conversion from MDY dates with written month works properly", {
+  expect_equal(as_messydate(month_dates), as_messydate(dmy))
+})

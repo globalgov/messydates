@@ -111,9 +111,12 @@ as_messydate.character <- function(x, resequence = NULL) {
 
 # Helper functions
 standardise_text <- function(v) {
-  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{3})") &
+  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{4})") &
                     !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
+  dates <- ifelse(grepl("Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec",
+                        dates, ignore.case = TRUE),
+                  written_month(dates), dates)
   dates
 }
 
@@ -323,6 +326,30 @@ extract_from_text <- function(v) {
                               |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
                               |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}")
   out
+}
+
+written_month <- function(dates) {
+  dates <- stringr::str_squish(stringr::str_replace_all(tolower(dates),
+                                                        ",|-", " "))
+  dates <- stringr::str_replace_all(dates,
+                                    "([:alpha:]{3}) ([:digit:]{1,2}) ([:digit:]{4})",
+                                    "\\3 \\1 \\2")
+  dates <- stringr::str_replace_all(dates,
+                                    "([:digit:]{4}) ([:digit:]{1,2}) ([:alpha:]{3})",
+                                    "\\1 \\3 \\2")
+  dates <- stringr::str_replace_all(dates, " jan ", "-01-")
+  dates <- stringr::str_replace_all(dates, " feb ", "-02-")
+  dates <- stringr::str_replace_all(dates, " mar ", "-03-")
+  dates <- stringr::str_replace_all(dates, " apr ", "-04-")
+  dates <- stringr::str_replace_all(dates, " may ", "-05-")
+  dates <- stringr::str_replace_all(dates, " jun ", "-06-")
+  dates <- stringr::str_replace_all(dates, " jul ", "-07-")
+  dates <- stringr::str_replace_all(dates, " aug ", "-08-")
+  dates <- stringr::str_replace_all(dates, " sep ", "-09-")
+  dates <- stringr::str_replace_all(dates, " oct ", "-10-")
+  dates <- stringr::str_replace_all(dates, " nov ", "-11-")
+  dates <- stringr::str_replace_all(dates, " dec ", "-12-")
+  dates
 }
 
 as_bc_dates <- function(dates) {

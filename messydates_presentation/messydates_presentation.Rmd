@@ -1,0 +1,208 @@
+---
+title: "Messydates"
+subtitle: "Working with unspecified, approximate, uncertain, sets and ranges of dates"
+author: "James Hollway and Henrique Sposito"
+date: "`r format(Sys.Date(), '%e %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css:
+      - "default"
+      - "assets/messy-xaringan-style.css"
+      - "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      - "ninjutsu"
+    chakra: "https://remarkjs.com/downloads/remark-latest.min.js"
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      beforeInit: "assets/macros.js"
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>`
+---
+```{r setup, include=FALSE}
+# don't mind this code chunk, it just sets up a few things for the rest
+# it doesn't appear, because the include argument above is FALSE...
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+knitr::opts_chunk$set(cache=TRUE, autodep = TRUE, fig.retina = 3,
+                      message = FALSE, warning = FALSE)
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+```
+
+class: center, middle
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+--
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+--
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+class: center, middle
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The problem of presumption
+
+- Dates are often "messy", that is, measured or recorded imprecisely (especially, but not limited to, historical events data)
+
+- Imprecision can be inescapable but it is not by itself an issue, the issue is how imprecision is treated (e.g. false precision)
+
+- These biased practices introduce inferential biases where sequencing or duration are theoretically important and obscure inferential uncertainties
+
+---
+
+# The problem of precision
+
+  - Unspecified (e.g. "2012-01")
+
+  - Uncertain (e.g. "2012-01-12?")
+
+  - Approximate (e.g. "2012-01-12~")
+
+  - Ranges (e.g. "2012-01-12:2012-12-01")
+
+  - Sets (e.g. "2012-01-12, 2012-12-01")
+
+---
+  
+# The problem of parsing
+
+  - Historical (e.g. "33 BC")
+
+  - Unusual (e.g. "2021-31-10")
+
+  - Written (e.g. "Twelfth January two thousand twelve")
+
+  - Inconsistent (e.g. "31-10/2021")
+
+  - Future (e.g. "9999-12-12")
+
+---
+
+class: center, middle
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The politics of aggregation
+
+Freeman (1989) highlights biases and inconsistencies related to temporal aggregation that cause model misspecification and misinterpretation (e.g. results differ when data is aggregated by year vs. months)
+
+However, this assumes that time in itself is "tidy".
+
+Temporal aggregation in itself might lead to both model misspecification and misinterpretation for time-series/events data.
+
+---
+
+# The politics of (dis)aggregation
+
+Types of time aggregation issues:
+
+- False temporal precision 
+- False temporal variation
+- False temporal duration
+- False temporal estimation
+
+---
+
+class: center, middle
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The messydates R package
+
+[messydates](https://globalgov.github.io/messydates/) contains a set of tools for constructing and coercing into and from the "mdate" class, implementing ISO 8601-2:2019(E), to allow dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates.
+
+```{r messy example}
+library(messydates)
+as_messydate("2023")
+as.Date(as_messydate("2023"), max)
+as.Date(as_messydate("2023"), random)
+```
+
+---
+
+# Messy comparison
+
+```{r messy, echo = FALSE}
+library(lubridate)
+library(kableExtra)
+tibble::tribble(~Example, ~OriginalDate,
+                "Historical date", "33 BC",
+                "Unusual date", "2021-31-10",
+                "Written date", "First of February, two thousand and twenty-one",
+                "Approximate date", "2012-01-12~",
+                "Uncertain date", "2001-01-01?",
+                "Unspecified date", "2012-01",
+                "Range of dates", "2019-11-01:2020-01-01",
+                "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
+  dplyr::mutate(lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
+                messydates = messydates::as_messydate(OriginalDate)) %>%
+  kbl() %>%
+  kable_styling("striped")
+```
+
+---
+
+# Questions (for you)
+
+- Implications
+
+- Data
+
+- Audience
+
+---
+
+# Questions (for us)?
+
+![100%](https://media.giphy.com/media/kBMQvQ27ax17nGj1v6/giphy.gif)
+
+*Thank you!*
+
+---
+
+# References
+
+```{r refs, echo=FALSE, results="asis"}
+RefManageR::PrintBibliography(myBib)
+```

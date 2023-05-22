@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Messydates</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="James Hollway and Henrique Sposito" />
+    <meta name="date" content="2023-05-22" />
+    <script src="messydates_presentation_files/header-attrs/header-attrs.js"></script>
+    <link href="messydates_presentation_files/remark-css/default.css" rel="stylesheet" />
+    <link href="messydates_presentation_files/remark-css/ninjutsu.css" rel="stylesheet" />
+    <script src="messydates_presentation_files/kePrint/kePrint.js"></script>
+    <link href="messydates_presentation_files/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/messy-xaringan-style.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Messydates
+]
+.subtitle[
+## Working with unspecified, approximate, uncertain, sets and ranges of dates
+]
+.author[
+### James Hollway and Henrique Sposito
+]
+.date[
+### 22 May 2023
+]
+
+---
+
+
+
+
+
+class: center, middle
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+--
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+--
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+class: center, middle
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The problem of presumption
+
+- Dates are often "messy", that is, measured or recorded imprecisely (especially, but not limited to, historical events data)
+
+- Imprecision can be inescapable but it is not by itself an issue, the issue is how imprecision is treated (e.g. false precision)
+
+- These biased practices introduce inferential biases where sequencing or duration are theoretically important and obscure inferential uncertainties
+
+---
+
+# The problem of precision
+
+  - Unspecified (e.g. "2012-01")
+
+  - Uncertain (e.g. "2012-01-12?")
+
+  - Approximate (e.g. "2012-01-12~")
+
+  - Ranges (e.g. "2012-01-12:2012-12-01")
+
+  - Sets (e.g. "2012-01-12, 2012-12-01")
+
+---
+  
+# The problem of parsing
+
+  - Historical (e.g. "33 BC")
+
+  - Unusual (e.g. "2021-31-10")
+
+  - Written (e.g. "Twelfth January two thousand twelve")
+
+  - Inconsistent (e.g. "31-10/2021")
+
+  - Future (e.g. "9999-12-12")
+
+---
+
+class: center, middle
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The politics of aggregation
+
+Freeman (1989) highlights biases and inconsistencies related to temporal aggregation that cause model misspecification and misinterpretation (e.g. results differ when data is aggregated by year vs. months)
+
+However, this assumes that time in itself is "tidy".
+
+Temporal aggregation in itself might lead to both model misspecification and misinterpretation for time-series/events data.
+
+---
+
+# The politics of (dis)aggregation
+
+Types of time aggregation issues:
+
+- False temporal precision 
+- False temporal variation
+- False temporal duration
+- False temporal estimation
+
+---
+
+class: center, middle
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The messydates R package
+
+[messydates](https://globalgov.github.io/messydates/) contains a set of tools for constructing and coercing into and from the "mdate" class, implementing ISO 8601-2:2019(E), to allow dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates.
+
+
+```r
+library(messydates)
+as_messydate("2023")
+```
+
+```
+##  'mdate' chr "2023"
+```
+
+```r
+as.Date(as_messydate("2023"), max)
+```
+
+```
+## [1] "2023-12-31"
+```
+
+```r
+as.Date(as_messydate("2023"), random)
+```
+
+```
+## [1] "2023-02-14"
+```
+
+---
+
+# Messy comparison
+
+&lt;table class="table table-striped" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Example &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; OriginalDate &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; lubridate &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; messydates &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Historical date &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 33 BC &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0033 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Unusual date &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-31-10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-31-10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Written date &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; First of February, two thousand and twenty-one &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-02-01 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Approximate date &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2012-01-12~ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2012-01-12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2012-01-12~ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Uncertain date &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-01-01? &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-01-01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-01-01? &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Unspecified date &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2012-01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-12-01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2012-01 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Range of dates &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-11-01:2020-01-01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-11-01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-11-01..2020-01-01 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Set of dates &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-5-26, 2021-11-19, 2021-12-4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; {2021-05-26,2021-11-19,2021-12-04} &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Questions (for you)
+
+- Implications
+
+- Data
+
+- Audience
+
+---
+
+# Questions (for us)?
+
+![100%](https://media.giphy.com/media/kBMQvQ27ax17nGj1v6/giphy.gif)
+
+*Thank you!*
+
+---
+
+# References
+
+Hollway, J. (2021). _iheiddown: A package for writing IHEID documents
+in RMarkdown_. R package version 0.8.0. URL:
+[https://github.com/jhollway/iheiddown](https://github.com/jhollway/iheiddown).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="assets/macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "<div class=\"progress-bar-container\">\n  <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">\n  </div>\n</div>`"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,292 @@
+---
+title: "Messydates"
+subtitle: "Working with unspecified, approximate, uncertain, sets and ranges of dates"
+author: "James Hollway and Henrique Sposito"
+date: "`r format(Sys.Date(), '%e %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css:
+      - "default"
+      - "assets/messy-xaringan-style.css"
+      - "https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      - "ninjutsu"
+    chakra: "https://remarkjs.com/downloads/remark-latest.min.js"
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      beforeInit: "assets/macros.js"
+      countIncrementalSlides: false
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>`
+---
+```{r setup, include=FALSE}
+library(dplyr)
+library(xaringanExtra)
+use_xaringan_extra(c("tile_view", "panelset", "share_again", "editable",
+                     "clipboard", "progessbar", "animate_css"))
+use_extra_styles(hover_code_line = TRUE,
+                 mute_unhighlighted_code = FALSE)
+options(htmltools.dir.version = FALSE,
+        knitr.table.format = "html",
+        knitr.kable.NA = "")
+knitr::opts_chunk$set(warning = FALSE,
+                      message = FALSE, fig.path = "figs/",
+                      fig.width = 7.252, fig.height = 4,
+                      comment = "#>",
+                      fig.retina = 3)
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+```
+
+class: center, middle
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+--
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+--
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+class: center, middle
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The problem of consideration
+
+--
+
+- Dates are often "messy", that is, measured or recorded imprecisely
+
+--
+
+- Imprecision can be inescapable and it is not by itself an issue, the issue is how it is treated (e.g. forced precision) without much consideration
+
+--
+
+- This can introduce biases where sequencing or duration are theoretically important and obscure inferential uncertainties
+
+---
+
+# The problem of precision
+
+--
+
+- Unspecified (e.g. "2012-01")
+
+- Uncertain (e.g. "2012-01-12?")
+
+- Approximate (e.g. "2012-01-12~")
+
+- Ranges (e.g. "2012-01-12:2012-12-01")
+
+- Sets (e.g. "2012-01-12, 2012-12-01")
+
+---
+  
+# The problem of parsing
+
+--
+
+- Historical (e.g. "33 BC")
+
+- Unusual (e.g. "2021-31-10")
+
+- Written (e.g. "Twelfth January two thousand twelve")
+
+- Inconsistent (e.g. "31-10/2021")
+
+- Future (e.g. "9999-12-12")
+
+---
+
+class: center, middle
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The politics of aggregation
+
+--
+
+- Freeman (1989) highlights biases and inconsistencies related to temporal aggregation that cause model misspecification and misinterpretation (e.g. results differ when data is aggregated by year vs. months)
+
+--
+
+- However, this assumes that time in itself is "tidy"
+
+--
+
+- False temporal aggregation in itself might lead to both model misspecification and misinterpretation for time-series/events data
+
+---
+
+# The politics of (dis)aggregation
+
+Types of temporal aggregation issues:
+
+--
+
+- False temporal precision (e.g. forced precision)
+
+--
+
+- False temporal variation (e.g. distorted change)
+
+--
+
+- False temporal duration (e.g. wrong intervals)
+
+--
+
+- False temporal estimation (e.g. faulty translation)
+
+---
+
+class: center, middle
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2020/08/05/05/19/problem-5464444_1280.jpg)**Problem**]]
+
+.pull-1[.squareoff[![](https://cdn.pixabay.com/photo/2016/03/31/18/47/fist-1294633_1280.png)**Politics**]]
+
+.pull-1[.squareon[![](https://cdn.pixabay.com/photo/2017/02/16/13/42/box-2071537_1280.png)**Package**]]
+
+---
+
+# The package
+
+[messydates](https://globalgov.github.io/messydates/) implements the ISO 8601-2:2019(E) to provide a set of tools for constructing and coercing into and from the "mdate" class that allows dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates.
+
+*Problems of precision can be explicitly 'resolved':*
+
+```{r messy example}
+library(messydates)
+paste0("Should we use the first day ",
+       as.Date(as_messydate("2023"), min),
+       " or any random day ",
+       as.Date(as_messydate("2023"), random),
+       " from the year of ",
+       as_messydate("2023"))
+```
+
+---
+
+# Parse away with messydates
+
+```{r messy, echo = FALSE}
+library(lubridate)
+library(kableExtra)
+tibble::tribble(~Example, ~OriginalDate,
+                "Historical date", "33 BC",
+                "Unusual date", "2021-31-10",
+                "Written date", "First of February, two thousand and twenty-one",
+                "Approximate date", "2012-01-12~",
+                "Uncertain date", "2001-01-01?",
+                "Unspecified date", "2012-01",
+                "Range of dates", "2019-11-01:2020-01-01",
+                "Set of dates", "2021-5-26, 2021-11-19, 2021-12-4") %>%
+  dplyr::mutate(lubridate = suppressWarnings(lubridate::as_date(OriginalDate)),
+                messydates = messydates::as_messydate(OriginalDate)) %>%
+  kbl() %>%
+  kable_styling("striped")
+```
+
+---
+
+# Messy example
+
+.panelset[
+.panel[.panel-name[Code]
+```{r inference, eval=FALSE}
+set.seed(1301)
+battles <- battles %>%
+  mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
+         random = ifelse(is_uncertain(Date)|is_approximate(Date),
+                         abs(as.Date(Date, random) - as.Date(Date, random)),
+                         arbitrary))
+arbitrary <- lm(arbitrary ~ US_party + N_actors, battles)
+random <- lm(random ~ US_party + N_actors, battles)
+```
+]
+.panel[.panel-name[Table]
+```{r inference_2, echo=FALSE, results='asis'}
+library(stargazer)
+set.seed(1301)
+battles <- battles %>%
+  mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
+         random = ifelse(is_uncertain(Date)|is_approximate(Date),
+                         abs(as.Date(Date, random) - as.Date(Date, random)),
+                         arbitrary))
+arbitrary <- lm(arbitrary ~ US_party + N_actors, battles)
+random <- lm(random ~ US_party + N_actors, battles)
+stargazer::stargazer(arbitrary, random, type = "html", style = "io")
+```
+]
+]
+
+---
+
+# Questions (for you)
+
+- Implications
+
+Why do you think this is important for research?
+
+- Data
+
+Do you know any data that is imprecise and we can use as a case study?
+
+- Audience
+
+How/where to convey this information to social scientists?
+
+---
+
+# Questions (for us)?
+
+![100%](https://media.giphy.com/media/kBMQvQ27ax17nGj1v6/giphy.gif)
+
+.pull-right[
+
+*Thank you!*
+
+]
+
+---
+
+# References
+
+```{r refs, echo=FALSE, results="asis"}
+RefManageR::PrintBibliography(myBib)
+```

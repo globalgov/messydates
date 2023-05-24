@@ -1,6 +1,6 @@
 ---
 title: "Messydates"
-subtitle: "Working with unspecified, approximate, uncertain, sets and ranges of dates"
+subtitle: "Managing imprecise dates in political analysis"
 author: "James Hollway and Henrique Sposito"
 date: "`r format(Sys.Date(), '%e %B %Y')`"
 output:
@@ -78,19 +78,29 @@ class: center, middle
 
 ---
 
-# The problem of consideration
+class: split two
+
+# The problem of presumption
 
 --
+
+.pull-left[
 
 - Dates are often "messy", that is, measured or recorded imprecisely
 
---
-
 - Imprecision can be inescapable and it is not by itself an issue, the issue is how it is treated (e.g. forced precision) without much consideration
 
+- This can introduce biases where sequencing or duration are theoretically important and obscure inferential uncertainties
+
+]
+
 --
 
-- This can introduce biases where sequencing or duration are theoretically important and obscure inferential uncertainties
+.pull-right[
+
+<img src = "https://imgs.xkcd.com/comics/historical_dates.png" />
+
+]
 
 ---
 
@@ -144,11 +154,15 @@ class: center, middle
 
 --
 
-- However, this assumes that time in itself is "tidy"
+- However, this assumes that time in itself is "tidy" and that the aggregation of other variables is the issue
 
 --
 
 - False temporal aggregation in itself might lead to both model misspecification and misinterpretation for time-series/events data
+
+--
+
+- When one aggregates temporal information, one not only loses granularity at the level of the variable’s value, but also perhaps in terms of any potential timing, ordering, or duration
 
 ---
 
@@ -158,19 +172,18 @@ Types of temporal aggregation issues:
 
 --
 
-- False temporal precision (e.g. forced precision)
+- accuracy (e.g. forced precision)
+- variation (e.g. distorted change)
+- duration (e.g. wrong intervals)
+- estimation (e.g. faulty translation)...
 
 --
 
-- False temporal variation (e.g. distorted change)
+Any others?
 
 --
 
-- False temporal duration (e.g. wrong intervals)
-
---
-
-- False temporal estimation (e.g. faulty translation)
+*The actual time component related to temporal aggregation did not get much attention from political scientists, or appears to be an issue for political analysis so far. Even as new events datasets appear every day, we still lack alternatives for handling these types of issues, until now...*
 
 ---
 
@@ -186,9 +199,15 @@ class: center, middle
 
 # The package
 
-[messydates](https://globalgov.github.io/messydates/) implements the ISO 8601-2:2019(E) to provide a set of tools for constructing and coercing into and from the "mdate" class that allows dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates.
+[messydates](https://globalgov.github.io/messydates/) implements the ISO 8601-2:2019(E) to provide a set of tools for constructing and coercing into and from the "mdate" class.
 
-*Problems of precision can be explicitly 'resolved':*
+--
+
+This new 'mdate' class allows dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates in R.
+
+--
+
+For instance, problems of precision can now be explicitly reolved:
 
 ```{r messy example}
 library(messydates)
@@ -224,7 +243,7 @@ tibble::tribble(~Example, ~OriginalDate,
 
 ---
 
-# Messy example
+# Messy inference
 
 .panelset[
 .panel[.panel-name[Code]
@@ -261,11 +280,11 @@ stargazer::stargazer(arbitrary, random, type = "html", style = "io")
 
 - Implications
 
-Why do you think this is important for research?
+Could messydates be relevant for your work? If so, why/how?
 
 - Data
 
-Do you know any data that is imprecise and we can use as a case study?
+Do you use, or know, any datasets that for which dates are imprecise?
 
 - Audience
 
@@ -273,15 +292,13 @@ How/where to convey this information to social scientists?
 
 ---
 
+class: center
+
 # Questions (for us)?
 
-![100%](https://media.giphy.com/media/kBMQvQ27ax17nGj1v6/giphy.gif)
-
-.pull-right[
+![120%](https://media.giphy.com/media/kBMQvQ27ax17nGj1v6/giphy.gif)
 
 *Thank you!*
-
-]
 
 ---
 

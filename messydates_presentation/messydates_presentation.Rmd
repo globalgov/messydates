@@ -1,6 +1,6 @@
 ---
 title: "Messydates"
-subtitle: "Managing imprecise dates in political analysis"
+subtitle: "Managing uncertain and imprecise dates"
 author: "James Hollway and Henrique Sposito"
 date: "`r format(Sys.Date(), '%e %B %Y')`"
 output:
@@ -88,9 +88,9 @@ class: split two
 
 - Dates are often "messy", that is, measured or recorded imprecisely
 
-- Imprecision can be inescapable and it is not by itself an issue, the issue is how it is treated
+- Imprecision can be inescapable and it is not by itself an issue
 
-- This can introduce biases where sequencing or duration are theoretically important and obscure inferential uncertainties
+- How imprecision is treated can introduce biases where sequencing or duration are theoretically important and obscure inferential uncertainties
 
 ]
 
@@ -150,15 +150,15 @@ class: center, middle
 
 --
 
-- Temporal aggregation can alter the underlying properties of the disaggregated data and lead to model misspecification and misinterpretation for time-series/events anaylsis (see Freeman 1989)
+- Temporal aggregation can alter the underlying properties of the underlying data and lead to model misspecification and misinterpretation for time-series/events anaylsis (see Freeman 1989)
 
 --
 
-- In IR, for instance, Goldstein (1990) shows that whether studies found that the US responded to/reciprocated USRR actions during the Cold War depended simply on how they aggregate the data
+- In IR/PS, for example, Goldstein (1990) shows that whether studies found that the US responded to/reciprocated USRR actions during the Cold War depended simply on how they aggregate the data
 
 --
 
-- However, studies of temporal aggregation assume that dates/time in itself are "tidy"
+- However, studies of temporal aggregation usually assume that dates/time in itself are "tidy"
 
 --
 
@@ -166,7 +166,7 @@ class: center, middle
 
 --
 
-*When one aggregates temporal information, one not only loses granularity at the level of the variable’s value, but also perhaps in terms of any potential timing, ordering, or duration!*
+*When one aggregates temporal information, one not only loses granularity at the level of the variable’s value, but also in terms of any potential timing, ordering, or duration!*
 
 ---
 
@@ -187,7 +187,7 @@ Any others?
 
 --
 
-*The actual time component related to temporal aggregation did not get much attention from political scientists. Even as new events datasets appear every day, we still lack alternatives for handling issues with date uncertainty and imprecision; until now...*
+*The actual time component related to temporal aggregation does not get much attention from political scientists. Even as new events datasets appear every day, we still lack alternatives for handling issues related to date uncertainty and imprecision; until now...*
 
 ---
 
@@ -211,7 +211,7 @@ class: center, middle
 
 ```{r messy example}
 library(messydates)
-cat("Should we use the first day ",
+paste0("Should we use the first day ",
     as.Date(as_messydate("2023"), min),
     " or any random day ",
     as.Date(as_messydate("2023"), random),
@@ -262,7 +262,7 @@ random_values <- ifelse(is_uncertain(battles$Date)|is_approximate(battles$Date),
                          abs(as.Date(battles$Date, random) - 
                                as.Date(battles$Date, random)),
                          forced_precision)
-cat("If we take arbitrary values for dates that are uncertain or approximate in the 2001 battles dataset, the mean duration for battles becomes ", mean(forced_precision), " days, instead of ", mean(random_values), " days if we take random values...")
+paste0("If we take arbitrary values for dates that are uncertain or approximate in the 2001 battles dataset, the mean duration for battles becomes ", mean(forced_precision), " days, instead of ", mean(random_values), " days if we take random values...")
 ```
 ]
 
@@ -286,17 +286,17 @@ stargazer::stargazer(arbitrary, random, type = "html", style = "io")
 
 # Questions (for you)
 
-- Implications
+- *Implications*
 
-Could/would better managing messy dates be relevant for your work?
+Could/would better managing messy dates be relevant for your work (how/why)?
 
-- Data
+- *Data*
 
 Do you use, or know, any datasets that for which dates are uncertain/imprecise?
 
-- Audience
+- *Audience*
 
-How/where to convey this information to social scientists?
+How/where to convey this information to social scientists like yourselfs?
 
 ---
 

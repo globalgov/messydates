@@ -88,7 +88,7 @@ class: split two
 
 - Dates are often "messy", that is, measured or recorded imprecisely
 
-- Imprecision can be inescapable and it is not by itself an issue, the issue is how it is treated (e.g. forced precision) without much consideration
+- Imprecision can be inescapable and it is not by itself an issue, the issue is how it is treated
 
 - This can introduce biases where sequencing or duration are theoretically important and obscure inferential uncertainties
 
@@ -150,25 +150,29 @@ class: center, middle
 
 --
 
-- Freeman (1989) highlights biases and inconsistencies related to temporal aggregation that cause model misspecification and misinterpretation (e.g. results differ when data is aggregated by year vs. months)
+- Temporal aggregation can alter the underlying properties of the disaggregated data and lead to model misspecification and misinterpretation for time-series/events anaylsis (see Freeman 1989)
 
 --
 
-- However, this assumes that time in itself is "tidy" and that the aggregation of other variables is the issue
+- In IR, for instance, Goldstein (1990) shows that whether studies found that the US responded to/reciprocated USRR actions during the Cold War depended simply on how they aggregate the data
 
 --
 
-- False temporal aggregation in itself might lead to both model misspecification and misinterpretation for time-series/events data
+- However, studies of temporal aggregation assume that dates/time in itself are "tidy"
 
 --
 
-- When one aggregates temporal information, one not only loses granularity at the level of the variable’s value, but also perhaps in terms of any potential timing, ordering, or duration
+- False temporal aggregation in itself might lead to both model misspecification and misinterpretation
+
+--
+
+*When one aggregates temporal information, one not only loses granularity at the level of the variable’s value, but also perhaps in terms of any potential timing, ordering, or duration!*
 
 ---
 
 # The politics of (dis)aggregation
 
-Types of temporal aggregation issues:
+Types of false temporal aggregation for dates:
 
 --
 
@@ -183,7 +187,7 @@ Any others?
 
 --
 
-*The actual time component related to temporal aggregation did not get much attention from political scientists, or appears to be an issue for political analysis so far. Even as new events datasets appear every day, we still lack alternatives for handling these types of issues, until now...*
+*The actual time component related to temporal aggregation did not get much attention from political scientists. Even as new events datasets appear every day, we still lack alternatives for handling issues with date uncertainty and imprecision; until now...*
 
 ---
 
@@ -203,20 +207,16 @@ class: center, middle
 
 --
 
-This new 'mdate' class allows dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates in R.
-
---
-
-For instance, problems of precision can now be explicitly reolved:
+- This new 'mdate' class allows dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates in R so that dates can be explicitly resolved.
 
 ```{r messy example}
 library(messydates)
-paste0("Should we use the first day ",
-       as.Date(as_messydate("2023"), min),
-       " or any random day ",
-       as.Date(as_messydate("2023"), random),
-       " from the year of ",
-       as_messydate("2023"))
+cat("Should we use the first day ",
+    as.Date(as_messydate("2023"), min),
+    " or any random day ",
+    as.Date(as_messydate("2023"), random),
+    " from the year of ",
+    as_messydate("2023"), "?")
 ```
 
 ---
@@ -246,20 +246,28 @@ tibble::tribble(~Example, ~OriginalDate,
 # Messy inference
 
 .panelset[
-.panel[.panel-name[Code]
-```{r inference, eval=FALSE}
-set.seed(1301)
-battles <- battles %>%
-  mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
-         random = ifelse(is_uncertain(Date)|is_approximate(Date),
-                         abs(as.Date(Date, random) - as.Date(Date, random)),
-                         arbitrary))
-arbitrary <- lm(arbitrary ~ US_party + N_actors, battles)
-random <- lm(random ~ US_party + N_actors, battles)
+.panel[.panel-name[Battles in 2001]
+```{r inference}
+battles %>% kbl() %>% kable_styling("striped")
 ```
 ]
-.panel[.panel-name[Table]
-```{r inference_2, echo=FALSE, results='asis'}
+
+.panel[.panel-name[Mean duration difference (in days)]
+
+```{r inference_2}
+set.seed(1234)
+forced_precision <- mean(as.numeric(as.Date(battles$Date, max) - 
+                              as.Date(battles$Date, min)))
+random_values <- ifelse(is_uncertain(battles$Date)|is_approximate(battles$Date),
+                         abs(as.Date(battles$Date, random) - 
+                               as.Date(battles$Date, random)),
+                         forced_precision)
+cat("If we take arbitrary values for dates that are uncertain or approximate in the 2001 battles dataset, the mean duration for battles becomes ", mean(forced_precision), " days, instead of ", mean(random_values), " days if we take random values...")
+```
+]
+
+.panel[.panel-name[Inference]
+```{r inference_3, echo=FALSE, results='asis'}
 library(stargazer)
 set.seed(1301)
 battles <- battles %>%
@@ -280,11 +288,11 @@ stargazer::stargazer(arbitrary, random, type = "html", style = "io")
 
 - Implications
 
-Could messydates be relevant for your work? If so, why/how?
+Could/would better managing messy dates be relevant for your work?
 
 - Data
 
-Do you use, or know, any datasets that for which dates are imprecise?
+Do you use, or know, any datasets that for which dates are uncertain/imprecise?
 
 - Audience
 

@@ -4,7 +4,7 @@
     <title>Messydates</title>
     <meta charset="utf-8" />
     <meta name="author" content="James Hollway and Henrique Sposito" />
-    <meta name="date" content="2023-05-24" />
+    <meta name="date" content="2023-05-25" />
     <script src="messydates_presentation_files/header-attrs/header-attrs.js"></script>
     <link href="messydates_presentation_files/remark-css/default.css" rel="stylesheet" />
     <link href="messydates_presentation_files/remark-css/ninjutsu.css" rel="stylesheet" />
@@ -13,7 +13,7 @@
     <link href="messydates_presentation_files/animate.css/animate.xaringan.css" rel="stylesheet" />
     <link href="messydates_presentation_files/panelset/panelset.css" rel="stylesheet" />
     <script src="messydates_presentation_files/panelset/panelset.js"></script>
-    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"d8ff9bb437414a0dbdbae5556d3657ed","expires":14}</script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x5a15fe89eca48b0ae81480207be4d0e","expires":14}</script>
     <script src="messydates_presentation_files/himalaya/himalaya.js"></script>
     <script src="messydates_presentation_files/js-cookie/js.cookie.js"></script>
     <link href="messydates_presentation_files/editable/editable.css" rel="stylesheet" />
@@ -46,7 +46,7 @@ class: center, middle, inverse, title-slide
 ### James Hollway and Henrique Sposito
 ]
 .date[
-### 24 May 2023
+### 25 May 2023
 ]
 
 ---
@@ -89,7 +89,7 @@ class: split two
 
 - Dates are often "messy", that is, measured or recorded imprecisely
 
-- Imprecision can be inescapable and it is not by itself an issue, the issue is how it is treated (e.g. forced precision) without much consideration
+- Imprecision can be inescapable and it is not by itself an issue, the issue is how it is treated
 
 - This can introduce biases where sequencing or duration are theoretically important and obscure inferential uncertainties
 
@@ -151,25 +151,29 @@ class: center, middle
 
 --
 
-- Freeman (1989) highlights biases and inconsistencies related to temporal aggregation that cause model misspecification and misinterpretation (e.g. results differ when data is aggregated by year vs. months)
+- Temporal aggregation can alter the underlying properties of the disaggregated data and lead to model misspecification and misinterpretation for time-series/events anaylsis (see Freeman 1989)
 
 --
 
-- However, this assumes that time in itself is "tidy" and that the aggregation of other variables is the issue
+- In IR, for instance, Goldstein (1990) shows that whether studies found that the US responded to/reciprocated USRR actions during the Cold War depended simply on how they aggregate the data
 
 --
 
-- False temporal aggregation in itself might lead to both model misspecification and misinterpretation for time-series/events data
+- However, studies of temporal aggregation assume that dates/time in itself are "tidy"
 
 --
 
-- When one aggregates temporal information, one not only loses granularity at the level of the variable’s value, but also perhaps in terms of any potential timing, ordering, or duration
+- False temporal aggregation in itself might lead to both model misspecification and misinterpretation
+
+--
+
+*When one aggregates temporal information, one not only loses granularity at the level of the variable’s value, but also perhaps in terms of any potential timing, ordering, or duration!*
 
 ---
 
 # The politics of (dis)aggregation
 
-Types of temporal aggregation issues:
+Types of false temporal aggregation for dates:
 
 --
 
@@ -184,7 +188,7 @@ Any others?
 
 --
 
-*The actual time component related to temporal aggregation did not get much attention from political scientists, or appears to be an issue for political analysis so far. Even as new events datasets appear every day, we still lack alternatives for handling these types of issues, until now...*
+*The actual time component related to temporal aggregation did not get much attention from political scientists. Even as new events datasets appear every day, we still lack alternatives for handling issues with date uncertainty and imprecision; until now...*
 
 ---
 
@@ -204,25 +208,21 @@ class: center, middle
 
 --
 
-This new 'mdate' class allows dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates in R.
-
---
-
-For instance, problems of precision can now be explicitly reolved:
+- This new 'mdate' class allows dates to express unspecified, approximate or uncertain date components, date ranges, and sets of dates in R so that dates can be explicitly resolved.
 
 
 ```r
 library(messydates)
-paste0("Should we use the first day ",
-       as.Date(as_messydate("2023"), min),
-       " or any random day ",
-       as.Date(as_messydate("2023"), random),
-       " from the year of ",
-       as_messydate("2023"))
+cat("Should we use the first day ",
+    as.Date(as_messydate("2023"), min),
+    " or any random day ",
+    as.Date(as_messydate("2023"), random),
+    " from the year of ",
+    as_messydate("2023"), "?")
 ```
 
 ```
-#&gt; [1] "Should we use the first day 2023-01-01 or any random day 2023-01-07 from the year of 2023"
+#&gt; Should we use the first day  19358  or any random day  19646  from the year of  2023 ?
 ```
 
 ---
@@ -295,20 +295,187 @@ paste0("Should we use the first day ",
 # Messy inference
 
 .panelset[
-.panel[.panel-name[Code]
+.panel[.panel-name[Battles in 2001]
 
 ```r
-set.seed(1301)
-battles &lt;- battles %&gt;%
-  mutate(arbitrary = as.numeric(as.Date(Date, max) - as.Date(Date, min)),
-         random = ifelse(is_uncertain(Date)|is_approximate(Date),
-                         abs(as.Date(Date, random) - as.Date(Date, random)),
-                         arbitrary))
-arbitrary &lt;- lm(arbitrary ~ US_party + N_actors, battles)
-random &lt;- lm(random ~ US_party + N_actors, battles)
+battles %&gt;% kbl() %&gt;% kable_styling("striped")
+```
+
+&lt;table class="table table-striped" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Battle &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Date &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Parties &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; US_party &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; N_actors &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Operation MH-2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-03-08 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MK-National Libration Army(MK) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2001 Bangladesh–India border clashes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-04-16..2001-04-20 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BD-ID &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Operation Vaksince &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-05-25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MK-National Libration Army(MK) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Alkhan-Kala operation &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-06-22..2001-06-28 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; RU-Chechen Republic &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Vedeno &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-08-13..2001-08-26 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; RU-Chechen Insurgents &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Operation Crescent Wind &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-10-07..2001-12? &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/UK-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Operation Rhino &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-10-19..2001-10-20 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Mazar-e-Sharif &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-09 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Northern Alliance-Taliban/al-Qaeda &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Siege of Kunduz &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-11..2001-11-23 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Northern Alliance-Taliban/al-Qaeda &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Herat &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Northern Alliance/Iran-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Kabul &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-13..2001-11-14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Northern Alliance-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Tarin Kowt &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-13..2001-11-14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Eastern Alliance-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Operation Trent &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-~15..2001-11-~30 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/UK-Taliban/al-Qaeda &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Kandahar &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-22..2001-12-07 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/AU/Eastern Alliance-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Qala-i-Jangi &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-11-25..2001-12-01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/UK/Northern Alliance-Taliban/al-Qaeda &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Tora Bora &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-12-12..2001-12-17 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Northern Alliance-Taliban/al-Qaeda &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Shawali Kowt &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-12-03 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Eastern Alliance-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Sayyd Alma Kalay &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-12-04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; US/Eastern Alliance-Taliban &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Amami-Oshima &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-12-22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; JP-KP &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Tsotsin-Yurt operation &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2001-12-30..2002-01-03 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; RU-Chechen Insurgents &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+.panel[.panel-name[Mean duration difference (in days)]
+
+
+```r
+set.seed(1234)
+forced_precision &lt;- mean(as.numeric(as.Date(battles$Date, max) - 
+                              as.Date(battles$Date, min)))
+random_values &lt;- ifelse(is_uncertain(battles$Date)|is_approximate(battles$Date),
+                         abs(as.Date(battles$Date, random) - 
+                               as.Date(battles$Date, random)),
+                         forced_precision)
+cat("If we take arbitrary values for dates that are uncertain or approximate in the 2001 battles dataset, the mean duration for battles becomes ", mean(forced_precision), " days, instead of ", mean(random_values), " days if we take random values...")
+```
+
+```
+#&gt; If we take arbitrary values for dates that are uncertain or approximate in the 2001 battles dataset, the mean duration for battles becomes  8.4  days, instead of  9.76  days if we take random values...
 ```
 ]
-.panel[.panel-name[Table]
+
+.panel[.panel-name[Inference]
 
 &lt;table style="text-align:center"&gt;&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;arbitrary&lt;/td&gt;&lt;td&gt;random&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;(1)&lt;/td&gt;&lt;td&gt;(2)&lt;/td&gt;&lt;/tr&gt;
@@ -334,11 +501,11 @@ random &lt;- lm(random ~ US_party + N_actors, battles)
 
 - Implications
 
-Could messydates be relevant for your work? If so, why/how?
+Could/would better managing messy dates be relevant for your work?
 
 - Data
 
-Do you use, or know, any datasets that for which dates are imprecise?
+Do you use, or know, any datasets that for which dates are uncertain/imprecise?
 
 - Audience
 

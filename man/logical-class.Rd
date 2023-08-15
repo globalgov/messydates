@@ -8,6 +8,10 @@
 \alias{is_precise}
 \alias{is_uncertain}
 \alias{is_approximate}
+\alias{<.mdate}
+\alias{>.mdate}
+\alias{<=.mdate}
+\alias{>=.mdate}
 \title{Logical tests on messy dates}
 \usage{
 is_messydate(x)
@@ -23,6 +27,14 @@ is_precise(x)
 is_uncertain(x)
 
 is_approximate(x)
+
+e1 < e2
+
+e1 > e2
+
+e1 <= e2
+
+e1 >= e2
 }
 \arguments{
 \item{x, y}{\code{mdate} or other class objects}
@@ -56,6 +68,22 @@ or date ranges and sets.
 
 \item \code{is_approximate()}: tests whether a date is approximate (i.e. contains ~).
 
+\item \code{ < }: tests whether the dates in the first vector precede the
+dates in the second vector. Returns \code{NA} when the date order can't be
+determined.
+
+\item \code{ > }: tests whether the dates in the first vector succeed the
+dates in the second vector.
+Returns \code{NA} when the date order can't be determined.
+
+\item \code{ <= }: tests whether the dates in the first vector are equal to
+or precede the dates in the second vector.
+Returns \code{NA} when the date order can't be determined.
+
+\item \code{ >= }: tests whether the dates in the first vector are equal to
+or succeed the dates in the second vector.
+Returns \code{NA} when the date order can't be determined.
+
 }}
 \examples{
 is_messydate(as_messydate("2012-01-01"))
@@ -71,4 +99,8 @@ is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 is_precise(as_messydate(c("2012-06-02", "2012-06")))
 is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+# 2012-06-XX could mean 2012-06-03, so unknown if it comes before 2012-06-02
+as_messydate("2012-06-XX") < as.Date("2012-06-02") # NA
+# But 2012-06-XX can't come before 2012-06-01
+as_messydate("2012-06-XX") >= as.Date("2012-06-01") # TRUE
 }

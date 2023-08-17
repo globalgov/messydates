@@ -24,7 +24,10 @@ Authors@R:
       person(given = "Jael",
              family = "Tan",
              role = "ctb",
-             comment = c("IHEID", ORCID = "0000-0002-6234-9764")))
+             comment = c("IHEID", ORCID = "0000-0002-6234-9764")),
+      person(given = "Nathan",
+             family = "Werth",
+             role = "ctb"))
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

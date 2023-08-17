@@ -115,10 +115,10 @@ evalqOnLoad({
 # But make sure both are counting seconds, or both are counting days
 #' @importFrom lubridate is.POSIXt force_tz tz
 comparable_numerics <- function(e1, e2) {
-  if (!is.POSIXt(e1) && is.POSIXt(e2)) {
+  if (!lubridate::is.POSIXt(e1) && lubridate::is.POSIXt(e2)) {
     e1 <- force_tz(e1, tz(e2))
     e1 <- as.POSIXct(e1)
-  } else if (is.POSIXt(e1) && !is.POSIXt(e2)) {
+  } else if (lubridate::is.POSIXt(e1) && !lubridate::is.POSIXt(e2)) {
     e2 <- force_tz(e2, tz(e1))
     e2 <- as.POSIXct(e2)
   }
@@ -130,7 +130,7 @@ numeric_time_ranges <- function(e1, e2) {
   if (is_messydate(e1)) {
     min1 <- as.Date(e1, FUN = min)
     max1 <- as.Date(e1, FUN = max)
-    if (is.POSIXt(e2)) {
+    if (lubridate::is.POSIXt(e2)) {
       ptz <- tz(e2)
       min1 <- force_tz(min1, ptz)
       min1 <- as.POSIXct(min1)
@@ -143,7 +143,7 @@ numeric_time_ranges <- function(e1, e2) {
   if (is_messydate(e2)) {
     min2 <- as.Date(e2, FUN = min)
     max2 <- as.Date(e2, FUN = max)
-    if (is.POSIXt(e1)) {
+    if (lubridate::is.POSIXt(e1)) {
       ptz <- tz(e1)
       min2 <- force_tz(min2, ptz)
       min2 <- as.POSIXct(min2)

@@ -6,11 +6,6 @@
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
 
-#' Logical tests on messy dates
-#'
-#' These functions provide various logical tests for messy date objects.
-#' @param x,y `mdate` or other class objects
-#' @return A logical vector the same length as the `mdate` passed.
 #' @describeIn logical tests whether the object inherits the `mdate` class.
 #'   If more rigorous validation is required, see `validate_messydate()`.
 #' @examples
@@ -224,3 +219,4 @@ evalqOnLoad({
   registerS3method(">=", "Date", `>=.mdate`)
   registerS3method(">=", "POSIXt", `>=.mdate`)
 })
+

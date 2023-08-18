@@ -547,3 +547,18 @@ make_messydate <- function(..., resequence = FALSE) {
               or three variables (yyyy, mm, dd).")
   as_messydate(dates, resequence)
 }
+
+#' @describeIn messydate Composes `mdate` from multiple variables
+#' @details List
+#' @examples
+#' collapse(as_messydate(c("2012-06-01", "2012-06-02", "2012-06-03",
+#' "{2012-06-01, 2012-06-02, 2012-06-03}")))
+#' @export
+collapse <- function(x, ...) UseMethod("collapse")
+
+#' @export
+collapse.mdate <- function(x, ...) {
+  x <- ifelse(grepl("\\{|\\}", x), gsub("\\{|\\}", "", x), x)
+  x <- suppressMessages(contract(paste(x, collapse = ",")))
+  as_messydate(gsub("\\{|\\}", "", x))
+}

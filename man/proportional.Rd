@@ -2,30 +2,50 @@
 % Please edit documentation in R/proportional.R
 \name{proportional}
 \alias{proportional}
+\alias{\%<\%}
 \alias{\%<\%.mdate}
+\alias{\%>\%}
 \alias{\%>\%.mdate}
+\alias{\%>=\%}
 \alias{\%>=\%.mdate}
+\alias{\%<=\%}
 \alias{\%<=\%.mdate}
+\alias{\%><\%}
 \alias{\%><\%.mdate}
+\alias{\%>=<\%}
 \alias{\%>=<\%.mdate}
 \title{Proportion of messy dates meeting logical test}
 \usage{
-e1 %<% e2
+e1 \%<\% e2
 
-e1 %>% e2
+\method{\%<\%}{mdate}(e1, e2)
 
-e1 %>=% e2
+e1 \%>\% e2
 
-e1 %<=% e2
+\method{\%>\%}{mdate}(e1, e2)
 
-e1 %><% e2
+e1 \%>=\% e2
 
-e1 %>=<% e2
+\method{\%>=\%}{mdate}(e1, e2)
+
+e1 \%<=\% e2
+
+\method{\%<=\%}{mdate}(e1, e2)
+
+e1 \%><\% e2
+
+\method{\%><\%}{mdate}(e1, e2)
+
+e1 \%>=<\% e2
+
+\method{\%>=<\%}{mdate}(e1, e2)
 }
 \arguments{
-\item{x, y}{\code{mdate} or other class objects}
+\item{e1, e2}{\code{mdate} or other class objects}
 }
 \value{
+The proportion that the comparison is true.
+
 A logical vector the same length as the \code{mdate} passed.
 }
 \description{

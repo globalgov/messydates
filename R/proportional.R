@@ -2,20 +2,21 @@
 #'
 #' These functions provide various proportional tests for messy date objects.
 #' @name proportional
-#' @param x,y `mdate` or other class objects
+#' @param e1,e2 `mdate` or other class objects
+#' @return The proportion that the comparison is true.
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
 
+#' @rdname proportional
 #' @export
 `%<%` <- function(e1, e2) UseMethod("%<%")
 
-#' @usage e1 %<% e2
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that precede the minimum in the second vector.
-#' @export
 #' @examples
 #'   as_messydate("2012-06") < as.Date("2012-06-02")
 #'   as_messydate("2012-06") %<% "2012-06-02"
+#' @export
 `%<%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
@@ -28,10 +29,10 @@ evalqOnLoad({
   registerS3method("%<%", "POSIXt", `%<%.mdate`)
 })
 
+#' @rdname proportional
 #' @export
 `%>%` <- function(e1, e2) UseMethod("%>%")
 
-#' @usage e1 %>% e2
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that follow the maximum in the second vector.
 #'   Note that this conflicts with `{magrittr}`'s pipe,
@@ -52,10 +53,10 @@ evalqOnLoad({
   registerS3method("%>%", "POSIXt", `%>%.mdate`)
 })
 
+#' @rdname proportional
 #' @export
 `%>=%` <- function(e1, e2) UseMethod("%>=%")
 
-#' @usage e1 %>=% e2
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that follow or are equal to the maximum in the second vector.
 #' @export
@@ -74,10 +75,10 @@ evalqOnLoad({
   registerS3method("%>=%", "POSIXt", `%>=%.mdate`)
 })
 
+#' @rdname proportional
 #' @export
 `%<=%` <- function(e1, e2) UseMethod("%<=%")
 
-#' @usage e1 %<=% e2
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that precede or are equal to the minimum in the second vector.
 #' @export
@@ -96,10 +97,10 @@ evalqOnLoad({
   registerS3method("%<=%", "POSIXt", `%<=%.mdate`)
 })
 
+#' @rdname proportional
 #' @export
 `%><%` <- function(e1, e2) UseMethod("%><%")
 
-#' @usage e1 %><% e2
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that are between the minimum and maximum dates in the second vector.
 #' @export
@@ -119,10 +120,10 @@ evalqOnLoad({
   registerS3method("%><%", "POSIXt", `%><%.mdate`)
 })
 
+#' @rdname proportional
 #' @export
 `%>=<%` <- function(e1, e2) UseMethod("%>=<%")
 
-#' @usage e1 %>=<% e2
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that are between the minimum and maximum dates in the second vector, inclusive.
 #' @export
@@ -140,4 +141,3 @@ evalqOnLoad({
   registerS3method("%>=<%", "Date", `%>=<%.mdate`)
   registerS3method("%>=<%", "POSIXt", `%>=<%.mdate`)
 })
-

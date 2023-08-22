@@ -73,12 +73,12 @@ or date ranges and sets.
 dates in the second vector. Returns \code{NA} when the date order can't be
 determined.
 
-\item \code{ > }: tests whether the dates in the first vector succeed the
-dates in the second vector.
+\item \code{ > }: tests whether the dates in the first vector
+succeed the dates in the second vector.
 Returns \code{NA} when the date order can't be determined.
 
-\item \code{ <= }: tests whether the dates in the first vector are equal to
-or precede the dates in the second vector.
+\item \code{ <= }: tests whether the dates in the first vector are
+equal to or precede the dates in the second vector.
 Returns \code{NA} when the date order can't be determined.
 
 \item \code{ >= }: tests whether the dates in the first vector are equal to

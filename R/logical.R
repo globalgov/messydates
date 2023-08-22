@@ -150,8 +150,8 @@ numeric_time_ranges <- function(e1, e2) {
   )
 }
 
-#' @describeIn logical_tests tests whether the dates in the first vector succeed the
-#'   dates in the second vector.
+#' @describeIn logical_tests tests whether the dates in the first vector
+#'   succeed the dates in the second vector.
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `>.mdate` <- function(e1, e2) {
@@ -171,8 +171,8 @@ evalqOnLoad({
   registerS3method(">", "POSIXt", `>.mdate`)
 })
 
-#' @describeIn logical_tests tests whether the dates in the first vector are equal to
-#'   or precede the dates in the second vector.
+#' @describeIn logical_tests tests whether the dates in the first vector are
+#'   equal to or precede the dates in the second vector.
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `<=.mdate` <- function(e1, e2) {

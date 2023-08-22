@@ -60,7 +60,6 @@
 #' @name class
 #' @seealso messydate
 NULL
-#> NULL
 
 #' @rdname class
 #' @export

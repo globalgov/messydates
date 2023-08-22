@@ -2,35 +2,35 @@
 % Please edit documentation in R/proportional.R
 \name{proportional}
 \alias{proportional}
-\alias{\%<\%}
-\alias{\%<\%.mdate}
-\alias{\%>\%}
-\alias{\%>\%.mdate}
-\alias{\%>=\%}
-\alias{\%>=\%.mdate}
-\alias{\%<=\%}
-\alias{\%<=\%.mdate}
+\alias{\%leq\%}
+\alias{\%leq\%.mdate}
+\alias{\%geq\%}
+\alias{\%geq\%.mdate}
+\alias{\%geqq\%}
+\alias{\%geqq\%.mdate}
+\alias{\%leqq\%}
+\alias{\%leqq\%.mdate}
 \alias{\%><\%}
 \alias{\%><\%.mdate}
 \alias{\%>=<\%}
 \alias{\%>=<\%.mdate}
 \title{Proportion of messy dates meeting logical test}
 \usage{
-e1 \%<\% e2
+e1 \%leq\% e2
 
-\method{\%<\%}{mdate}(e1, e2)
+\method{\%leq\%}{mdate}(e1, e2)
 
-e1 \%>\% e2
+e1 \%geq\% e2
 
-\method{\%>\%}{mdate}(e1, e2)
+\method{\%geq\%}{mdate}(e1, e2)
 
-e1 \%>=\% e2
+e1 \%geqq\% e2
 
-\method{\%>=\%}{mdate}(e1, e2)
+\method{\%geqq\%}{mdate}(e1, e2)
 
-e1 \%<=\% e2
+e1 \%leqq\% e2
 
-\method{\%<=\%}{mdate}(e1, e2)
+\method{\%leqq\%}{mdate}(e1, e2)
 
 e1 \%><\% e2
 
@@ -53,36 +53,34 @@ These functions provide various proportional tests for messy date objects.
 }
 \section{Functions}{
 \itemize{
-\item \code{ \%<\% }: Tests proportion of dates in the first vector
+\item \code{ \%leq\% }: Tests proportion of dates in the first vector
 that precede the minimum in the second vector.
 
-\item \code{ \%>\% }: Tests proportion of dates in the first vector
+\item \code{ \%geq\% }: Tests proportion of dates in the first vector
 that follow the maximum in the second vector.
-Note that this conflicts with \code{{magrittr}}'s pipe,
-and so the base R pipe, \verb{|>} is recommended instead.
 
-\item \code{ \%>=\% }: Tests proportion of dates in the first vector
+\item \code{ \%geqq\% }: Tests proportion of dates in the first vector
 that follow or are equal to the maximum in the second vector.
 
-\item \code{ \%<=\% }: Tests proportion of dates in the first vector
+\item \code{ \%leqq\% }: Tests proportion of dates in the first vector
 that precede or are equal to the minimum in the second vector.
 
 \item \code{ \%><\% }: Tests proportion of dates in the first vector
 that are between the minimum and maximum dates in the second vector.
 
-\item \code{ \%>=<\% }: Tests proportion of dates in the first vector
-that are between the minimum and maximum dates in the second vector, inclusive.
+\item \code{ \%>=<\% }: Tests proportion of dates in the first vector that
+are between the minimum and maximum dates in the second vector, inclusive.
 
 }}
 \examples{
   as_messydate("2012-06") < as.Date("2012-06-02")
-  as_messydate("2012-06") \%<\% "2012-06-02"
+  as_messydate("2012-06") \%leq\% "2012-06-02"
   as_messydate("2012-06") > as.Date("2012-06-02")
-  as_messydate("2012-06") \%>\% "2012-06-02"
+  as_messydate("2012-06") \%geq\% "2012-06-02"
   as_messydate("2012-06") >= as.Date("2012-06-02")
-  as_messydate("2012-06") \%>=\% "2012-06-02"
+  as_messydate("2012-06") \%geqq\% "2012-06-02"
   as_messydate("2012-06") <= as.Date("2012-06-02")
-  as_messydate("2012-06") \%<=\% "2012-06-02"
+  as_messydate("2012-06") \%leqq\% "2012-06-02"
   as_messydate("2012-06") \%><\% as_messydate("2012-06-15..2012-07-15")
   as_messydate("2012-06") \%>=<\% as_messydate("2012-06-15..2012-07-15")
 }

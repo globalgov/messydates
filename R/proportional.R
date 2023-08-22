@@ -9,92 +9,94 @@ NULL
 
 #' @rdname proportional
 #' @export
-`%<%` <- function(e1, e2) UseMethod("%<%")
+`%leq%` <- function(e1, e2) UseMethod("%leq%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that precede the minimum in the second vector.
 #' @examples
 #'   as_messydate("2012-06") < as.Date("2012-06-02")
-#'   as_messydate("2012-06") %<% "2012-06-02"
+#'   as_messydate("2012-06") %leq% "2012-06-02"
 #' @export
-`%<%.mdate` <- function(e1, e2) {
+`%leq%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  purrr::map2_dbl(expand(e1), suppressMessages(expand(e2)), ~ mean(.x < min(.y)))
+  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
+                                   ~ mean(.x < min(.y))))
 }
 
 evalqOnLoad({
-  registerS3method("%<%", "Date", `%<%.mdate`)
-  registerS3method("%<%", "POSIXt", `%<%.mdate`)
+  registerS3method("%leq%", "Date", `%leq%.mdate`)
+  registerS3method("%leq%", "POSIXt", `%leq%.mdate`)
 })
 
 #' @rdname proportional
 #' @export
-`%>%` <- function(e1, e2) UseMethod("%>%")
+`%geq%` <- function(e1, e2) UseMethod("%geq%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that follow the maximum in the second vector.
-#'   Note that this conflicts with `{magrittr}`'s pipe,
-#'   and so the base R pipe, `|>` is recommended instead.
 #' @export
 #' @examples
 #'   as_messydate("2012-06") > as.Date("2012-06-02")
-#'   as_messydate("2012-06") %>% "2012-06-02"
-`%>%.mdate` <- function(e1, e2) {
+#'   as_messydate("2012-06") %geq% "2012-06-02"
+`%geq%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  purrr::map2_dbl(expand(e1), suppressMessages(expand(e2)), ~ mean(.x > max(.y)))
+  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
+                                   ~ mean(.x > max(.y))))
 }
 
 evalqOnLoad({
-  registerS3method("%>%", "Date", `%>%.mdate`)
-  registerS3method("%>%", "POSIXt", `%>%.mdate`)
+  registerS3method("%geq%", "Date", `%geq%.mdate`)
+  registerS3method("%geq%", "POSIXt", `%geq%.mdate`)
 })
 
 #' @rdname proportional
 #' @export
-`%>=%` <- function(e1, e2) UseMethod("%>=%")
+`%geqq%` <- function(e1, e2) UseMethod("%geqq%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that follow or are equal to the maximum in the second vector.
 #' @export
 #' @examples
 #'   as_messydate("2012-06") >= as.Date("2012-06-02")
-#'   as_messydate("2012-06") %>=% "2012-06-02"
-`%>=%.mdate` <- function(e1, e2) {
+#'   as_messydate("2012-06") %geqq% "2012-06-02"
+`%geqq%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  purrr::map2_dbl(expand(e1), suppressMessages(expand(e2)), ~ mean(.x >= max(.y)))
+  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
+                                   ~ mean(.x >= max(.y))))
 }
 
 evalqOnLoad({
-  registerS3method("%>=%", "Date", `%>=%.mdate`)
-  registerS3method("%>=%", "POSIXt", `%>=%.mdate`)
+  registerS3method("%geqq%", "Date", `%geqq%.mdate`)
+  registerS3method("%geqq%", "POSIXt", `%geqq%.mdate`)
 })
 
 #' @rdname proportional
 #' @export
-`%<=%` <- function(e1, e2) UseMethod("%<=%")
+`%leqq%` <- function(e1, e2) UseMethod("%leqq%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that precede or are equal to the minimum in the second vector.
 #' @export
 #' @examples
 #'   as_messydate("2012-06") <= as.Date("2012-06-02")
-#'   as_messydate("2012-06") %<=% "2012-06-02"
-`%<=%.mdate` <- function(e1, e2) {
+#'   as_messydate("2012-06") %leqq% "2012-06-02"
+`%leqq%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  purrr::map2_dbl(expand(e1), suppressMessages(expand(e2)), ~ mean(.x <= min(.y)))
+  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
+                                   ~ mean(.x <= min(.y))))
 }
 
 evalqOnLoad({
-  registerS3method("%<=%", "Date", `%<=%.mdate`)
-  registerS3method("%<=%", "POSIXt", `%<=%.mdate`)
+  registerS3method("%leqq%", "Date", `%leqq%.mdate`)
+  registerS3method("%leqq%", "POSIXt", `%leqq%.mdate`)
 })
 
 #' @rdname proportional
@@ -111,8 +113,8 @@ evalqOnLoad({
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   # Need to create fast way to trim ranges or just get dates within the range
-  purrr::map2_dbl(expand(e1), suppressMessages(expand(e2)),
-                  ~ (length(md_intersect(.x, .y)))/length(.x))
+  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
+                  ~ (length(md_intersect(.x, .y)))/length(.x)))
 }
 
 evalqOnLoad({
@@ -124,8 +126,8 @@ evalqOnLoad({
 #' @export
 `%>=<%` <- function(e1, e2) UseMethod("%>=<%")
 
-#' @describeIn proportional Tests proportion of dates in the first vector
-#'   that are between the minimum and maximum dates in the second vector, inclusive.
+#' @describeIn proportional Tests proportion of dates in the first vector that
+#'   are between the minimum and maximum dates in the second vector, inclusive.
 #' @export
 #' @examples
 #'   as_messydate("2012-06") %>=<% as_messydate("2012-06-15..2012-07-15")
@@ -133,8 +135,8 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  purrr::map2_dbl(expand(e1), suppressMessages(expand(e2)),
-                  ~ length(md_intersect(.x, .y))/length(.x))
+  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
+                  ~ length(md_intersect(.x, .y))/length(.x)))
 }
 
 evalqOnLoad({

@@ -115,7 +115,7 @@ NA_mdate_ <- structure(NA_real_, class = "mdate")
 }
 
 #' @export
-`[<-.mdate` <- function(x, i, value, ...) {
+`[<-.mdate` <- function(x, i, ..., value) {
   value <- as_messydate(value)
   validate_messydate(value)
   as_messydate(NextMethod("[<-", unclass(x)))
@@ -127,7 +127,7 @@ NA_mdate_ <- structure(NA_real_, class = "mdate")
 }
 
 #' @export
-`[[<-.mdate` <- function(x, i, value, ...) {
+`[[<-.mdate` <- function(x, i, ..., value) {
   value <- as_messydate(value)
   validate_messydate(value)
   as_messydate(NextMethod("[[<-", unclass(x)))

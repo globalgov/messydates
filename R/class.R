@@ -108,3 +108,52 @@ print.mdate <- function(x, ...) {
 #' @rdname class
 #' @export
 NA_mdate_ <- structure(NA_real_, class = "mdate")
+
+#' @export
+`[.mdate` <- function(x, ..., drop = TRUE) {
+  as_messydate(NextMethod("[", unclass(x)))
+}
+
+#' @export
+`[<-.mdate` <- function(x, i, value, ...) {
+  value <- as_messydate(value)
+  validate_messydate(value)
+  as_messydate(NextMethod("[<-", unclass(x)))
+}
+
+#' @export
+`[[.mdate` <- function(x, ...) {
+  as_messydate(NextMethod("[[", unclass(x)))
+}
+
+#' @export
+`[[<-.mdate` <- function(x, i, value, ...) {
+  value <- as_messydate(value)
+  validate_messydate(value)
+  as_messydate(NextMethod("[[<-", unclass(x)))
+}
+
+#' @export
+c.mdate <- function(...) {
+  vecs <- lapply(list(...), function(e) unclass(as_messydate(e)))
+  x <- as_messydate(unlist(vecs))
+  validate_messydate(x)
+}
+
+#' @export
+as.data.frame.mdate <- function(x, ...) {
+  nm <- deparse1(substitute(x))
+  if (!"nm" %in% ...names())
+    as.data.frame.vector(x, ..., nm = nm)
+  else as.data.frame.vector(x, ...)
+}
+
+#' @export
+rep.mdate <- function(x, ...) {
+  as_messydate(NextMethod("rep", unclass(x)))
+}
+
+#' @export
+as.list.mdate <- function(x, ...) {
+  lapply(unclass(x), as_messydate)
+}

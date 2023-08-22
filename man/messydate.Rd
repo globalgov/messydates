@@ -8,7 +8,6 @@
 \alias{as_messydate.POSIXlt}
 \alias{as_messydate.character}
 \alias{make_messydate}
-\alias{collapse}
 \title{Coercion from regular date classes to mdate}
 \usage{
 as_messydate(x, resequence = FALSE)
@@ -22,8 +21,6 @@ as_messydate(x, resequence = FALSE)
 \method{as_messydate}{character}(x, resequence = NULL)
 
 make_messydate(..., resequence = FALSE)
-
-collapse(x, ...)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into \code{mdate},
@@ -62,9 +59,6 @@ there is also a direct method for converting text or character strings to \code{
 The function can also extract dates from text,
 though this is a work-in-progress and currently only works in English.
 }
-\details{
-List
-}
 \section{Functions}{
 \itemize{
 \item \code{as_messydate()}: Core \code{mdate} class coercion function
@@ -78,8 +72,6 @@ List
 \item \code{as_messydate(character)}: Coerce character date objects to \code{mdate} class
 
 \item \code{make_messydate()}: Composes \code{mdate} from multiple variables
-
-\item \code{collapse()}: Composes \code{mdate} from multiple variables
 
 }}
 \examples{
@@ -100,6 +92,4 @@ as_messydate(c("010221", "01022021"), resequence = "dmy")
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 # resequence = "interactive")
 make_messydate("2010", "10", "10")
-collapse(as_messydate(c("2012-06-01", "2012-06-02", "2012-06-03",
-"{2012-06-01, 2012-06-02, 2012-06-03}")))
 }

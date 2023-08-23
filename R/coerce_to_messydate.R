@@ -109,12 +109,17 @@ as_messydate.character <- function(x, resequence = NULL) {
   new_messydate(d)
 }
 
-#' @describeIn messydate Coerce list date objects to `mdate` class
+#' @describeIn messydate Coerce list date objects to the most concise
+#' representation of `mdate` class
+#' @examples
+#' as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
+#' as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
+#' "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 #' @export
 as_messydate.list <- function(x, resequence = FALSE) {
   x <- purrr::map(x, as.character)
   x <- purrr::map(x, new_messydate)
-  lapply(x, function(y) contract(paste(y, collapse = ",")))
+  lapply(x, function(y) suppressMessages(contract(paste(y, collapse = ","))))
 }
 
 # Helper functions

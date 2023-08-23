@@ -109,6 +109,14 @@ as_messydate.character <- function(x, resequence = NULL) {
   new_messydate(d)
 }
 
+#' @describeIn messydate Coerce list date objects to `mdate` class
+#' @export
+as_messydate.list <- function(x, resequence = FALSE) {
+  x <- purrr::map(x, as.character)
+  x <- purrr::map(x, new_messydate)
+  lapply(x, function(y) contract(paste(y, collapse = ",")))
+}
+
 # Helper functions
 standardise_text <- function(v) {
   dates <- ifelse(stringr::str_detect(v, "([:alpha:]{4})") &
@@ -282,6 +290,8 @@ standardise_widths <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
   dates <- trimws(dates, "both")
+  #dates <- ifelse(stringr::str_detect(dates, "\\{|\\.\\."),
+  #suppressMessages(contract(dates)), dates)
   dates
 }
 
@@ -547,3 +557,13 @@ make_messydate <- function(..., resequence = FALSE) {
               or three variables (yyyy, mm, dd).")
   as_messydate(dates, resequence)
 }
+
+#' #' @describeIn messydate Collpase `mdate the most concise representation of
+#' #' `mdate` within lists
+#' #' @examples
+#' #' x <- as_messydate(c("2012-06-01", "2012-06-02", "2012-06-03",
+#' #' "{2012-06-01, 2012-06-02, 2012-06-03}"))
+#' #' @export
+#' list.mdate <- function(x, ...) {
+#'   purrr::map(x, contract)
+#' }

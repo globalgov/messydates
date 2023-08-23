@@ -7,6 +7,7 @@
 \alias{as_messydate.POSIXct}
 \alias{as_messydate.POSIXlt}
 \alias{as_messydate.character}
+\alias{as_messydate.list}
 \alias{make_messydate}
 \title{Coercion from regular date classes to mdate}
 \usage{
@@ -19,6 +20,8 @@ as_messydate(x, resequence = FALSE)
 \method{as_messydate}{POSIXlt}(x, resequence = FALSE)
 
 \method{as_messydate}{character}(x, resequence = NULL)
+
+\method{as_messydate}{list}(x, resequence = FALSE)
 
 make_messydate(..., resequence = FALSE)
 }
@@ -70,6 +73,8 @@ though this is a work-in-progress and currently only works in English.
 \item \code{as_messydate(POSIXlt)}: Coerce from \code{POSIXlt} to \code{mdate} class
 
 \item \code{as_messydate(character)}: Coerce character date objects to \code{mdate} class
+
+\item \code{as_messydate(list)}: Coerce list date objects to \code{mdate} class
 
 \item \code{make_messydate()}: Composes \code{mdate} from multiple variables
 

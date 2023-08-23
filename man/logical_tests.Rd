@@ -69,9 +69,9 @@ or date ranges and sets.
 
 \item \code{is_approximate()}: tests whether a date is approximate (i.e. contains ~).
 
-\item \code{ < }: tests whether the dates in the first vector precede the
-dates in the second vector. Returns \code{NA} when the date order can't be
-determined.
+\item \code{ < }: tests whether the dates in the first vector precede
+the dates in the second vector.
+Returns \code{NA} when the date order can't be determined.
 
 \item \code{ > }: tests whether the dates in the first vector
 succeed the dates in the second vector.

@@ -77,9 +77,9 @@ is_approximate <- function(x) {
   stringr::str_detect(x, "\\~")
 }
 
-#' @describeIn logical_tests tests whether the dates in the first vector precede the
-#'   dates in the second vector. Returns `NA` when the date order can't be
-#'   determined.
+#' @describeIn logical_tests tests whether the dates in the first vector precede
+#'   the dates in the second vector.
+#'   Returns `NA` when the date order can't be determined.
 #' @examples
 #' # 2012-06-XX could mean 2012-06-03, so unknown if it comes before 2012-06-02
 #' as_messydate("2012-06-XX") < as.Date("2012-06-02") # NA
@@ -98,14 +98,15 @@ is_approximate <- function(x) {
   x
 }
 
-# Quoth the {lubridate} team: Nothing else seems to work, only this sneaky trick.
+# Quoth the {lubridate} team:
+# Nothing else seems to work, only this sneaky trick.
 evalqOnLoad({
   registerS3method("<", "Date", `<.mdate`)
   registerS3method("<", "POSIXt", `<.mdate`)
 })
 
-# Convert to numbers before comparison prevents infinite loops
-# But make sure both are counting seconds, or both are counting days
+# Converting to numbers before comparison prevents infinite loops.
+# But make sure both are counting seconds, or both are counting days.
 comparable_numerics <- function(e1, e2) {
   if (!lubridate::is.POSIXt(e1) && lubridate::is.POSIXt(e2)) {
     e1 <- lubridate::force_tz(e1, lubridate::tz(e2))

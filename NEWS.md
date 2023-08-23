@@ -1,4 +1,4 @@
-# messydates 0.3.6
+# messydates 0.4.0
 
 ## Functions
 

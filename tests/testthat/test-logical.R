@@ -76,5 +76,7 @@ test_that("Logical comparisons don't mess up comparisons between non-messy times
 })
 
 test_that("Operand for is_element works", {
-  expect_identical(as_messydate("2002-02-02") %in% as_messydate("2002"), is_element(as_messydate("2002-02-02"), as_messydate("2002")))
+  expect_true(as_messydate("2002-02-02") %e% as_messydate("2002"))
+  expect_equal(as_messydate("2002-02-02") %e% as_messydate("2002"),
+               is_element(as_messydate("2002-02-02"), as_messydate("2002")))
 })

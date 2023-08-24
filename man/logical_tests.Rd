@@ -13,6 +13,7 @@
 \alias{>.mdate}
 \alias{<=.mdate}
 \alias{>=.mdate}
+\alias{\%in\%.mdate}
 \title{Logical tests on messy dates}
 \usage{
 is_messydate(x)
@@ -36,6 +37,8 @@ is_approximate(x)
 \method{<=}{mdate}(e1, e2)
 
 \method{>=}{mdate}(e1, e2)
+
+`\%in\%.mdate`(e1, e2)
 }
 \arguments{
 \item{x, y, e1, e2}{\code{mdate} or other class objects}
@@ -83,6 +86,9 @@ Returns \code{NA} when the date order can't be determined.
 
 \item \code{ >= }: tests whether the dates in the first vector are equal to
 or succeed the dates in the second vector.
+Returns \code{NA} when the date order can't be determined.
+
+\item \code{`\%in\%.mdate`()}: tests whether the first date is matched in the second vector.
 Returns \code{NA} when the date order can't be determined.
 
 }}

@@ -213,3 +213,15 @@ evalqOnLoad({
   registerS3method(">=", "Date", `>=.mdate`)
   registerS3method(">=", "POSIXt", `>=.mdate`)
 })
+
+#' @describeIn logical_tests tests whether the first date is matched in the second vector.
+#'   Returns `NA` when the date order can't be determined.
+#' @export
+`%in%.mdate` <- function(e1, e2) {
+  is_element(as_messydate(e1), as_messydate(e2))
+}
+
+# evalqOnLoad({
+#   registerS3method("%in%", "Date", `%in%.mdate`)
+#   registerS3method("%in%", "POSIXt", `%in%.mdate`)
+# })

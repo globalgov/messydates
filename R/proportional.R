@@ -9,15 +9,15 @@ NULL
 
 #' @rdname proportional
 #' @export
-`%leq%` <- function(e1, e2) UseMethod("%leq%")
+`%l%` <- function(e1, e2) UseMethod("%l%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that precede the minimum in the second vector.
 #' @examples
 #'   as_messydate("2012-06") < as.Date("2012-06-02")
-#'   as_messydate("2012-06") %leq% "2012-06-02"
+#'   as_messydate("2012-06") %l% "2012-06-02"
 #' @export
-`%leq%.mdate` <- function(e1, e2) {
+`%l%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
@@ -26,21 +26,21 @@ NULL
 }
 
 evalqOnLoad({
-  registerS3method("%leq%", "Date", `%leq%.mdate`)
-  registerS3method("%leq%", "POSIXt", `%leq%.mdate`)
+  registerS3method("%l%", "Date", `%l%.mdate`)
+  registerS3method("%l%", "POSIXt", `%l%.mdate`)
 })
 
 #' @rdname proportional
 #' @export
-`%geq%` <- function(e1, e2) UseMethod("%geq%")
+`%g%` <- function(e1, e2) UseMethod("%g%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that follow the maximum in the second vector.
 #' @export
 #' @examples
 #'   as_messydate("2012-06") > as.Date("2012-06-02")
-#'   as_messydate("2012-06") %geq% "2012-06-02"
-`%geq%.mdate` <- function(e1, e2) {
+#'   as_messydate("2012-06") %g% "2012-06-02"
+`%g%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
@@ -49,21 +49,21 @@ evalqOnLoad({
 }
 
 evalqOnLoad({
-  registerS3method("%geq%", "Date", `%geq%.mdate`)
-  registerS3method("%geq%", "POSIXt", `%geq%.mdate`)
+  registerS3method("%g%", "Date", `%g%.mdate`)
+  registerS3method("%g%", "POSIXt", `%g%.mdate`)
 })
 
 #' @rdname proportional
 #' @export
-`%geqq%` <- function(e1, e2) UseMethod("%geqq%")
+`%ge%` <- function(e1, e2) UseMethod("%ge%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that follow or are equal to the maximum in the second vector.
 #' @export
 #' @examples
 #'   as_messydate("2012-06") >= as.Date("2012-06-02")
-#'   as_messydate("2012-06") %geqq% "2012-06-02"
-`%geqq%.mdate` <- function(e1, e2) {
+#'   as_messydate("2012-06") %ge% "2012-06-02"
+`%ge%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
@@ -72,21 +72,21 @@ evalqOnLoad({
 }
 
 evalqOnLoad({
-  registerS3method("%geqq%", "Date", `%geqq%.mdate`)
-  registerS3method("%geqq%", "POSIXt", `%geqq%.mdate`)
+  registerS3method("%ge%", "Date", `%ge%.mdate`)
+  registerS3method("%ge%", "POSIXt", `%ge%.mdate`)
 })
 
 #' @rdname proportional
 #' @export
-`%leqq%` <- function(e1, e2) UseMethod("%leqq%")
+`%le%` <- function(e1, e2) UseMethod("%le%")
 
 #' @describeIn proportional Tests proportion of dates in the first vector
 #'   that precede or are equal to the minimum in the second vector.
 #' @export
 #' @examples
 #'   as_messydate("2012-06") <= as.Date("2012-06-02")
-#'   as_messydate("2012-06") %leqq% "2012-06-02"
-`%leqq%.mdate` <- function(e1, e2) {
+#'   as_messydate("2012-06") %le% "2012-06-02"
+`%le%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
@@ -95,8 +95,8 @@ evalqOnLoad({
 }
 
 evalqOnLoad({
-  registerS3method("%leqq%", "Date", `%leqq%.mdate`)
-  registerS3method("%leqq%", "POSIXt", `%leqq%.mdate`)
+  registerS3method("%le%", "Date", `%le%.mdate`)
+  registerS3method("%le%", "POSIXt", `%le%.mdate`)
 })
 
 #' @rdname proportional

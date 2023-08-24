@@ -2,35 +2,35 @@
 % Please edit documentation in R/proportional.R
 \name{proportional}
 \alias{proportional}
-\alias{\%leq\%}
-\alias{\%leq\%.mdate}
-\alias{\%geq\%}
-\alias{\%geq\%.mdate}
-\alias{\%geqq\%}
-\alias{\%geqq\%.mdate}
-\alias{\%leqq\%}
-\alias{\%leqq\%.mdate}
+\alias{\%l\%}
+\alias{\%l\%.mdate}
+\alias{\%g\%}
+\alias{\%g\%.mdate}
+\alias{\%ge\%}
+\alias{\%ge\%.mdate}
+\alias{\%le\%}
+\alias{\%le\%.mdate}
 \alias{\%><\%}
 \alias{\%><\%.mdate}
 \alias{\%>=<\%}
 \alias{\%>=<\%.mdate}
 \title{Proportion of messy dates meeting logical test}
 \usage{
-e1 \%leq\% e2
+e1 \%l\% e2
 
-\method{\%leq\%}{mdate}(e1, e2)
+\method{\%l\%}{mdate}(e1, e2)
 
-e1 \%geq\% e2
+e1 \%g\% e2
 
-\method{\%geq\%}{mdate}(e1, e2)
+\method{\%g\%}{mdate}(e1, e2)
 
-e1 \%geqq\% e2
+e1 \%ge\% e2
 
-\method{\%geqq\%}{mdate}(e1, e2)
+\method{\%ge\%}{mdate}(e1, e2)
 
-e1 \%leqq\% e2
+e1 \%le\% e2
 
-\method{\%leqq\%}{mdate}(e1, e2)
+\method{\%le\%}{mdate}(e1, e2)
 
 e1 \%><\% e2
 
@@ -53,16 +53,16 @@ These functions provide various proportional tests for messy date objects.
 }
 \section{Functions}{
 \itemize{
-\item \code{ \%leq\% }: Tests proportion of dates in the first vector
+\item \code{ \%l\% }: Tests proportion of dates in the first vector
 that precede the minimum in the second vector.
 
-\item \code{ \%geq\% }: Tests proportion of dates in the first vector
+\item \code{ \%g\% }: Tests proportion of dates in the first vector
 that follow the maximum in the second vector.
 
-\item \code{ \%geqq\% }: Tests proportion of dates in the first vector
+\item \code{ \%ge\% }: Tests proportion of dates in the first vector
 that follow or are equal to the maximum in the second vector.
 
-\item \code{ \%leqq\% }: Tests proportion of dates in the first vector
+\item \code{ \%le\% }: Tests proportion of dates in the first vector
 that precede or are equal to the minimum in the second vector.
 
 \item \code{ \%><\% }: Tests proportion of dates in the first vector
@@ -74,13 +74,13 @@ are between the minimum and maximum dates in the second vector, inclusive.
 }}
 \examples{
   as_messydate("2012-06") < as.Date("2012-06-02")
-  as_messydate("2012-06") \%leq\% "2012-06-02"
+  as_messydate("2012-06") \%l\% "2012-06-02"
   as_messydate("2012-06") > as.Date("2012-06-02")
-  as_messydate("2012-06") \%geq\% "2012-06-02"
+  as_messydate("2012-06") \%g\% "2012-06-02"
   as_messydate("2012-06") >= as.Date("2012-06-02")
-  as_messydate("2012-06") \%geqq\% "2012-06-02"
+  as_messydate("2012-06") \%ge\% "2012-06-02"
   as_messydate("2012-06") <= as.Date("2012-06-02")
-  as_messydate("2012-06") \%leqq\% "2012-06-02"
+  as_messydate("2012-06") \%le\% "2012-06-02"
   as_messydate("2012-06") \%><\% as_messydate("2012-06-15..2012-07-15")
   as_messydate("2012-06") \%>=<\% as_messydate("2012-06-15..2012-07-15")
 }

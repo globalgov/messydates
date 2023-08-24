@@ -5,6 +5,8 @@
 \alias{is_messydate}
 \alias{is_intersecting}
 \alias{is_element}
+\alias{\%e\%}
+\alias{\%e\%.mdate}
 \alias{is_similar}
 \alias{is_precise}
 \alias{is_uncertain}
@@ -13,7 +15,6 @@
 \alias{>.mdate}
 \alias{<=.mdate}
 \alias{>=.mdate}
-\alias{\%in\%.mdate}
 \title{Logical tests on messy dates}
 \usage{
 is_messydate(x)
@@ -21,6 +22,10 @@ is_messydate(x)
 is_intersecting(x, y)
 
 is_element(x, y)
+
+e1 \%e\% e2
+
+\method{\%e\%}{mdate}(e1, e2)
 
 is_similar(x, y)
 
@@ -37,8 +42,6 @@ is_approximate(x)
 \method{<=}{mdate}(e1, e2)
 
 \method{>=}{mdate}(e1, e2)
-
-`\%in\%.mdate`(e1, e2)
 }
 \arguments{
 \item{x, y, e1, e2}{\code{mdate} or other class objects}
@@ -59,6 +62,9 @@ two messy dates, leveraging \code{intersect()}.
 
 \item \code{is_element()}: tests whether a messy date can be found
 within a messy date range or set.
+
+\item \code{ \%e\% }: tests whether the first date is matched in the second vector.
+Returns \code{NA} when the date order can't be determined.
 
 \item \code{is_similar()}: tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.
@@ -86,9 +92,6 @@ Returns \code{NA} when the date order can't be determined.
 
 \item \code{ >= }: tests whether the dates in the first vector are equal to
 or succeed the dates in the second vector.
-Returns \code{NA} when the date order can't be determined.
-
-\item \code{`\%in\%.mdate`()}: tests whether the first date is matched in the second vector.
 Returns \code{NA} when the date order can't be determined.
 
 }}

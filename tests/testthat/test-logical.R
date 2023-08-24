@@ -75,8 +75,11 @@ test_that("Logical comparisons don't mess up comparisons between non-messy times
   expect_identical(p1 >= d2, c(FALSE, TRUE, TRUE))
 })
 
-test_that("Operand for is_element works", {
+test_that("Operand for is_element and is_intersect works", {
   expect_true(as_messydate("2002-02-02") %e% as_messydate("2002"))
   expect_equal(as_messydate("2002-02-02") %e% as_messydate("2002"),
+               is_element(as_messydate("2002-02-02"), as_messydate("2002")))
+  expect_true(as_messydate("2002-02-02") %i% as_messydate("2002"))
+  expect_equal(as_messydate("2002-02-02") %i% as_messydate("2002"),
                is_element(as_messydate("2002-02-02"), as_messydate("2002")))
 })

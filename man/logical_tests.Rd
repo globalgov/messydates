@@ -4,6 +4,8 @@
 \alias{logical_tests}
 \alias{is_messydate}
 \alias{is_intersecting}
+\alias{\%i\%}
+\alias{\%i\%.mdate}
 \alias{is_element}
 \alias{\%e\%}
 \alias{\%e\%.mdate}
@@ -20,6 +22,10 @@
 is_messydate(x)
 
 is_intersecting(x, y)
+
+e1 \%i\% e2
+
+\method{\%i\%}{mdate}(e1, e2)
 
 is_element(x, y)
 
@@ -60,11 +66,12 @@ If more rigorous validation is required, see \code{validate_messydate()}.
 \item \code{is_intersecting()}: tests whether there is any intersection between
 two messy dates, leveraging \code{intersect()}.
 
+\item \code{ \%i\% }: tests whether the two messy dates intersect.
+
 \item \code{is_element()}: tests whether a messy date can be found
 within a messy date range or set.
 
 \item \code{ \%e\% }: tests whether the first date is matched in the second vector.
-Returns \code{NA} when the date order can't be determined.
 
 \item \code{is_similar()}: tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.
@@ -102,8 +109,10 @@ is_intersecting(as_messydate("2012-01"),
 as_messydate("2012-01-01..2012-02-22"))
 is_intersecting(as_messydate("2012-01"),
 as_messydate("2012-02-01..2012-02-22"))
+as_messydate("2012-01") \%i\% as_messydate("2012-01-01..2012-02-22")
 is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
 is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
+as_messydate("2012-01-01") \%e\% as_messydate("2012-01")
 is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 is_precise(as_messydate(c("2012-06-02", "2012-06")))

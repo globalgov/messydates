@@ -7,6 +7,9 @@
 * Closed #74 by adding other logical comparison operators for 'mdate' objects (e.g. `<`, `>`, `<=`, `>=`)   (thanks @WerthPADOH)
 * Closed #76 by adding probabilistic comparison methods for 'mdate' objects (e.g. `%leq%`, `%leqq%`, `%geq%`, `%geqq%`, `%><%`, `%>=<%`)
 * Closed #77 by adding basic vector methods for subsetting and data frames (thanks @WerthPADOH)
+* Added alias function `mdate()` for `as_messydate()`
+* Renamed set family of functions to work as operators (i.e. `%intersect%` and `%union%`)
+* Replaced `is_element()` by `is_subset()` for clarity and consistency
 
 # messydates 0.3.5
 

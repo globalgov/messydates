@@ -11,9 +11,10 @@ test_that("is_intersect works", {
                                as_messydate("2012-02-01..2012-02-22")))
 })
 
-test_that("is_element works", {
-  expect_true(is_element(as_messydate("2012-01-01"), as_messydate("2012-01")))
-  expect_false(is_element(as_messydate("2012-01-01"), as_messydate("2012-02")))
+test_that("is_subset works", {
+  expect_true(is_subset(as_messydate("2012-01-01"), as_messydate("2012-01")))
+  expect_true(is_subset(as_messydate("2012-01-01..2012-01-03"), as_messydate("2012-01")))
+  expect_false(is_subset(as_messydate("2012-01-01"), as_messydate("2012-02")))
 })
 
 test_that("is_similar works", {
@@ -73,13 +74,4 @@ test_that("Logical comparisons don't mess up comparisons between non-messy times
   expect_identical(p1 > d2, c(FALSE, FALSE, TRUE))
   expect_identical(p1 <= d2, c(TRUE, TRUE, FALSE))
   expect_identical(p1 >= d2, c(FALSE, TRUE, TRUE))
-})
-
-test_that("Operand for is_element and is_intersect works", {
-  expect_true(as_messydate("2002-02-02") %e% as_messydate("2002"))
-  expect_equal(as_messydate("2002-02-02") %e% as_messydate("2002"),
-               is_element(as_messydate("2002-02-02"), as_messydate("2002")))
-  expect_true(as_messydate("2002-02-02") %i% as_messydate("2002"))
-  expect_equal(as_messydate("2002-02-02") %i% as_messydate("2002"),
-               is_element(as_messydate("2002-02-02"), as_messydate("2002")))
 })

@@ -28,51 +28,18 @@ is_intersecting <- function(x, y) {
   length(intersect(unlist(expand(x)), unlist(expand(y)))) > 0
 }
 
-#' @rdname logical_tests
-#' @export
-`%i%` <- function(e1, e2) UseMethod("%i%")
-
-#' @describeIn logical_tests tests whether the two messy dates intersect.
-#' @examples
-#' as_messydate("2012-01") %i% as_messydate("2012-01-01..2012-02-22")
-#' @export
-`%i%.mdate` <- function(e1, e2) {
-  is_intersecting(e1, e2)
-}
-
-evalqOnLoad({
-  registerS3method("%i%", "Date", `%i%.mdate`)
-  registerS3method("%i%", "POSIXt", `%i%.mdate`)
-})
-
-#' @describeIn logical_tests tests whether a messy date can be found
+#' @describeIn logical_tests tests whether one or more messy date can be found
 #'   within a messy date range or set.
 #' @examples
-#' is_element(as_messydate("2012-01-01"), as_messydate("2012-01"))
-#' is_element(as_messydate("2012-01-01"), as_messydate("2012-02"))
+#' is_subset(as_messydate("2012-01-01"), as_messydate("2012-01"))
+#' is_subset(as_messydate("2012-01-01..2012-01-03"), as_messydate("2012-01"))
+#' is_subset(as_messydate("2012-01-01"), as_messydate("2012-02"))
 #' @export
-is_element <- function(x, y) {
+is_subset <- function(x, y) {
+  x <- as.character(expand(x)[[1]])
   y <- as.character(expand(y)[[1]])
-  is.element(x, y)
+  any(is.element(x, y))
 }
-
-#' @rdname logical_tests
-#' @export
-`%e%` <- function(e1, e2) UseMethod("%e%")
-
-#' @describeIn logical_tests tests whether the first date is matched in the second vector.
-#' @examples
-#' as_messydate("2012-01-01") %e% as_messydate("2012-01")
-#' @export
-`%e%.mdate` <- function(e1, e2) {
-  is_element(e1, e2)
-}
-
-evalqOnLoad({
-  registerS3method("%e%", "Date", `%e%.mdate`)
-  registerS3method("%e%", "POSIXt", `%e%.mdate`)
-})
-
 
 #' @describeIn logical_tests tests whether two dates contain similar components.
 #'   This can be useful for identifying dates that may be typos of one another.
@@ -83,8 +50,6 @@ evalqOnLoad({
 is_similar <- function(x, y) {
   year(x) == year(y) & month(x) == day(y) & day(x) == month(y)
 }
-
-
 
 #' @describeIn logical_tests tests whether a date is precise (i.e. an 8 digit date).
 #'   Non-precise dates contain markers that they are approximate (i.e. ~),

@@ -15,6 +15,13 @@ test_that("Coercion from other date classes into messydt works", {
   expect_equal(as_messydate(character2), messy)
   expect_equal(as_messydate(character3), messyneg)
   expect_equal(as_messydate(month_text), messy)
+  expect_equal(mdate(date), messy)
+  expect_equal(mdate(POSIXct), messy)
+  expect_equal(mdate(POSIXlt), messy)
+  expect_equal(mdate(character), messy)
+  expect_equal(mdate(character2), messy)
+  expect_equal(mdate(character3), messyneg)
+  expect_equal(mdate(month_text), messy)
 })
 
 test_that("Coercion of unespecified date components are properly handled", {

@@ -8,6 +8,7 @@
 \alias{as_messydate.POSIXlt}
 \alias{as_messydate.character}
 \alias{as_messydate.list}
+\alias{mdate}
 \alias{make_messydate}
 \title{Coercion from regular date classes to mdate}
 \usage{
@@ -22,6 +23,10 @@ as_messydate(x, resequence = FALSE)
 \method{as_messydate}{character}(x, resequence = NULL)
 
 \method{as_messydate}{list}(x, resequence = FALSE)
+
+\method{as_messydate}{list}(x, resequence = FALSE)
+
+mdate(x, resequence = FALSE)
 
 make_messydate(..., resequence = FALSE)
 }
@@ -77,6 +82,9 @@ though this is a work-in-progress and currently only works in English.
 \item \code{as_messydate(list)}: Coerce list date objects to the most concise
 representation of \code{mdate} class
 
+\item \code{as_messydate(list)}: Coerce list date objects to the most concise
+representation of \code{mdate} class
+
 \item \code{make_messydate()}: Composes \code{mdate} from multiple variables
 
 }}
@@ -97,6 +105,9 @@ as_messydate(c("210201", "20210201"), resequence = "ymd")
 as_messydate(c("010221", "01022021"), resequence = "dmy")
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 # resequence = "interactive")
+as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
+as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
+"{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))

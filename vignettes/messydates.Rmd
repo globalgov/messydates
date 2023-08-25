@@ -151,24 +151,23 @@ Several other functions are offered in `{messydates}`.
 For example, we can run several logical tests to `mdate` variables.
 `is_messydate()` tests whether the object inherits the `mdate` class.
 `is_intersecting()` tests whether there is any intersection between two messy dates.
-`is_element()` similarly tests whether a messy date can be found within a messy date range or set.
+`is_subset()` similarly tests whether one or more messy dates can be found within a messy date range or set.
 `is_similar()` tests whether two dates contain similar components.
 `is_precise()` tests whether certain date is precise.
 
 ```{r logical, warning=FALSE}
 is_messydate(battles$Date)
 is_intersecting(as_messydate(battles$Date[1]), as_messydate(battles$Date[2]))
-is_element(as_messydate("2001-04-17"), as_messydate(battles$Date[2]))
+is_subset(as_messydate("2001-04-17"), as_messydate(battles$Date[2]))
 is_similar(as_messydate("2001-08-03"), as_messydate(battles$Date[1]))
 is_precise(as_messydate(battles$Date[2]))
 ```
 
-Additionally, one can perform intersection, union, or 'join' of messydates.
+Additionally, one can perform intersection or  union of messydates.
 
 ```{r set, warning=FALSE}
-md_intersect(as_messydate(battles$Date[9]), as_messydate(battles$Date[10]))
-md_union(as_messydate(battles$Date[17]), as_messydate(battles$Date[18]))
-md_multiset(as_messydate(battles$Date[1]), as_messydate(battles$Date[2]))
+as_messydate(battles$Date[9]) %intersect% as_messydate(battles$Date[10])
+as_messydate(battles$Date[17]) %union% as_messydate(battles$Date[18])
 ```
 
 As well, we can do some arithmetic operations in the `mdate` variable.

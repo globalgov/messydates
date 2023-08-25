@@ -114,7 +114,7 @@ evalqOnLoad({
   # Need to fix this for element wise on vectors...
   # Need to create fast way to trim ranges or just get dates within the range
   suppressMessages(purrr::map2_dbl(e1, e2,
-                  ~ length(md_intersect(.x, .y))/
+                  ~ length(.x %intersect% .y)/
                     (length(unlist(expand(.x)))+1)))
 }
 
@@ -136,7 +136,7 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(e1, e2, ~ length(md_intersect(.x, .y))/
+  suppressMessages(purrr::map2_dbl(e1, e2, ~ length(.x %intersect% .y)/
                                      length(unlist(expand(.x)))))
 }
 

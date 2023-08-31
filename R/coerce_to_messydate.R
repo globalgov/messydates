@@ -369,6 +369,22 @@ written_month <- function(dates) {
   dates <- stringr::str_replace_all(dates, " oct ", "-10-")
   dates <- stringr::str_replace_all(dates, " nov ", "-11-")
   dates <- stringr::str_replace_all(dates, " dec ", "-12-")
+  # 6 digit my or ym dates
+  dates <- stringr::str_replace_all(dates,
+                                    "([:alpha:]{3}) ([:digit:]{4})",
+                                    "\\2 \\1")
+  dates <- stringr::str_replace_all(dates, " jan$", "-01")
+  dates <- stringr::str_replace_all(dates, " feb$", "-02")
+  dates <- stringr::str_replace_all(dates, " mar$", "-03")
+  dates <- stringr::str_replace_all(dates, " apr$", "-04")
+  dates <- stringr::str_replace_all(dates, " may$", "-05")
+  dates <- stringr::str_replace_all(dates, " jun$", "-06")
+  dates <- stringr::str_replace_all(dates, " jul$", "-07")
+  dates <- stringr::str_replace_all(dates, " aug$", "-08")
+  dates <- stringr::str_replace_all(dates, " sep$", "-09")
+  dates <- stringr::str_replace_all(dates, " oct$", "-10")
+  dates <- stringr::str_replace_all(dates, " nov$", "-11")
+  dates <- stringr::str_replace_all(dates, " dec$", "-12")
   dates
 }
 

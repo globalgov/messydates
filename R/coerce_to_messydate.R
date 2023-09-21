@@ -565,7 +565,14 @@ complete_ambiguous_19 <- function(d) {
 }
 
 #' @describeIn messydate Composes `mdate` from multiple variables
-#' @param ... One (yyyy-mm-dd) or three (yyyy, mm, dd) variables
+#' @param ... One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
+#' or three (yyyy, mm, dd) variables.
+#' @details If three date variables are passed to `make_messydate()`,
+#' function will create a single date (yyyy-mm-dd) from it.
+#' If two date variables are passed to `make_messydate()`,
+#' function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
+#' If one date variable is passed to `make_messydate()`,
+#' function defaults to `as_messydate()`.
 #' @importFrom purrr map pmap_chr
 #' @examples
 #' make_messydate("2010", "10", "10")
@@ -575,11 +582,15 @@ make_messydate <- function(..., resequence = FALSE) {
   if (length(dots) == 1) {
     dots <- do.call(as.character, dots)
     dates <- unlist(dots)
+  } else if (length(dots) == 2) {
+    dots <- purrr::map(dots, as.character)
+    dates <- unlist(purrr::pmap_chr(dots, paste, sep = ".."))
+    dates <- gsub("NA..NA", "NA", dates)
   } else if (length(dots) == 3) {
     dots <- purrr::map(dots, as.character)
     dates <- unlist(purrr::pmap_chr(dots, paste, sep = "-"))
     dates <- gsub("NA-NA-NA", "NA", dates)
-  } else stop("Pass make_messydate() one variable (yyyy-mm-dd)
-              or three variables (yyyy, mm, dd).")
+  } else stop("make_messydate() takes one variable (yyyy-mm-dd),
+  two variables (yyyy-mm-dd, yyyy-mm-dd), or three variables (yyyy, mm, dd).")
   as_messydate(dates, resequence)
 }

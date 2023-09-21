@@ -52,7 +52,8 @@ component order of ambiguous dates,
 based on which the date is reordered into YYYY-MM-DD format
 and further completed to YYYY-MM-DD format if they choose to do so.}
 
-\item{...}{One (yyyy-mm-dd) or three (yyyy, mm, dd) variables}
+\item{...}{One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
+or three (yyyy, mm, dd) variables.}
 }
 \value{
 A \code{mdate} class object
@@ -64,6 +65,14 @@ In addition to the typical date classes in R (\code{Date}, \code{POSIXct}, and \
 there is also a direct method for converting text or character strings to \code{mdate}.
 The function can also extract dates from text,
 though this is a work-in-progress and currently only works in English.
+}
+\details{
+If three date variables are passed to \code{make_messydate()},
+function will create a single date (yyyy-mm-dd) from it.
+If two date variables are passed to \code{make_messydate()},
+function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
+If one date variable is passed to \code{make_messydate()},
+function defaults to \code{as_messydate()}.
 }
 \section{Functions}{
 \itemize{

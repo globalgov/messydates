@@ -73,7 +73,7 @@ new_messydate <- function(x = character()) {
 validate_messydate <- function(x) {
   values <- unclass(x)
 
-  if (any(grepl("[A-WYZa-z]", values))) {
+  if (any(grepl("[A-WYZa-z]", values) & !grepl("^NA$", values))) {
     stop(
       "The only alpha character allowed in messy dates is 'X' for
       unspecified time components",
@@ -103,10 +103,6 @@ validate_messydate <- function(x) {
 print.mdate <- function(x, ...) {
   str(x)
 }
-
-#' @rdname class
-#' @export
-NA_mdate_ <- structure(NA_real_, class = "mdate")
 
 #' @export
 `[.mdate` <- function(x, ..., drop = TRUE) {

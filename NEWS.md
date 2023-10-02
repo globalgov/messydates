@@ -10,6 +10,7 @@
 * Added alias function `mdate()` for `as_messydate()`
 * Renamed set family of functions to work as operators (i.e. `%intersect%` and `%union%`)
 * Replaced `is_element()` by `is_subset()` for clarity and consistency
+* Closed #80 by updating `make_messydates()` function to construct ranges of dates
 
 # messydates 0.3.5
 

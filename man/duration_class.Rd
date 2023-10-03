@@ -4,12 +4,18 @@
 \alias{duration_class}
 \alias{new_messyduration}
 \alias{messyduration}
+\alias{validate_messyduration}
+\alias{messyduration.character}
 \alias{messyduration.mdate}
 \title{A duration class for mdates}
 \usage{
 new_messyduration(x = character())
 
 messyduration(x, approx_range = 0)
+
+validate_messyduration(x, approx_range = 0)
+
+\method{messyduration}{character}(x, approx_range = 0)
 
 \method{messyduration}{mdate}(x, approx_range = 0)
 }

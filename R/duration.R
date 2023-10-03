@@ -31,8 +31,26 @@ messyduration <- function(x, approx_range = 0) UseMethod("messyduration")
 
 #' @rdname duration_class
 #' @export
+validate_messyduration <- function(x, approx_range = 0) {
+  if (any(!grepl("\\.\\.", x))) {
+    stop("mdates_duration class objects should have at least one date range",
+         call. = FALSE)
+  }
+}
+
+#' @rdname duration_class
+#' @export
+messyduration.character <- function(x, approx_range = 0) {
+  message("Converting to mdate class.")
+  x <- as_messydate(x)
+  new_messyduration(x)
+}
+
+#' @rdname duration_class
+#' @export
 messyduration.mdate <- function(x, approx_range = 0) {
-  x <- ifelse(grepl("..", x), messy_range(x, approx_range), x)
+  validate_messyduration(x)
+  x <- ifelse(grepl("\\.\\.", x), messy_range(x, approx_range), x)
   new_messyduration(x)
 }
 

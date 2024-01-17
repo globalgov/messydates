@@ -35,7 +35,7 @@ min.mdate <- function(..., na.rm = TRUE) {
               recursive = FALSE)
   y <- unlist(lapply(y, function(x) min(x, na.rm = na.rm)),
               recursive = FALSE)
-  y
+  as.Date(y)
 }
 
 #' @rdname resolve
@@ -46,7 +46,7 @@ max.mdate <- function(..., na.rm = TRUE) {
               recursive = FALSE)
   y <- unlist(lapply(y, function(x) max(x, na.rm = na.rm)),
               recursive = FALSE)
-  y
+  as.Date(y)
 }
 
 #' @rdname resolve
@@ -67,7 +67,7 @@ median.mdate <- function(..., na.rm = TRUE) {
       z
     }
   }), recursive = FALSE)
-  y
+  as.Date(y)
 }
 
 #' @rdname resolve
@@ -90,7 +90,7 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
     }
     x
   }), recursive = FALSE)
-  y
+  as.Date(y)
 }
 
 #' @rdname resolve
@@ -111,7 +111,7 @@ modal.mdate <- function(..., na.rm = TRUE) {
     if (length(x) > 1) x <- as.character(getmode(x))
     x
   }), recursive = FALSE)
-  y
+  as.Date(y)
 }
 
 #' @rdname resolve
@@ -137,5 +137,5 @@ random.mdate <- function(...,
     if (length(x) > 1) x <- as.character(sample(x, size = 1))
     x
   }), recursive = FALSE)
-  y
+  as.Date(y)
 }

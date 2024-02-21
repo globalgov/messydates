@@ -1,5 +1,20 @@
+#' Imputation for modelling using mdates
+#'
+#' @name impute
+#' @param .data A dataset with mdate variables.
+#' @param times Numebr of times for imputation.
+#' @param imputes Imputed data.
+#' @import dplyr
 #' @examples
-#'   lapply(impute(battles, 3), function(x) mean(x$Date))
+#' lapply(impute(battles, 3), function(x) mean(x$Date))
+#' #library(psfmi)
+#' #res <- to_pool(impute(battles, 10)) |>
+#' #   dplyr::mutate(Date = as.numeric(Date)) |>
+#' #   psfmi_coxr(Surv(Date, status) ~ US_party + N_actors, impvar = "impute_num")
+#' #res$RR_model_final
+NULL
+
+#' @rdname impute
 #' @export
 impute <- function(.data, times = 1000) {
   lapply(seq.int(times), function(x){
@@ -7,12 +22,7 @@ impute <- function(.data, times = 1000) {
   })
 }
 
-#' @examples
-#' library(psfmi)
-#' res <- to_pool(impute(battles, 10)) |>
-#'   dplyr::mutate(Date = as.numeric(Date)) |>
-#'   psfmi_coxr(Surv(Date, status) ~ US_party + N_actors, impvar = "impute_num")
-#' res$RR_model_final
+#' @rdname impute
 #' @export
 to_pool <- function(imputes) {
   impute_num <- NULL

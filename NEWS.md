@@ -11,6 +11,7 @@
 * Renamed set family of functions to work as operators (i.e. `%intersect%` and `%union%`)
 * Replaced `is_element()` by `is_subset()` for clarity and consistency
 * Closed #80 by updating `make_messydates()` function to construct ranges of dates
+* Added `impute()` and `to_pool()` functions to help with imputation of messydates for modelling
 
 # messydates 0.3.5
 

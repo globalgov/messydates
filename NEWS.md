@@ -5,7 +5,7 @@
 * Closed #72 by fixing issues with double unspecified components not being contracted correctly
 * Closed #73 by fixing bugs with the conversion of dates where month is spelled
 * Closed #74 by adding other logical comparison operators for 'mdate' objects (e.g. `<`, `>`, `<=`, `>=`)   (thanks @WerthPADOH)
-* Closed #76 by adding probabilistic comparison methods for 'mdate' objects (e.g. `%leq%`, `%leqq%`, `%geq%`, `%geqq%`, `%><%`, `%>=<%`)
+* Closed #76 by adding probabilistic comparison methods for 'mdate' objects (e.g. `%l%`, `%le%`, `%g%`, `%ge%`, `%><%`, `%>=<%`)
 * Closed #77 by adding basic vector methods for subsetting and data frames (thanks @WerthPADOH)
 * Added alias function `mdate()` for `as_messydate()`
 * Renamed set family of functions to work as operators (i.e. `%intersect%` and `%union%`)

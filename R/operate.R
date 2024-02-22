@@ -6,6 +6,7 @@
 #' @param e1,e2 An `mdate` or other class object.
 #' @return A messydates vector
 #' @examples
+#' \donttest{
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
@@ -15,6 +16,7 @@
 #' as_messydate("2001-01-01") + as_messydate("2001-01-03")
 #' as_messydate("2001-01-01..2001-01-04") - as_messydate("2001-01-02")
 #' #as_messydate("2001-01-01") - as_messydate("2001-01-03")
+#' }
 #' @name operate
 NULL
 

@@ -238,7 +238,7 @@ NA
 Approximate date
 </td>
 <td style="text-align:left;">
-2012-01-12\~
+2012-01-12~
 </td>
 <td style="text-align:left;color: red !important;">
 2012-01-12
@@ -247,7 +247,7 @@ Approximate date
 2012-01-12
 </td>
 <td style="text-align:left;color: black !important;">
-2012-01-12\~
+2012-01-12~
 </td>
 </tr>
 <tr>
@@ -522,7 +522,7 @@ max
 </tr>
 <tr>
 <td style="text-align:left;">
-2012-01-12\~
+2012-01-12~
 </td>
 <td style="text-align:left;">
 2012-01-12

@@ -74,11 +74,11 @@ are between the minimum and maximum dates in the second vector, inclusive.
 }}
 \examples{
   as_messydate("2012-06") < as.Date("2012-06-02")
-  as_messydate("2012-06") \%l\% "2012-06-02"
+  as_messydate("2012-06") \%l\% as_messydate("2012-06-02")
   as_messydate("2012-06") > as.Date("2012-06-02")
-  as_messydate("2012-06") \%g\% "2012-06-02"
+  as_messydate("2012-06") \%g\% as_messydate("2012-06-02")
   as_messydate("2012-06") >= as.Date("2012-06-02")
-  as_messydate("2012-06") \%ge\% "2012-06-02"
+  as_messydate("2012-06") \%ge\% as_messydate("2012-06-02")
   as_messydate("2012-06") <= as.Date("2012-06-02")
   as_messydate("2012-06") \%le\% "2012-06-02"
   as_messydate("2012-06") \%><\% as_messydate("2012-06-15..2012-07-15")

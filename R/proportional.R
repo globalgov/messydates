@@ -15,7 +15,7 @@ NULL
 #'   that precede the minimum in the second vector.
 #' @examples
 #'   as_messydate("2012-06") < as.Date("2012-06-02")
-#'   as_messydate("2012-06") %l% "2012-06-02"
+#'   as_messydate("2012-06") %l% as_messydate("2012-06-02")
 #' @export
 `%l%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
@@ -39,7 +39,7 @@ evalqOnLoad({
 #' @export
 #' @examples
 #'   as_messydate("2012-06") > as.Date("2012-06-02")
-#'   as_messydate("2012-06") %g% "2012-06-02"
+#'   as_messydate("2012-06") %g% as_messydate("2012-06-02")
 `%g%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
@@ -62,7 +62,7 @@ evalqOnLoad({
 #' @export
 #' @examples
 #'   as_messydate("2012-06") >= as.Date("2012-06-02")
-#'   as_messydate("2012-06") %ge% "2012-06-02"
+#'   as_messydate("2012-06") %ge% as_messydate("2012-06-02")
 `%ge%.mdate` <- function(e1, e2) {
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")

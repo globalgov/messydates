@@ -39,6 +39,7 @@ reference:
       - class
       - messydate
       - annotate
+      - duration_class
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:
@@ -54,9 +55,10 @@ reference:
     contents:
       - operate
       - set
-      - logical
+      - logical_tests
       - is_messydate
       - extract
+      - proportional
   - title: "Data"
     desc: "Working with 'messy' data:"
     contents:

@@ -32,6 +32,13 @@ Object of class \code{description}
 The \code{mdates_duration} class introduces methods that annotate a duration or
 period with representations of its uncertainty.
 }
+\details{
+Most R packages handle duration and periods as exact time or date intervals.
+However, this is not possible for 'messy' dates where uncertainty or
+approximation might be present.
+The \code{mdates_duration} class accounts for uncertainty and approximation
+in \code{mdate} objects to return their duration as a range of possible dates.
+}
 \examples{
 messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
 }

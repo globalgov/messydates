@@ -82,4 +82,6 @@ test_that("Logical comparisons don't mess up comparisons between non-messy times
   expect_identical(p1 > d2, c(FALSE, FALSE, TRUE))
   expect_identical(p1 <= d2, c(TRUE, TRUE, FALSE))
   expect_identical(p1 >= d2, c(FALSE, TRUE, TRUE))
+  expect_true(as_messydate("2010-09-10") > "2009")
+  expect_false(as_messydate("2010-09-10") > "2011")
 })

@@ -5,7 +5,7 @@
 * Closed #46 by adding the `mdates_duration` class that introduces methods to annotate a duration or period with representations of its uncertainty
 * Closed #72 by fixing issues with double unspecified components not being contracted correctly
 * Closed #73 by fixing bugs with the conversion of dates where month is spelled
-* Closed #74 by adding other logical comparison operators for 'mdate' objects (e.g. `<`, `>`, `<=`, `>=`) (thanks @WerthPADOH)
+* Closed #74 and #82 by adding other logical comparison operators for 'mdate' objects (e.g. `<`, `>`, `<=`, `>=`) (thanks @WerthPADOH)
 * Closed #76 by adding proportional operators that calculate the proportion of messy dates meeting logical tests (e.g. `%l%` `%le%`, `%g%`, `%ge%`, `%><%`, `%>=<%`)
 * Closed #77 by adding basic vector methods for subsetting and data frames (thanks @WerthPADOH)
 * Added alias function `mdate()` for `as_messydate()`

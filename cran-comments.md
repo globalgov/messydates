@@ -1,8 +1,3 @@
-This is a resubmission. In this version I have:
-
-Updated how ´contract()´ function checks if 'mdate' object has been expanded
-to avoid comparing class to string
-
 ## Test environments
 
 * local R installation, x86_64-apple-darwin17.0, R 4.2.0

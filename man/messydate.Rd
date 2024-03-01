@@ -7,6 +7,8 @@
 \alias{as_messydate.POSIXct}
 \alias{as_messydate.POSIXlt}
 \alias{as_messydate.character}
+\alias{as_messydate.list}
+\alias{mdate}
 \alias{make_messydate}
 \title{Coercion from regular date classes to mdate}
 \usage{
@@ -19,6 +21,10 @@ as_messydate(x, resequence = FALSE)
 \method{as_messydate}{POSIXlt}(x, resequence = FALSE)
 
 \method{as_messydate}{character}(x, resequence = NULL)
+
+\method{as_messydate}{list}(x, resequence = FALSE)
+
+mdate(x, resequence = FALSE)
 
 make_messydate(..., resequence = FALSE)
 }
@@ -46,7 +52,8 @@ component order of ambiguous dates,
 based on which the date is reordered into YYYY-MM-DD format
 and further completed to YYYY-MM-DD format if they choose to do so.}
 
-\item{...}{One (yyyy-mm-dd) or three (yyyy, mm, dd) variables}
+\item{...}{One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
+or three (yyyy, mm, dd) variables.}
 }
 \value{
 A \code{mdate} class object
@@ -59,6 +66,14 @@ there is also a direct method for converting text or character strings to \code{
 The function can also extract dates from text,
 though this is a work-in-progress and currently only works in English.
 }
+\details{
+If three date variables are passed to \code{make_messydate()},
+function will create a single date (yyyy-mm-dd) from it.
+If two date variables are passed to \code{make_messydate()},
+function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
+If one date variable is passed to \code{make_messydate()},
+function defaults to \code{as_messydate()}.
+}
 \section{Functions}{
 \itemize{
 \item \code{as_messydate()}: Core \code{mdate} class coercion function
@@ -70,6 +85,9 @@ though this is a work-in-progress and currently only works in English.
 \item \code{as_messydate(POSIXlt)}: Coerce from \code{POSIXlt} to \code{mdate} class
 
 \item \code{as_messydate(character)}: Coerce character date objects to \code{mdate} class
+
+\item \code{as_messydate(list)}: Coerce list date objects to the most concise
+representation of \code{mdate} class
 
 \item \code{make_messydate()}: Composes \code{mdate} from multiple variables
 
@@ -91,5 +109,8 @@ as_messydate(c("210201", "20210201"), resequence = "ymd")
 as_messydate(c("010221", "01022021"), resequence = "dmy")
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 # resequence = "interactive")
+as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
+as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
+"{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 make_messydate("2010", "10", "10")
 }

@@ -2,19 +2,22 @@
 % Please edit documentation in R/set.R
 \name{set}
 \alias{set}
-\alias{md_intersect}
-\alias{md_union}
-\alias{md_multiset}
+\alias{\%intersect\%}
+\alias{\%intersect\%.mdate}
+\alias{\%union\%}
+\alias{\%union\%.mdate}
 \title{Set operations for messy dates}
 \usage{
-md_intersect(...)
+e1 \%intersect\% e2
 
-md_union(x, y)
+\method{\%intersect\%}{mdate}(e1, e2)
 
-md_multiset(x, y)
+e1 \%union\% e2
+
+\method{\%union\%}{mdate}(e1, e2)
 }
 \arguments{
-\item{x, y, ...}{Messy date or other class objects}
+\item{e1, e2}{Messy date or other class objects}
 }
 \value{
 A vector of the same mode for \code{intersect},
@@ -28,15 +31,12 @@ please use \code{md_multiset}.
 }
 \section{Functions}{
 \itemize{
-\item \code{md_intersect()}: Find intersection of sets of messy dates
+\item \code{ \%intersect\% }: Find intersection of sets of messy dates
 
-\item \code{md_union()}: Find union of sets of messy dates
-
-\item \code{md_multiset()}: Join two sets of messy dates
+\item \code{ \%union\% }: Find intersection of sets of messy dates
 
 }}
 \examples{
-md_intersect(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
-md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
-md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
+as_messydate("2012-01-01..2012-01-20") \%intersect\% as_messydate("2012-01")
+as_messydate("2012-01-01..2012-01-20") \%union\% as_messydate("2012-01")
 }

@@ -81,7 +81,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
-          DEFAULT_BUMP: patch
 
       - name: Checkout two
         uses: actions/checkout@v2
@@ -104,7 +103,7 @@ jobs:
         run: ls -R
 
       - name: Rename Mac release
-        run: mv ./macOS/*.tgz manydata_macOS.tgz
+        run: mv ./macOS/*.tgz messydates_macOS.tgz
 
       - name: Upload Mac binary
         id: upload-mac
@@ -113,12 +112,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: manydata_macOS.tgz
-          asset_name: manydata_macOS.tgz
+          asset_path: messydates_macOS.tgz
+          asset_name: messydates_macOS.tgz
           asset_content_type: application/zip
 
       - name: Rename Linux release
-        run: mv ./linuxOS/*.tar.gz manydata_linuxOS.tar.gz
+        run: mv ./linuxOS/*.tar.gz messydates_linuxOS.tar.gz
 
       - name: Upload Linux binary
         id: upload-lin
@@ -127,12 +126,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: manydata_linuxOS.tar.gz
-          asset_name: manydata_linuxOS.tar.gz
+          asset_path: messydates_linuxOS.tar.gz
+          asset_name: messydates_linuxOS.tar.gz
           asset_content_type: application/zip
 
       - name: Rename Windows release
-        run: mv ./winOS/*.zip manydata_winOS.zip
+        run: mv ./winOS/*.zip messydates_winOS.zip
 
       - name: Upload Windows binary
         id: upload-win
@@ -141,8 +140,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: manydata_winOS.zip
-          asset_name: manydata_winOS.zip
+          asset_path: messydates_winOS.zip
+          asset_name: messydates_winOS.zip
           asset_content_type: application/zip
 
   render:

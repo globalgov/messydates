@@ -1,7 +1,7 @@
 #' Expand messy dates to lists of dates
 #'
 #' These functions expand on date ranges, sets of dates, and unspecified or
-#' approximate dates (annotated with '..', '{ , }', 'XX' or '~').
+#' approximate dates (annotated with '..', '{}', 'XX' or '~').
 #' As these messydates may refer to several possible dates,
 #' the function "opens" these values to reveal a vector of all the possible
 #' dates implied.

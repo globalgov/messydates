@@ -18,3 +18,16 @@ test_that("operations works properly", {
   expect_equal(d + "3 days", a)
   expect_equal(d - "3 days", s)
 })
+
+test_that("operations between mdates work properly", {
+  expect_equal(as_messydate("2001-01-01") +
+                 as_messydate("2001-01-02..2001-01-04"),
+               as_messydate("2001-01-01..2001-01-04"))
+  expect_equal(as_messydate("2001-01-01") + as_messydate("2001-01-03"),
+               as_messydate("{2001-01-01,2001-01-03}"))
+  expect_equal(as_messydate("2001-01-01..2001-01-04") -
+                 as_messydate("2001-01-02"),
+               list(as_messydate("{2001-01-01,2001-01-03..2001-01-04}")))
+  expect_message(as_messydate("2001-01-01") - as_messydate("2001-01-03"),
+                 "First and second elements do not overlap.")
+})

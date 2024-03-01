@@ -5,40 +5,45 @@
 #' For a more typical 'join' that retains all elements, even if duplicated,
 #' please use `md_multiset`.
 #' @name set
-#' @param x,y,... Messy date or other class objects
+#' @param e1,e2 Messy date or other class objects
 #' @return A vector of the same mode for `intersect`,
 #' or a common mode for union.
 NULL
-#> NULL
+
+#' @rdname set
+#' @export
+`%intersect%` <- function(e1, e2) UseMethod("%intersect%")
 
 #' @describeIn set Find intersection of sets of messy dates
 #' @examples
-#' md_intersect(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
+#' as_messydate("2012-01-01..2012-01-20") %intersect% as_messydate("2012-01")
 #' @export
-md_intersect <- function(...) {
-  x <- list(...)[[1]]
-  y <- list(...)[[2]]
-  x <- as.character(expand(x)[[1]])
-  y <- as.character(expand(y)[[1]])
+`%intersect%.mdate` <- function(e1, e2) {
+  x <- as.character(expand(e1)[[1]])
+  y <- as.character(expand(e2)[[1]])
   intersect(x, y)
 }
 
-#' @describeIn set Find union of sets of messy dates
-#' @examples
-#' md_union(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
+evalqOnLoad({
+  registerS3method("%intersect%", "Date", `%intersect%.mdate`)
+  registerS3method("%intersect%", "POSIXt", `%intersect%.mdate`)
+})
+
+#' @rdname set
 #' @export
-md_union <- function(x, y) {
-  x <- as.character(expand(x)[[1]])
-  y <- as.character(expand(y)[[1]])
+`%union%` <- function(e1, e2) UseMethod("%union%")
+
+#' @describeIn set Find intersection of sets of messy dates
+#' @examples
+#' as_messydate("2012-01-01..2012-01-20") %union% as_messydate("2012-01")
+#' @export
+`%union%.mdate` <- function(e1, e2) {
+  x <- as.character(expand(e1)[[1]])
+  y <- as.character(expand(e2)[[1]])
   union(x, y)
 }
 
-#' @describeIn set Join two sets of messy dates
-#' @examples
-#' md_multiset(as_messydate("2012-01-01..2012-01-20"),as_messydate("2012-01"))
-#' @export
-md_multiset <- function(x, y) {
-  x <- as.character(expand(x)[[1]])
-  y <- as.character(expand(y)[[1]])
-  c(x, y)
-}
+evalqOnLoad({
+  registerS3method("%union%", "Date", `%union%.mdate`)
+  registerS3method("%union%", "POSIXt", `%union%.mdate`)
+})

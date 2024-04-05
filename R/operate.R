@@ -3,7 +3,7 @@
 #' These operations allow users to add or subtract dates messydate objects.
 #' Messydate objects include incomplete or uncertain dates,
 #' ranges of dates, negative dates, and date sets.
-#' @param e1,e2 An `mdate` or other class object.
+#' @param e1,e2 An `mdate`, numeric, or date object.
 #' @return A messydates vector
 #' @examples
 #' \donttest{

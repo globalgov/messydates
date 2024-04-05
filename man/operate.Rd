@@ -11,7 +11,9 @@
 \method{-}{mdate}(e1, e2)
 }
 \arguments{
-\item{e1, e2}{An \code{mdate}, numeric, or date object.}
+\item{e1}{An \code{mdate} or date object.}
+
+\item{e2}{An \code{mdate}, date, or numeric object. Must be a scalar.}
 }
 \value{
 A messydates vector

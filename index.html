@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -94,12 +94,12 @@
 <p>Existing packages for working with dates in R expect them to be <em>tidy</em>. That is, they should be in or coercible to the standard <code>yyyy-mm-dd</code> format.</p>
 <p>But dates are often <strong><em>messy</em></strong>. Sometimes we only know the year when something happened, leaving other components of the date, such as the month or day, <em>unspecified</em>. This is often the case with historical dates, for instance. Sometimes we can only say <em>approximately</em> when an event occurred, that it occurred <em>before</em> or <em>after</em> a certain date, or we recognise that our best estimate comes from a <em>dubious</em> source. Other times there exists a <em>set</em> or <em>range</em> of possible dates for an event.</p>
 <p>Although researchers generally recognise this messiness, many feel expected to force artificial precision or unfortunate imprecision on temporal data to proceed with analysis. For example, if we only know something happened in <code>2021</code>, then we might revert to a panel data design <em>even if greater precision is available</em>, or opt to replace this date with the start of that year (<code>2021-01-01</code>), assuming that erring on the earlier (or later) side is more justifiable than a random date within that month or year.</p>
-<p>However, this can create inferential issues when timing or sequence is important. <code>{messydates}</code> assists with this problem by retaining and working with various kinds of date imprecision.</p>
+<p>However, this can create inferential issues when timing or sequence is important. <a href="https://globalgov.github.io/messydates/">messydates</a> assists with this problem by retaining and working with various kinds of date imprecision.</p>
 </div>
 <div class="section level2">
 <h2 id="a-quick-overview">A quick overview<a class="anchor" aria-label="anchor" href="#a-quick-overview"></a>
 </h2>
-<p><code>{messydates}</code> implements for R the Extended Date/Time Format (EDTF) annotations set by the International Organization for Standardization (ISO) outlined in <a href="https://www.iso.org/standard/70908.html" class="external-link">ISO 8601-2_2019(E)</a>. <code>{messydates}</code> introduces a new <code>mdate</code> class that embeds these annotations, and offers a set of methods for constructing and coercing into and from the <code>mdate</code> class, as well as tools for working with such ‘messy’ dates.</p>
+<p><a href="https://globalgov.github.io/messydates/">messydates</a> implements for R the Extended Date/Time Format (EDTF) annotations set by the International Organization for Standardization (ISO) outlined in <a href="https://www.iso.org/standard/70908.html" class="external-link">ISO 8601-2_2019(E)</a>. <a href="https://globalgov.github.io/messydates/">messydates</a> introduces a new <code>mdate</code> class that embeds these annotations, and offers a set of methods for constructing and coercing into and from the <code>mdate</code> class, as well as tools for working with such ‘messy’ dates.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pkg_comparison</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span><span class="op">~</span><span class="va">Example</span>, <span class="op">~</span><span class="va">OriginalDate</span>,</span>
 <span>                                  <span class="st">"Normal date"</span>, <span class="st">"2012-01-01"</span>,</span>
@@ -382,13 +382,13 @@ NA
 <p>However, some syntaxes are entirely ignored, such as historical dates and dates from other eras (e.g. BCE), as well as written dates, frequently used in historical texts or treaties.</p>
 <p>Other times, existing packages return a date, but strip away any annotations that express uncertainty or approximateness, introducing artificial precision.</p>
 <p>And sometimes returning only a single date means ignoring other information included. We see this here in how only the end of the censored date, only the start of the date range, or the first in the set of dates is returned. Sometimes date components even seem guessed, such as how <code>2021-01</code> (January 2021) is assumed to be 1 <em>December</em> 2021 by <a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a>.</p>
-<p>So only <code>{messydates}</code> enables researchers to retain all this information. But most analysis does still expect some precision in dates to work.</p>
+<p>So only <a href="https://globalgov.github.io/messydates/">messydates</a> enables researchers to retain all this information. But most analysis does still expect some precision in dates to work.</p>
 </div>
 <div class="section level2">
 <h2 id="working-with-messy-dates">Working with messy dates<a class="anchor" aria-label="anchor" href="#working-with-messy-dates"></a>
 </h2>
-<p>The first way that <code>{messydates}</code> assists researchers that use dates in <code>mdate</code> class is to provide methods for converting back into common date classes such as <code>Date</code>, <code>POSIXct</code>, and <code>POSIXlt</code>. It is thus fully compatible with packages such as <a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a> and <code>{anydate}</code>.</p>
-<p>As messy date annotations can indicate multiple possible dates, <code>{messydates}</code> allows e.g. ranges or sets of dates to be unpacked or expanded into all compatible dates.</p>
+<p>The first way that <a href="https://globalgov.github.io/messydates/">messydates</a> assists researchers that use dates in <code>mdate</code> class is to provide methods for converting back into common date classes such as <code>Date</code>, <code>POSIXct</code>, and <code>POSIXlt</code>. It is thus fully compatible with packages such as <a href="https://lubridate.tidyverse.org" class="external-link">lubridate</a> and <code>{anydate}</code>.</p>
+<p>As messy date annotations can indicate multiple possible dates, <a href="https://globalgov.github.io/messydates/">messydates</a> allows e.g. ranges or sets of dates to be unpacked or expanded into all compatible dates.</p>
 <p>Since most methods of analysis or modelling expect single date observations, we offer ways to resolve this multiplicity when coercing <code>mdate</code>-class objects into other date formats. For example, researcher might explicitly choose to favour the <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min()</a></code>, <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max()</a></code>, <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median()</a></code>, or even a <code><a href="reference/resolve.html">random()</a></code> date. This greatly facilitates research transparency by demanding a conscious choice from researchers, as well as supporting robustness checks by enabling description or inference across dates compatible with the messy annotated date.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resolve_mdate</span> <span class="op">&lt;-</span> <span class="va">pkg_comparison</span> <span class="op">%&gt;%</span> </span>
@@ -617,13 +617,13 @@ max
 <div class="section level2">
 <h2 id="cheat-sheet">Cheat Sheet<a class="anchor" aria-label="anchor" href="#cheat-sheet"></a>
 </h2>
-<p>Please see the cheat sheet and <a href="https://globalgov.github.io/messydates/">the messydates website</a> for more information about how to use <code>{messydates}</code>.</p>
+<p>Please see the cheat sheet and <a href="https://globalgov.github.io/messydates/">the messydates website</a> for more information about how to use <a href="https://globalgov.github.io/messydates/">messydates</a>.</p>
 <p><a href="https://github.com/globalgov/messydates/blob/main/inst/figures/cheatsheet.pdf" class="external-link"><img src="https://raw.githubusercontent.com/globalgov/messydates/main/man/figures/cheatsheet.png" width="525" height="378"></a></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The easiest way to install <code>{messydates}</code> is directly from CRAN:</p>
+<p>The easiest way to install <a href="https://globalgov.github.io/messydates/">messydates</a> is directly from CRAN:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"messydates"</span><span class="op">)</span></span></code></pre></div>
 <p>However, you may also install the development version from <a href="https://github.com/" class="external-link">GitHub</a>.</p>
@@ -645,6 +645,8 @@ max
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=messydates" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/globalgov/messydates/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/globalgov/messydates/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 

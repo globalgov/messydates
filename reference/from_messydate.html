@@ -30,7 +30,7 @@ especially for checking the robustness of results."><!-- mathjax --><script src=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@ especially for checking the robustness of results."><!-- mathjax --><script src=
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Coercion from messy dates</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/globalgov/messydates/blob/HEAD/R/coerce_from_messydate.R" class="external-link"><code>R/coerce_from_messydate.R</code></a></small>
     <div class="hidden name"><code>from_messydate.Rd</code></div>
     </div>
 
@@ -135,7 +135,7 @@ For example, <code><a href="https://rdrr.io/r/base/Extremes.html" class="externa
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, <span class="va">modal</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-01"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, <span class="va">random</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-19"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-13"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"1000 BC"</span><span class="op">)</span>, <span class="va">max</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-12-31"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"1000 BC"</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span></span></span>

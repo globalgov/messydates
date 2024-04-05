@@ -20,7 +20,7 @@ please use md_multiset."><!-- mathjax --><script src="https://cdnjs.cloudflare.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -56,28 +56,32 @@ please use md_multiset."><!-- mathjax --><script src="https://cdnjs.cloudflare.c
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set operations for messy dates</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/globalgov/messydates/blob/HEAD/R/set.R" class="external-link"><code>R/set.R</code></a></small>
     <div class="hidden name"><code>set.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Performs intersection (<code>md_intersect()</code>) and union (<code>md_union()</code>) on,
+    <p>Performs intersection (<code><a href="defunct.html">md_intersect()</a></code>) and union (<code><a href="defunct.html">md_union()</a></code>) on,
 inter alia, messy date class objects.
 For a more typical 'join' that retains all elements, even if duplicated,
 please use <code>md_multiset</code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">md_intersect</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">md_union</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">md_multiset</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre><code>e1 %intersect% e2
+
+# S3 method for mdate
+%intersect%(e1, e2)
+
+e1 %union% e2
+
+# S3 method for mdate
+%union%(e1, e2)</code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>x, y, ...</dt>
+    <dl><dt>e1, e2</dt>
 <dd><p>Messy date or other class objects</p></dd>
 
 </dl></div>
@@ -91,19 +95,18 @@ or a common mode for union.</p>
     <div id="functions">
     <h2>Functions</h2>
     
-<ul><li><p><code>md_intersect()</code>: Find intersection of sets of messy dates</p></li>
-<li><p><code>md_union()</code>: Find union of sets of messy dates</p></li>
-<li><p><code>md_multiset()</code>: Join two sets of messy dates</p></li>
+<ul><li><p><code> %intersect% </code>: Find intersection of sets of messy dates</p></li>
+<li><p><code> %union% </code>: Find intersection of sets of messy dates</p></li>
 </ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">md_intersect</span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span>,<span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span> <span class="op">%intersect%</span> <span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "2012-01-01" "2012-01-02" "2012-01-03" "2012-01-04" "2012-01-05"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "2012-01-06" "2012-01-07" "2012-01-08" "2012-01-09" "2012-01-10"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11] "2012-01-11" "2012-01-12" "2012-01-13" "2012-01-14" "2012-01-15"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [16] "2012-01-16" "2012-01-17" "2012-01-18" "2012-01-19" "2012-01-20"</span>
-<span class="r-in"><span><span class="fu">md_union</span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span>,<span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span> <span class="op">%union%</span> <span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "2012-01-01" "2012-01-02" "2012-01-03" "2012-01-04" "2012-01-05"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "2012-01-06" "2012-01-07" "2012-01-08" "2012-01-09" "2012-01-10"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11] "2012-01-11" "2012-01-12" "2012-01-13" "2012-01-14" "2012-01-15"</span>
@@ -111,18 +114,6 @@ or a common mode for union.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [21] "2012-01-21" "2012-01-22" "2012-01-23" "2012-01-24" "2012-01-25"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] "2012-01-26" "2012-01-27" "2012-01-28" "2012-01-29" "2012-01-30"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [31] "2012-01-31"</span>
-<span class="r-in"><span><span class="fu">md_multiset</span><span class="op">(</span><span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01-01..2012-01-20"</span><span class="op">)</span>,<span class="fu"><a href="messydate.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "2012-01-01" "2012-01-02" "2012-01-03" "2012-01-04" "2012-01-05"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "2012-01-06" "2012-01-07" "2012-01-08" "2012-01-09" "2012-01-10"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "2012-01-11" "2012-01-12" "2012-01-13" "2012-01-14" "2012-01-15"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "2012-01-16" "2012-01-17" "2012-01-18" "2012-01-19" "2012-01-20"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "2012-01-01" "2012-01-02" "2012-01-03" "2012-01-04" "2012-01-05"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "2012-01-06" "2012-01-07" "2012-01-08" "2012-01-09" "2012-01-10"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "2012-01-11" "2012-01-12" "2012-01-13" "2012-01-14" "2012-01-15"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [36] "2012-01-16" "2012-01-17" "2012-01-18" "2012-01-19" "2012-01-20"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "2012-01-21" "2012-01-22" "2012-01-23" "2012-01-24" "2012-01-25"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [46] "2012-01-26" "2012-01-27" "2012-01-28" "2012-01-29" "2012-01-30"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "2012-01-31"</span>
 </code></pre></div>
     </div>
   </div>

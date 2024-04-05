@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">messydates</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -60,17 +60,21 @@
           <p class="section-desc"></p><p>These functions construct and/or coerce dates to the <code>mdate</code> class:</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="class.html">new_messydate()</a></code> <code><a href="class.html">validate_messydate()</a></code> <code><a href="class.html">NA_mdate_</a></code> </p>
+          <p><code><a href="class.html">new_messydate()</a></code> <code><a href="class.html">validate_messydate()</a></code> </p>
         </td>
         <td><p>A flexible date class for messy dates</p></td>
       </tr><tr><td>
-          <p><code><a href="messydate.html">as_messydate()</a></code> <code><a href="messydate.html">make_messydate()</a></code> </p>
+          <p><code><a href="messydate.html">as_messydate()</a></code> <code><a href="messydate.html">mdate()</a></code> <code><a href="messydate.html">make_messydate()</a></code> </p>
         </td>
         <td><p>Coercion from regular date classes to mdate</p></td>
       </tr><tr><td>
           <p><code><a href="annotate.html">on_or_before()</a></code> <code><a href="annotate.html">on_or_after()</a></code> <code><a href="annotate.html">as_approximate()</a></code> <code><a href="annotate.html">as_uncertain()</a></code> </p>
         </td>
         <td><p>Annotates dates as censored, uncertain, or approximate</p></td>
+      </tr><tr><td>
+          <p><code><a href="duration_class.html">new_messyduration()</a></code> <code><a href="duration_class.html">messyduration()</a></code> <code><a href="duration_class.html">validate_messyduration()</a></code> </p>
+        </td>
+        <td><p>A duration class for mdates</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="coerce-from">Coerce from <a href="#coerce-from" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>These functions coerce dates from the <code>mdate</code> class into a single <code>Date</code>:</p>
@@ -104,21 +108,21 @@
         </td>
         <td><p>Arithmetic operations for messydates</p></td>
       </tr><tr><td>
-          <p><code><a href="set.html">md_intersect()</a></code> <code><a href="set.html">md_union()</a></code> <code><a href="set.html">md_multiset()</a></code> </p>
+          <p><code><a href="set.html">`%intersect%`</a></code> <code><a href="set.html">`%union%`</a></code> </p>
         </td>
         <td><p>Set operations for messy dates</p></td>
       </tr><tr><td>
-          <p><code><a href="logical.html">logical</a></code> </p>
-        </td>
-        <td><p>Logical tests on messy dates</p></td>
-      </tr><tr><td>
-          <p><code><a href="logical-class.html">is_messydate()</a></code> <code><a href="logical-class.html">is_intersecting()</a></code> <code><a href="logical-class.html">is_element()</a></code> <code><a href="logical-class.html">is_similar()</a></code> <code><a href="logical-class.html">is_precise()</a></code> <code><a href="logical-class.html">is_uncertain()</a></code> <code><a href="logical-class.html">is_approximate()</a></code> </p>
+          <p><code><a href="logical_tests.html">is_messydate()</a></code> <code><a href="logical_tests.html">is_intersecting()</a></code> <code><a href="logical_tests.html">is_subset()</a></code> <code><a href="logical_tests.html">is_similar()</a></code> <code><a href="logical_tests.html">is_precise()</a></code> <code><a href="logical_tests.html">is_uncertain()</a></code> <code><a href="logical_tests.html">is_approximate()</a></code> <code><a href="logical_tests.html">`&lt;`(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="logical_tests.html">`&gt;`(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="logical_tests.html">`&lt;=`(<i>&lt;mdate&gt;</i>)</a></code> <code><a href="logical_tests.html">`&gt;=`(<i>&lt;mdate&gt;</i>)</a></code> </p>
         </td>
         <td><p>Logical tests on messy dates</p></td>
       </tr><tr><td>
           <p><code><a href="extract.html">year()</a></code> <code><a href="extract.html">month()</a></code> <code><a href="extract.html">day()</a></code> <code><a href="extract.html">precision()</a></code> </p>
         </td>
         <td><p>Extracting components from messy dates</p></td>
+      </tr><tr><td>
+          <p><code><a href="proportional.html">`%l%`</a></code> <code><a href="proportional.html">`%g%`</a></code> <code><a href="proportional.html">`%ge%`</a></code> <code><a href="proportional.html">`%le%`</a></code> <code><a href="proportional.html">`%&gt;&lt;%`</a></code> <code><a href="proportional.html">`%&gt;=&lt;%`</a></code> </p>
+        </td>
+        <td><p>Proportion of messy dates meeting logical test</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="data">Data <a href="#data" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Working with ‘messy’ data:</p>

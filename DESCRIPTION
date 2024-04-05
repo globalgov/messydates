@@ -9,8 +9,8 @@ Description: Contains a set of tools for constructing and coercing
   date ranges, and sets of dates. 
   This is useful for describing and analysing temporal information,
   whether historical or recent, where date precision may vary.
-Version: 0.3.5
-Date: 2023-01-20
+Version: 0.4.0
+Date: 2024-04-05
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",
@@ -24,11 +24,14 @@ Authors@R:
       person(given = "Jael",
              family = "Tan",
              role = "ctb",
-             comment = c("IHEID", ORCID = "0000-0002-6234-9764")))
+             comment = c("IHEID", ORCID = "0000-0002-6234-9764")),
+      person(given = "Nathan",
+             family = "Werth",
+             role = "ctb"))
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 LazyData: true
 VignetteBuilder: knitr
 Imports:
@@ -43,5 +46,7 @@ Suggests:
     rmarkdown,
     knitr
 Config/testthat/edition: 3
+URL: https://globalgov.github.io/messydates/, https://github.com/globalgov/messydates
+BugReports: https://github.com/globalgov/messydates/issues
 Depends: 
     R (>= 3.4)

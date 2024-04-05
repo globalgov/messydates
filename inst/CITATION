@@ -1,7 +1,7 @@
 citHeader("To cite messydates in publications use:")
 
-citEntry(
-  entry    = "Manual",
+utils::bibentry(
+  bibtype    = "Manual",
   title    = "messydates: A broader date class for messy date information",
   author   = "James Hollway",
   year     = "2021",

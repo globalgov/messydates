@@ -11,9 +11,9 @@
 \method{-}{mdate}(e1, e2)
 }
 \arguments{
-\item{e1}{A messydate object}
+\item{e1}{An \code{mdate} or date object.}
 
-\item{e2}{A numerical object.}
+\item{e2}{An \code{mdate}, date, or numeric object. Must be a scalar.}
 }
 \value{
 A messydates vector
@@ -24,9 +24,15 @@ Messydate objects include incomplete or uncertain dates,
 ranges of dates, negative dates, and date sets.
 }
 \examples{
+\donttest{
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 tibble::tibble(date = d, add = d + 1, subtract = d - 1)
 tibble::tibble(date = d, add = d + "1 year", subtract = d - "1 year")
+as_messydate("2001-01-01") + as_messydate("2001-01-02..2001-01-04")
+as_messydate("2001-01-01") + as_messydate("2001-01-03")
+as_messydate("2001-01-01..2001-01-04") - as_messydate("2001-01-02")
+#as_messydate("2001-01-01") - as_messydate("2001-01-03")
+}
 }

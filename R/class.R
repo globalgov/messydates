@@ -72,28 +72,17 @@ new_messydate <- function(x = character()) {
 #' @export
 validate_messydate <- function(x) {
   values <- unclass(x)
-
   if (any(grepl("[A-WYZa-z]", values) & !grepl("^NA$", values))) {
-    stop(
-      "The only alpha character allowed in messy dates is 'X' for
-      unspecified time components",
-      call. = FALSE
-    )
+    stop("The only alpha character allowed in messy dates is 'X' for
+      unspecified time components", call. = FALSE)
   }
-
-  if (!all(grepl("[0-9]", values))) {
-    stop(
-      "mdate object requires at least one specified date component.",
-      call. = FALSE
-    )
+  if (!any(grepl("[0-9]", values))) {
+    stop("mdate object requires at least one specified date component.",
+         call. = FALSE)
     }
-
   if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|,|;|>|<|_|\\^|'|&|\\$|#", values))) {
-    stop(
-      "mdate object can only consist of numbers and
-      some special symbols: []{}..X%?~",
-      call. = FALSE
-    )
+    stop("mdate object can only consist of numbers and
+      some special symbols: []{}..X%?~", call. = FALSE)
   }
   x
 }

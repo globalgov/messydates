@@ -1,3 +1,9 @@
+# messydates 0.4.1
+
+## Functions
+
+* Closed #83 by fixing how logical comparisons works for negative and year only dates
+
 # messydates 0.4.0
 
 ## Functions

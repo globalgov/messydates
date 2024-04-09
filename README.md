@@ -388,6 +388,12 @@ resolve_mdate <- pkg_comparison %>%
   dplyr::mutate(min = as.Date(messydates, min),
          median = as.Date(messydates, median),
          max = as.Date(messydates, max))
+#> Warning: There were 6 warnings in `dplyr::mutate()`.
+#> The first warning was:
+#> ℹ In argument: `min = as.Date(messydates, min)`.
+#> Caused by warning:
+#> !  1 failed to parse.
+#> ℹ Run `dplyr::last_dplyr_warnings()` to see the 5 remaining warnings.
 ```
 
 <table class="table table-striped" style="margin-left: auto; margin-right: auto;">
@@ -441,13 +447,13 @@ max
 0476
 </td>
 <td style="text-align:left;">
-0476-01-01
+NA
 </td>
 <td style="text-align:left;">
-0476-07-02
+NA
 </td>
 <td style="text-align:left;">
-0476-12-31
+NA
 </td>
 </tr>
 <tr>
@@ -455,13 +461,13 @@ max
 -0033
 </td>
 <td style="text-align:left;">
--033-01-01
+NA
 </td>
 <td style="text-align:left;">
--033-07-02
+NA
 </td>
 <td style="text-align:left;">
--033-12-31
+NA
 </td>
 </tr>
 <tr>

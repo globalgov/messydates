@@ -43,11 +43,11 @@ NULL
 #' @export
 as.Date.mdate <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
-  x <- FUN(x)
-  x <- ifelse(stringr::str_detect(x, "^-"),
-              lubridate::as_date(negative_dates(x)),
-              lubridate::as_date(x))
-  as.Date(x, origin = "1970-01-01")
+  y <- FUN(x)
+  y <- ifelse(stringr::str_detect(y, "^-"),
+              lubridate::as_date(negative_dates(y)),
+              lubridate::as_date(verify_dates(y, x)))
+  as.Date(y, origin = "1970-01-01")
 }
 
 #' @rdname from_messydate
@@ -84,4 +84,11 @@ negative_dates <- function(x) {
   x <- lubridate::ymd(md) - lubridate::years(y)
   x <- lubridate::as_date(x)
   x
+}
+
+verify_dates <- function(y, x) {
+  ifelse(!stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2})$") &
+           stringr::str_detect(x, "^00"), paste0("00", y),
+         ifelse(!stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2})$") &
+                  stringr::str_detect(x, "^0"), paste0("0", y), y))
 }

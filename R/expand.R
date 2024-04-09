@@ -71,13 +71,18 @@ expand_unspecified <- function(dates) {
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
                                     "\\1\\2-01-01..\\2-12-31\\3")
   dates <- unspecified_months(dates)
+  # Assumes no century for ambiguous dates not specified previously
+  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                  paste0("00", dates),
+                  ifelse(stringr::str_detect(dates, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+                         paste0("0", dates), dates))
   # Assumes century for ambiguous dates if not specified previously
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) < 23,
-                  paste0("20", dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) > 23,
-                  paste0("19", dates), dates)
+  # dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+  #                   as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) < 23,
+  #                 paste0("20", dates), dates)
+  # dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+  #                   as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) > 23,
+  #                 paste0("19", dates), dates)
   dates <- stringr::str_replace_all(dates, ",,", ",")
   dates
 }

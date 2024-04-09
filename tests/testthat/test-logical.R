@@ -68,6 +68,7 @@ test_that("Logical comparisons work", {
   expect_true(as_messydate("-0001-12-31") <= as_messydate("0001-01-01"))
   expect_false(as_messydate("1 BC") > as_messydate("1 AC"))
   expect_true(as_messydate("79") < as_messydate("0193-03"))
+  expect_true(as_messydate("39-01-01") < as_messydate("100-12-01"))
 })
 
 test_that("Logical comparisons don't mess up comparisons between non-messy times", {

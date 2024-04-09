@@ -83,13 +83,19 @@ is_approximate <- function(x) {
 #'   the dates in the second vector.
 #'   Returns `NA` when the date order can't be determined.
 #' @examples
+#' as_messydate("2012-06-02") > as.Date("2012-06-01") # TRUE
 #' # 2012-06-XX could mean 2012-06-03, so unknown if it comes before 2012-06-02
 #' as_messydate("2012-06-XX") < as.Date("2012-06-02") # NA
 #' # But 2012-06-XX cannot be before 2012-06-01
 #' as_messydate("2012-06-XX") >= as.Date("2012-06-01") # TRUE
 #' @export
 `<.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
+  if (all(stringr::str_detect(e1, "^([:digit:]{4})$|^\\-([:digit:]{4})$")))
+    e1 <- as.numeric(e1)
+  if (is_messydate(e2) &
+      all(stringr::str_detect(e2, "^([:digit:]{4})$|^\\-([:digit:]{4})$"))) {
+    e2 <- as.numeric(e2)
+  } else if (is.character(e2) & !is_messydate(e2)) e2 <- as_messydate(e2)
   if (!is_messydate(e1) && !is_messydate(e2)) {
     nums <- comparable_numerics(e1, e2)
     return(as.numeric(nums[[1]]) < as.numeric(nums[[2]]))
@@ -159,7 +165,12 @@ numeric_time_ranges <- function(e1, e2) {
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `>.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
+  if (all(stringr::str_detect(e1, "^([:digit:]{4})$|^\\-([:digit:]{4})$")))
+    e1 <- as.numeric(e1)
+  if (is_messydate(e2) &
+      all(stringr::str_detect(e2, "^([:digit:]{4})$|^\\-([:digit:]{4})$"))) {
+    e2 <- as.numeric(e2)
+  } else if (is.character(e2) & !is_messydate(e2)) e2 <- as_messydate(e2)
   if (!is_messydate(e1) && !is_messydate(e2)) {
     nums <- comparable_numerics(e1, e2)
     return(as.numeric(nums[[1]]) > as.numeric(nums[[2]]))
@@ -181,7 +192,12 @@ evalqOnLoad({
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `<=.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
+  if (all(stringr::str_detect(e1, "^([:digit:]{4})$|^\\-([:digit:]{4})$")))
+    e1 <- as.numeric(e1)
+  if (is_messydate(e2) &
+      all(stringr::str_detect(e2, "^([:digit:]{4})$|^\\-([:digit:]{4})$"))) {
+    e2 <- as.numeric(e2)
+  } else if (is.character(e2) & !is_messydate(e2)) e2 <- as_messydate(e2)
   if (!is_messydate(e1) && !is_messydate(e2)) {
     nums <- comparable_numerics(e1, e2)
     return(as.numeric(nums[[1]]) <= as.numeric(nums[[2]]))
@@ -203,7 +219,12 @@ evalqOnLoad({
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `>=.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
+  if (all(stringr::str_detect(e1, "^([:digit:]{4})$|^\\-([:digit:]{4})$")))
+    e1 <- as.numeric(e1)
+  if (is_messydate(e2) &
+      all(stringr::str_detect(e2, "^([:digit:]{4})$|^\\-([:digit:]{4})$"))) {
+    e2 <- as.numeric(e2)
+  } else if (is.character(e2) & !is_messydate(e2)) e2 <- as_messydate(e2)
   if (!is_messydate(e1) && !is_messydate(e2)) {
     nums <- comparable_numerics(e1, e2)
     return(as.numeric(nums[[1]]) >= as.numeric(nums[[2]]))

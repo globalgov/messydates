@@ -101,6 +101,7 @@ is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 is_precise(as_messydate(c("2012-06-02", "2012-06")))
 is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+as_messydate("2012-06-02") > as.Date("2012-06-01") # TRUE
 # 2012-06-XX could mean 2012-06-03, so unknown if it comes before 2012-06-02
 as_messydate("2012-06-XX") < as.Date("2012-06-02") # NA
 # But 2012-06-XX cannot be before 2012-06-01

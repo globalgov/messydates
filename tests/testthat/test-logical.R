@@ -1,5 +1,4 @@
 # Testing logical methods of messydates
-
 test_that("is_messydate works", {
   expect_true(is_messydate(as_messydate("2012-01-01")))
   expect_false(is_messydate("2012-01-01"))
@@ -68,6 +67,7 @@ test_that("Logical comparisons work", {
   expect_true(as_messydate("0039-12-31") < as_messydate("1000-01-01"))
   expect_true(as_messydate("-0001-12-31") <= as_messydate("0001-01-01"))
   expect_false(as_messydate("1 BC") > as_messydate("1 AC"))
+  expect_true(as_messydate("79") < as_messydate("0193-03"))
 })
 
 test_that("Logical comparisons don't mess up comparisons between non-messy times", {

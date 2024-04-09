@@ -284,7 +284,7 @@ standardise_unspecifieds <- function(dates) {
 standardise_date_input <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
                   as_bc_dates(dates), dates)
-  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD|CE|Ce|ce)")
+  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD|CE|Ce|ce|AC|ac|Ac|aC)")
   dates <- trimws(dates, "both")
   dates
 }

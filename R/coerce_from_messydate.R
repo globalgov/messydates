@@ -90,5 +90,7 @@ verify_dates <- function(y, x) {
   ifelse(!stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2})$") &
            stringr::str_detect(x, "^00"), paste0("00", y),
          ifelse(!stringr::str_detect(x, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2})$") &
-                  stringr::str_detect(x, "^0"), paste0("0", y), y))
+                  stringr::str_detect(x, "^0"), paste0("0", y),
+                ifelse(stringr::str_detect(y, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$") &
+                         stringr::str_detect(y, "^0"), paste0("0", y), y)))
 }

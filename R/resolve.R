@@ -87,6 +87,12 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
     if (length(x) > 1 & stringr::str_detect(x[1], "^-")) {
       x <- paste0("-", as.character(mean(lubridate::as_date(x),
                                          trim = 0, na.rm = TRUE)))
+      x <- ifelse(stringr::str_detect(x, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+                  stringr::str_replace_all(x, "^\\-", "-000"),
+                  ifelse(stringr::str_detect(x, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                         stringr::str_replace_all(x, "^\\-", "-00"),
+                         ifelse(stringr::str_detect(x, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+                                stringr::str_replace_all(x, "^\\-", "-0"), x)))
     }
     x
   }), recursive = FALSE)

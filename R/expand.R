@@ -89,6 +89,12 @@ expand_unspecified <- function(dates) {
 
 expand_negative <- function(dates) {
   dates <- stringr::str_replace_all(dates, ",", ",,")
+  dates <- ifelse(stringr::str_detect(dates, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+                  stringr::str_replace_all(dates, "^\\-", "-000"),
+                  ifelse(stringr::str_detect(dates, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                         stringr::str_replace_all(dates, "^\\-", "-00"),
+                         ifelse(stringr::str_detect(dates, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+                                stringr::str_replace_all(dates, "^\\-", "-0"), dates)))
   dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})($|,)",
                                     "-\\1\\2-01-01%-\\2-12-31\\3")
   dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-02($|,)",

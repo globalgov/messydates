@@ -34,3 +34,10 @@ test_that("Resolve dates works properly for negative dates", {
   expect_equal(as.character(as.Date(negative, modal)), "-1000-01-01")
   expect_length(random(negative), 1)
 })
+
+test_that("resolve adds zero padding when appropriate", {
+  expect_equal(as_messydate(min(as_messydate("209-12-31"))),
+                            as_messydate("0209-12-31"))
+  expect_equal(as_messydate(max(as_messydate("-29-12-31"))),
+                            as_messydate("-0029-12-31"))
+})

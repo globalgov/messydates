@@ -44,9 +44,9 @@ NULL
 as.Date.mdate <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   y <- FUN(x)
-  y <- ifelse(stringr::str_detect(y, "^-"),
-              lubridate::as_date(negative_dates(y)),
-              lubridate::as_date(verify_dates(y, x)))
+  y <- suppressWarnings(ifelse(stringr::str_detect(y, "^-"),
+                               lubridate::as_date(negative_dates(y)),
+                               lubridate::as_date(verify_dates(y, x))))
   as.Date(y, origin = "1970-01-01")
 }
 

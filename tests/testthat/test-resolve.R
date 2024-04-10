@@ -40,4 +40,6 @@ test_that("resolve adds zero padding when appropriate", {
                             as_messydate("0209-12-31"))
   expect_equal(as_messydate(max(as_messydate("-29-12-31"))),
                             as_messydate("-0029-12-31"))
+  expect_equal(as_messydate(mean(as_messydate(c("-29-12-31", "193-02-02", "2010-10-10")))),
+               as_messydate(c("-0029-12-31", "0193-02-02", "2010-10-10")))
 })

@@ -11,7 +11,7 @@ test_that("Coercion from other date classes into messydt works", {
   expect_equal(as.POSIXlt(messy, mean), POSIXlt)
   expect_equal(as.Date(as_messydate("2010-10-10"), median), date)
   expect_equal(as.Date(as_messydate("2010-10-10"), random), date)
-  expect_equal(as_messydate(as.Date(as_messydate("1000 BC"), min)), negative)
+  expect_equal(as.character(as.Date(as_messydate("1000 BC"), min)), min(negative))
   expect_error(as.POSIXct(as_messydate("-2012"), min))
   expect_error(as.POSIXlt(as_messydate("-2012"), min))
 })

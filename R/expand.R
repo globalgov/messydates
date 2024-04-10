@@ -166,13 +166,16 @@ expand_negative_dates <- function(dates) {
       r
     })
     x <- lapply(x, function(y) {
-      if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
-                                                by = "days"))
+      if (length(y) == 2) y <- as.character(seq(y[1], y[2], by = "days"))
       y
     })
-    unlist(x)
     x <- lapply(x, function(y) {
-      y <- ifelse(nchar(y) == 10, stringr::str_replace_all(y, "^-", "-0"), y)
+      ifelse(stringr::str_detect(y, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+             stringr::str_replace_all(y, "^-", "-000"),
+             ifelse(stringr::str_detect(y, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                    stringr::str_replace_all(y, "^-", "-00"),
+                    ifelse(stringr::str_detect(y, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+                           stringr::str_replace_all(y, "^-", "-0"), y)))
     })
   })
   dates

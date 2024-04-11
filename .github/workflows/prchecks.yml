@@ -16,10 +16,10 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest, r: 'release', artifact_name: '*.tar.gz', asset_name: macOS}
-          - {os: 4.2-macOS, r: '4.2', artifact_name: '*.tar.gz', asset_name: macOS}
-          - {os: 4.1-macOS, r: '4.1', artifact_name: '*.tar.gz', asset_name: macOS}
-          - {os: 4.0-macOS, r: '4.0', artifact_name: '*.tar.gz', asset_name: macOS}
-          - {os: 3.6-macOS, r: '3.5', artifact_name: '*.tar.gz', asset_name: macOS}
+          - {os: macOS-latest, r: '4.2', artifact_name: '*4_2.tar.gz', asset_name: macOS}
+          - {os: macOS-latest, r: '4.1', artifact_name: '*4_1.tar.gz', asset_name: macOS}
+          - {os: macOS-latest, r: '4.0', artifact_name: '*4_0.tar.gz', asset_name: macOS}
+          - {os: macOS-latest, r: '3.5', artifact_name: '*3_5.tar.gz', asset_name: macOS}
           - {os: windows-latest, r: 'release', artifact_name: '*.zip', asset_name: winOS}
           - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", artifact_name: '*.tar.gz', asset_name: linuxOS}
 

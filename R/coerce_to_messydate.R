@@ -102,7 +102,6 @@ as_messydate.character <- function(x, resequence = NULL) {
   if (isTRUE(resequence == "interactive")) {
     d <- ask_user(d)
   }
-  d <- standardise_ranges(d)
   d <- standardise_unspecifieds(d)
   d <- standardise_date_input(d)
   d <- standardise_widths(d)
@@ -144,14 +143,18 @@ standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates, "\\/", "-")
   dates <- stringr::str_remove_all(dates, "\\(|\\)|\\{|\\}|\\[|\\]")
   dates <- stringr::str_trim(dates, side = "both")
-  # Adds zero padding to days, months, and ranges
+  # Adds zero padding to days, months, sets, and ranges
   dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
   dates <- stringr::str_replace_all(dates, "([:digit:]{2})-([:digit:])$",
                                     "\\1-0\\2")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-([:digit:]{2})",
                                     "0\\1-\\2")
+  dates <- stringr::str_replace_all(dates, "\\_|\\:", "..") # range separators
   dates <- stringr::str_replace_all(dates, "-([:digit:])\\.\\.", "-0\\1\\.\\.")
   dates <- stringr::str_replace_all(dates, "\\.\\.([:digit:])-", "\\.\\.0\\1-")
+  dates <- stringr::str_replace_all(dates, " \\, |\\, | \\,", ",") # set separators
+  dates <- stringr::str_replace_all(dates, "-([:digit:]),", "-0\\1,")
+  dates <- stringr::str_replace_all(dates, ",([:digit:])-", "\\,0\\1-")
   dates
 }
 
@@ -256,12 +259,6 @@ ask_user <- function(dates) {
   dates
 }
 
-standardise_ranges <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "_", "..")
-  dates <- stringr::str_replace_all(dates, ":", "..")
-  dates
-}
-
 standardise_unspecifieds <- function(dates) {
   dates <- stringr::str_replace_all(dates, "^NA", "XXXX")
   dates <- stringr::str_replace_all(dates, "-NA", "-XX")
@@ -276,6 +273,8 @@ standardise_unspecifieds <- function(dates) {
                                     "\\3-\\2-\\1")
   dates <- stringr::str_replace_all(dates, "-X-X$|-XX-XX$|-XX$|-XX-\\?\\?$|
                                     |-\\?-\\?$|-\\?\\?$|-\\?\\?-\\?\\?$", "")
+  dates <- stringr::str_replace_all(dates, "-XX\\,", ",")
+  dates <- stringr::str_replace_all(dates, "-XX\\.\\.", "..")
   dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
                   paste0("~", stringr::str_remove(dates, "\\~")), dates)
   dates
@@ -300,8 +299,6 @@ standardise_widths <- function(dates) {
   dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
   dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
   dates <- trimws(dates, "both")
-  #dates <- ifelse(stringr::str_detect(dates, "\\{|\\.\\."),
-  #suppressMessages(contract(dates)), dates)
   dates
 }
 
@@ -438,7 +435,7 @@ add_zero_padding <- function(dates) {
                                       "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
                   paste0("00", dates), dates)
   dates <- ifelse(stringr::str_detect(dates,
-                                      "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
+                                      "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
                   paste0("0", dates), dates)
   # Year only
   dates <- stringr::str_replace_all(dates, "^([:digit:]{1})$", "000\\1")
@@ -469,6 +466,12 @@ add_zero_range <- function(dates) {
                 paste0("00", x), x)
     x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
                 paste0("0", x), x)
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+                paste0("000", x), x)
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+                paste0("00", x), x)
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
+                paste0("0", x), x)
   })
   dates <- purrr::map_chr(dates, paste, collapse = "..")
   dates
@@ -494,7 +497,7 @@ add_zero_set <- function(dates) {
                 paste0("000", x), x)
     x <- ifelse(stringr::str_detect(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
                 paste0("00", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
+    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
                 paste0("0", x), x)
   })
   dates <- purrr::map_chr(dates, paste, collapse = ",")

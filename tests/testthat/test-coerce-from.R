@@ -21,6 +21,6 @@ test_that("Coercion from other types of negative dates work", {
                c("-0027-12-31", "-0014-12-31"))
   expect_equal(mean(as_messydate(c("-27", "-14"))),
                c("-0027-07-02", "-0014-07-02"))
-  expect_equal(as.Date(as_messydate(c("-27", "-14")), min),
-               c("-027-01-01", "-014-01-01"))
+  expect_equal(min(as_messydate(c("-27", "-14"))),
+               c("-0027-01-01", "-0014-01-01"))
 })

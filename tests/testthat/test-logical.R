@@ -51,11 +51,11 @@ test_that("Logical comparisons work", {
   expect_equal(as_messydate("2012-06-XX") >= as.Date("2012-06-02"), NA)
   expect_equal(as_messydate("2012-06-XX") >= as.POSIXct("2012-06-02"), NA)
   expect_equal(as_messydate(c("2012-06-02", "2012-06-03")) <
-                 as_messydate(c("2012-06-03", "2012-06-03")), c(TRUE, NA))
+                 as_messydate(c("2012-06-03", "2012-06-03")), c(TRUE, FALSE))
   expect_equal(as_messydate(c("2012-06-02", "2012-06-03")) <=
                  as_messydate(c("2012-06-03", "2012-06-03")), c(TRUE, TRUE))
   expect_equal(as_messydate(c("2012-06-02", "2012-06-03")) >
-                 as_messydate(c("2012-06-03", "2012-06-03")), c(FALSE, NA))
+                 as_messydate(c("2012-06-03", "2012-06-03")), c(FALSE, FALSE))
   expect_equal(as_messydate(c("2012-06-02", "2012-06-03")) >=
                  as_messydate(c("2012-06-03", "2012-06-03")), c(FALSE, TRUE))
   expect_true(as_messydate("2012-06-02") < as_messydate("2012-06-03"))
@@ -69,11 +69,9 @@ test_that("Logical comparisons work", {
   expect_false(as_messydate("1 BC") > as_messydate("1 AC"))
   expect_true(as_messydate("39-01-01") < as_messydate("100-12-01"))
   expect_true(as_messydate("0079") < as_messydate("0193"))
+  expect_true(as_messydate("79") < as_messydate("193-03"))
   expect_true(as_messydate("0079-01") < as_messydate("0193-03"))
   expect_false(as_messydate("-0079-01-01") < as_messydate("-0193-03-01"))
-  skip_on_ci()
-  skip_on_cran()
-  expect_true(as_messydate("0079") < as_messydate("0193-03"))
 })
 
 test_that("Logical comparisons don't mess up comparisons between non-messy times", {

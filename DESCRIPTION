@@ -49,4 +49,4 @@ Config/testthat/edition: 3
 URL: https://globalgov.github.io/messydates/, https://github.com/globalgov/messydates
 BugReports: https://github.com/globalgov/messydates/issues
 Depends: 
-    R (>= 4.0)
+    R (>= 3.6)

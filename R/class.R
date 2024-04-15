@@ -126,10 +126,7 @@ c.mdate <- function(...) {
 
 #' @export
 as.data.frame.mdate <- function(x, ...) {
-  nm <- deparse1(substitute(x))
-  if (!"nm" %in% ...names())
-    as.data.frame.vector(x, ..., nm = nm)
-  else as.data.frame.vector(x, ...)
+  as.data.frame.vector(x, ...)
 }
 
 #' @export

@@ -74,3 +74,8 @@ test_that("list conversion works properly", {
                                    as_messydate("2001-01-02..2001-01-04")))),
                list(as_messydate("2001-01-01..2001-01-04")))
 })
+
+test_that("zero padding is correctly added conversion works properly", {
+  expect_equal(as_messydate(c("193-3", "193-3..193-5", "193-3, 193-4")),
+               as_messydate(c("0193-03-XX", "0193-03-XX..0193-05", "{0193-03-XX,0193-04-XX}")))
+})

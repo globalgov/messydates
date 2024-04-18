@@ -46,7 +46,7 @@ as.Date.mdate <- function(x, ..., FUN) {
   x <- FUN(x)
   x <- suppressWarnings(ifelse(stringr::str_detect(x, "^-"),
                                lubridate::as_date(negative_dates(x)),
-                               lubridate::as_date(verify_dates(x))))
+                               lubridate::as_date(zero_padding(x))))
   as.Date(x, origin = "1970-01-01")
 }
 
@@ -82,13 +82,4 @@ negative_dates <- function(x) {
   x <- lubridate::ymd(md) - lubridate::years(y)
   x <- lubridate::as_date(x)
   x
-}
-
-verify_dates <- function(y) {
-  ifelse(stringr::str_detect(y, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
-         paste0("0", y),
-         ifelse(stringr::str_detect(y, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
-                paste0("00", y),
-                ifelse(stringr::str_detect(y, "^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
-                       paste0("000", y), y)))
 }

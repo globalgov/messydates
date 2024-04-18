@@ -67,12 +67,7 @@ expand_approximate <- function(dates, approx_range) {
 
 expand_unspecified <- function(dates) {
   # Assumes no century for ambiguous dates not specified previously when dates were coerced
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
-                  paste0("000", dates),
-                  ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
-                         paste0("00", dates),
-                         ifelse(stringr::str_detect(dates, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
-                                paste0("0", dates), dates)))
+  dates <- zero_padding(dates)
   # Separate ranges and sets of dates
   dates <- stringr::str_replace_all(dates, ",", ",,")
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
@@ -84,12 +79,7 @@ expand_unspecified <- function(dates) {
 
 expand_negative <- function(dates) {
   dates <- stringr::str_replace_all(dates, ",", ",,")
-  dates <- ifelse(stringr::str_detect(dates, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
-                  stringr::str_replace_all(dates, "^\\-", "-000"),
-                  ifelse(stringr::str_detect(dates, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
-                         stringr::str_replace_all(dates, "^\\-", "-00"),
-                         ifelse(stringr::str_detect(dates, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
-                                stringr::str_replace_all(dates, "^\\-", "-0"), dates)))
+  dates <- zero_padding(dates)
   dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})($|,)",
                                     "-\\1\\2-01-01%-\\2-12-31\\3")
   dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-02($|,)",
@@ -170,14 +160,7 @@ expand_negative_dates <- function(dates) {
       if (length(y) == 2) y <- as.character(seq(y[1], y[2], by = "days"))
       y
     })
-    x <- lapply(x, function(y) {
-      ifelse(stringr::str_detect(y, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
-             stringr::str_replace_all(y, "^-", "-000"),
-             ifelse(stringr::str_detect(y, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
-                    stringr::str_replace_all(y, "^-", "-00"),
-                    ifelse(stringr::str_detect(y, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
-                           stringr::str_replace_all(y, "^-", "-0"), y)))
-    })
+    x <- lapply(x, function(y) zero_padding(y))
   })
   dates
 }
@@ -348,4 +331,20 @@ unspecified_months <- function(dates) {
                                     "\\.\\.([:digit:]{4})-([:digit:]{2})$",
                                     "..\\1-\\2-31")
   dates
+}
+
+zero_padding <- function(y) {
+  y <- ifelse(stringr::str_detect(y, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+         stringr::str_replace_all(y, "^-", "-000"),
+         ifelse(stringr::str_detect(y, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                stringr::str_replace_all(y, "^-", "-00"),
+                ifelse(stringr::str_detect(y, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+                       stringr::str_replace_all(y, "^-", "-0"), y)))
+  y <- ifelse(stringr::str_detect(y, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+         paste0("0", y),
+         ifelse(stringr::str_detect(y, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                paste0("00", y),
+                ifelse(stringr::str_detect(y, "^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+                       paste0("000", y), y)))
+  y
 }

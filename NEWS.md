@@ -1,5 +1,9 @@
 # messydates 0.4.1
 
+## Package
+
+* The package now depends on R versions bigger or equal to 4.0 since functions for subsetting and comparing 'mdate' objects rely on functions introduced in that version
+
 ## Functions
 
 * Closed #83 by fixing how logical comparisons works for negative and year only dates

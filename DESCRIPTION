@@ -10,7 +10,7 @@ Description: Contains a set of tools for constructing and coercing
   This is useful for describing and analysing temporal information,
   whether historical or recent, where date precision may vary.
 Version: 0.4.1
-Date: 2024-04-15
+Date: 2024-04-18
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",

@@ -83,21 +83,21 @@ is_approximate <- function(x) {
 #'   the dates in the second vector.
 #'   Returns `NA` when the date order can't be determined.
 #' @examples
+#' as_messydate("2012-06-02") > as.Date("2012-06-01") # TRUE
 #' # 2012-06-XX could mean 2012-06-03, so unknown if it comes before 2012-06-02
 #' as_messydate("2012-06-XX") < as.Date("2012-06-02") # NA
 #' # But 2012-06-XX cannot be before 2012-06-01
 #' as_messydate("2012-06-XX") >= as.Date("2012-06-01") # TRUE
 #' @export
 `<.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
-  if (!is_messydate(e1) && !is_messydate(e2)) {
-    nums <- comparable_numerics(e1, e2)
-    return(as.numeric(nums[[1]]) < as.numeric(nums[[2]]))
-  }
+  if (!is_messydate(e1)) e1 <- as_messydate(e1)
+  if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
   x <- rep(NA, max(length(e1), length(e2)))
   x[ranges[["max1"]] < ranges[["min2"]]] <- TRUE
   x[ranges[["min1"]] > ranges[["max2"]]] <- FALSE
+  x[ranges[["max1"]] == ranges[["min2"]]] <- FALSE
+  x[ranges[["min1"]] == ranges[["max2"]]] <- FALSE
   x
 }
 
@@ -107,19 +107,6 @@ evalqOnLoad({
   registerS3method("<", "Date", `<.mdate`)
   registerS3method("<", "POSIXt", `<.mdate`)
 })
-
-# Converting to numbers before comparison prevents infinite loops.
-# But make sure both are counting seconds, or both are counting days.
-comparable_numerics <- function(e1, e2) {
-  if (!lubridate::is.POSIXt(e1) && lubridate::is.POSIXt(e2)) {
-    e1 <- lubridate::force_tz(e1, lubridate::tz(e2))
-    e1 <- as.POSIXct(e1)
-  } else if (lubridate::is.POSIXt(e1) && !lubridate::is.POSIXt(e2)) {
-    e2 <- lubridate::force_tz(e2, lubridate::tz(e1))
-    e2 <- as.POSIXct(e2)
-  }
-  list(as.numeric(e1), as.numeric(e2))
-}
 
 numeric_time_ranges <- function(e1, e2) {
   if (is_messydate(e1)) {
@@ -159,15 +146,14 @@ numeric_time_ranges <- function(e1, e2) {
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `>.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
-  if (!is_messydate(e1) && !is_messydate(e2)) {
-    nums <- comparable_numerics(e1, e2)
-    return(as.numeric(nums[[1]]) > as.numeric(nums[[2]]))
-  }
+  if (!is_messydate(e1)) e1 <- as_messydate(e1)
+  if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
   x <- rep(NA, max(length(e1), length(e2)))
   x[ranges[["min1"]] > ranges[["max2"]]] <- TRUE
   x[ranges[["max1"]] < ranges[["min2"]]] <- FALSE
+  x[ranges[["min1"]] == ranges[["max2"]]] <- FALSE
+  x[ranges[["max1"]] == ranges[["min2"]]] <- FALSE
   x
 }
 
@@ -181,11 +167,8 @@ evalqOnLoad({
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `<=.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
-  if (!is_messydate(e1) && !is_messydate(e2)) {
-    nums <- comparable_numerics(e1, e2)
-    return(as.numeric(nums[[1]]) <= as.numeric(nums[[2]]))
-  }
+  if (!is_messydate(e1)) e1 <- as_messydate(e1)
+  if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
   x <- rep(NA, max(length(e1), length(e2)))
   x[ranges[["max1"]] <= ranges[["min2"]]] <- TRUE
@@ -203,11 +186,8 @@ evalqOnLoad({
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `>=.mdate` <- function(e1, e2) {
-  if (is.character(e2)) e2 <- as_messydate(e2)
-  if (!is_messydate(e1) && !is_messydate(e2)) {
-    nums <- comparable_numerics(e1, e2)
-    return(as.numeric(nums[[1]]) >= as.numeric(nums[[2]]))
-  }
+  if (!is_messydate(e1)) e1 <- as_messydate(e1)
+  if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
   x <- rep(NA, max(length(e1), length(e2)))
   x[ranges[["min1"]] >= ranges[["max2"]]] <- TRUE

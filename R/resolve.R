@@ -87,6 +87,7 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
     if (length(x) > 1 & stringr::str_detect(x[1], "^-")) {
       x <- paste0("-", as.character(mean(lubridate::as_date(x),
                                          trim = 0, na.rm = TRUE)))
+      x <- zero_padding(x)
     }
     x
   }), recursive = FALSE)

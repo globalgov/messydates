@@ -66,24 +66,20 @@ expand_approximate <- function(dates, approx_range) {
 }
 
 expand_unspecified <- function(dates) {
+  # Assumes no century for ambiguous dates not specified previously when dates were coerced
+  dates <- zero_padding(dates)
   # Separate ranges and sets of dates
   dates <- stringr::str_replace_all(dates, ",", ",,")
   dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
                                     "\\1\\2-01-01..\\2-12-31\\3")
   dates <- unspecified_months(dates)
-  # Assumes century for ambiguous dates if not specified previously
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) < 23,
-                  paste0("20", dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}"))) > 23,
-                  paste0("19", dates), dates)
   dates <- stringr::str_replace_all(dates, ",,", ",")
   dates
 }
 
 expand_negative <- function(dates) {
   dates <- stringr::str_replace_all(dates, ",", ",,")
+  dates <- zero_padding(dates)
   dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})($|,)",
                                     "-\\1\\2-01-01%-\\2-12-31\\3")
   dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-02($|,)",
@@ -161,14 +157,10 @@ expand_negative_dates <- function(dates) {
       r
     })
     x <- lapply(x, function(y) {
-      if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
-                                                by = "days"))
+      if (length(y) == 2) y <- as.character(seq(y[1], y[2], by = "days"))
       y
     })
-    unlist(x)
-    x <- lapply(x, function(y) {
-      y <- ifelse(nchar(y) == 10, stringr::str_replace_all(y, "^-", "-0"), y)
-    })
+    x <- lapply(x, function(y) zero_padding(y))
   })
   dates
 }
@@ -339,4 +331,20 @@ unspecified_months <- function(dates) {
                                     "\\.\\.([:digit:]{4})-([:digit:]{2})$",
                                     "..\\1-\\2-31")
   dates
+}
+
+zero_padding <- function(y) {
+  y <- ifelse(stringr::str_detect(y, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+         stringr::str_replace_all(y, "^-", "-000"),
+         ifelse(stringr::str_detect(y, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                stringr::str_replace_all(y, "^-", "-00"),
+                ifelse(stringr::str_detect(y, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+                       stringr::str_replace_all(y, "^-", "-0"), y)))
+  y <- ifelse(stringr::str_detect(y, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+         paste0("0", y),
+         ifelse(stringr::str_detect(y, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                paste0("00", y),
+                ifelse(stringr::str_detect(y, "^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+                       paste0("000", y), y)))
+  y
 }

@@ -44,9 +44,9 @@ NULL
 as.Date.mdate <- function(x, ..., FUN) {
   if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
-  x <- ifelse(stringr::str_detect(x, "^-"),
-              lubridate::as_date(negative_dates(x)),
-              lubridate::as_date(x))
+  x <- suppressWarnings(ifelse(stringr::str_detect(x, "^-"),
+                               lubridate::as_date(negative_dates(x)),
+                               lubridate::as_date(zero_padding(x))))
   as.Date(x, origin = "1970-01-01")
 }
 
@@ -76,9 +76,7 @@ as.POSIXlt.mdate <- function(x, ..., FUN) {
 #' @importFrom stringr str_detect str_replace str_remove str_extract
 #' @importFrom lubridate ymd years as_date
 negative_dates <- function(x) {
-  x <- ifelse(stringr::str_detect(x, "^-[0-9]{3}-"),
-              stringr::str_replace(x, "^-", "0"),
-              stringr::str_remove(x, "^-"))
+  x <- stringr::str_remove(x, "^-")
   y <- stringr::str_extract(x, "^[0-9]{4}")
   md <- stringr::str_replace(x, "^[0-9]{4}", "0000")
   x <- lubridate::ymd(md) - lubridate::years(y)

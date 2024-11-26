@@ -71,7 +71,7 @@ we use `on_or_before()` and `on_or after()` to annotate these dates.
 ```{r censored, warning=FALSE}
 battles$Date <- as_messydate(ifelse(battles$Battle == "Battle of Herat", on_or_before(battles$Date), battles$Date))
 battles$Date <- as_messydate(ifelse(battles$Battle == "Operation Vaksince", on_or_after(battles$Date), battles$Date))
-tibble::tibble(battles)
+dplyr::tibble(battles)
 ```
 
 Additional annotations for approximate dates, are indicated by adding a `~` to year,
@@ -85,7 +85,7 @@ we can use `as_uncertain()` or `as_approximate()` to annotate these dates.
 ```{r approximate, warning=FALSE}
 battles$Date <- as_messydate(ifelse(battles$Battle == "Battle of Shawali Kowt", as_uncertain(battles$Date), battles$Date))
 battles$Date <- as_messydate(ifelse(battles$Battle == "Battle of Sayyd Alma Kalay", as_approximate(battles$Date), battles$Date))
-tibble::tibble(battles)
+dplyr::tibble(battles)
 ```
 
 ## Expand
@@ -117,7 +117,7 @@ picking the most succinct representation of dates possible.
 We can contract back the dates in the Battles data previously expanded.
 
 ```{r contract, warning=FALSE}
-tibble::tibble(contract = contract(battles$Date))
+dplyr::tibble(contract = contract(battles$Date))
 ```
 
 ## Coerce from messydates
@@ -136,7 +136,7 @@ These functions are particularly useful for use with existing methods and models
 especially for checking the robustness of results.
 
 ```{r coerce, warning=FALSE}
-tibble::tibble(min = as.Date(battles$Date, min),
+dplyr::tibble(min = as.Date(battles$Date, min),
                max = as.Date(battles$Date, max),
                median = as.Date(battles$Date, median),
                mean = as.Date(battles$Date, mean),
@@ -173,7 +173,7 @@ as_messydate(battles$Date[17]) %union% as_messydate(battles$Date[18])
 As well, we can do some arithmetic operations in the `mdate` variable.
 
 ```{r operate}
-tibble::tibble("one day more" = battles$Date + 1,
+dplyr::tibble("one day more" = battles$Date + 1,
                "one day less" = battles$Date - "1 day")
 ```
 

@@ -10,7 +10,7 @@
 #' TRUE by default.
 #' If FALSE ranges are returned in compact format.
 #' @return A `mdate` vector
-#' @importFrom tibble tibble
+#' @importFrom dplyr tibble
 #' @importFrom lubridate NA_Date_
 #' @importFrom stringr str_replace_all str_detect str_count str_replace str_extract
 #' @importFrom dplyr lead last first
@@ -19,7 +19,7 @@
 #' "2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}",
 #' "{2001-01,2001-02-02}", "28 BC", "-2000-01-01",
 #' "{2001-01-01, 2001-01-02, 2001-01-03}"))
-#' tibble::tibble(d, contract(d))
+#' dplyr::tibble(d, contract(d))
 #' @export
 contract <- function(x, collapse = TRUE) {
   if (!inherits(x, 'list')) {

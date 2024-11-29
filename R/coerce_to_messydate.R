@@ -108,6 +108,13 @@ as_messydate.character <- function(x, resequence = NULL) {
   new_messydate(d)
 }
 
+#' @describeIn messydate Coerce numeric objects to `mdate` class
+#' @export
+as_messydate.numeric <- function(x, resequence = NULL) {
+  d <- as.character(x)
+  new_messydate(d)
+}
+
 #' @describeIn messydate Coerce list date objects to the most concise
 #' representation of `mdate` class
 #' @examples

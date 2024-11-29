@@ -7,6 +7,7 @@
 \alias{as_messydate.POSIXct}
 \alias{as_messydate.POSIXlt}
 \alias{as_messydate.character}
+\alias{as_messydate.numeric}
 \alias{as_messydate.list}
 \alias{mdate}
 \alias{make_messydate}
@@ -21,6 +22,8 @@ as_messydate(x, resequence = FALSE)
 \method{as_messydate}{POSIXlt}(x, resequence = FALSE)
 
 \method{as_messydate}{character}(x, resequence = NULL)
+
+\method{as_messydate}{numeric}(x, resequence = NULL)
 
 \method{as_messydate}{list}(x, resequence = FALSE)
 
@@ -85,6 +88,8 @@ function defaults to \code{as_messydate()}.
 \item \code{as_messydate(POSIXlt)}: Coerce from \code{POSIXlt} to \code{mdate} class
 
 \item \code{as_messydate(character)}: Coerce character date objects to \code{mdate} class
+
+\item \code{as_messydate(numeric)}: Coerce numeric objects to \code{mdate} class
 
 \item \code{as_messydate(list)}: Coerce list date objects to the most concise
 representation of \code{mdate} class

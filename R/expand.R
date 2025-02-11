@@ -1,5 +1,5 @@
 #' Expand messy dates to lists of dates
-#'
+#' @description
 #' These functions expand on date ranges, sets of dates, and unspecified or
 #' approximate dates (annotated with '..', '{}', 'XX' or '~').
 #' As these messydates may refer to several possible dates,
@@ -48,6 +48,7 @@ expand <- function(x, approx_range = 0) {
   x
 }
 
+## expand approx ####
 expand_approximate <- function(dates, approx_range) {
   # Substitute signs
   dates <- ifelse(stringr::str_detect(dates, "^\\~[:digit:]{4}$"),
@@ -62,106 +63,6 @@ expand_approximate <- function(dates, approx_range) {
   dates <- suppressWarnings(expand_approximate_months(dates, approx_range))
   dates <- suppressWarnings(expand_approximate_days(dates, approx_range))
   dates <- unlist(dates)
-  dates
-}
-
-expand_unspecified <- function(dates) {
-  # Assumes no century for ambiguous dates not specified previously when dates were coerced
-  dates <- zero_padding(dates)
-  # Separate ranges and sets of dates
-  dates <- stringr::str_replace_all(dates, ",", ",,")
-  dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
-                                    "\\1\\2-01-01..\\2-12-31\\3")
-  dates <- unspecified_months(dates)
-  dates <- stringr::str_replace_all(dates, ",,", ",")
-  dates
-}
-
-expand_negative <- function(dates) {
-  dates <- stringr::str_replace_all(dates, ",", ",,")
-  dates <- zero_padding(dates)
-  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})($|,)",
-                                    "-\\1\\2-01-01%-\\2-12-31\\3")
-  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-02($|,)",
-                                    "\\1\\2-02-01%\\2-02-28\\3")
-  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-04($|,)",
-                                    "\\1\\2-04-01%\\2-04-30\\3")
-  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-06($|,)",
-                                    "\\1\\2-06-01%\\2-06-30\\3")
-  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-09($|,)",
-                                    "\\1\\2-09-01%\\2-09-30\\3")
-  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-11($|,)",
-                                    "\\1\\2-11-01%\\2-11-30\\3")
-  dates <- stringr::str_replace_all(dates,
-                                    "(^|,)-([:digit:]{4})-([:digit:]{2})($|,)",
-                                    "\\1\\2-\\3-01%\\2-\\3-31\\4")
-  dates <- stringr::str_replace_all(dates, "-,", "-")
-  dates <- stringr::str_replace_all(dates, ",,", ",")
-  dates
-}
-
-expand_sets <- function(dates) {
-  # Sets of months
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-XX-31$|^[:digit:]{4}-XX-30$"),
-                  paste(gsub("XX-31|XX-30", "01-31", dates),
-                        gsub("XX-31|XX-30", "02-28", dates),
-                        gsub("XX-31|XX-30", "03-31", dates),
-                        gsub("XX-31|XX-30", "04-30", dates),
-                        gsub("XX-31|XX-30", "05-31", dates),
-                        gsub("XX-31|XX-30", "06-30", dates),
-                        gsub("XX-31|XX-30", "07-31", dates),
-                        gsub("XX-31|XX-30", "08-31", dates),
-                        gsub("XX-31|XX-30", "09-30", dates),
-                        gsub("XX-31|XX-30", "10-31", dates),
-                        gsub("XX-31|XX-30", "11-30", dates),
-                        gsub("XX-31|XX-30", "12-31", dates),
-                        sep = ","), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-XX-[:digit:]{2}$"),
-                  paste(gsub("XX", "01", dates), gsub("XX", "02", dates),
-                        gsub("XX", "03", dates), gsub("XX", "04", dates),
-                        gsub("XX", "05", dates), gsub("XX", "06", dates),
-                        gsub("XX", "07", dates), gsub("XX", "08", dates),
-                        gsub("XX", "09", dates), gsub("XX", "10", dates),
-                        gsub("XX", "11", dates), gsub("XX", "12", dates),
-                        sep = ","), dates)
-  dates <- stringr::str_split(dates, "\\,")
-  dates
-}
-
-expand_ranges <- function(dates) {
-  dates <- suppressWarnings(ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
-                                     nchar(dates) < 17,
-                                   expand_unspecified_ranges(dates), dates))
-  dates <- suppressWarnings(lapply(dates, function(x) {
-    x <- stringr::str_split(x, "\\.\\.")
-    x <- lapply(x, function(y) {
-      if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
-                                                by = "days"))
-      y
-    })
-    x <- ifelse(stringr::str_detect(x, "\\%"), expand_negative_dates(x), x)
-    unlist(x)
-  }))
-  dates
-}
-
-expand_negative_dates <- function(dates) {
-  dates <- lapply(dates, function(x) {
-    x <- stringr::str_split(x, "\\%")
-    x <- lapply(x, function(a) stringr::str_remove(a, "^-"))
-    x <- lapply(x, function(r) {
-      y <- stringr::str_extract(r, "^[0-9]{4}")
-      md <- stringr::str_replace(r, "^[0-9]{4}", "0000")
-      r <- lubridate::ymd(md) - lubridate::years(y)
-      r <- lubridate::as_date(r)
-      r
-    })
-    x <- lapply(x, function(y) {
-      if (length(y) == 2) y <- as.character(seq(y[1], y[2], by = "days"))
-      y
-    })
-    x <- lapply(x, function(y) zero_padding(y))
-  })
   dates
 }
 
@@ -261,39 +162,34 @@ expand_approximate_days <- function(dates, approx_range) {
   dates
 }
 
-expand_unspecified_ranges <- function(dates) {
-  dates <- strsplit(as.character(dates), "\\.\\.")
-  dates1 <- purrr::map_chr(dates, 1)
-  dates1 <- ifelse(stringr::str_detect(dates1,
-                                       "^([:digit:]{4})$|^-([:digit:]{4})$"),
-                  paste0(dates1, "-01-01"), dates1)
-  dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})-([:digit:]{2})$|^-([:digit:]{4})-([:digit:]{2})$"),
-                   paste0(dates1, "-01"), dates1)
-  dates2 <- purrr::map_chr(dates, 2)
-  dates2 <- ifelse(stringr::str_detect(dates2,
-                                       "^([:digit:]{4})$|^-([:digit:]{4})$"),
-                   paste0(dates2, "-12-31"), dates2)
-  dates2 <- ifelse(stringr::str_detect(dates2, "^([:digit:]{4})-02$|^-([:digit:]{4})-02$"),
-                   paste0(dates2, "-28"), dates2)
-  dates2 <- ifelse(stringr::str_detect(dates2,
-                                       "^([:digit:]{4})-01$|^-([:digit:]{4})-01$|
-                                       |^([:digit:]{4})-03$|^-([:digit:]{4})-03$|
-                                       |^([:digit:]{4})-05$|^-([:digit:]{4})-05$|
-                                       |^([:digit:]{4})-07$|^-([:digit:]{4})-07$|
-                                       |^([:digit:]{4})-08$|^-([:digit:]{4})-08$|
-                                       |^([:digit:]{4})-10$|^-([:digit:]{4})-10$|
-                                       |^([:digit:]{4})-12$|^-([:digit:]{4})-12$"),
-                   paste0(dates2, "-31"), dates2)
-  dates2 <- ifelse(stringr::str_detect(dates2,
-                                       "^([:digit:]{4})-04$|^-([:digit:]{4})-04$|
-                                       |^([:digit:]{4})-06$|^-([:digit:]{4})-06$|
-                                       |^([:digit:]{4})-09$|^-([:digit:]{4})-09$|
-                                       |^([:digit:]{4})-11$|^-([:digit:]{4})-11$"),
-                   paste0(dates2, "-30"), dates2)
-  dates <- paste(dates1, dates2, sep = "..")
-  dates <- ifelse(stringr::str_detect(dates, "^-|\\.\\.-"),
-                  gsub("\\.\\.", "%", dates), dates)
+## expand unspecified ####
+
+expand_unspecified <- function(dates) {
+  # Assumes no century for ambiguous dates not specified previously when dates were coerced
+  dates <- zero_padding(dates)
+  # Separate ranges and sets of dates
+  dates <- stringr::str_replace_all(dates, ",", ",,")
+  dates <- stringr::str_replace_all(dates, "(^|,)([:digit:]{4})($|,)",
+                                    "\\1\\2-01-01..\\2-12-31\\3")
+  dates <- unspecified_months(dates)
+  dates <- stringr::str_replace_all(dates, ",,", ",")
   dates
+}
+
+zero_padding <- function(y) {
+  y <- ifelse(stringr::str_detect(y, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+              stringr::str_replace_all(y, "^-", "-000"),
+              ifelse(stringr::str_detect(y, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                     stringr::str_replace_all(y, "^-", "-00"),
+                     ifelse(stringr::str_detect(y, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+                            stringr::str_replace_all(y, "^-", "-0"), y)))
+  y <- ifelse(stringr::str_detect(y, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
+              paste0("0", y),
+              ifelse(stringr::str_detect(y, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
+                     paste0("00", y),
+                     ifelse(stringr::str_detect(y, "^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
+                            paste0("000", y), y)))
+  y
 }
 
 unspecified_months <- function(dates) {
@@ -333,18 +229,132 @@ unspecified_months <- function(dates) {
   dates
 }
 
-zero_padding <- function(y) {
-  y <- ifelse(stringr::str_detect(y, "^\\-([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
-         stringr::str_replace_all(y, "^-", "-000"),
-         ifelse(stringr::str_detect(y, "^\\-([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
-                stringr::str_replace_all(y, "^-", "-00"),
-                ifelse(stringr::str_detect(y, "^\\-([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
-                       stringr::str_replace_all(y, "^-", "-0"), y)))
-  y <- ifelse(stringr::str_detect(y, "^([:digit:]{3})-([:digit:]{2})-([:digit:]{2})$"),
-         paste0("0", y),
-         ifelse(stringr::str_detect(y, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$"),
-                paste0("00", y),
-                ifelse(stringr::str_detect(y, "^([:digit:]{1})-([:digit:]{2})-([:digit:]{2})$"),
-                       paste0("000", y), y)))
-  y
+## expand negative ####
+
+expand_negative <- function(dates) {
+  dates <- stringr::str_replace_all(dates, ",", ",,")
+  dates <- zero_padding(dates)
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})($|,)",
+                                    "-\\1\\2-01-01%-\\2-12-31\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-02($|,)",
+                                    "\\1\\2-02-01%\\2-02-28\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-04($|,)",
+                                    "\\1\\2-04-01%\\2-04-30\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-06($|,)",
+                                    "\\1\\2-06-01%\\2-06-30\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-09($|,)",
+                                    "\\1\\2-09-01%\\2-09-30\\3")
+  dates <- stringr::str_replace_all(dates, "(^|,)-([:digit:]{4})-11($|,)",
+                                    "\\1\\2-11-01%\\2-11-30\\3")
+  dates <- stringr::str_replace_all(dates,
+                                    "(^|,)-([:digit:]{4})-([:digit:]{2})($|,)",
+                                    "\\1\\2-\\3-01%\\2-\\3-31\\4")
+  dates <- stringr::str_replace_all(dates, "-,", "-")
+  dates <- stringr::str_replace_all(dates, ",,", ",")
+  dates
 }
+
+## expand sets ####
+
+expand_sets <- function(dates) {
+  # Sets of months
+  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-XX-31$|^[:digit:]{4}-XX-30$"),
+                  paste(gsub("XX-31|XX-30", "01-31", dates),
+                        gsub("XX-31|XX-30", "02-28", dates),
+                        gsub("XX-31|XX-30", "03-31", dates),
+                        gsub("XX-31|XX-30", "04-30", dates),
+                        gsub("XX-31|XX-30", "05-31", dates),
+                        gsub("XX-31|XX-30", "06-30", dates),
+                        gsub("XX-31|XX-30", "07-31", dates),
+                        gsub("XX-31|XX-30", "08-31", dates),
+                        gsub("XX-31|XX-30", "09-30", dates),
+                        gsub("XX-31|XX-30", "10-31", dates),
+                        gsub("XX-31|XX-30", "11-30", dates),
+                        gsub("XX-31|XX-30", "12-31", dates),
+                        sep = ","), dates)
+  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-XX-[:digit:]{2}$"),
+                  paste(gsub("XX", "01", dates), gsub("XX", "02", dates),
+                        gsub("XX", "03", dates), gsub("XX", "04", dates),
+                        gsub("XX", "05", dates), gsub("XX", "06", dates),
+                        gsub("XX", "07", dates), gsub("XX", "08", dates),
+                        gsub("XX", "09", dates), gsub("XX", "10", dates),
+                        gsub("XX", "11", dates), gsub("XX", "12", dates),
+                        sep = ","), dates)
+  dates <- stringr::str_split(dates, "\\,")
+  dates
+}
+
+## expand ranges ####
+
+expand_ranges <- function(dates) {
+  dates <- suppressWarnings(ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
+                                     nchar(dates) < 17,
+                                   expand_unspecified_ranges(dates), dates))
+  dates <- suppressWarnings(lapply(dates, function(x) {
+    x <- stringr::str_split(x, "\\.\\.")
+    x <- lapply(x, function(y) {
+      if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
+                                                by = "days"))
+      y
+    })
+    x <- ifelse(stringr::str_detect(x, "\\%"), expand_negative_dates(x), x)
+    unlist(x)
+  }))
+  dates
+}
+
+expand_negative_dates <- function(dates) {
+  dates <- lapply(dates, function(x) {
+    x <- stringr::str_split(x, "\\%")
+    x <- lapply(x, function(a) stringr::str_remove(a, "^-"))
+    x <- lapply(x, function(r) {
+      y <- stringr::str_extract(r, "^[0-9]{4}")
+      md <- stringr::str_replace(r, "^[0-9]{4}", "0000")
+      r <- lubridate::ymd(md) - lubridate::years(y)
+      r <- lubridate::as_date(r)
+      r
+    })
+    x <- lapply(x, function(y) {
+      if (length(y) == 2) y <- as.character(seq(y[1], y[2], by = "days"))
+      y
+    })
+    x <- lapply(x, function(y) zero_padding(y))
+  })
+  dates
+}
+
+expand_unspecified_ranges <- function(dates) {
+  dates <- strsplit(as.character(dates), "\\.\\.")
+  dates1 <- purrr::map_chr(dates, 1)
+  dates1 <- ifelse(stringr::str_detect(dates1,
+                                       "^([:digit:]{4})$|^-([:digit:]{4})$"),
+                  paste0(dates1, "-01-01"), dates1)
+  dates1 <- ifelse(stringr::str_detect(dates1, "^([:digit:]{4})-([:digit:]{2})$|^-([:digit:]{4})-([:digit:]{2})$"),
+                   paste0(dates1, "-01"), dates1)
+  dates2 <- purrr::map_chr(dates, 2)
+  dates2 <- ifelse(stringr::str_detect(dates2,
+                                       "^([:digit:]{4})$|^-([:digit:]{4})$"),
+                   paste0(dates2, "-12-31"), dates2)
+  dates2 <- ifelse(stringr::str_detect(dates2, "^([:digit:]{4})-02$|^-([:digit:]{4})-02$"),
+                   paste0(dates2, "-28"), dates2)
+  dates2 <- ifelse(stringr::str_detect(dates2,
+                                       "^([:digit:]{4})-01$|^-([:digit:]{4})-01$|
+                                       |^([:digit:]{4})-03$|^-([:digit:]{4})-03$|
+                                       |^([:digit:]{4})-05$|^-([:digit:]{4})-05$|
+                                       |^([:digit:]{4})-07$|^-([:digit:]{4})-07$|
+                                       |^([:digit:]{4})-08$|^-([:digit:]{4})-08$|
+                                       |^([:digit:]{4})-10$|^-([:digit:]{4})-10$|
+                                       |^([:digit:]{4})-12$|^-([:digit:]{4})-12$"),
+                   paste0(dates2, "-31"), dates2)
+  dates2 <- ifelse(stringr::str_detect(dates2,
+                                       "^([:digit:]{4})-04$|^-([:digit:]{4})-04$|
+                                       |^([:digit:]{4})-06$|^-([:digit:]{4})-06$|
+                                       |^([:digit:]{4})-09$|^-([:digit:]{4})-09$|
+                                       |^([:digit:]{4})-11$|^-([:digit:]{4})-11$"),
+                   paste0(dates2, "-30"), dates2)
+  dates <- paste(dates1, dates2, sep = "..")
+  dates <- ifelse(stringr::str_detect(dates, "^-|\\.\\.-"),
+                  gsub("\\.\\.", "%", dates), dates)
+  dates
+}
+

@@ -12,26 +12,31 @@
 \alias{random.mdate}
 \title{Resolves messy dates into a single value}
 \usage{
-\method{min}{mdate}(..., na.rm = TRUE)
+\method{min}{mdate}(..., na.rm = TRUE, recursive = FALSE)
 
-\method{max}{mdate}(..., na.rm = TRUE)
+\method{max}{mdate}(..., na.rm = TRUE, recursive = FALSE)
 
-\method{median}{mdate}(..., na.rm = TRUE)
+\method{median}{mdate}(..., na.rm = TRUE, recursive = FALSE)
 
-\method{mean}{mdate}(..., trim = 0, na.rm = TRUE)
+\method{mean}{mdate}(..., trim = 0, na.rm = TRUE, recursive = FALSE)
 
-modal(..., na.rm = FALSE)
+modal(..., na.rm = FALSE, recursive = FALSE)
 
-\method{modal}{mdate}(..., na.rm = TRUE)
+\method{modal}{mdate}(..., na.rm = TRUE, recursive = FALSE)
 
-random(..., size, replace = FALSE, prob = NULL)
+random(..., size, replace = FALSE, prob = NULL, recursive = FALSE)
 
-\method{random}{mdate}(..., size, replace = FALSE, prob = NULL)
+\method{random}{mdate}(..., size, replace = FALSE, prob = NULL, recursive = FALSE)
 }
 \arguments{
 \item{...}{a mdate object}
 
 \item{na.rm}{Should NAs be removed? True by default.}
+
+\item{recursive}{If recursive = TRUE, then the dates will be resolved
+to a single date. If recursive = FALSE, then the dates will be resolved
+to a vector the length of the original vector.
+By default FALSE.}
 
 \item{trim}{the fraction (0 to 0.5) of observations to be trimmed
 from each end of x before the mean is computed.
@@ -62,10 +67,10 @@ d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 "{2001-01,2001-02-02}", "2008-XX-31"))
 d
-min(d)
 max(d)
 mean(d)
 median(d)
 modal(d)
+min(d)
 random(d)
 }

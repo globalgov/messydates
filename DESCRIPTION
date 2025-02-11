@@ -10,7 +10,7 @@ Description: Contains a set of tools for constructing and coercing
   This is useful for describing and analysing temporal information,
   whether historical or recent, where date precision may vary.
 Version: 0.4.2
-Date: 2024-11-25
+Date: 2025-02-11
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",
@@ -34,6 +34,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 LazyData: true
 VignetteBuilder: knitr
+Depends: 
+    R (>= 4.0)
 Imports:
     stringr,
     purrr,
@@ -44,8 +46,8 @@ Suggests:
     covr,
     rmarkdown,
     knitr
-Config/testthat/edition: 3
 URL: https://globalgov.github.io/messydates/, https://github.com/globalgov/messydates
 BugReports: https://github.com/globalgov/messydates/issues
-Depends: 
-    R (>= 4.0)
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: logical-operators 

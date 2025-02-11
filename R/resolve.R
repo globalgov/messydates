@@ -17,57 +17,83 @@
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #' "{2001-01,2001-02-02}", "2008-XX-31"))
 #' d
-#' min(d)
 #' max(d)
 #' mean(d)
 #' median(d)
 #' modal(d)
-#' random(d)
 #' @name resolve
 NULL
 #> NULL
 
 #' @rdname resolve
+#' @param recursive If recursive = TRUE, then the dates will be resolved
+#'   to a single date. If recursive = FALSE, then the dates will be resolved
+#'   to a vector the length of the original vector.
+#'   By default FALSE.
+#' @examples
+#' min(d)
 #' @export
-min.mdate <- function(..., na.rm = TRUE) {
-  x <- list(...)
-  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = FALSE)
-  y <- unlist(lapply(y, function(x) min(x, na.rm = na.rm)),
-              recursive = FALSE)
-  y
+min.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+  x <- as.list(...)
+  y <- unlist(lapply(x, function(y){
+    `if`(is_precise(y), y, expand(y))
+  }), recursive = recursive)
+  if(recursive){
+    min(subset(y, !(is.infinite(y) | y=="9999-12-31")),
+        na.rm = na.rm)
+  } else {
+    unlist(lapply(y, function(x){
+      min(subset(x, !(is.infinite(x) | x=="9999-12-31")),
+          na.rm = na.rm)
+    }), recursive = recursive)
+  }
 }
 
 #' @rdname resolve
 #' @export
-max.mdate <- function(..., na.rm = TRUE) {
-  x <- list(...)
-  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = FALSE)
-  y <- unlist(lapply(y, function(x) max(x, na.rm = na.rm)),
-              recursive = FALSE)
-  y
+max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+  x <- as.list(...)
+  y <- unlist(lapply(x, function(y){
+    `if`(is_precise(y), y, expand(y))
+  }), recursive = recursive)
+  if(recursive){
+    max(subset(y, !(is.infinite(y) | y=="9999-12-31")),
+        na.rm = na.rm)
+  } else {
+    unlist(lapply(y, function(x){
+      max(subset(x, !(is.infinite(x) | x=="9999-12-31")),
+          na.rm = na.rm)
+    }), recursive = recursive)
+  }
 }
 
 #' @rdname resolve
 #' @importFrom stats median
 #' @export
-median.mdate <- function(..., na.rm = TRUE) {
-  x <- list(...)
+median.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+  x <- as.list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = FALSE)
-  y <- unlist(lapply(y, function(z) {
-    if (length(z) %% 2 == 0) {
-      z <- unlist(z[-1])
-      z <- as.character(median(z, na.rm = na.rm))
-      z
+              recursive = recursive)
+  if(recursive){
+    if (length(y) %% 2 == 0) {
+      as.character(median(unlist(y[-1]), na.rm = na.rm))
     }
     else{
-      z <- as.character(median(z, na.rm = na.rm))
-      z
+      as.character(median(y, na.rm = na.rm))
     }
-  }), recursive = FALSE)
-  y
+  } else {
+    unlist(lapply(y, function(z) {
+      if (length(z) %% 2 == 0) {
+        z <- unlist(z[-1])
+        z <- as.character(median(z, na.rm = na.rm))
+        z
+      }
+      else{
+        z <- as.character(median(z, na.rm = na.rm))
+        z
+      }
+    }), recursive = FALSE)
+  }
 }
 
 #' @rdname resolve
@@ -76,43 +102,57 @@ median.mdate <- function(..., na.rm = TRUE) {
 #' Values of trim outside that range are taken as the nearest endpoint.
 #' @importFrom lubridate as_date
 #' @export
-mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
-  x <- list(...)
+mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
+  x <- as.list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = FALSE)
-  y <- unlist(lapply(y, function(x) {
-    if (length(x) > 1 & stringr::str_detect(x[1], "^-", negate = TRUE)) {
-      x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
+              recursive = recursive)
+  if(recursive){
+    if (length(y) > 1 & stringr::str_detect(y[1], "^-", negate = TRUE)) {
+      y <- as.character(mean(as.Date(y), trim = 0, na.rm = TRUE))
     }
-    if (length(x) > 1 & stringr::str_detect(x[1], "^-")) {
-      x <- paste0("-", as.character(mean(lubridate::as_date(x),
+    if (length(y) > 1 & stringr::str_detect(y[1], "^-")) {
+      y <- paste0("-", as.character(mean(lubridate::as_date(y),
                                          trim = 0, na.rm = TRUE)))
-      x <- zero_padding(x)
+      y <- zero_padding(y)
     }
-    x
-  }), recursive = FALSE)
-  y
+    y
+  } else {
+    unlist(lapply(y, function(x) {
+      if (length(x) > 1 & stringr::str_detect(x[1], "^-", negate = TRUE)) {
+        x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
+      }
+      if (length(x) > 1 & stringr::str_detect(x[1], "^-")) {
+        x <- paste0("-", as.character(mean(lubridate::as_date(x),
+                                           trim = 0, na.rm = TRUE)))
+        x <- zero_padding(x)
+      }
+      x
+    }), recursive = FALSE)
+  }
 }
 
 #' @rdname resolve
 #' @export
-modal <- function(..., na.rm = FALSE) UseMethod("modal")
+modal <- function(..., na.rm = FALSE, recursive = FALSE) UseMethod("modal")
 
 #' @rdname resolve
 #' @export
-modal.mdate <- function(..., na.rm = TRUE) {
-  x <- list(...)
+modal.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+  x <- as.list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = FALSE)
+              recursive = recursive)
   getmode <- function(v) {
     uniqv <- unique(v)
     uniqv[which.max(tabulate(match(v, uniqv)))]
   }
-  y <- unlist(lapply(y, function(x) {
-    if (length(x) > 1) x <- as.character(getmode(x))
-    x
-  }), recursive = FALSE)
-  y
+  if(recursive){
+    as.character(getmode(y))
+  } else {
+    unlist(lapply(y, function(x) {
+      if (length(x) > 1) x <- as.character(getmode(x))
+      x
+    }), recursive = FALSE)
+  }
 }
 
 #' @rdname resolve
@@ -123,20 +163,25 @@ modal.mdate <- function(..., na.rm = TRUE) {
 #' @export
 random <- function(..., size,
                    replace = FALSE,
-                   prob = NULL) UseMethod("random")
+                   prob = NULL, recursive = FALSE) UseMethod("random")
 
 #' @rdname resolve
+#' @examples
+#' random(d)
 #' @export
 random.mdate <- function(...,
                            size,
                            replace = FALSE,
-                           prob = NULL) {
-  x <- list(...)
+                           prob = NULL, recursive = FALSE) {
+  x <- as.list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = FALSE)
-  y <- unlist(lapply(y, function(x) {
-    if (length(x) > 1) x <- as.character(sample(x, size = 1))
-    x
-  }), recursive = FALSE)
-  y
+              recursive = recursive)
+  if(recursive){
+    as.character(sample(y, size = 1))
+  } else {
+    unlist(lapply(y, function(x) {
+      if (length(x) > 1) x <- as.character(sample(x, size = 1))
+      x
+    }), recursive = FALSE)
+  }
 }

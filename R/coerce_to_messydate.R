@@ -431,6 +431,89 @@ add_zero_set <- function(dates) {
   dates
 }
 
+extract_from_text <- function(v) {
+  # get ordinal and numeric dates spelled and replace in text
+  out <- stringr::str_squish(gsub("\\,|\\.|of | on | and|the | this|
+                                  | day|year|month",
+                                  " ", v))
+  for (k in seq_len(nrow(text_to_number))) {
+    out <- gsub(paste0(text_to_number$text[k]),
+                paste0(text_to_number$numeric[k]),
+                out, ignore.case = TRUE,
+                perl = T)
+  }
+  # get the months into date form
+  months <- data.frame(months = c("january", "february", "march", "april",
+                                  "may", "june", "july", "august", "september",
+                                  "october", "november", "december"),
+                       numeric = c("-01-", "-02-", "-03-", "-04-", "-05-",
+                                   "-06-", "-07-", "-08-", "-09-", "-10-",
+                                   "-11-", "-12-"))
+  for (k in seq_len(nrow(months))) {
+    out <- gsub(paste0(months$months[k]),
+                paste0(months$numeric[k]),
+                out, ignore.case = TRUE,
+                perl = T)
+  }
+  # correct double white space left and standardize separators
+  out <- gsub("- -| -|- |/", "-", stringr::str_squish(out))
+  # get the first date per row
+  out <- stringi::stri_extract_first_regex(out,
+                              "^[:digit:]{2}-[:digit:]{2}-[:digit:]{2}$|
+                              |^[:digit:]{1}-[:digit:]{2}-[:digit:]{2}$|
+                              |^[:digit:]{2}-[:digit:]{1}-[:digit:]{2}$|
+                              |^[:digit:]{1}-[:digit:]{1}-[:digit:]{2}$|
+                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{2}|
+                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{1}|
+                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{2}|
+                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{1}|
+                              |[:digit:]{2}-[:digit:]{2}-[:digit:]{4}|
+                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{4}|
+                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
+                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}")
+  out
+}
+
+written_month <- function(dates) {
+  dates <- stringr::str_squish(stringi::stri_replace_all_regex(tolower(dates),
+                                                        ",|-", " "))
+  dates <- stringi::stri_replace_all_regex(dates,
+                                    "([:alpha:]{3}) ([:digit:]{1,2}) ([:digit:]{4})",
+                                    "$3 $1 $2")
+  dates <- stringi::stri_replace_all_regex(dates,
+                                    "([:digit:]{4}) ([:digit:]{1,2}) ([:alpha:]{3})",
+                                    "$1 $3 $2")
+  dates <- stringi::stri_replace_all_regex(dates, " jan ", "-01-")
+  dates <- stringi::stri_replace_all_regex(dates, " feb ", "-02-")
+  dates <- stringi::stri_replace_all_regex(dates, " mar ", "-03-")
+  dates <- stringi::stri_replace_all_regex(dates, " apr ", "-04-")
+  dates <- stringi::stri_replace_all_regex(dates, " may ", "-05-")
+  dates <- stringi::stri_replace_all_regex(dates, " jun ", "-06-")
+  dates <- stringi::stri_replace_all_regex(dates, " jul ", "-07-")
+  dates <- stringi::stri_replace_all_regex(dates, " aug ", "-08-")
+  dates <- stringi::stri_replace_all_regex(dates, " sep ", "-09-")
+  dates <- stringi::stri_replace_all_regex(dates, " oct ", "-10-")
+  dates <- stringi::stri_replace_all_regex(dates, " nov ", "-11-")
+  dates <- stringi::stri_replace_all_regex(dates, " dec ", "-12-")
+  # 6 digit my or ym dates
+  dates <- stringi::stri_replace_all_regex(dates,
+                                    "([:alpha:]{3}) ([:digit:]{4})",
+                                    "$2 $1")
+  dates <- stringi::stri_replace_all_regex(dates, " jan$", "-01")
+  dates <- stringi::stri_replace_all_regex(dates, " feb$", "-02")
+  dates <- stringi::stri_replace_all_regex(dates, " mar$", "-03")
+  dates <- stringi::stri_replace_all_regex(dates, " apr$", "-04")
+  dates <- stringi::stri_replace_all_regex(dates, " may$", "-05")
+  dates <- stringi::stri_replace_all_regex(dates, " jun$", "-06")
+  dates <- stringi::stri_replace_all_regex(dates, " jul$", "-07")
+  dates <- stringi::stri_replace_all_regex(dates, " aug$", "-08")
+  dates <- stringi::stri_replace_all_regex(dates, " sep$", "-09")
+  dates <- stringi::stri_replace_all_regex(dates, " oct$", "-10")
+  dates <- stringi::stri_replace_all_regex(dates, " nov$", "-11")
+  dates <- stringi::stri_replace_all_regex(dates, " dec$", "-12")
+  dates
+}
+
 reorder_ambiguous <- function(d) {
   examples <- ifelse(as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "^[:digit:]{2}-"))) < 32 &
                        as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "-[:digit:]{2}-"))) < 32 &

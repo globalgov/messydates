@@ -1,25 +1,25 @@
 #' Expand messy dates to lists of dates
 #' @description
-#' These functions expand on date ranges, sets of dates, and unspecified or
-#' approximate dates (annotated with '..', '{}', 'XX' or '~').
-#' As these messydates may refer to several possible dates,
-#' the function "opens" these values to reveal a vector of all the possible
-#' dates implied.
-#' Imprecise dates (dates only containing information on year and/or month)
-#' are also expanded to include possible dates within that year and/or month.
-#' The function removes the annotation from dates with unreliable sources ('?'),
-#' before being expanded normally as though they were incomplete.
+#'   These functions expand on date ranges, sets of dates, and unspecified or
+#'   approximate dates (annotated with '..', '{}', 'XX' or '~').
+#'   As these messydates may refer to several possible dates,
+#'   the function "opens" these values to reveal a vector of all the possible
+#'   dates implied.
+#'   Imprecise dates (dates only containing information on year and/or month)
+#'   are also expanded to include possible dates within that year and/or month.
+#'   The function removes the annotation from dates with unreliable sources ('?'),
+#'   before being expanded normally as though they were incomplete.
 #' @param x A `mdate` object.
-#' If not an 'mdate' object, conversion is handled first with ´as_messydate()´.
+#'   If not an 'mdate' object, conversion is handled first with ´as_messydate()´.
 #' @param approx_range Range to expand approximate dates,
-#' or date components, annotated with '~', by default 0.
-#' That is, removes signs for approximate dates and
-#' treats these dates as precise dates.
-#' If 3, for example, adds 3 days for day approximation,
-#' 3 months for month approximation,
-#' 3 years for year/whole date approximation,
-#' 3 years and 3 months for year-month approximation,
-#' and 3 months and 3 days for month-day approximation.
+#'   or date components, annotated with '~', by default 0.
+#'   That is, removes signs for approximate dates and
+#'   treats these dates as precise dates.
+#'   If 3, for example, adds 3 days for day approximation,
+#'   3 months for month approximation,
+#'   3 years for year/whole date approximation,
+#'   3 years and 3 months for year-month approximation,
+#'   and 3 months and 3 days for month-day approximation.
 #' @return A list of dates, including all dates in each range or set.
 #' @importFrom stringr str_replace_all str_split str_detect
 #' str_extract str_remove_all
@@ -53,13 +53,12 @@ expand <- function(x, approx_range = 0) {
 ## expand approx ####
 expand_approximate <- function(dates, approx_range) {
   # Substitute signs
-  dates <- ifelse(stringr::str_detect(dates, "^\\~[:digit:]{4}$"),
-                  paste0(dates, "-01-01"), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}-\\~[:digit:]{2}$|^[:digit:]{4}-[:digit:]{2}\\~$"),
-                  paste0(dates, "-01"), dates)
-  dates <- ifelse(stringr::str_detect(dates, "\\~") &
-                    stringr::str_detect(dates, "\\.\\."),
-                  str_replace_all(dates, "\\~", ""), dates)
+  dates <- dplyr::case_when(
+    stringi::stri_detect_regex(dates, "^\\~[:digit:]{4}$") ~ paste0(dates, "-01-01"),
+    stringi::stri_detect_regex(dates, "^[:digit:]{4}-\\~[:digit:]{2}$|^[:digit:]{4}-[:digit:]{2}\\~$") ~ paste0(dates, "-01"),
+    stringr::str_detect(dates, "\\~") & stringr::str_detect(dates, "\\.\\.") ~ stringi::stri_replace_all_regex(dates, "\\~", ""),
+    .default = dates
+  )
   # expansion for approximate ranges not yet implemented
   dates <- suppressWarnings(expand_approximate_years(dates, approx_range))
   dates <- suppressWarnings(expand_approximate_months(dates, approx_range))
@@ -297,13 +296,14 @@ expand_ranges <- function(dates) {
                                      nchar(dates) < 17,
                                    expand_unspecified_ranges(dates), dates))
   dates <- suppressWarnings(lapply(dates, function(x) {
-    x <- stringr::str_split(x, "\\.\\.")
+    x <- stringi::stri_split_regex(x, "\\.\\.")
     x <- lapply(x, function(y) {
       if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
                                                 by = "days"))
       y
     })
-    x <- ifelse(stringr::str_detect(x, "\\%"), expand_negative_dates(x), x)
+    x <- ifelse(stringr::str_detect(x, "\\%"),
+                expand_negative_dates(x), x)
     unlist(x)
   }))
   dates
@@ -311,7 +311,7 @@ expand_ranges <- function(dates) {
 
 expand_negative_dates <- function(dates) {
   dates <- lapply(dates, function(x) {
-    x <- stringr::str_split(x, "\\%")
+    x <- stringi::stri_split_regex(x, "\\%")
     x <- lapply(x, function(a) stringr::str_remove(a, "^-"))
     x <- lapply(x, function(r) {
       y <- stringr::str_extract(r, "^[0-9]{4}")

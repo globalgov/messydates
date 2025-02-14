@@ -134,7 +134,7 @@ mdate <- as_messydate
 
 # Helper functions ####
 standardise_text <- function(v) {
-  dates <- ifelse(stringr::str_detect(v, "([:alpha:]{4})") &
+  dates <- ifelse(stringi::stri_detect_regex(v, "([:alpha:]{4})") &
                     !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
   dates <- ifelse(grepl("Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec",
@@ -144,75 +144,75 @@ standardise_text <- function(v) {
 }
 
 standardise_date_separators <- function(dates) {
-  dates <- stringr::str_replace_all(dates,
+  dates <- stringi::stri_replace_all_regex(dates,
                                     "(?<=[:digit:])\\.(?=[:digit:])", "-")
-  dates <- stringr::str_replace_all(dates, "\\/", "-")
+  dates <- stringi::stri_replace_all_regex(dates, "\\/", "-")
   dates <- stringi::stri_replace_all_regex(dates, "\\(|\\)|\\{|\\}|\\[|\\]", "")
-  dates <- stringr::str_trim(dates, side = "both")
+  dates <- stringi::stri_trim_both(dates)
   # Adds zero padding to days, months, sets, and ranges
-  dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
-  dates <- stringr::str_replace_all(dates, "([:digit:]{2})-([:digit:])$",
-                                    "\\1-0\\2")
-  dates <- stringr::str_replace_all(dates, "^([:digit:])-([:digit:]{2})",
-                                    "0\\1-\\2")
-  dates <- stringr::str_replace_all(dates, "\\_|\\:", "..") # range separators
-  dates <- stringr::str_replace_all(dates, "-([:digit:])\\.\\.", "-0\\1\\.\\.")
-  dates <- stringr::str_replace_all(dates, "\\.\\.([:digit:])-", "\\.\\.0\\1-")
-  dates <- stringr::str_replace_all(dates, " \\, |\\, | \\,", ",") # set separators
-  dates <- stringr::str_replace_all(dates, "-([:digit:]),", "-0\\1,")
-  dates <- stringr::str_replace_all(dates, ",([:digit:])-", "\\,0\\1-")
+  dates <- stringi::stri_replace_all_regex(dates, "-([:digit:])-", "-0$1-")
+  dates <- stringi::stri_replace_all_regex(dates, "([:digit:]{2})-([:digit:])$",
+                                    "$1-0$2")
+  dates <- stringi::stri_replace_all_regex(dates, "^([:digit:])-([:digit:]{2})",
+                                    "0$1-$2")
+  dates <- stringi::stri_replace_all_regex(dates, "\\_|\\:", "..") # range separators
+  dates <- stringi::stri_replace_all_regex(dates, "-([:digit:])\\.\\.", "-0$1\\.\\.")
+  dates <- stringi::stri_replace_all_regex(dates, "\\.\\.([:digit:])-", "\\.\\.0$1-")
+  dates <- stringi::stri_replace_all_regex(dates, " \\, |\\, | \\,", ",") # set separators
+  dates <- stringi::stri_replace_all_regex(dates, "-([:digit:]),", "-0$1,")
+  dates <- stringi::stri_replace_all_regex(dates, ",([:digit:])-", "\\,0$1-")
   dates
 }
 
 daymonthyear <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
-                                           "\\3-\\2-\\1"), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "[:digit:]{2}$"))) < 32,
+                  stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "$3-$2-$1"), dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{8})$"),
                   paste0(substr(dates, 5, 8), "-", substr(dates, 3, 4), "-",
                          substr(dates, 1, 2)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 5, 6), "-", substr(dates, 3, 4), "-",
                          substr(dates, 1, 2)), dates)
   dates
 }
 
 yearmonthday <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{8})$"),
                   paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
                          substr(dates, 7, 8)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 1, 2), "-", substr(dates, 3, 4), "-",
                          substr(dates, 5, 6)), dates)
   dates
 }
 
 yearmonth <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6)), dates)
   dates
 }
 
 monthyear <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 3, 6), "-", substr(dates, 1, 2)), dates)
   dates
 }
 
 monthdayyear <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
-                                           "\\3-\\1-\\2"), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "[:digit:]{2}$"))) < 32,
+                  stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "$3-$1-$2"), dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{8})$"),
                   paste0(substr(dates, 5, 8), "-", substr(dates, 1, 2), "-",
                          substr(dates, 3, 4)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 5, 6), "-", substr(dates, 1, 2), "-",
                          substr(dates, 3, 4)), dates)
   dates
@@ -220,47 +220,47 @@ monthdayyear <- function(dates) {
 
 standardise_date_order <- function(dates) {
   # if resequence argument is not specified, assumes ymd format
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{8})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{8})$"),
                   paste0(substr(dates, 1, 4), "-", substr(dates, 5, 6), "-",
                          substr(dates, 7, 8)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{6})$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 1, 2), "-", substr(dates, 3, 4), "-",
                          substr(dates, 5, 6)), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
-                  stringr::str_replace_all(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)",
-                                           "\\1-\\3-\\2"), dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) > 12,
+                  stringi::stri_replace_all_regex(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "$1-$3-$2"), dates)
   # detects and reorders inconsistencies
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
-                                           "\\3-\\1-\\2"),
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
-                                           "\\3-\\2-\\1"))
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 13 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}$"))) > 31,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
-                                           "\\3-\\2-\\1"), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) > 12 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}$"))) > 31,
-                  stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
-                                           "\\3-\\1-\\2"), dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) > 12,
+                  stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                                           "$3-$1-$2"),
+                  stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{4}$)",
+                                           "$3-$2-$1"))
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) < 13 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}$"))) > 31,
+                  stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "$3-$2-$1"), dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) > 12 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}$"))) > 31,
+                  stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2}$)",
+                                           "$3-$1-$2"), dates)
   dates
 }
 
 ask_user <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "-[:digit:]{2}-"))) < 32 &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "[:digit:]{2}$"))) < 32,
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "^[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) < 32 &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "[:digit:]{2}$"))) < 32,
                   reorder_ambiguous(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) < 23,
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "^[:digit:]{2}-"))) < 23,
                   complete_ambiguous_20(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
-                    as.numeric(gsub("-", "", stringr::str_extract(dates, "^[:digit:]{2}-"))) > 22,
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$") &
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "^[:digit:]{2}-"))) > 22,
                   complete_ambiguous_19(dates), dates)
   dates
 }

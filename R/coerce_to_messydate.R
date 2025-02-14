@@ -432,9 +432,9 @@ add_zero_set <- function(dates) {
 }
 
 reorder_ambiguous <- function(d) {
-  examples <- ifelse(as.numeric(gsub("-", "", stringr::str_extract(d, "^[:digit:]{2}-"))) < 32 &
-                       as.numeric(gsub("-", "", stringr::str_extract(d, "-[:digit:]{2}-"))) < 32 &
-                       as.numeric(gsub("-", "", stringr::str_extract(d, "-[:digit:]{2}$"))) < 32,
+  examples <- ifelse(as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "^[:digit:]{2}-"))) < 32 &
+                       as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "-[:digit:]{2}-"))) < 32 &
+                       as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "-[:digit:]{2}$"))) < 32,
                      d, NA_character_)
   input <- utils::menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
                          "MDY (Month-Day-Year)", "Ambiguous/Not sure"),
@@ -445,29 +445,29 @@ reorder_ambiguous <- function(d) {
     message("Ambiguous 6 digit dates already in standard YMD format")
   }
   if (input == 2) {
-    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "\\3-\\2-\\1")
+    out <- stringi::stri_replace_all_regex(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "$3-$2-$1")
     message("Ambiguous 6 digit dates have been changed to standard YMD format")
   }
   if (input == 3) {
-    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "\\3-\\1-\\2")
+    out <- stringi::stri_replace_all_regex(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "$3-$1-$2")
     message("Ambiguous 6 digit dates have been changed to standard YMD format")
   }
   if (input == 4) {
-    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$",
-                                    "\\1-\\2-\\3,\\3-\\2-\\1,\\3-\\1-\\2")
+    out <- stringi::stri_replace_all_regex(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$",
+                                    "$1-$2-$3,$3-$2-$1,$3-$1-$2")
     message("Ambiguous 6 digit dates have been changed to a set of possible dates")
   }
   out
 }
 
 complete_ambiguous_20 <- function(d) {
-  examples <- ifelse(as.numeric(gsub("-", "", stringr::str_extract(d, "^[:digit:]{2}-"))) < 23, d, NA_character_)
+  examples <- ifelse(as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "^[:digit:]{2}-"))) < 23, d, NA_character_)
   examples <- dplyr::first(examples[stats::complete.cases(examples)])
   input <- utils::menu(c("Yes", "No"),
                        title = paste0("Are all ambiguous 6 digit dates for which the year is between 0 and 23
                        in the 21st century (e.g. ", examples, " is equal to 20", examples, ")?"))
   if (input == 1) {
-    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "20\\1-\\2-\\3")
+    out <- stringi::stri_replace_all_regex(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "20$1-$2-$3")
     message("Ambiguous 6 digit dates for which the year is smaller than 23 were completed.")
   }
   if (input == 2) {
@@ -478,13 +478,13 @@ complete_ambiguous_20 <- function(d) {
 }
 
 complete_ambiguous_19 <- function(d) {
-  examples <- ifelse(as.numeric(gsub("-", "", stringr::str_extract(d, "^[:digit:]{2}-"))) > 22, d, NA_character_)
+  examples <- ifelse(as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "^[:digit:]{2}-"))) > 22, d, NA_character_)
   examples <- dplyr::first(examples[stats::complete.cases(examples)])
   input <- utils::menu(c("Yes", "No"),
                        title = paste0("Are all ambiguous 6 digit dates for which the year is larger than 22
                        in the 20th century (e.g. ", examples, " is equal to 19", examples, ")?"))
   if (input == 1) {
-    out <- stringr::str_replace_all(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "19\\1-\\2-\\3")
+    out <- stringi::stri_replace_all_regex(d, "^([:digit:]{2})-([:digit:]{2})-([:digit:]{2})$", "19$1-$2-$3")
     message("6 digit dates for which the year is larger than 22 were completed.")
   }
   if (input == 2) {

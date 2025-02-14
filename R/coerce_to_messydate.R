@@ -286,108 +286,13 @@ standardise_unspecifieds <- function(dates) {
   dates
 }
 
+# BC/AD ####
+
 standardise_date_input <- function(dates) {
   dates <- ifelse(stringr::str_detect(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
                   as_bc_dates(dates), dates)
-  dates <- stringr::str_remove_all(dates, "(ad|AD|Ad|aD|CE|Ce|ce|AC|ac|Ac|aC)")
-  dates <- trimws(dates, "both")
-  dates
-}
-
-standardise_widths <- function(dates) {
-  dates <- add_zero_padding(dates)
-  dates <- ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-"),
-                  add_zero_range(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "\\,"),
-                  add_zero_set(dates), dates)
-  dates <- ifelse(stringr::str_detect(dates, "\\,"),
-                  paste0("{", dates, "}"), dates)
-  dates <- stringr::str_replace_all(dates, "-([:digit:])$", "-0\\1")
-  dates <- stringr::str_replace_all(dates, "^([:digit:])-", "0\\1-")
-  dates <- trimws(dates, "both")
-  dates
-}
-
-extract_from_text <- function(v) {
-  # get ordinal and numeric dates spelled and replace in text
-  out <- stringr::str_squish(gsub("\\,|\\.|of | on | and|the | this|
-                                  | day|year|month",
-                                  " ", v))
-  for (k in seq_len(nrow(text_to_number))) {
-    out <- gsub(paste0(text_to_number$text[k]),
-                paste0(text_to_number$numeric[k]),
-                out, ignore.case = TRUE,
-                perl = T)
-  }
-  # get the months into date form
-  months <- data.frame(months = c("january", "february", "march", "april",
-                                  "may", "june", "july", "august", "september",
-                                  "october", "november", "december"),
-                       numeric = c("-01-", "-02-", "-03-", "-04-", "-05-",
-                                   "-06-", "-07-", "-08-", "-09-", "-10-",
-                                   "-11-", "-12-"))
-  for (k in seq_len(nrow(months))) {
-    out <- gsub(paste0(months$months[k]),
-                paste0(months$numeric[k]),
-                out, ignore.case = TRUE,
-                perl = T)
-  }
-  # correct double white space left and standardize separators
-  out <- gsub("- -| -|- |/", "-", stringr::str_squish(out))
-  # get the first date per row
-  out <- stringr::str_extract(out,
-                              "^[:digit:]{2}-[:digit:]{2}-[:digit:]{2}$|
-                              |^[:digit:]{1}-[:digit:]{2}-[:digit:]{2}$|
-                              |^[:digit:]{2}-[:digit:]{1}-[:digit:]{2}$|
-                              |^[:digit:]{1}-[:digit:]{1}-[:digit:]{2}$|
-                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{2}|
-                              |[:digit:]{4}-[:digit:]{2}-[:digit:]{1}|
-                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{2}|
-                              |[:digit:]{4}-[:digit:]{1}-[:digit:]{1}|
-                              |[:digit:]{2}-[:digit:]{2}-[:digit:]{4}|
-                              |[:digit:]{1}-[:digit:]{2}-[:digit:]{4}|
-                              |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
-                              |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}")
-  out
-}
-
-written_month <- function(dates) {
-  dates <- stringr::str_squish(stringr::str_replace_all(tolower(dates),
-                                                        ",|-", " "))
-  dates <- stringr::str_replace_all(dates,
-                                    "([:alpha:]{3}) ([:digit:]{1,2}) ([:digit:]{4})",
-                                    "\\3 \\1 \\2")
-  dates <- stringr::str_replace_all(dates,
-                                    "([:digit:]{4}) ([:digit:]{1,2}) ([:alpha:]{3})",
-                                    "\\1 \\3 \\2")
-  dates <- stringr::str_replace_all(dates, " jan ", "-01-")
-  dates <- stringr::str_replace_all(dates, " feb ", "-02-")
-  dates <- stringr::str_replace_all(dates, " mar ", "-03-")
-  dates <- stringr::str_replace_all(dates, " apr ", "-04-")
-  dates <- stringr::str_replace_all(dates, " may ", "-05-")
-  dates <- stringr::str_replace_all(dates, " jun ", "-06-")
-  dates <- stringr::str_replace_all(dates, " jul ", "-07-")
-  dates <- stringr::str_replace_all(dates, " aug ", "-08-")
-  dates <- stringr::str_replace_all(dates, " sep ", "-09-")
-  dates <- stringr::str_replace_all(dates, " oct ", "-10-")
-  dates <- stringr::str_replace_all(dates, " nov ", "-11-")
-  dates <- stringr::str_replace_all(dates, " dec ", "-12-")
-  # 6 digit my or ym dates
-  dates <- stringr::str_replace_all(dates,
-                                    "([:alpha:]{3}) ([:digit:]{4})",
-                                    "\\2 \\1")
-  dates <- stringr::str_replace_all(dates, " jan$", "-01")
-  dates <- stringr::str_replace_all(dates, " feb$", "-02")
-  dates <- stringr::str_replace_all(dates, " mar$", "-03")
-  dates <- stringr::str_replace_all(dates, " apr$", "-04")
-  dates <- stringr::str_replace_all(dates, " may$", "-05")
-  dates <- stringr::str_replace_all(dates, " jun$", "-06")
-  dates <- stringr::str_replace_all(dates, " jul$", "-07")
-  dates <- stringr::str_replace_all(dates, " aug$", "-08")
-  dates <- stringr::str_replace_all(dates, " sep$", "-09")
-  dates <- stringr::str_replace_all(dates, " oct$", "-10")
-  dates <- stringr::str_replace_all(dates, " nov$", "-11")
-  dates <- stringr::str_replace_all(dates, " dec$", "-12")
+  dates <- stringi::stri_replace_all_regex(dates, "(ad|AD|Ad|aD|CE|Ce|ce|AC|ac|Ac|aC)", "")
+  dates <- stringi::stri_trim_both(dates)
   dates
 }
 

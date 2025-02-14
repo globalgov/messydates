@@ -433,9 +433,8 @@ add_zero_set <- function(dates) {
 
 extract_from_text <- function(v) {
   # get ordinal and numeric dates spelled and replace in text
-  out <- stringr::str_squish(gsub("\\,|\\.|of | on | and|the | this|
-                                  | day|year|month",
-                                  " ", v))
+  out <- stri_squish(stringi::stri_replace_all_regex(v, "\\,|\\.|of | on | and|the | this|
+                                  | day|year|month", " "))
   for (k in seq_len(nrow(text_to_number))) {
     out <- gsub(paste0(text_to_number$text[k]),
                 paste0(text_to_number$numeric[k]),
@@ -456,7 +455,7 @@ extract_from_text <- function(v) {
                 perl = T)
   }
   # correct double white space left and standardize separators
-  out <- gsub("- -| -|- |/", "-", stringr::str_squish(out))
+  out <- stri_squish(stringi::stri_replace_all_regex(out, "- -| -|- |/", "-"))
   # get the first date per row
   out <- stringi::stri_extract_first_regex(out,
                               "^[:digit:]{2}-[:digit:]{2}-[:digit:]{2}$|
@@ -475,7 +474,7 @@ extract_from_text <- function(v) {
 }
 
 written_month <- function(dates) {
-  dates <- stringr::str_squish(stringi::stri_replace_all_regex(tolower(dates),
+  dates <- stri_squish(stringi::stri_replace_all_regex(tolower(dates),
                                                         ",|-", " "))
   dates <- stringi::stri_replace_all_regex(dates,
                                     "([:alpha:]{3}) ([:digit:]{1,2}) ([:digit:]{4})",
@@ -606,4 +605,8 @@ make_messydate <- function(..., resequence = FALSE) {
   } else stop("make_messydate() takes one variable (yyyy-mm-dd),
   two variables (yyyy-mm-dd, yyyy-mm-dd), or three variables (yyyy, mm, dd).")
   as_messydate(dates, resequence)
+}
+
+stri_squish <- function(charvec){
+  stringi::stri_trim_both(stringi::stri_replace_all_regex(charvec, "\\s+", " "))
 }

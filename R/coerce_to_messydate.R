@@ -132,7 +132,7 @@ as_messydate.list <- function(x, resequence = FALSE) {
 #' @export
 mdate <- as_messydate
 
-# Helper functions
+# Helper functions ####
 standardise_text <- function(v) {
   dates <- ifelse(stringr::str_detect(v, "([:alpha:]{4})") &
                     !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
@@ -147,7 +147,7 @@ standardise_date_separators <- function(dates) {
   dates <- stringr::str_replace_all(dates,
                                     "(?<=[:digit:])\\.(?=[:digit:])", "-")
   dates <- stringr::str_replace_all(dates, "\\/", "-")
-  dates <- stringr::str_remove_all(dates, "\\(|\\)|\\{|\\}|\\[|\\]")
+  dates <- stringi::stri_replace_all_regex(dates, "\\(|\\)|\\{|\\}|\\[|\\]", "")
   dates <- stringr::str_trim(dates, side = "both")
   # Adds zero padding to days, months, sets, and ranges
   dates <- stringr::str_replace_all(dates, "-([:digit:])-", "-0\\1-")
@@ -281,7 +281,7 @@ standardise_unspecifieds <- function(dates) {
                                     |-\\?-\\?$|-\\?\\?$|-\\?\\?-\\?\\?$", "")
   dates <- stringr::str_replace_all(dates, "-XX\\,", ",")
   dates <- stringr::str_replace_all(dates, "-XX\\.\\.", "..")
-  dates <- ifelse(stringr::str_detect(dates, "^[:digit:]{4}\\~$"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "^[:digit:]{4}\\~$"),
                   paste0("~", stringr::str_remove(dates, "\\~")), dates)
   dates
 }

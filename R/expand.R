@@ -35,10 +35,12 @@ expand <- function(x, approx_range = 0) {
     message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
   }
-  x <- stringr::str_remove_all(x, "[:space:]|\\{|\\}|\\%|\\?")
+  x <- stringi::stri_replace_all_regex(x, "[:space:]|\\{|\\}|\\%|\\?", "")
   if (approx_range == 0) {
-    x <- stringr::str_replace_all(x, "\\~|^\\.\\.|\\.\\.$", "")
+    # if no approx_range, then can just ignore these annotations
+    x <- stringi::stri_replace_all_regex(x, "\\~|^\\.\\.|\\.\\.$", "")
   } else {
+    # otherwise we need to expand approximate dates
     x <- expand_approximate(x, approx_range)
   }
   x <- expand_unspecified(x)

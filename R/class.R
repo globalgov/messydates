@@ -119,9 +119,13 @@ print.mdate <- function(x, ...) {
 
 #' @export
 c.mdate <- function(...) {
-  vecs <- lapply(list(...), function(e) unclass(as_messydate(e)))
-  x <- as_messydate(unlist(vecs))
-  validate_messydate(x)
+  if(length(list(...)) == 1){
+    unclass(list(...)[[1]])
+  } else {
+    vecs <- lapply(list(...), function(e) unclass(as_messydate(e)))
+    x <- as_messydate(unlist(vecs))
+    validate_messydate(x)
+  }
 }
 
 #' @export

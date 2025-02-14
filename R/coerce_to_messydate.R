@@ -266,30 +266,30 @@ ask_user <- function(dates) {
 }
 
 standardise_unspecifieds <- function(dates) {
-  dates <- stringr::str_replace_all(dates, "^NA", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-NA", "-XX")
-  dates <- stringr::str_replace_all(dates, "0000", "XXXX")
-  dates <- stringr::str_replace_all(dates, "-00-|-0-|-0$|-00$|-\\?\\?-", "-XX-")
-  dates <- stringr::str_replace_all(dates, "\\?\\?\\?\\?", "XXXX")
-  dates <- stringr::str_replace_all(dates, "^(XX)-([:digit:]{4}$)", "\\2")
-  dates <- stringr::str_replace_all(dates, "^(XX)-(XX)-([:digit:]{4}$)", "\\3")
-  dates <- stringr::str_replace_all(dates, "^(XX)-([:digit:]{2})-([:digit:]{4}$)",
-                                    "\\3-\\2")
-  dates <- stringr::str_replace_all(dates, "^([:digit:]{2})-([:digit:]{2})-(XXXX$)",
-                                    "\\3-\\2-\\1")
-  dates <- stringr::str_replace_all(dates, "-X-X$|-XX-XX$|-XX$|-XX-\\?\\?$|
+  dates <- stringi::stri_replace_all_regex(dates, "^NA", "XXXX")
+  dates <- stringi::stri_replace_all_regex(dates, "-NA", "-XX")
+  dates <- stringi::stri_replace_all_regex(dates, "0000", "XXXX")
+  dates <- stringi::stri_replace_all_regex(dates, "-00-|-0-|-0$|-00$|-\\?\\?-", "-XX-")
+  dates <- stringi::stri_replace_all_regex(dates, "\\?\\?\\?\\?", "XXXX")
+  dates <- stringi::stri_replace_all_regex(dates, "^(XX)-([:digit:]{4}$)", "$2")
+  dates <- stringi::stri_replace_all_regex(dates, "^(XX)-(XX)-([:digit:]{4}$)", "$3")
+  dates <- stringi::stri_replace_all_regex(dates, "^(XX)-([:digit:]{2})-([:digit:]{4}$)",
+                                    "$3-$2")
+  dates <- stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-(XXXX$)",
+                                    "$3-$2-$1")
+  dates <- stringi::stri_replace_all_regex(dates, "-X-X$|-XX-XX$|-XX$|-XX-\\?\\?$|
                                     |-\\?-\\?$|-\\?\\?$|-\\?\\?-\\?\\?$", "")
-  dates <- stringr::str_replace_all(dates, "-XX\\,", ",")
-  dates <- stringr::str_replace_all(dates, "-XX\\.\\.", "..")
+  dates <- stringi::stri_replace_all_regex(dates, "-XX\\,", ",")
+  dates <- stringi::stri_replace_all_regex(dates, "-XX\\.\\.", "..")
   dates <- ifelse(stringi::stri_detect_regex(dates, "^[:digit:]{4}\\~$"),
-                  paste0("~", stringr::str_remove(dates, "\\~")), dates)
+                  paste0("~", stringi::stri_replace_all_regex(dates, "\\~", "")), dates)
   dates
 }
 
 # BC/AD ####
 
 standardise_date_input <- function(dates) {
-  dates <- ifelse(stringr::str_detect(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
+  dates <- ifelse(stringi::stri_detect_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
                   as_bc_dates(dates), dates)
   dates <- stringi::stri_replace_all_regex(dates, "(ad|AD|Ad|aD|CE|Ce|ce|AC|ac|Ac|aC)", "")
   dates <- stringi::stri_trim_both(dates)
@@ -297,23 +297,23 @@ standardise_date_input <- function(dates) {
 }
 
 as_bc_dates <- function(dates) {
-  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 2,
+  dates <- ifelse(stringi::stri_count_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 2,
                   st_negative_range(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") > 2,
+  dates <- ifelse(stringi::stri_count_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") > 2,
                   st_negative_sets(dates), dates)
-  dates <- ifelse(stringr::str_count(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 1,
+  dates <- ifelse(stringi::stri_count_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 1,
                   st_negative(dates), dates)
 }
 
 st_negative_range <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
+  dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
   dates <- gsub(" ", "", dates)
   dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
                   "..-", strsplit(dates, "\\.\\.")[[1]][2])
 }
 
 st_negative_sets <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
+  dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
   dates <- gsub(" ", "", dates)
   dates <- unlist(strsplit(dates, "\\,"))
   dates <- ifelse(length(dates) > 1,
@@ -322,36 +322,52 @@ st_negative_sets <- function(dates) {
 }
 
 st_negative <- function(dates) {
-  dates <- stringr::str_remove_all(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)")
-  dates <- stringr::str_trim(dates, side = "both")
+  dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
+  dates <- stringi::stri_trim_both(dates)
   dates <- paste0("-", dates)
+}
+
+# Widths ####
+
+standardise_widths <- function(dates) {
+  dates <- add_zero_padding(dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-"),
+                  add_zero_range(dates), dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "\\,"),
+                  add_zero_set(dates), dates)
+  dates <- ifelse(stringi::stri_detect_regex(dates, "\\,"),
+                  paste0("{", dates, "}"), dates)
+  dates <- stringi::stri_replace_all_regex(dates, "-([:digit:])$", "-0$1")
+  dates <- stringi::stri_replace_all_regex(dates, "^([:digit:])-", "0$1-")
+  dates <- stringi::stri_trim_both(dates)
+  dates
 }
 
 add_zero_padding <- function(dates) {
   # Negative year only
-  dates <- stringr::str_replace_all(dates, "^-([:digit:]{1})$", "-000\\1")
-  dates <- stringr::str_replace_all(dates, "^-([:digit:]{2})$", "-00\\1")
-  dates <- stringr::str_replace_all(dates, "^-([:digit:]{3})$", "-0\\1")
-  # Uncertain and aproximate year only
-  dates <- stringr::str_replace_all(dates, "^~([:digit:]{1})$", "000\\1~")
-  dates <- stringr::str_replace_all(dates, "^~([:digit:]{2})$", "00\\1~")
-  dates <- stringr::str_replace_all(dates, "^~([:digit:]{3})$", "0\\1~")
-  dates <- stringr::str_replace_all(dates, "^\\?([:digit:]{1})$", "000\\1?")
-  dates <- stringr::str_replace_all(dates, "^\\?([:digit:]{2})$", "00\\1?")
-  dates <- stringr::str_replace_all(dates, "^\\?([:digit:]{3})$", "0\\1?")
-  dates <- ifelse(stringr::str_detect(dates,
+  dates <- stringi::stri_replace_all_regex(dates, "^-([:digit:]{1})$", "-000$1")
+  dates <- stringi::stri_replace_all_regex(dates, "^-([:digit:]{2})$", "-00$1")
+  dates <- stringi::stri_replace_all_regex(dates, "^-([:digit:]{3})$", "-0$1")
+  # Uncertain and approximate year only
+  dates <- stringi::stri_replace_all_regex(dates, "^~([:digit:]{1})$", "000$1~")
+  dates <- stringi::stri_replace_all_regex(dates, "^~([:digit:]{2})$", "00$1~")
+  dates <- stringi::stri_replace_all_regex(dates, "^~([:digit:]{3})$", "0$1~")
+  dates <- stringi::stri_replace_all_regex(dates, "^\\?([:digit:]{1})$", "000$1?")
+  dates <- stringi::stri_replace_all_regex(dates, "^\\?([:digit:]{2})$", "00$1?")
+  dates <- stringi::stri_replace_all_regex(dates, "^\\?([:digit:]{3})$", "0$1?")
+  dates <- ifelse(stringi::stri_detect_regex(dates,
                                       "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
                   paste0("000", dates), dates)
-  dates <- ifelse(stringr::str_detect(dates,
+  dates <- ifelse(stringi::stri_detect_regex(dates,
                                       "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
                   paste0("00", dates), dates)
-  dates <- ifelse(stringr::str_detect(dates,
+  dates <- ifelse(stringi::stri_detect_regex(dates,
                                       "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
                   paste0("0", dates), dates)
   # Year only
-  dates <- stringr::str_replace_all(dates, "^([:digit:]{1})$", "000\\1")
-  dates <- stringr::str_replace_all(dates, "^([:digit:]{2})$", "00\\1")
-  dates <- stringr::str_replace_all(dates, "^([:digit:]{3})$", "0\\1")
+  dates <- stringi::stri_replace_all_regex(dates, "^([:digit:]{1})$", "000$1")
+  dates <- stringi::stri_replace_all_regex(dates, "^([:digit:]{2})$", "00$1")
+  dates <- stringi::stri_replace_all_regex(dates, "^([:digit:]{3})$", "0$1")
   dates
 }
 
@@ -359,29 +375,29 @@ add_zero_range <- function(dates) {
   dates <- strsplit(dates, "\\.\\.")
   dates <- lapply(dates, function(x) {
     x <- gsub(" ", "", x)
-    x <- stringr::str_replace_all(x, "^-([:digit:]{1})$", "-000\\1")
-    x <- stringr::str_replace_all(x, "^-([:digit:]{2})$", "-00\\1")
-    x <- stringr::str_replace_all(x, "^-([:digit:]{3})$", "-0\\1")
-    x <- stringr::str_replace_all(x, "^~([:digit:]{1})$", "000\\1~")
-    x <- stringr::str_replace_all(x, "^~([:digit:]{2})$", "00\\1~")
-    x <- stringr::str_replace_all(x, "^~([:digit:]{3})$", "0\\1~")
-    x <- stringr::str_replace_all(x, "^\\?([:digit:]{1})$", "000\\1?")
-    x <- stringr::str_replace_all(x, "^\\?([:digit:]{2})$", "00\\1?")
-    x <- stringr::str_replace_all(x, "^\\?([:digit:]{3})$", "0\\1?")
-    x <- stringr::str_replace_all(x, "^([:digit:]{1})$", "000\\1")
-    x <- stringr::str_replace_all(x, "^([:digit:]{2})$", "00\\1")
-    x <- stringr::str_replace_all(x, "^([:digit:]{3})$", "0\\1")
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{1})$", "-000$1")
+    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{2})$", "-00$1")
+    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{3})$", "-0$1")
+    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{1})$", "000$1~")
+    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{2})$", "00$1~")
+    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{3})$", "0$1~")
+    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{1})$", "000$1?")
+    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{2})$", "00$1?")
+    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{3})$", "0$1?")
+    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{1})$", "000$1")
+    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{2})$", "00$1")
+    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{3})$", "0$1")
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
                 paste0("000", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
                 paste0("00", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
                 paste0("0", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
                 paste0("000", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
                 paste0("00", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
                 paste0("0", x), x)
   })
   dates <- purrr::map_chr(dates, paste, collapse = "..")
@@ -392,23 +408,23 @@ add_zero_set <- function(dates) {
   dates <- strsplit(dates, "\\,")
   dates <- lapply(dates, function(x) {
     x <- gsub(" ", "", x)
-    x <- stringr::str_replace_all(x, "^-([:digit:]{1})$", "-000\\1")
-    x <- stringr::str_replace_all(x, "^-([:digit:]{2})$", "-00\\1")
-    x <- stringr::str_replace_all(x, "^-([:digit:]{3})$", "-0\\1")
-    x <- stringr::str_replace_all(x, "^~([:digit:]{1})$", "000\\1~")
-    x <- stringr::str_replace_all(x, "^~([:digit:]{2})$", "00\\1~")
-    x <- stringr::str_replace_all(x, "^~([:digit:]{3})$", "0\\1~")
-    x <- stringr::str_replace_all(x, "^\\?([:digit:]{1})$", "000\\1?")
-    x <- stringr::str_replace_all(x, "^\\?([:digit:]{2})$", "00\\1?")
-    x <- stringr::str_replace_all(x, "^\\?([:digit:]{3})$", "0\\1?")
-    x <- stringr::str_replace_all(x, "^([:digit:]{1})$", "000\\1")
-    x <- stringr::str_replace_all(x, "^([:digit:]{2})$", "00\\1")
-    x <- stringr::str_replace_all(x, "^([:digit:]{3})$", "0\\1")
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{1})$", "-000$1")
+    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{2})$", "-00$1")
+    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{3})$", "-0$1")
+    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{1})$", "000$1~")
+    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{2})$", "00$1~")
+    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{3})$", "0$1~")
+    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{1})$", "000$1?")
+    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{2})$", "00$1?")
+    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{3})$", "0$1?")
+    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{1})$", "000$1")
+    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{2})$", "00$1")
+    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{3})$", "0$1")
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
                 paste0("000", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
                 paste0("00", x), x)
-    x <- ifelse(stringr::str_detect(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
+    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
                 paste0("0", x), x)
   })
   dates <- purrr::map_chr(dates, paste, collapse = ",")

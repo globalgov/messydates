@@ -1,11 +1,11 @@
 #' Coercion from regular date classes to mdate
-#'
-#' These methods coerce various date classes into the `mdate` class.
-#' They represent the main user-facing class-creating functions in the package.
-#' In addition to the typical date classes in R (`Date`, `POSIXct`, and `POSIXlt`),
-#' there is also a direct method for converting text or character strings to `mdate`.
-#' The function can also extract dates from text,
-#' though this is a work-in-progress and currently only works in English.
+#' @description
+#'   These methods coerce various date classes into the `mdate` class.
+#'   They represent the main user-facing class-creating functions in the package.
+#'   In addition to the typical date classes in R (`Date`, `POSIXct`, and `POSIXlt`),
+#'   there is also a direct method for converting text or character strings to `mdate`.
+#'   The function can also extract dates from text,
+#'   though this is a work-in-progress and currently only works in English.
 #' @param x A scalar or vector of a class that can be coerced into `mdate`,
 #'   such as `Date`, `POSIXct`, `POSIXlt`, or character.
 #' @param resequence Users have the option to choose the order for
@@ -96,12 +96,11 @@ as_messydate.character <- function(x, resequence = NULL) {
       d <- monthyear(d)
     } else if (resequence == "mdy") {
       d <- monthdayyear(d)
+    } else if (isTRUE(resequence == "interactive")) {
+      d <- ask_user(d)
     }
   }
   d <- standardise_date_order(d)
-  if (isTRUE(resequence == "interactive")) {
-    d <- ask_user(d)
-  }
   d <- standardise_unspecifieds(d)
   d <- standardise_date_input(d)
   d <- standardise_widths(d)

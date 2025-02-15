@@ -44,7 +44,10 @@ min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
   #   dates <- expand_approximate_months(dates, approx_range = approx_range)
   #   dates <- expand_approximate_days(dates, approx_range = approx_range)
   # }
-  if(recursive) min(dates) else dates
+  if(recursive){
+    if(any(is_bce(dates))) max(dates[is_bce(dates)]) else
+      min(dates)
+  } else dates
 }
 
 .remove_post <- function(dates){

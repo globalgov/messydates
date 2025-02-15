@@ -9,6 +9,7 @@
 \alias{is_precise}
 \alias{is_uncertain}
 \alias{is_approximate}
+\alias{is_bce}
 \alias{<.mdate}
 \alias{>.mdate}
 \alias{<=.mdate}
@@ -28,6 +29,8 @@ is_precise(x)
 is_uncertain(x)
 
 is_approximate(x)
+
+is_bce(x)
 
 \method{<}{mdate}(e1, e2)
 
@@ -69,6 +72,9 @@ or date ranges and sets.
 
 \item \code{is_approximate()}: tests whether a date is approximate (i.e. contains ~).
 
+\item \code{is_bce()}: tests whether one or more messy dates are found
+before the common era.
+
 \item \code{ < }: tests whether the dates in the first vector precede
 the dates in the second vector.
 Returns \code{NA} when the date order can't be determined.
@@ -101,6 +107,7 @@ is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 is_precise(as_messydate(c("2012-06-02", "2012-06")))
 is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
 as_messydate("2012-06-02") > as.Date("2012-06-01") # TRUE
 # 2012-06-XX could mean 2012-06-03, so unknown if it comes before 2012-06-02
 as_messydate("2012-06-XX") < as.Date("2012-06-02") # NA

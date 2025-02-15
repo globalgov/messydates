@@ -59,7 +59,7 @@ is_similar <- function(x, y) {
 #' is_precise(as_messydate(c("2012-06-02", "2012-06")))
 #' @export
 is_precise <- function(x) {
-  stringr::str_detect(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
+  stringi::stri_detect_regex(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
                       |^-[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$")
 }
 
@@ -68,7 +68,7 @@ is_precise <- function(x) {
 #' is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 #' @export
 is_uncertain <- function(x) {
-  stringr::str_detect(x, "\\?")
+  stringi::stri_detect_regex(x, "\\?")
 }
 
 #' @describeIn logical_tests tests whether a date is approximate (i.e. contains ~).
@@ -76,7 +76,16 @@ is_uncertain <- function(x) {
 #' is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
 #' @export
 is_approximate <- function(x) {
-  stringr::str_detect(x, "\\~")
+  stringi::stri_detect_regex(x, "\\~")
+}
+
+#' @describeIn logical_tests tests whether one or more messy dates are found
+#'   before the common era.
+#' @examples
+#' is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
+#' @export
+is_bce <- function(x) {
+  stringi::stri_detect_regex(x, "^-")
 }
 
 #' @describeIn logical_tests tests whether the dates in the first vector precede

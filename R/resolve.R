@@ -72,19 +72,33 @@ min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
 #' @rdname resolve
 #' @export
 max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
-  x <- as.list(...)
-  y <- unlist(lapply(x, function(y){
-    `if`(is_precise(y), y, expand(y))
-  }), recursive = recursive)
+
+  d <- list(...)[[1]]
+  dates <- stringi::stri_replace_all_regex(d, "~|\\?", "")
+  dates <- unspecified_months(dates)
+  dates <- .remove_pre(dates)
+  dates <- .replace_latest(dates)
+
   if(recursive){
-    max(subset(y, !(is.infinite(y) | y=="9999-12-31")),
-        na.rm = na.rm)
-  } else {
-    unlist(lapply(y, function(x){
-      max(subset(x, !(is.infinite(x) | x=="9999-12-31")),
-          na.rm = na.rm)
-    }), recursive = recursive)
-  }
+    if(any(is_bce(dates))) max(dates[!is_bce(dates)]) else
+      max(dates)
+  } else dates
+
+}
+
+.remove_pre <- function(dates){
+  dates <- stringi::stri_replace_all_regex(dates, "^\\.\\.|^.*,|\\}", "")
+  dates <- stringi::stri_replace_all_regex(dates, "^.*\\.\\.(.+)$", "$1")
+  dates <- stringi::stri_replace_all_regex(dates, "\\.\\.", "")
+  dates
+}
+
+.replace_latest <- function(dates){
+  dates <- stringi::stri_replace_last_regex(dates,
+                                            "^(.*[:digit:]{4})$", "$1-12-31")
+  dates <- stringi::stri_replace_last_regex(dates,
+                                            "-XX-", "-12-")
+  dates
 }
 
 #' @rdname resolve

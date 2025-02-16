@@ -576,6 +576,8 @@ complete_ambiguous_19 <- function(d) {
   out
 }
 
+# Make ####
+
 #' @describeIn messydate Composes `mdate` from multiple variables
 #' @param ... One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
 #' or three (yyyy, mm, dd) variables.

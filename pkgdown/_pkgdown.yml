@@ -2,9 +2,9 @@ url: https://globalgov.github.io/messydates/
 development:
     mode: auto
 template:
-  # bootstrap: 5
+  bootstrap: 5
   params:
-    bootswatch: paper
+    bootswatch: quartz
 authors:
   James Hollway:
     href: https://jameshollway.com
@@ -23,6 +23,7 @@ navbar:
     home:
       icon: fa-home fa-lg
       href: index.html
+      aria-label: Take me home
     reference:
       text: Reference
       href: reference/index.html
@@ -32,6 +33,7 @@ navbar:
     github:
       icon: "fab fa-github fa-lg"
       href: https://github.com/globalgov/messydates
+      aria-label: Take me to the Github repository
 reference:
   - title: "Coerce to"
     desc: "These functions construct and/or coerce dates to the `mdate` class:"
@@ -59,6 +61,7 @@ reference:
       - is_messydate
       - extract
       - proportional
+      - messy-sequence
   - title: "Data"
     desc: "Working with 'messy' data:"
     contents:

@@ -42,9 +42,14 @@ NULL
 #' as.Date(as_messydate(c("-1000", "2020")), min)
 #' @export
 as.Date.mdate <- function(x, ..., FUN) {
-  if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
+  # # fix argument ordering issues
+  # if (missing(FUN)){
+  #   if(length(list(...)) > 0) FUN <- list(...)[[1]] else
+  #     FUN <- messydates::min.mdate
+  # }
+  if(missing(FUN)) FUN <- min
   x <- FUN(x)
-  x <- suppressWarnings(ifelse(stringr::str_detect(x, "^-"),
+  x <- suppressWarnings(ifelse(stringi::stri_detect_regex(x, "^-"),
                                lubridate::as_date(negative_dates(x)),
                                lubridate::as_date(zero_padding(x))))
   as.Date(x, origin = "1970-01-01")

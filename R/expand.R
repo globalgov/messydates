@@ -292,19 +292,35 @@ expand_sets <- function(dates) {
 ## expand ranges ####
 
 expand_ranges <- function(dates) {
+  # dates <- dplyr::case_when(
+  #   stringi::stri_detect_regex(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") & nchar(dates) < 17 ~ expand_unspecified_ranges(dates),
+  #   .default = dates
+  #   )
+  #
+  # dates <- purrr::modify_if(dates, stringi::stri_detect_regex(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-"), function(x) expand_unspecified_ranges(x))
+  #
+  #                           stringi::stri_detect_regex(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") & nchar(dates) < 17)
+
   dates <- suppressWarnings(ifelse(stringr::str_detect(dates, "([:digit:]{1})\\.\\.([:digit:]{1})|([:digit:]{1})\\.\\.-") &
                                      nchar(dates) < 17,
                                    expand_unspecified_ranges(dates), dates))
+
+  # dates <- stringi::stri_split_regex(dates, "\\.\\.")
+  # dates <- purrr::modify_if(dates, lengths(dates)==2, function(y) if(nchar(y[1]) >0 & nchar(y[2])>0) seq(as.Date(y[1]), as.Date(y[2]), by = "days") else y)
+
   dates <- suppressWarnings(lapply(dates, function(x) {
     x <- stringi::stri_split_regex(x, "\\.\\.")
-    x <- lapply(x, function(y) {
-      if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
-                                                by = "days"))
-      y
-    })
-    x <- ifelse(stringr::str_detect(x, "\\%"),
-                expand_negative_dates(x), x)
-    unlist(x)
+    if(any(is_bce(x))){
+      x <- ifelse(stringr::str_detect(x, "\\%"),
+                  expand_negative_dates(x), x)
+    } else {
+      x <- lapply(x, function(y) {
+        if (length(y) == 2) y <- as.character(seq(as.Date(y[1]), as.Date(y[2]),
+                                                  by = "days"))
+        y
+      })
+      unlist(x)
+    }
   }))
   dates
 }

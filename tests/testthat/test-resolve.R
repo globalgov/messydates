@@ -1,31 +1,31 @@
 test_dates <- c(range = as_messydate("2014-01-01..2014-01-05"),
                 unspec = as_messydate("1999"),
-                neg = as_messydate("1000-02 BC"))
+                neg = as_messydate("1004-02 BC"))
 # test_dates <- lapply(test_dates, as_messydate)
 
 test_that("Min resolving works properly", {
   expect_equal(as.character(min(test_dates)),
-               c("2014-01-01","1999-01-01","-1000-02-01"))
+               c("2014-01-01","1999-01-01","-1004-02-01"))
 })
 
 test_that("Max resolving works properly", {
   expect_equal(as.character(max(test_dates)),
-               c("2014-01-05","1999-12-31","-1000-02-28"))
+               c("2014-01-05","1999-12-31","-1004-02-29"))
 })
 
 test_that("Median resolving works properly", {
   expect_equal(as.character(median(test_dates)),
-               c("2014-01-03","1999-07-02","-1000-02-15"))
+               c("2014-01-03","1999-07-02","-1004-02-15"))
 })
 
 test_that("Mean resolving works properly", {
   expect_equal(as.character(mean(test_dates)),
-               c("2014-01-03","1999-07-02","-1000-02-14"))
+               c("2014-01-03","1999-07-02","-1004-02-15"))
 })
 
 test_that("Modal resolving works properly", {
   expect_equal(as.character(modal(test_dates)),
-               c("2014-01-01","1999-01-01","-1000-02-01"))
+               c("2014-01-01","1999-01-01","-1004-02-01"))
 })
 
 test_that("Random resolving works properly", {

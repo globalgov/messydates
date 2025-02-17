@@ -14,13 +14,9 @@
 #' @return A single scalar or vector of dates
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
-#' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-#' "{2001-01,2001-02-02}", "2008-XX-31"))
+#'   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+#'   "{2001-01,2001-02-02}", "2008-XX-31", "-0050-01-01"))
 #' d
-#' max(d)
-#' mean(d)
-#' median(d)
-#' modal(d)
 #' @name resolve
 NULL
 #> NULL
@@ -70,6 +66,8 @@ min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
 }
 
 #' @rdname resolve
+#' @examples
+#' max(d)
 #' @export
 max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
 
@@ -103,8 +101,11 @@ max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
 
 #' @rdname resolve
 #' @importFrom stats median
+#' @examples
+#' median(d)
 #' @export
 median.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+
   x <- as.list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = recursive)
@@ -135,6 +136,8 @@ median.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
 #' from each end of x before the mean is computed.
 #' Values of trim outside that range are taken as the nearest endpoint.
 #' @importFrom lubridate as_date
+#' @examples
+#' mean(d)
 #' @export
 mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
   x <- as.list(...)
@@ -170,23 +173,19 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
 modal <- function(..., na.rm = FALSE, recursive = FALSE) UseMethod("modal")
 
 #' @rdname resolve
+#' @examples
+#' modal(d)
 #' @export
 modal.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
-  x <- as.list(...)
-  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = recursive)
+
+  d <- list(...)[[1]]
   getmode <- function(v) {
     uniqv <- unique(v)
     uniqv[which.max(tabulate(match(v, uniqv)))]
   }
-  if(recursive){
-    as.character(getmode(y))
-  } else {
-    unlist(lapply(y, function(x) {
-      if (length(x) > 1) x <- as.character(getmode(x))
-      x
-    }), recursive = FALSE)
-  }
+  d <- purrr::map_chr(expand(d), function(y) getmode(y))
+  if(recursive) d <- as.character(getmode(d))
+  d
 }
 
 #' @rdname resolve

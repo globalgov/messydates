@@ -64,13 +64,13 @@ This can be useful for various descriptive or inferential projects.
 }
 \examples{
 d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
-"2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
-"{2001-01,2001-02-02}", "2008-XX-31"))
+  "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+  "{2001-01,2001-02-02}", "2008-XX-31", "-0050-01-01"))
 d
-max(d)
-mean(d)
-median(d)
-modal(d)
 min(d)
+max(d)
+median(d)
+mean(d)
+modal(d)
 random(d)
 }

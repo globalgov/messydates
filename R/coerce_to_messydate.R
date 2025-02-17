@@ -133,6 +133,7 @@ as_messydate.list <- function(x, resequence = FALSE) {
 mdate <- as_messydate
 
 # Helper functions ####
+#' @importFrom stringi stri_detect_regex
 standardise_text <- function(v) {
   dates <- ifelse(stringi::stri_detect_regex(v, "([:alpha:]{4})") &
                     !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
@@ -143,6 +144,7 @@ standardise_text <- function(v) {
   dates
 }
 
+#' @importFrom stringi stri_replace_all_regex
 standardise_date_separators <- function(dates) {
   dates <- stringi::stri_replace_all_regex(dates,
                                     "(?<=[:digit:])\\.(?=[:digit:])", "-")
@@ -344,10 +346,10 @@ standardise_widths <- function(dates) {
 }
 
 add_zero_padding <- function(dates) {
-  # Negative year only
-  dates <- stringi::stri_replace_all_regex(dates, "^-([:digit:]{1})$", "-000$1")
-  dates <- stringi::stri_replace_all_regex(dates, "^-([:digit:]{2})$", "-00$1")
-  dates <- stringi::stri_replace_all_regex(dates, "^-([:digit:]{3})$", "-0$1")
+  # Year padding (positive or negative)
+  dates <- stringi::stri_replace_all_regex(dates, "^(-?)([:digit:]{1})($|-)", "$1000$2$3")
+  dates <- stringi::stri_replace_all_regex(dates, "^(-?)([:digit:]{2})($|-)", "$100$2$3")
+  dates <- stringi::stri_replace_all_regex(dates, "^(-?)([:digit:]{3})($|-)", "$10$2$3")
   # Uncertain and approximate year only
   dates <- stringi::stri_replace_all_regex(dates, "^~([:digit:]{1})$", "000$1~")
   dates <- stringi::stri_replace_all_regex(dates, "^~([:digit:]{2})$", "00$1~")

@@ -68,7 +68,7 @@ is_precise <- function(x) {
 #' is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 #' @export
 is_uncertain <- function(x) {
-  stringi::stri_detect_regex(x, "\\?")
+  stringi::stri_detect_regex(x, "\\?|\\%")
 }
 
 #' @describeIn logical_tests tests whether a date is approximate (i.e. contains ~).
@@ -76,7 +76,7 @@ is_uncertain <- function(x) {
 #' is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
 #' @export
 is_approximate <- function(x) {
-  stringi::stri_detect_regex(x, "\\~")
+  stringi::stri_detect_regex(x, "\\~|\\%")
 }
 
 #' @describeIn logical_tests tests whether one or more messy dates are found

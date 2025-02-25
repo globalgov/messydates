@@ -202,6 +202,6 @@ The package was developed as part of [the PANARCHIC project](https://panarchic.c
 which studies the effects of network and power on how quickly states join, reform, or create 
 international institutions by examining the historical dynamics of institutional networks from different domains.
 
-The PANARCHIC project is funded by the Swiss National Science Foundation ([SNSF](https://p3.snf.ch/Project-188976)).
+The PANARCHIC project is funded by the Swiss National Science Foundation ([SNSF](https://data.snf.ch/grants/grant/188976)).
 For more information on current projects of the Geneva Global Governance Observatory, 
 please see [our Github website](https://github.com/globalgov).

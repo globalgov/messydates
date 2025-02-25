@@ -76,7 +76,7 @@ pkg_comparison <- tibble::tribble(~Example, ~OriginalDate,
                 messydates = messydates::as_messydate(OriginalDate))
 ```
 
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<table class="table table-striped" style="color: black; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
@@ -390,7 +390,7 @@ resolve_mdate <- pkg_comparison %>%
          max = as.Date(messydates, max))
 ```
 
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<table class="table table-striped" style="color: black; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
@@ -444,10 +444,10 @@ max
 0476-01-01
 </td>
 <td style="text-align:left;">
-0476-07-02
+0476-01-01
 </td>
 <td style="text-align:left;">
-0476-12-31
+0476-01-01
 </td>
 </tr>
 <tr>
@@ -458,10 +458,10 @@ max
 -033-01-01
 </td>
 <td style="text-align:left;">
--033-07-02
+-033-01-01
 </td>
 <td style="text-align:left;">
--033-12-31
+-033-01-01
 </td>
 </tr>
 <tr>
@@ -556,10 +556,10 @@ max
 2012-01-01
 </td>
 <td style="text-align:left;">
-2012-01-16
+2012-01-01
 </td>
 <td style="text-align:left;">
-2012-01-31
+2012-01-01
 </td>
 </tr>
 <tr>
@@ -584,10 +584,10 @@ max
 2012-11-01
 </td>
 <td style="text-align:left;">
-2012-11-16
+2012-11-01
 </td>
 <td style="text-align:left;">
-2012-12-01
+2012-11-01
 </td>
 </tr>
 <tr>
@@ -598,10 +598,10 @@ max
 2012-05-26
 </td>
 <td style="text-align:left;">
-2012-11-19
+2012-05-26
 </td>
 <td style="text-align:left;">
-2012-12-04
+2012-05-26
 </td>
 </tr>
 </tbody>
@@ -657,6 +657,6 @@ institutions by examining the historical dynamics of institutional
 networks from different domains.
 
 The PANARCHIC project is funded by the Swiss National Science Foundation
-([SNSF](https://p3.snf.ch/Project-188976)). For more information on
-current projects of the Geneva Global Governance Observatory, please see
-[our Github website](https://github.com/globalgov).
+([SNSF](https://data.snf.ch/grants/grant/188976)). For more information
+on current projects of the Geneva Global Governance Observatory, please
+see [our Github website](https://github.com/globalgov).

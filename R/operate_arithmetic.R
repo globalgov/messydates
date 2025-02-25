@@ -11,8 +11,8 @@
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-#' tibble::tibble(date = d, add = d + 1, subtract = d - 1)
-#' tibble::tibble(date = d, add = d + "1 year", subtract = d - "1 year")
+#' dplyr::tibble(date = d, add = d + 1, subtract = d - 1)
+#' dplyr::tibble(date = d, add = d + "1 year", subtract = d - "1 year")
 #' as_messydate("2001-01-01") + as_messydate("2001-01-02..2001-01-04")
 #' as_messydate("2001-01-01") + as_messydate("2001-01-03")
 #' as_messydate("2001-01-01..2001-01-04") - as_messydate("2001-01-02")
@@ -46,16 +46,16 @@ add <- function(x, n) {
   } else {
     # Step one: get only first and last components for ranges
     # But keep approximation for before or after date
-    x <- ifelse(stringr::str_detect(x, "^\\.\\.|\\.\\.$"), x, expand(x))
+    x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, expand(x))
     # Step two, add by component
     x <- lapply(x, function(y) {
-      if (stringr::str_detect(y[1], "^-")) {
+      if (stringi::stri_detect_regex(y[1], "^-")) {
         y <- paste0("-", lubridate::as_date(y) - n)
-      } else if (stringr::str_detect(y[1], "^\\.\\.")) {
-        y <- stringr::str_remove(y, "\\.\\.")
+      } else if (stringi::stri_detect_regex(y[1], "^\\.\\.")) {
+        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
         y <- paste0("..", lubridate::as_date(y) + n)
-      } else if (stringr::str_detect(y[1], "\\.\\.$")) {
-        y <- stringr::str_remove(y, "\\.\\.")
+      } else if (stringi::stri_detect_regex(y[1], "\\.\\.$")) {
+        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
         y <- paste0(lubridate::as_date(y) + n, "..")
       } else {
         y <- lubridate::as_date(y) + n
@@ -80,16 +80,16 @@ subtract <- function(x, n) {
   } else {
     # Step one: get only first and last components for ranges
     # But keep approximation for before or after date
-    x <- ifelse(stringr::str_detect(x, "^\\.\\.|\\.\\.$"), x, expand(x))
+    x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, expand(x))
     # Step two, add by component
     x <- lapply(x, function(y) {
-      if (stringr::str_detect(y[1], "^-")) {
+      if (stringi::stri_detect_regex(y[1], "^-")) {
         y <- paste0("-", lubridate::as_date(y) + n)
-      } else if (stringr::str_detect(y[1], "^\\.\\.")) {
-        y <- stringr::str_remove(y, "\\.\\.")
+      } else if (stringi::stri_detect_regex(y[1], "^\\.\\.")) {
+        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
         y <- paste0("..", lubridate::as_date(y) - n)
-      } else if (stringr::str_detect(y[1], "\\.\\.$")) {
-        y <- stringr::str_remove(y, "\\.\\.")
+      } else if (stringi::stri_detect_regex(y[1], "\\.\\.$")) {
+        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
         y <- paste0(lubridate::as_date(y) - n, "..")
       } else {
         y <- lubridate::as_date(y) - n
@@ -105,12 +105,12 @@ parse_date_strings <- function(e2) {
   if (is_messydate(e2)) {
     e2 <- contract(e2)
   } else {
-    e2 <- ifelse(stringr::str_detect(e2, "years|year"),
-                 as.numeric(stringr::str_remove(e2, "years|year")) * 365, e2)
-    e2 <- ifelse(stringr::str_detect(e2, "months|month"),
-                 as.numeric(stringr::str_remove(e2, "months|month")) * 30.42, e2)
-    e2 <- ifelse(stringr::str_detect(e2, "days|day"),
-                 as.numeric(stringr::str_remove(e2, "days|day")), e2)
+    e2 <- ifelse(stringi::stri_detect_regex(e2, "years|year"),
+                 as.numeric(stringi::stri_replace_all_regex(e2, "years|year", "")) * 365, e2)
+    e2 <- ifelse(stringi::stri_detect_regex(e2, "months|month"),
+                 as.numeric(stringi::stri_replace_all_regex(e2, "months|month", "")) * 30.42, e2)
+    e2 <- ifelse(stringi::stri_detect_regex(e2, "days|day"),
+                 as.numeric(stringi::stri_replace_all_regex(e2, "days|day", "")), e2)
   }
   e2
 }

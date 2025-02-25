@@ -1,3 +1,30 @@
+# messydates 0.5.0
+
+## Package
+
+- Dropped the vignettes as they were 'outdated'
+- Dropped a number of tests to provide rapid testing framework
+- Dropped `{tibble}` dependency by just using `{dplyr}`
+- Updated Github workflows
+- Updated testthat to version 3, tests now run in parallel
+- Updated pkgdown to bootstrap 5
+- Updated DESCRIPTION with config packages
+
+## Functions
+
+- Moved from `{stringr}` to `{stringi}` for _speed_
+- Added `as.numeric.mdate()` and `as_messydate.numeric()` for coercing between messydates and numbers (closes #85)
+- Added `seq.mdate()` for creating sequences from one or two messydates
+  - This includes correct sequences for leap years and historical dates including before the common era
+- Added `is_bce()` for testing whether dates are from before the common era
+- Added `stri_squish()` helper for trimming white space everywhere
+- Improved `c.mdate()` so that it will strip class from an `mdate` object, as expected
+- Improved `is_uncertain()` and `is_approximate()` so that they also recognise `%` annotations
+- Improved `min.mdate()`, `max.mdate()`, and `modal.mdate()` to avoid using `expand()` and consequently run much faster
+- Improved `min.mdate()`, `max.mdate()`, `modal.mdate()`, `mean.mdate()`, `median.mdate()`, and `random.mdate()` by adding `recursive` argument for resolving vectors down to a scalar
+- Fixed bug in `messyduration.mdate()` where the minimum of an underspecified later date was used
+- Fixed bug in `as_messydate()` where zero padding for early dates was not added correctly
+
 # messydates 0.4.1
 
 ## Package
@@ -27,7 +54,7 @@
 
 ## Functions
 
-* Updated how ´contract()´ function checks if 'mdate' object has been expanded 
+* Updated how `contract()` function checks if 'mdate' object has been expanded 
 
 # messydates 0.3.4
 

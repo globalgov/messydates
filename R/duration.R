@@ -1,17 +1,16 @@
 #' A duration class for mdates
-#'
 #' @description
-#' The `mdates_duration` class introduces methods that annotate a duration or
-#' period with representations of its uncertainty.
+#'   The `mdates_duration` class introduces methods that annotate a duration or
+#'   period with representations of its uncertainty.
 #' @details
-#' Most R packages handle duration and periods as exact time or date intervals.
-#' However, this is not possible for 'messy' dates where uncertainty or
-#' approximation might be present.
-#' The `mdates_duration` class accounts for uncertainty and approximation
-#' in `mdate` objects to return their duration as a range of possible dates.
+#'   Most R packages handle duration and periods as exact time or date intervals.
+#'   However, this is not possible for 'messy' dates where uncertainty or
+#'   approximation might be present.
+#'   The `mdates_duration` class accounts for uncertainty and approximation
+#'   in `mdate` objects to return their duration as a range of possible dates.
 #' @param x An `mdate` variable with ranges.
 #' @param approx_range Range to expand approximate dates, in days.
-#' If 3, for example, adds 3 days; if -3, removes 3 days from both sides.
+#'   If 3, for example, adds 3 days; if -3, removes 3 days from both sides.
 #' @return Object of class `description`
 #' @name duration_class
 #' @examples
@@ -64,7 +63,7 @@ messyduration.mdate <- function(x, approx_range = 0) {
 
 messy_range <- function(x, approx_range) {
   dates <- strsplit(x, "\\.\\.")
-  dates1 <- as.Date(as_messydate(purrr::map_chr(dates, 1)), min) + approx_range
-  dates2 <- as.Date(as_messydate(purrr::map_chr(dates, 2)), max) + approx_range
+  dates1 <- as.Date(as_messydate(purrr::map_chr(dates, 1)), FUN = min) + approx_range
+  dates2 <- as.Date(as_messydate(purrr::map_chr(dates, 2)), FUN = max) + approx_range
   as_messydate(paste0(dates1, "..", dates2))
 }

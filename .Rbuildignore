@@ -1,4 +1,5 @@
 ^messydatesDev\.Rproj$
+^devmessydates\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^LICENSE\.md$
@@ -8,6 +9,7 @@
 ^cran-comments\.md$
 ^CRAN-RELEASE$
 ^data-raw$
+^vignettes-old$
 ^iso_standards
 ^CRAN-SUBMISSION$
 ^article$

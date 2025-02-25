@@ -9,8 +9,8 @@ Description: Contains a set of tools for constructing and coercing
   date ranges, and sets of dates. 
   This is useful for describing and analysing temporal information,
   whether historical or recent, where date precision may vary.
-Version: 0.4.1
-Date: 2024-04-18
+Version: 0.5.0
+Date: 2025-02-17
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",
@@ -31,22 +31,29 @@ Authors@R:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 LazyData: true
-VignetteBuilder: knitr
+Depends: 
+    R (>= 4.0)
 Imports:
-    stringr,
+    stringi,
     purrr,
     lubridate,
-    tibble,
     dplyr
 Suggests: 
     testthat (>= 3.0.0),
-    covr,
-    rmarkdown,
-    knitr
-Config/testthat/edition: 3
-URL: https://globalgov.github.io/messydates/, https://github.com/globalgov/messydates
+    rmarkdown
+URL: https://globalgov.github.io/messydates/
 BugReports: https://github.com/globalgov/messydates/issues
-Depends: 
-    R (>= 4.0)
+Config/Needs/build: 
+    roxygen2, 
+    devtools
+Config/Needs/check: 
+    covr,
+    lintr,
+    spelling
+Config/Needs/website:
+    pkgdown
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: logical-operators 

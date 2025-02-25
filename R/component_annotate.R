@@ -38,10 +38,10 @@
 #'   as_approximate(Beg), Beg))
 #' dplyr::mutate(data, End = ifelse(End == "1916-12-31",
 #'   as_uncertain(End), End))
-#' @name annotate
+#' @name component_annotate
 NULL
 
-#' @describeIn annotate prefixes dates with ".." where start date is uncertain
+#' @describeIn component_annotate prefixes dates with ".." where start date is uncertain
 #' @export
 on_or_before <- function(x) {
   x <- paste0("..", x)
@@ -49,7 +49,7 @@ on_or_before <- function(x) {
   x
 }
 
-#' @describeIn annotate suffixes dates with ".." where end date is uncertain
+#' @describeIn component_annotate suffixes dates with ".." where end date is uncertain
 #' @export
 on_or_after <- function(x) {
   x <- paste0(x, "..")
@@ -57,7 +57,7 @@ on_or_after <- function(x) {
   x
 }
 
-#' @describeIn annotate adds tildes to indicate approximate dates/date components
+#' @describeIn component_annotate adds tildes to indicate approximate dates/date components
 #' @export
 as_approximate <- function(x, component = NULL) {
   if (is.null(component)) {
@@ -87,7 +87,7 @@ as_approximate <- function(x, component = NULL) {
   x
 }
 
-#' @describeIn annotate adds question marks to indicate dubious dates/date components.
+#' @describeIn component_annotate adds question marks to indicate dubious dates/date components.
 #' @export
 as_uncertain <- function(x, component = NULL) {
   if (is.null(component)) {

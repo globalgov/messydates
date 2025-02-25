@@ -1,14 +1,15 @@
 #' Contract lists of dates into messy dates
-#'
-#' This function operates as the opposite of `expand()`.
-#' It contracts a list of dates into the abbreviated annotation
-#' of messy dates.
+#' @description
+#'   This function operates as the opposite of `expand()`.
+#'   It contracts a list of dates into the abbreviated annotation
+#'   of messy dates.
+#' @name convert_contract
 #' @details The ´contract()´ function first `expand()` 'mdate' objects
 #' to then display their most succinct representation.
 #' @param x A list of dates
 #' @param collapse Do you want ranges to be collapsed?
-#' TRUE by default.
-#' If FALSE ranges are returned in compact format.
+#'   TRUE by default.
+#'   If FALSE ranges are returned in compact format.
 #' @return A `mdate` vector
 #' @importFrom dplyr tibble
 #' @importFrom lubridate NA_Date_

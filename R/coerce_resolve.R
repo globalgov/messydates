@@ -172,7 +172,7 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
 #' @export
 modal <- function(..., na.rm = FALSE, recursive = FALSE) UseMethod("modal")
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @examples
 #' modal(d)
 #' @export

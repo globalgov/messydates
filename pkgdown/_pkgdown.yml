@@ -40,18 +40,18 @@ reference:
     contents:
       - class
       - messydate
-      - annotate
+      - component_annotate
       - duration_class
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:
       - starts_with("as\\.")
-      - resolve
+      - coerce_resolve
   - title: "Manipulation"
     desc: "These functions expand or contract objects of `mdate` class from/into a list:"
     contents:
-      - expand
-      - contract
+      - convert_expand
+      - convert_contract
   - title: "Operations"
     desc: "These methods help operate on objects of the `mdate` class:"
     contents:
@@ -59,7 +59,7 @@ reference:
       - set
       - logical_tests
       - is_messydate
-      - extract
+      - component_extract
       - proportional
       - messy-sequence
   - title: "Data"

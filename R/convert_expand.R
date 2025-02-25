@@ -22,6 +22,7 @@
 #'   and 3 months and 3 days for month-day approximation.
 #' @return A list of dates, including all dates in each range or set.
 #' @importFrom lubridate as_date ymd years
+#' @name convert_expand
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",

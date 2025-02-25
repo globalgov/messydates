@@ -7,6 +7,7 @@
 \alias{median.mdate}
 \alias{mean.mdate}
 \alias{modal}
+\alias{modal.mdate}
 \alias{random}
 \alias{random.mdate}
 \title{Resolves messy dates into a single value}
@@ -20,6 +21,8 @@
 \method{mean}{mdate}(..., trim = 0, na.rm = TRUE, recursive = FALSE)
 
 modal(..., na.rm = FALSE, recursive = FALSE)
+
+\method{modal}{mdate}(..., na.rm = TRUE, recursive = FALSE)
 
 random(..., size, replace = FALSE, prob = NULL, recursive = FALSE)
 
@@ -68,5 +71,6 @@ min(d)
 max(d)
 median(d)
 mean(d)
+modal(d)
 random(d)
 }

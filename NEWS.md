@@ -1,3 +1,10 @@
+# messydates 0.5.1
+
+## Package
+
+- Fixed redirected url in README
+- Fixed pkgdown help links
+
 # messydates 0.5.0
 
 ## Package

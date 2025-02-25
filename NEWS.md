@@ -8,15 +8,16 @@
 - Updated Github workflows
 - Updated testthat to version 3, tests now run in parallel
 - Updated pkgdown to bootstrap 5
+- Updated DESCRIPTION with config packages
 
 ## Functions
 
+- Moved from `{stringr}` to `{stringi}` for _speed_
 - Added `as.numeric.mdate()` and `as_messydate.numeric()` for coercing between messydates and numbers (closes #85)
 - Added `seq.mdate()` for creating sequences from one or two messydates
   - This includes correct sequences for leap years and historical dates including before the common era
 - Added `is_bce()` for testing whether dates are from before the common era
 - Added `stri_squish()` helper for trimming white space everywhere
-- Started move from `{stringr}` to `{stringi}` for _speed_
 - Improved `c.mdate()` so that it will strip class from an `mdate` object, as expected
 - Improved `is_uncertain()` and `is_approximate()` so that they also recognise `%` annotations
 - Improved `min.mdate()`, `max.mdate()`, and `modal.mdate()` to avoid using `expand()` and consequently run much faster

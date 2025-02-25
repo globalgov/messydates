@@ -10,14 +10,13 @@ jobs:
   build:
     name: Build for ${{ matrix.config.os }}
     runs-on: ${{ matrix.config.os }}
-    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest, r: 'release', artifact_name: '*.tar.gz', asset_name: macOS}
+          - {os: macOS-latest,   r: 'release', artifact_name: '*.tar.gz', asset_name: macOS}
           - {os: windows-latest, r: 'release', artifact_name: '*.zip', asset_name: winOS}
-          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest", artifact_name: '*.tar.gz', asset_name: linuxOS}
+          - {os: ubuntu-latest, r: 'release', artifact_name: '*.tar.gz', asset_name: linuxOS}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -36,11 +35,10 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 2
+          needs: check, build
           extra-packages: |
             any::rcmdcheck
-            any::covr
             any::remotes
-          needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         env:
@@ -57,24 +55,27 @@ jobs:
         shell: Rscript {0}
 
       - name: Save binary artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.config.asset_name }}
           path: build/
 
       - name: Calculate code coverage
+        if: runner.os == 'macOS-latest'
         run: Rscript -e "covr::codecov()"
 
   release:
     name: Bump version and release
+    if: ${{ always() }}
     needs: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout one
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
         with:
           fetch-depth: '0'
-
       - name: Bump version and push tag
         id: newtag
         uses: anothrNick/github-tag-action@1.39.0
@@ -82,105 +83,49 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           DEFAULT_BUMP: patch
-
+          RELEASE_BRANCHES: main
       - name: Checkout two
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Create Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ steps.newtag.outputs.tag }}
-          name: Release ${{ steps.newtag.outputs.tag }}
-          draft: false
-          prerelease: false
+      - name: Extract version
+        run: |
+          echo "PACKAGE_VERSION=$(grep '^Version' DESCRIPTION | sed 's/.*: *//')" >> $GITHUB_ENV
+          echo "PACKAGE_NAME=$(grep '^Package' DESCRIPTION | sed 's/.*: *//')" >> $GITHUB_ENV
 
       - name: Download binaries
         uses: actions/download-artifact@v4
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Rename Mac release
-        run: mv ./macOS/*.tgz messydates_macOS.tgz
-
-      - name: Upload Mac binary
-        id: upload-mac
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: messydates_macOS.tgz
-          asset_name: messydates_macOS.tgz
-          asset_content_type: application/zip
-
-      - name: Rename Linux release
-        run: mv ./linuxOS/*.tar.gz messydates_linuxOS.tar.gz
-
-      - name: Upload Linux binary
-        id: upload-lin
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: messydates_linuxOS.tar.gz
-          asset_name: messydates_linuxOS.tar.gz
-          asset_content_type: application/zip
-
-      - name: Rename Windows release
-        run: mv ./winOS/*.zip messydates_winOS.zip
-
-      - name: Upload Windows binary
-        id: upload-win
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: messydates_winOS.zip
-          asset_name: messydates_winOS.zip
-          asset_content_type: application/zip
-
-  render:
-    name: Update README.md and push
-    needs: build
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: r-lib/actions/setup-r@v2
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          cache-version: 2
-          extra-packages: |
-            any::messydates
-            any::lubridate
-            any::tibble
-            any::dplyr
-            any::knitr
-            any::kableExtra
-          needs: check
-
-      # Render README.md using rmarkdown
-      - name: render README
-        run: Rscript -e 'rmarkdown::render("README.Rmd", output_format = "md_document")'
-      # Add man/figures/README-* to the git add call if plots are generated
-      - name: commit rendered README
+      - name: Rename binaries release
+        shell: bash
         run: |
-          git add README.md
-          git commit -m "Re-build README.md" || echo "No changes to commit"
-          git push origin master || echo "No changes to commit"
+          ls -R
+          cp ./macOS/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}*.tgz .
+          cp ./linuxOS/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}*.tar.gz .
+          cp ./winOS/${{ env.PACKAGE_NAME }}_${{ env.PACKAGE_VERSION }}*.zip .
+          echo "Renamed files"
+          ls messydates_*
+
+      - name: Create Release and Upload Assets
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.newtag.outputs.tag }}
+          name: Release ${{ steps.newtag.outputs.tag }}
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          # Specify the assets you want to upload
+          files: |
+            messydates_*.tgz
+            messydates_*.tar.gz
+            messydates_*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   pkgdown:
     name: Build and deploy website
-    needs: render
+    if: ${{ always() }}
+    needs: release
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -189,7 +134,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v2
 
-      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-pandoc@v1
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -197,6 +142,7 @@ jobs:
           extra-packages: |
             any::rcmdcheck
             any::pkgdown
+            any::rsconnect
           needs: check
 
       - name: Install package

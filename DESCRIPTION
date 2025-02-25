@@ -36,7 +36,6 @@ LazyData: true
 Depends: 
     R (>= 4.0)
 Imports:
-    stringr,
     stringi,
     purrr,
     lubridate,

@@ -10,18 +10,18 @@
 #' This can be useful for various descriptive or inferential projects.
 #' @param ... a mdate object
 #' @param na.rm Should NAs be removed? True by default.
-#' @importFrom stringr str_detect
+#' @importFrom stringi stri_detect_regex stri_replace_all_regex
 #' @return A single scalar or vector of dates
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
 #'   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #'   "{2001-01,2001-02-02}", "2008-XX-31", "-0050-01-01"))
 #' d
-#' @name resolve
+#' @name coerce_resolve
 NULL
 #> NULL
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @param recursive If recursive = TRUE, then the dates will be resolved
 #'   to a single date. If recursive = FALSE, then the dates will be resolved
 #'   to a vector the length of the original vector.
@@ -59,13 +59,13 @@ min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
   dates <- stringi::stri_replace_last_regex(dates,
                                             "^(.*[:digit:]{4})$", "$1-01-01")
   dates <- stringi::stri_replace_last_regex(dates,
-                                   "^(.*[:digit:]{4})-([:digit:]{2})$", "$1-$2-01")
+                                            "^(.*[:digit:]{4})-([:digit:]{2})$", "$1-$2-01")
   # dates <- stringi::stri_replace_last_regex(dates,
   #                                           "^-([:digit:]{4})-([:digit:]{2})$", "-$1-$2-01")
   dates
 }
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @examples
 #' max(d)
 #' @export
@@ -99,7 +99,7 @@ max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
   dates
 }
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @importFrom stats median
 #' @examples
 #' median(d)
@@ -131,7 +131,7 @@ median.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
   }
 }
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @param trim the fraction (0 to 0.5) of observations to be trimmed
 #' from each end of x before the mean is computed.
 #' Values of trim outside that range are taken as the nearest endpoint.
@@ -144,10 +144,10 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = recursive)
   if(recursive){
-    if (length(y) > 1 & stringr::str_detect(y[1], "^-", negate = TRUE)) {
+    if (length(y) > 1 & stringi::stri_detect_regex(y[1], "^-", negate = TRUE)) {
       y <- as.character(mean(as.Date(y), trim = 0, na.rm = TRUE))
     }
-    if (length(y) > 1 & stringr::str_detect(y[1], "^-")) {
+    if (length(y) > 1 & stringi::stri_detect_regex(y[1], "^-")) {
       y <- paste0("-", as.character(mean(lubridate::as_date(y),
                                          trim = 0, na.rm = TRUE)))
       y <- zero_padding(y)
@@ -155,10 +155,10 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
     y
   } else {
     unlist(lapply(y, function(x) {
-      if (length(x) > 1 & stringr::str_detect(x[1], "^-", negate = TRUE)) {
+      if (length(x) > 1 & stringi::stri_detect_regex(x[1], "^-", negate = TRUE)) {
         x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
       }
-      if (length(x) > 1 & stringr::str_detect(x[1], "^-")) {
+      if (length(x) > 1 & stringi::stri_detect_regex(x[1], "^-")) {
         x <- paste0("-", as.character(mean(lubridate::as_date(x),
                                            trim = 0, na.rm = TRUE)))
         x <- zero_padding(x)
@@ -168,7 +168,7 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
   }
 }
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @export
 modal <- function(..., na.rm = FALSE, recursive = FALSE) UseMethod("modal")
 
@@ -188,7 +188,7 @@ modal.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
   d
 }
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @param size a non-negative integer giving the number of items to choose.
 #' @param replace should sampling be with replacement?
 #' @param prob a vector of probability weights
@@ -198,14 +198,14 @@ random <- function(..., size,
                    replace = FALSE,
                    prob = NULL, recursive = FALSE) UseMethod("random")
 
-#' @rdname resolve
+#' @rdname coerce_resolve
 #' @examples
 #' random(d)
 #' @export
 random.mdate <- function(...,
-                           size,
-                           replace = FALSE,
-                           prob = NULL, recursive = FALSE) {
+                         size,
+                         replace = FALSE,
+                         prob = NULL, recursive = FALSE) {
   x <- as.list(...)
   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
               recursive = recursive)

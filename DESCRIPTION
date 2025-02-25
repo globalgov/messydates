@@ -43,10 +43,18 @@ Imports:
     dplyr
 Suggests: 
     testthat (>= 3.0.0),
-    covr,
     rmarkdown
 URL: https://globalgov.github.io/messydates/
 BugReports: https://github.com/globalgov/messydates/issues
+Config/Needs/build: 
+    roxygen2, 
+    devtools
+Config/Needs/check: 
+    covr,
+    lintr,
+    spelling
+Config/Needs/website:
+    pkgdown
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Config/testthat/start-first: logical-operators 

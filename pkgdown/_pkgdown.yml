@@ -65,5 +65,4 @@ reference:
   - title: "Data"
     desc: "Working with 'messy' data:"
     contents:
-      - mreport
       - battles

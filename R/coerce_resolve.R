@@ -34,6 +34,7 @@ min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
   dates <- stringi::stri_replace_all_regex(d, "~|\\?", "")
   dates <- .remove_post(dates)
   dates <- .replace_earliest(dates)
+  dates <- mdate(dates)
   # if(any(stringi::stri_detect_regex(dates, "^~")))
   #   dates <- expand_approximate_years(dates, approx_range = approx_range)
   # if(any(stringi::stri_detect_regex(dates, "[:digit:]~"))){
@@ -41,8 +42,10 @@ min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
   #   dates <- expand_approximate_days(dates, approx_range = approx_range)
   # }
   if(recursive){
-    if(any(is_bce(dates))) max(dates[is_bce(dates)]) else
-      min(dates)
+    if(any(is_bce(dates)))
+      dates[is_bce(dates)][order(as.character(dates[is_bce(dates)]),
+                                 decreasing = TRUE)][1] else
+      dates[order(as.character(dates))==1]
   } else dates
 }
 
@@ -76,10 +79,13 @@ max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
   dates <- unspecified_months(dates)
   dates <- .remove_pre(dates)
   dates <- .replace_latest(dates)
+  dates <- mdate(dates)
 
   if(recursive){
-    if(any(is_bce(dates))) max(dates[!is_bce(dates)]) else
-      max(dates)
+    if(all(is_bce(dates), na.rm = TRUE))
+      dates[order(dates, decreasing = TRUE)][1] else
+      dates[!is_bce(dates)][order(as.character(dates[!is_bce(dates)]),
+                                  decreasing = TRUE)][1]
   } else dates
 
 }

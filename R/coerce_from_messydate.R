@@ -41,13 +41,13 @@ NULL
 #' as.Date(as_messydate("1000 BC"), median)
 #' as.Date(as_messydate(c("-1000", "2020")), min)
 #' @export
-as.Date.mdate <- function(x, ..., FUN) {
+as.Date.mdate <- function(x, FUN = min, ...) {
   # # fix argument ordering issues
   # if (missing(FUN)){
   #   if(length(list(...)) > 0) FUN <- list(...)[[1]] else
   #     FUN <- messydates::min.mdate
   # }
-  if(missing(FUN)) FUN <- min
+  # if(missing(FUN)) FUN <- min
   x <- FUN(x)
   x <- suppressWarnings(ifelse(stringi::stri_detect_regex(x, "^-"),
                                lubridate::as_date(negative_dates(x)),
@@ -57,24 +57,24 @@ as.Date.mdate <- function(x, ..., FUN) {
 
 #' @rdname from_messydate
 #' @export
-as.POSIXct.mdate <- function(x, ..., FUN) {
-  if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
+as.POSIXct.mdate <- function(x, FUN = min, ...) {
+  # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXct(x)
+  as.POSIXct(as.character(x))
 }
 
 #' @rdname from_messydate
 #' @export
-as.POSIXlt.mdate <- function(x, ..., FUN) {
-  if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
+as.POSIXlt.mdate <- function(x, FUN = min, ...) {
+  # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXlt(x)
+  as.POSIXlt(as.character(x))
 }
 
 # Helper function for returning negative dates in date formats

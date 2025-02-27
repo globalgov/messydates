@@ -5,15 +5,15 @@ messy <- as_messydate("2010-10-10..2010-10-20")
 
 test_that("Coercion from other date classes into messydt works", {
   # expect_equal(as.character(as.Date(as_messydate("1000 BC"), max)), "-1000-12-31")
-  expect_equal(as.Date(messy, min), ddate)
-  expect_equal(as.Date(mdatey, median), ddate)
-  expect_equal(as.Date(mdatey, random), ddate)
+  expect_equal(as.Date(messy, FUN = min), ddate)
+  expect_equal(as.Date(mdatey, FUN = median), ddate)
+  expect_equal(as.Date(mdatey, FUN = random), ddate)
   # expect_equal(as.character(as.Date(as_messydate("1000 BC"), min)), min(negative))
 })
 
 test_that("Coercion to POSIX works", {
-  expect_equal(as.POSIXct(messy, max), as.POSIXct("2010-10-20 CEST"))
-  expect_equal(as.POSIXlt(messy, mean), as.POSIXlt("2010-10-15 CEST"))
+  expect_equal(as.POSIXct(messy, FUN = max), as.POSIXct("2010-10-20 CEST"))
+  expect_equal(as.POSIXlt(messy, FUN = mean), as.POSIXlt("2010-10-15 CEST"))
 })
 
 # neg_dates <- as_messydate(c("-27", "-14"))

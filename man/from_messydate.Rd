@@ -7,21 +7,21 @@
 \alias{as.POSIXlt.mdate}
 \title{Coercion from messy dates}
 \usage{
-\method{as.Date}{mdate}(x, ..., FUN)
+\method{as.Date}{mdate}(x, FUN = min, ...)
 
-\method{as.POSIXct}{mdate}(x, ..., FUN)
+\method{as.POSIXct}{mdate}(x, FUN = min, ...)
 
-\method{as.POSIXlt}{mdate}(x, ..., FUN)
+\method{as.POSIXlt}{mdate}(x, FUN = min, ...)
 }
 \arguments{
 \item{x}{A \code{mdate} object}
-
-\item{...}{Arguments passed on to the S3 generics.}
 
 \item{FUN}{A function that can be used to resolve expanded messy dates
 into a single date.
 For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
 \code{modal()}, and \code{random()}.}
+
+\item{...}{Arguments passed on to the S3 generics.}
 }
 \value{
 A date object of \code{Date}, \code{POSIXct}, or \code{POSIXlt} class

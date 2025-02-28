@@ -12,29 +12,23 @@
 #' @param approx_range Range to expand approximate dates, in days.
 #'   If 3, for example, adds 3 days; if -3, removes 3 days from both sides.
 #' @return Object of class `description`
-#' @name duration_class
+#' @name class_duration
 #' @examples
 #' messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
 NULL
 
-#' @rdname duration_class
+#' @rdname class_duration
 #' @export
 new_messyduration <- function(x = character()) {
   stopifnot(is.character(x))
   structure(x, class = "mdates_duration")
 }
 
-#' @importFrom utils str
-#' @export
-print.mdates_duration <- function(x, ...) {
-  str(x)
-}
-
-#' @rdname duration_class
+#' @rdname class_duration
 #' @export
 messyduration <- function(x, approx_range = 0) UseMethod("messyduration")
 
-#' @rdname duration_class
+#' @rdname class_duration
 #' @export
 validate_messyduration <- function(x, approx_range = 0) {
   if (any(!grepl("\\.\\.", x))) {
@@ -43,7 +37,7 @@ validate_messyduration <- function(x, approx_range = 0) {
   }
 }
 
-#' @rdname duration_class
+#' @rdname class_duration
 #' @export
 messyduration.character <- function(x, approx_range = 0) {
   message("Converting to mdate class.")
@@ -53,7 +47,7 @@ messyduration.character <- function(x, approx_range = 0) {
   new_messyduration(x)
 }
 
-#' @rdname duration_class
+#' @rdname class_duration
 #' @export
 messyduration.mdate <- function(x, approx_range = 0) {
   validate_messyduration(x)

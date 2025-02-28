@@ -54,13 +54,8 @@ reference:
   - title: "Operations"
     desc: "These methods help operate on objects of the `mdate` class:"
     contents:
-      - operate
-      - set
-      - logical_tests
-      - is_messydate
+      - starts_with("operate_")
       - component_extract
-      - proportional
-      - messy-sequence
   - title: "Data"
     desc: "Working with 'messy' data:"
     contents:

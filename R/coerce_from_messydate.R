@@ -24,11 +24,11 @@
 #' For example, `min()`, `max()`, `mean()`, `median()`,
 #' `modal()`, and `random()`.
 #' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
-#' @name from_messydate
+#' @name coerce_from
 NULL
 #> NULL
 
-#' @rdname from_messydate
+#' @rdname coerce_from
 #' @examples
 #' as.Date(as_messydate("2012-01"), min)
 #' as.Date(as_messydate("2012-01-01"), mean)
@@ -41,13 +41,13 @@ NULL
 #' as.Date(as_messydate("1000 BC"), median)
 #' as.Date(as_messydate(c("-1000", "2020")), min)
 #' @export
-as.Date.mdate <- function(x, ..., FUN) {
+as.Date.mdate <- function(x, FUN = min, ...) {
   # # fix argument ordering issues
   # if (missing(FUN)){
   #   if(length(list(...)) > 0) FUN <- list(...)[[1]] else
   #     FUN <- messydates::min.mdate
   # }
-  if(missing(FUN)) FUN <- min
+  # if(missing(FUN)) FUN <- min
   x <- FUN(x)
   x <- suppressWarnings(ifelse(stringi::stri_detect_regex(x, "^-"),
                                lubridate::as_date(negative_dates(x)),
@@ -55,26 +55,26 @@ as.Date.mdate <- function(x, ..., FUN) {
   as.Date(x, origin = "1970-01-01")
 }
 
-#' @rdname from_messydate
+#' @rdname coerce_from
 #' @export
-as.POSIXct.mdate <- function(x, ..., FUN) {
-  if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
+as.POSIXct.mdate <- function(x, FUN = min, ...) {
+  # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXct(x)
+  as.POSIXct(as.character(x))
 }
 
-#' @rdname from_messydate
+#' @rdname coerce_from
 #' @export
-as.POSIXlt.mdate <- function(x, ..., FUN) {
-  if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
+as.POSIXlt.mdate <- function(x, FUN = min, ...) {
+  # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXlt(x)
+  as.POSIXlt(as.character(x))
 }
 
 # Helper function for returning negative dates in date formats
@@ -88,3 +88,19 @@ negative_dates <- function(x) {
   x <- lubridate::as_date(x)
   x
 }
+
+#' @export
+as.data.frame.mdate <- function(x, ...) {
+  as.data.frame.vector(x, ...)
+}
+
+#' @export
+as.list.mdate <- function(x, ...) {
+  lapply(unclass(x), as_messydate)
+}
+
+#' @export
+as.numeric.mdate <- function(x, ...) {
+  as.numeric(as.Date(x))
+}
+

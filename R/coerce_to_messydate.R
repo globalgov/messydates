@@ -28,10 +28,10 @@
 #'   based on which the date is reordered into YYYY-MM-DD format
 #'   and further completed to YYYY-MM-DD format if they choose to do so.
 #' @return A `mdate` class object
-#' @name messydate
+#' @name coerce_to
 NULL
 
-#' @describeIn messydate Core `mdate` class coercion function
+#' @describeIn coerce_to Core `mdate` class coercion function
 #' @examples
 #' as_messydate("2021")
 #' as_messydate("2021-02")
@@ -53,21 +53,21 @@ NULL
 as_messydate <- function(x, resequence = FALSE)
   UseMethod("as_messydate")
 
-#' @describeIn messydate Coerce from `Date` to `mdate` class
+#' @describeIn coerce_to Coerce from `Date` to `mdate` class
 #' @export
 as_messydate.Date <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn messydate Coerce from `POSIXct` to `mdate` class
+#' @describeIn coerce_to Coerce from `POSIXct` to `mdate` class
 #' @export
 as_messydate.POSIXct <- function(x, resequence = FALSE) {
   x <- as.character(x)
   new_messydate(x)
 }
 
-#' @describeIn messydate Coerce from `POSIXlt` to `mdate` class
+#' @describeIn coerce_to Coerce from `POSIXlt` to `mdate` class
 #' @export
 as_messydate.POSIXlt <- function(x, resequence = FALSE) {
   x <- as.character(x)
@@ -80,7 +80,7 @@ as_messydate.mdate <- function(x, resequence = FALSE) {
   new_messydate(x)
 }
 
-#' @describeIn messydate Coerce character date objects to `mdate` class
+#' @describeIn coerce_to Coerce character date objects to `mdate` class
 #' @export
 as_messydate.character <- function(x, resequence = NULL) {
   d <- standardise_text(x)
@@ -107,14 +107,14 @@ as_messydate.character <- function(x, resequence = NULL) {
   new_messydate(d)
 }
 
-#' @describeIn messydate Coerce numeric objects to `mdate` class
+#' @describeIn coerce_to Coerce numeric objects to `mdate` class
 #' @export
 as_messydate.numeric <- function(x, resequence = NULL) {
   d <- as.character(x)
   new_messydate(d)
 }
 
-#' @describeIn messydate Coerce list date objects to the most concise
+#' @describeIn coerce_to Coerce list date objects to the most concise
 #' representation of `mdate` class
 #' @examples
 #' as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
@@ -128,7 +128,7 @@ as_messydate.list <- function(x, resequence = FALSE) {
   })
 }
 
-#' @rdname messydate
+#' @rdname coerce_to
 #' @export
 mdate <- as_messydate
 
@@ -576,39 +576,6 @@ complete_ambiguous_19 <- function(d) {
     message("No changes were made to 6 digit dates for which the year is larger than 22.")
   }
   out
-}
-
-# Make ####
-
-#' @describeIn messydate Composes `mdate` from multiple variables
-#' @param ... One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
-#' or three (yyyy, mm, dd) variables.
-#' @details If three date variables are passed to `make_messydate()`,
-#' function will create a single date (yyyy-mm-dd) from it.
-#' If two date variables are passed to `make_messydate()`,
-#' function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
-#' If one date variable is passed to `make_messydate()`,
-#' function defaults to `as_messydate()`.
-#' @importFrom purrr map pmap_chr
-#' @examples
-#' make_messydate("2010", "10", "10")
-#' @export
-make_messydate <- function(..., resequence = FALSE) {
-  dots <- list(...)
-  if (length(dots) == 1) {
-    dots <- do.call(as.character, dots)
-    dates <- unlist(dots)
-  } else if (length(dots) == 2) {
-    dots <- purrr::map(dots, as.character)
-    dates <- unlist(purrr::pmap_chr(dots, paste, sep = ".."))
-    dates <- gsub("NA..NA", "NA", dates)
-  } else if (length(dots) == 3) {
-    dots <- purrr::map(dots, as.character)
-    dates <- unlist(purrr::pmap_chr(dots, paste, sep = "-"))
-    dates <- gsub("NA-NA-NA", "NA", dates)
-  } else stop("make_messydate() takes one variable (yyyy-mm-dd),
-  two variables (yyyy-mm-dd, yyyy-mm-dd), or three variables (yyyy, mm, dd).")
-  as_messydate(dates, resequence)
 }
 
 stri_squish <- function(charvec){

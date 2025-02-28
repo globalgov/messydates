@@ -38,10 +38,9 @@ reference:
   - title: "Coerce to"
     desc: "These functions construct and/or coerce dates to the `mdate` class:"
     contents:
-      - class
-      - messydate
+      - starts_with("class_")
       - component_annotate
-      - duration_class
+      - coerce_to
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:

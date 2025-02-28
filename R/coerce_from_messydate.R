@@ -24,11 +24,11 @@
 #' For example, `min()`, `max()`, `mean()`, `median()`,
 #' `modal()`, and `random()`.
 #' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
-#' @name from_messydate
+#' @name coerce_from
 NULL
 #> NULL
 
-#' @rdname from_messydate
+#' @rdname coerce_from
 #' @examples
 #' as.Date(as_messydate("2012-01"), min)
 #' as.Date(as_messydate("2012-01-01"), mean)
@@ -55,7 +55,7 @@ as.Date.mdate <- function(x, FUN = min, ...) {
   as.Date(x, origin = "1970-01-01")
 }
 
-#' @rdname from_messydate
+#' @rdname coerce_from
 #' @export
 as.POSIXct.mdate <- function(x, FUN = min, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
@@ -66,7 +66,7 @@ as.POSIXct.mdate <- function(x, FUN = min, ...) {
   as.POSIXct(as.character(x))
 }
 
-#' @rdname from_messydate
+#' @rdname coerce_from
 #' @export
 as.POSIXlt.mdate <- function(x, FUN = min, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
@@ -88,3 +88,19 @@ negative_dates <- function(x) {
   x <- lubridate::as_date(x)
   x
 }
+
+#' @export
+as.data.frame.mdate <- function(x, ...) {
+  as.data.frame.vector(x, ...)
+}
+
+#' @export
+as.list.mdate <- function(x, ...) {
+  lapply(unclass(x), as_messydate)
+}
+
+#' @export
+as.numeric.mdate <- function(x, ...) {
+  as.numeric(as.Date(x))
+}
+

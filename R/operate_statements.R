@@ -127,8 +127,8 @@ evalqOnLoad({
 
 numeric_time_ranges <- function(e1, e2) {
   if (is_messydate(e1)) {
-    min1 <- as.Date(e1, FUN = min)
-    max1 <- as.Date(e1, FUN = max)
+    min1 <- as.Date(e1, FUN = vmin)
+    max1 <- as.Date(e1, FUN = vmax)
     if (lubridate::is.POSIXt(e2)) {
       ptz <- lubridate::tz(e2)
       min1 <- lubridate::force_tz(min1, ptz)
@@ -140,8 +140,8 @@ numeric_time_ranges <- function(e1, e2) {
     min1 <- max1 <- e1
   }
   if (is_messydate(e2)) {
-    min2 <- as.Date(e2, FUN = min)
-    max2 <- as.Date(e2, FUN = max)
+    min2 <- as.Date(e2, FUN = vmin)
+    max2 <- as.Date(e2, FUN = vmax)
     if (lubridate::is.POSIXt(e1)) {
       ptz <- lubridate::tz(e1)
       min2 <- lubridate::force_tz(min2, ptz)

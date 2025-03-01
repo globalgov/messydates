@@ -7,11 +7,11 @@
 \alias{as.POSIXlt.mdate}
 \title{Coercion from messy dates}
 \usage{
-\method{as.Date}{mdate}(x, FUN = min, ...)
+\method{as.Date}{mdate}(x, FUN = vmin, ...)
 
-\method{as.POSIXct}{mdate}(x, FUN = min, ...)
+\method{as.POSIXct}{mdate}(x, FUN = vmin, ...)
 
-\method{as.POSIXlt}{mdate}(x, FUN = min, ...)
+\method{as.POSIXlt}{mdate}(x, FUN = vmin, ...)
 }
 \arguments{
 \item{x}{A \code{mdate} object}

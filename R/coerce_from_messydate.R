@@ -41,7 +41,7 @@ NULL
 #' as.Date(as_messydate("1000 BC"), median)
 #' as.Date(as_messydate(c("-1000", "2020")), min)
 #' @export
-as.Date.mdate <- function(x, FUN = min, ...) {
+as.Date.mdate <- function(x, FUN = vmin, ...) {
   # # fix argument ordering issues
   # if (missing(FUN)){
   #   if(length(list(...)) > 0) FUN <- list(...)[[1]] else
@@ -57,7 +57,7 @@ as.Date.mdate <- function(x, FUN = min, ...) {
 
 #' @rdname coerce_from
 #' @export
-as.POSIXct.mdate <- function(x, FUN = min, ...) {
+as.POSIXct.mdate <- function(x, FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {
@@ -68,7 +68,7 @@ as.POSIXct.mdate <- function(x, FUN = min, ...) {
 
 #' @rdname coerce_from
 #' @export
-as.POSIXlt.mdate <- function(x, FUN = min, ...) {
+as.POSIXlt.mdate <- function(x, FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {

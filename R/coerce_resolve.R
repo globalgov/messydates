@@ -1,13 +1,13 @@
 #' Resolves messy dates into a single value
-#'
-#' This collection of S3 methods 'resolve' messy dates into a single date
-#' according to some explicit bias,
-#' such as returning the minimum or maximum date,
-#' the mean, median, or modal date,
-#' or a random date from among the possible resolutions for each messy date.
-#' If the date is not 'messy' (i.e. has no annotations)
-#' then just that precise date is returned.
-#' This can be useful for various descriptive or inferential projects.
+#' @description
+#'   This collection of S3 methods 'resolve' messy dates into a single date
+#'   according to some explicit bias,
+#'   such as returning the minimum or maximum date,
+#'   the mean, median, or modal date,
+#'   or a random date from among the possible resolutions for each messy date.
+#'   If the date is not 'messy' (i.e. has no annotations)
+#'   then just that precise date is returned.
+#'   This can be useful for various descriptive or inferential projects.
 #' @param ... a mdate object
 #' @param na.rm Should NAs be removed? True by default.
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
@@ -19,34 +19,41 @@
 #' d
 #' @name coerce_resolve
 NULL
-#> NULL
 
 #' @rdname coerce_resolve
-#' @param recursive If recursive = TRUE, then the dates will be resolved
-#'   to a single date. If recursive = FALSE, then the dates will be resolved
-#'   to a vector the length of the original vector.
-#'   By default FALSE.
+#' @export
+vmin <- function(..., na.rm = FALSE) UseMethod("vmin")
+
+#' @rdname coerce_resolve
+#' @examples
+#' vmin(d)
+#' @export
+vmin.mdate <- function(..., na.rm = TRUE){
+  d <- list(...)[[1]]
+  dates <- d
+  if(na.rm) dates <- na.omit(d)
+  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
+  dates <- .remove_post(dates)
+  dates <- .replace_earliest(dates)
+  mdate(dates)
+}
+
+#' @rdname coerce_resolve
 #' @examples
 #' min(d)
 #' @export
-min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
+min.mdate <- function(..., na.rm = TRUE){
   d <- list(...)[[1]]
-  dates <- stringi::stri_replace_all_regex(d, "~|\\?", "")
+  dates <- d
+  if(na.rm) dates <- na.omit(d)
+  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
   dates <- .remove_post(dates)
   dates <- .replace_earliest(dates)
   dates <- mdate(dates)
-  # if(any(stringi::stri_detect_regex(dates, "^~")))
-  #   dates <- expand_approximate_years(dates, approx_range = approx_range)
-  # if(any(stringi::stri_detect_regex(dates, "[:digit:]~"))){
-  #   dates <- expand_approximate_months(dates, approx_range = approx_range)
-  #   dates <- expand_approximate_days(dates, approx_range = approx_range)
-  # }
-  if(recursive){
-    if(any(is_bce(dates)))
-      dates[is_bce(dates)][order(as.character(dates[is_bce(dates)]),
-                                 decreasing = TRUE)][1] else
-      dates[order(as.character(dates))==1]
-  } else dates
+  if(any(is_bce(dates)))
+    dates[is_bce(dates)][order(as.character(dates[is_bce(dates)]),
+                               decreasing = TRUE)][1] else
+                                 dates[order(as.character(dates))==1]
 }
 
 .remove_post <- function(dates){
@@ -69,10 +76,33 @@ min.mdate <- function(..., na.rm = TRUE, recursive = FALSE){
 }
 
 #' @rdname coerce_resolve
+#' @export
+vmax <- function(..., na.rm = FALSE) UseMethod("vmax")
+
+#' @rdname coerce_resolve
+#' @examples
+#' vmax(d)
+#' @export
+vmax.mdate <- function(..., na.rm = TRUE){
+  d <- list(...)[[1]]
+  dates <- d
+  if(na.rm) dates <- na.omit(d)
+  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
+  dates <- unspecified_months(dates)
+  dates <- .remove_pre(dates)
+  dates <- .replace_latest(dates)
+  mdate(dates)
+}
+
+#' @rdname coerce_resolve
+#' @param recursive If recursive = TRUE, then the dates will be resolved
+#'   to a single date. If recursive = FALSE, then the dates will be resolved
+#'   to a vector the length of the original vector.
+#'   By default FALSE.
 #' @examples
 #' max(d)
 #' @export
-max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+max.mdate <- function(..., na.rm = TRUE) {
 
   d <- list(...)[[1]]
   dates <- stringi::stri_replace_all_regex(d, "~|\\?", "")
@@ -80,13 +110,10 @@ max.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
   dates <- .remove_pre(dates)
   dates <- .replace_latest(dates)
   dates <- mdate(dates)
-
-  if(recursive){
-    if(all(is_bce(dates), na.rm = TRUE))
-      dates[order(dates, decreasing = TRUE)][1] else
+  if(all(is_bce(dates), na.rm = TRUE))
+    dates[order(dates, decreasing = TRUE)][1] else
       dates[!is_bce(dates)][order(as.character(dates[!is_bce(dates)]),
                                   decreasing = TRUE)][1]
-  } else dates
 
 }
 

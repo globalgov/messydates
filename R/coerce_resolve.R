@@ -132,94 +132,94 @@ max.mdate <- function(..., na.rm = TRUE) {
   dates
 }
 
-#' @rdname coerce_resolve
-#' @importFrom stats median
-#' @examples
-#' median(d)
-#' @export
-median.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+# #' @rdname coerce_resolve
+# #' @importFrom stats median
+# #' @examples
+# #' median(d)
+# #' @export
+# median.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+#
+#   x <- as.list(...)
+#   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+#               recursive = recursive)
+#   if(recursive){
+#     if (length(y) %% 2 == 0) {
+#       as.character(median(unlist(y[-1]), na.rm = na.rm))
+#     }
+#     else{
+#       as.character(median(y, na.rm = na.rm))
+#     }
+#   } else {
+#     unlist(lapply(y, function(z) {
+#       if (length(z) %% 2 == 0) {
+#         z <- unlist(z[-1])
+#         z <- as.character(median(z, na.rm = na.rm))
+#         z
+#       }
+#       else{
+#         z <- as.character(median(z, na.rm = na.rm))
+#         z
+#       }
+#     }), recursive = FALSE)
+#   }
+# }
 
-  x <- as.list(...)
-  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = recursive)
-  if(recursive){
-    if (length(y) %% 2 == 0) {
-      as.character(median(unlist(y[-1]), na.rm = na.rm))
-    }
-    else{
-      as.character(median(y, na.rm = na.rm))
-    }
-  } else {
-    unlist(lapply(y, function(z) {
-      if (length(z) %% 2 == 0) {
-        z <- unlist(z[-1])
-        z <- as.character(median(z, na.rm = na.rm))
-        z
-      }
-      else{
-        z <- as.character(median(z, na.rm = na.rm))
-        z
-      }
-    }), recursive = FALSE)
-  }
-}
+# #' @rdname coerce_resolve
+# #' @param trim the fraction (0 to 0.5) of observations to be trimmed
+# #' from each end of x before the mean is computed.
+# #' Values of trim outside that range are taken as the nearest endpoint.
+# #' @importFrom lubridate as_date
+# #' @examples
+# #' mean(d)
+# #' @export
+# mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
+#   x <- as.list(...)
+#   y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
+#               recursive = recursive)
+#   if(recursive){
+#     if (length(y) > 1 & stringi::stri_detect_regex(y[1], "^-", negate = TRUE)) {
+#       y <- as.character(mean(as.Date(y), trim = 0, na.rm = TRUE))
+#     }
+#     if (length(y) > 1 & stringi::stri_detect_regex(y[1], "^-")) {
+#       y <- paste0("-", as.character(mean(lubridate::as_date(y),
+#                                          trim = 0, na.rm = TRUE)))
+#       y <- zero_padding(y)
+#     }
+#     y
+#   } else {
+#     unlist(lapply(y, function(x) {
+#       if (length(x) > 1 & stringi::stri_detect_regex(x[1], "^-", negate = TRUE)) {
+#         x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
+#       }
+#       if (length(x) > 1 & stringi::stri_detect_regex(x[1], "^-")) {
+#         x <- paste0("-", as.character(mean(lubridate::as_date(x),
+#                                            trim = 0, na.rm = TRUE)))
+#         x <- zero_padding(x)
+#       }
+#       x
+#     }), recursive = FALSE)
+#   }
+# }
 
-#' @rdname coerce_resolve
-#' @param trim the fraction (0 to 0.5) of observations to be trimmed
-#' from each end of x before the mean is computed.
-#' Values of trim outside that range are taken as the nearest endpoint.
-#' @importFrom lubridate as_date
-#' @examples
-#' mean(d)
-#' @export
-mean.mdate <- function(..., trim = 0, na.rm = TRUE, recursive = FALSE) {
-  x <- as.list(...)
-  y <- unlist(lapply(x, function(y) ifelse(!is_precise(y), expand(y), y)),
-              recursive = recursive)
-  if(recursive){
-    if (length(y) > 1 & stringi::stri_detect_regex(y[1], "^-", negate = TRUE)) {
-      y <- as.character(mean(as.Date(y), trim = 0, na.rm = TRUE))
-    }
-    if (length(y) > 1 & stringi::stri_detect_regex(y[1], "^-")) {
-      y <- paste0("-", as.character(mean(lubridate::as_date(y),
-                                         trim = 0, na.rm = TRUE)))
-      y <- zero_padding(y)
-    }
-    y
-  } else {
-    unlist(lapply(y, function(x) {
-      if (length(x) > 1 & stringi::stri_detect_regex(x[1], "^-", negate = TRUE)) {
-        x <- as.character(mean(as.Date(x), trim = 0, na.rm = TRUE))
-      }
-      if (length(x) > 1 & stringi::stri_detect_regex(x[1], "^-")) {
-        x <- paste0("-", as.character(mean(lubridate::as_date(x),
-                                           trim = 0, na.rm = TRUE)))
-        x <- zero_padding(x)
-      }
-      x
-    }), recursive = FALSE)
-  }
-}
+# #' @rdname coerce_resolve
+# #' @export
+# modal <- function(..., na.rm = FALSE, recursive = FALSE) UseMethod("modal")
 
-#' @rdname coerce_resolve
-#' @export
-modal <- function(..., na.rm = FALSE, recursive = FALSE) UseMethod("modal")
-
-#' @rdname coerce_resolve
-#' @examples
-#' modal(d)
-#' @export
-modal.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
-
-  d <- list(...)[[1]]
-  getmode <- function(v) {
-    uniqv <- unique(v)
-    uniqv[which.max(tabulate(match(v, uniqv)))]
-  }
-  d <- purrr::map_chr(expand(d), function(y) getmode(y))
-  if(recursive) d <- as.character(getmode(d))
-  d
-}
+# #' @rdname coerce_resolve
+# #' @examples
+# #' modal(d)
+# #' @export
+# modal.mdate <- function(..., na.rm = TRUE, recursive = FALSE) {
+#
+#   d <- list(...)[[1]]
+#   getmode <- function(v) {
+#     uniqv <- unique(v)
+#     uniqv[which.max(tabulate(match(v, uniqv)))]
+#   }
+#   d <- purrr::map_chr(expand(d), function(y) getmode(y))
+#   if(recursive) d <- as.character(getmode(d))
+#   d
+# }
 
 #' @rdname coerce_resolve
 #' @param size a non-negative integer giving the number of items to choose.

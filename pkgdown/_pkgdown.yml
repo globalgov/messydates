@@ -4,7 +4,7 @@ development:
 template:
   bootstrap: 5
   params:
-    bootswatch: quartz
+    bootswatch: journal
 authors:
   James Hollway:
     href: https://jameshollway.com
@@ -49,8 +49,7 @@ reference:
   - title: "Manipulation"
     desc: "These functions expand or contract objects of `mdate` class from/into a list:"
     contents:
-      - convert_expand
-      - convert_contract
+      - starts_with("convert_")
   - title: "Operations"
     desc: "These methods help operate on objects of the `mdate` class:"
     contents:

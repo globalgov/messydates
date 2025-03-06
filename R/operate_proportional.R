@@ -1,13 +1,13 @@
 #' Proportion of messy dates meeting logical test
 #'
 #' These functions provide various proportional tests for messy date objects.
-#' @name proportional
+#' @name operate_proportional
 #' @param e1,e2 `mdate` or other class objects
 #' @return The proportion that the comparison is true.
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
 
-#' @rdname proportional
+#' @rdname operate_proportional
 #' @export
 `%l%` <- function(e1, e2) UseMethod("%l%")
 
@@ -34,7 +34,7 @@ evalqOnLoad({
 #' @export
 `%g%` <- function(e1, e2) UseMethod("%g%")
 
-#' @describeIn proportional Tests proportion of dates in the first vector
+#' @describeIn operate_proportional Tests proportion of dates in the first vector
 #'   that follow the maximum in the second vector.
 #' @export
 #' @examples
@@ -57,7 +57,7 @@ evalqOnLoad({
 #' @export
 `%ge%` <- function(e1, e2) UseMethod("%ge%")
 
-#' @describeIn proportional Tests proportion of dates in the first vector
+#' @describeIn operate_proportional Tests proportion of dates in the first vector
 #'   that follow or are equal to the maximum in the second vector.
 #' @export
 #' @examples
@@ -80,7 +80,7 @@ evalqOnLoad({
 #' @export
 `%le%` <- function(e1, e2) UseMethod("%le%")
 
-#' @describeIn proportional Tests proportion of dates in the first vector
+#' @describeIn operate_proportional Tests proportion of dates in the first vector
 #'   that precede or are equal to the minimum in the second vector.
 #' @export
 #' @examples
@@ -103,7 +103,7 @@ evalqOnLoad({
 #' @export
 `%><%` <- function(e1, e2) UseMethod("%><%")
 
-#' @describeIn proportional Tests proportion of dates in the first vector
+#' @describeIn operate_proportional Tests proportion of dates in the first vector
 #'   that are between the minimum and maximum dates in the second vector.
 #' @export
 #' @examples
@@ -127,7 +127,7 @@ evalqOnLoad({
 #' @export
 `%>=<%` <- function(e1, e2) UseMethod("%>=<%")
 
-#' @describeIn proportional Tests proportion of dates in the first vector that
+#' @describeIn operate_proportional Tests proportion of dates in the first vector that
 #'   are between the minimum and maximum dates in the second vector, inclusive.
 #' @export
 #' @examples

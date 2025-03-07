@@ -100,7 +100,8 @@ as.list.mdate <- function(x, ...) {
 }
 
 #' @export
-as.numeric.mdate <- function(x, ...) {
-  as.numeric(as.Date(x))
+as.double.mdate <- function(x, ...) {
+  if(any(is_bce(x))) x[is_bce(x)] <- negative_dates(x)[is_bce(x)]
+  as.double(lubridate::as_date(x))
 }
 

@@ -89,3 +89,36 @@ vmean.mdate <- function(..., trim = 0, na.rm = TRUE) {
          FUN.VALUE = character(1))
 }
 
+#' @rdname coerce_tendency
+#' @export
+modal <- function(..., na.rm = TRUE) UseMethod("modal")
+
+#' @rdname coerce_tendency
+#' @examples
+#' modal(d)
+#' @export
+modal.mdate <- function(..., na.rm = TRUE) {
+  d <- list(...)[[1]]
+  .getmode(unlist(expand(d)))
+}
+
+.getmode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+#' @rdname coerce_tendency
+#' @export
+vmodal <- function(..., na.rm = TRUE) UseMethod("vmodal")
+
+#' @rdname coerce_tendency
+#' @examples
+#' vmodal(d)
+#' @export
+vmodal.mdate <- function(..., na.rm = TRUE) {
+
+  d <- list(...)[[1]]
+  d <- purrr::map_chr(expand(d), function(y) .getmode(y))
+  d
+}
+

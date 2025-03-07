@@ -8,6 +8,10 @@
 \alias{mean.mdate}
 \alias{vmean}
 \alias{vmean.mdate}
+\alias{modal}
+\alias{modal.mdate}
+\alias{vmodal}
+\alias{vmodal.mdate}
 \title{Resolves messy dates into a central tendency}
 \usage{
 \method{median}{mdate}(..., na.rm = TRUE)
@@ -21,6 +25,14 @@ vmedian(..., na.rm = TRUE)
 vmean(..., na.rm = TRUE)
 
 \method{vmean}{mdate}(..., trim = 0, na.rm = TRUE)
+
+modal(..., na.rm = TRUE)
+
+\method{modal}{mdate}(..., na.rm = TRUE)
+
+vmodal(..., na.rm = TRUE)
+
+\method{vmodal}{mdate}(..., na.rm = TRUE)
 
 }
 \arguments{
@@ -46,4 +58,6 @@ median(d)
 vmedian(d)
 mean(d)
 vmean(d)
+modal(d)
+vmodal(d)
 }

@@ -75,7 +75,7 @@ validate_messydate <- function(x) {
     stop("mdate object requires at least one specified date component.",
          call. = FALSE)
     }
-  if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|,|;|>|<|_|\\^|'|&|\\$|#", values))) {
+  if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|;|>|<|_|\\^|'|&|\\$|#", values))) {
     stop("mdate object can only consist of numbers and
       some special symbols: []{}..X%?~", call. = FALSE)
   }
@@ -86,13 +86,14 @@ validate_messydate <- function(x) {
 
 #' Composes `mdate` from multiple variables
 #' @param ... One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
-#' or three (yyyy, mm, dd) variables.
+#'   or three (yyyy, mm, dd) variables.
+#' @inheritParams coerce_to
 #' @details If three date variables are passed to `make_messydate()`,
-#' function will create a single date (yyyy-mm-dd) from it.
-#' If two date variables are passed to `make_messydate()`,
-#' function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
-#' If one date variable is passed to `make_messydate()`,
-#' function defaults to `as_messydate()`.
+#'   function will create a single date (yyyy-mm-dd) from it.
+#'   If two date variables are passed to `make_messydate()`,
+#'   function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
+#'   If one date variable is passed to `make_messydate()`,
+#'   function defaults to `as_messydate()`.
 #' @importFrom purrr map pmap_chr
 #' @name class_make
 #' @examples

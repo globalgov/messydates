@@ -12,6 +12,10 @@
 \alias{modal.mdate}
 \alias{vmodal}
 \alias{vmodal.mdate}
+\alias{random}
+\alias{random.mdate}
+\alias{vrandom}
+\alias{vrandom.mdate}
 \title{Resolves messy dates into a central tendency}
 \usage{
 \method{median}{mdate}(..., na.rm = TRUE)
@@ -34,6 +38,13 @@ vmodal(..., na.rm = TRUE)
 
 \method{vmodal}{mdate}(..., na.rm = TRUE)
 
+random(..., na.rm = TRUE)
+
+\method{random}{mdate}(..., na.rm = TRUE)
+
+vrandom(..., na.rm = TRUE)
+
+\method{vrandom}{mdate}(..., na.rm = TRUE)
 }
 \arguments{
 \item{...}{a mdate object}
@@ -60,4 +71,6 @@ mean(d)
 vmean(d)
 modal(d)
 vmodal(d)
+random(d)
+vrandom(d)
 }

@@ -122,3 +122,42 @@ vmodal.mdate <- function(..., na.rm = TRUE) {
   d
 }
 
+#' @rdname coerce_tendency
+#' @export
+random <- function(..., na.rm = TRUE) UseMethod("random")
+
+#' @rdname coerce_tendency
+#' @examples
+#' random(d)
+#' @export
+random.mdate <- function(..., na.rm = TRUE) {
+  x <- list(...)[[1]]
+  y <- unlist(expand(x))
+  if(na.rm) y <- y[!is.na(y)]
+  sample(y, 1)
+}
+
+#' @export
+random.character <- function(..., na.rm = TRUE) {
+  y <- list(...)[[1]]
+  # y <- suppressMessages(unlist(expand(x)))
+  if(na.rm) y <- y[!is.na(y)]
+  sample(y, 1)
+}
+
+#' @rdname coerce_tendency
+#' @export
+vrandom <- function(..., na.rm = TRUE) UseMethod("vrandom")
+
+#' @rdname coerce_tendency
+#' @examples
+#' vrandom(d)
+#' @export
+vrandom.mdate <- function(..., na.rm = TRUE) {
+
+  x <- as.list(...)
+  vapply(x, function(y){
+    random(expand(y)[[1]], na.rm = na.rm)
+  }, FUN.VALUE = character(1))
+
+}

@@ -29,7 +29,7 @@ test_that("Max resolving works properly", {
 # })
 
 test_that("Random resolving works properly", {
-  expect_length(random(test_dates), 3)
+  expect_length(vrandom(test_dates), 3)
 })
 
 # test_that("Resolve dates works properly for date ranges", {

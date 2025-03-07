@@ -33,6 +33,7 @@ NULL
 #' as.Date(as_messydate("2012-01"), FUN = vmax)
 #' as.Date(as_messydate("2012-01"), FUN = vmedian)
 #' as.Date(as_messydate("2012-01"), FUN = vmodal)
+#' as.Date(as_messydate("2012-01"), FUN = vrandom)
 #' as.Date(as_messydate("1000 BC"), FUN = vmax)
 #' as.Date(as_messydate("1000 BC"), FUN = vmedian)
 #' as.Date(as_messydate(c("-1000", "2020")), FUN = vmin)

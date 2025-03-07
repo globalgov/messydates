@@ -45,7 +45,7 @@ reference:
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:
       - starts_with("as\\.")
-      - coerce_resolve
+      - coerce_extrema
   - title: "Manipulation"
     desc: "These functions expand or contract objects of `mdate` class from/into a list:"
     contents:

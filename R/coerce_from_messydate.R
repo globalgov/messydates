@@ -57,24 +57,24 @@ as.Date.mdate <- function(x, FUN = vmin, ...) {
 
 #' @rdname coerce_from
 #' @export
-as.POSIXct.mdate <- function(x, FUN = vmin, ...) {
+as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXct(as.character(x))
+  as.POSIXct(as.character(x), tz = tz)
 }
 
 #' @rdname coerce_from
 #' @export
-as.POSIXlt.mdate <- function(x, FUN = vmin, ...) {
+as.POSIXlt.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXlt(as.character(x))
+  as.POSIXlt(as.character(x), tz = tz)
 }
 
 # Helper function for returning negative dates in date formats

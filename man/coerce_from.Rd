@@ -9,9 +9,9 @@
 \usage{
 \method{as.Date}{mdate}(x, FUN = vmin, ...)
 
-\method{as.POSIXct}{mdate}(x, FUN = vmin, ...)
+\method{as.POSIXct}{mdate}(x, tz = "UTC", FUN = vmin, ...)
 
-\method{as.POSIXlt}{mdate}(x, FUN = vmin, ...)
+\method{as.POSIXlt}{mdate}(x, tz = "UTC", FUN = vmin, ...)
 }
 \arguments{
 \item{x}{A \code{mdate} object}

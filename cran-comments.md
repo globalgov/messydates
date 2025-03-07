@@ -10,3 +10,4 @@
 0 errors | 0 warnings | 0 notes
 
 - Fixed redirected URL issue from previous submission
+- Fixed most reverse dependency issues, though some changes in manydata will follow

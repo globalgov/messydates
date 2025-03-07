@@ -58,3 +58,34 @@ vmedian.mdate <- function(..., na.rm = TRUE) {
   }, FUN.VALUE = character(1))
 }
 
+#' @rdname coerce_tendency
+#' @param trim the fraction (0 to 0.5) of observations to be trimmed
+#'   from each end of x before the mean is computed.
+#'   Values of trim outside that range are taken as the nearest endpoint.
+#' @importFrom lubridate as_date
+#' @examples
+#' mean(d)
+#' @export
+mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
+
+  x <- list(...)[[1]]
+  y <- unlist(expand(x))
+  as.character(lubridate::as_date(mean(as.double(lubridate::as_date(y)))))
+}
+
+
+#' @rdname coerce_tendency
+#' @export
+vmean <- function(..., na.rm = TRUE) UseMethod("vmean")
+
+#' @rdname coerce_tendency
+#' @examples
+#' vmean(d)
+#' @export
+vmean.mdate <- function(..., trim = 0, na.rm = TRUE) {
+  x <- list(...)[[1]]
+  vapply(expand(x), function(y)
+    as.character(lubridate::as_date(mean(as.double(lubridate::as_date(y))))),
+         FUN.VALUE = character(1))
+}
+

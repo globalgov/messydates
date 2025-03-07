@@ -29,6 +29,7 @@ NULL
 #' @rdname coerce_from
 #' @examples
 #' as.Date(as_messydate("2012-01"), FUN = vmin)
+#' as.Date(as_messydate("2012-01-01"), FUN = vmean)
 #' as.Date(as_messydate("2012-01"), FUN = vmax)
 #' as.Date(as_messydate("2012-01"), FUN = vmedian)
 #' as.Date(as_messydate("1000 BC"), FUN = vmax)

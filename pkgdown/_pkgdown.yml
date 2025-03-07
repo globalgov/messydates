@@ -46,6 +46,7 @@ reference:
     contents:
       - starts_with("as\\.")
       - coerce_extrema
+      - coerce_tendency
   - title: "Manipulation"
     desc: "These functions expand or contract objects of `mdate` class from/into a list:"
     contents:

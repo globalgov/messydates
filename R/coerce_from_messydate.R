@@ -1,45 +1,39 @@
 #' Coercion from messy dates
-#'
 #' @description
-#' These functions coerce objects of `mdate` class to
-#' common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
-#' Since `mdate` objects can hold multiple individual dates,
-#' however, an additional function must be passed as an argument
-#' so that these functions know how to coerce resolve multiple dates
-#' into a single date.
+#'   These functions coerce objects of `mdate` class to
+#'   common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
+#'   Since `mdate` objects can hold multiple individual dates,
+#'   however, an additional function must be passed as an argument
+#'   so that these functions know how to coerce resolve multiple dates
+#'   into a single date.
 #'
-#' For example, one might wish to use the earliest possible date
-#' in any ranges of dates (`min`), the latest possible date (`max`),
-#' some notion of a central tendency (`mean`, `median`, or `modal`),
-#' or even a `random` selection from among the candidate dates.
+#'   For example, one might wish to use the earliest possible date
+#'   in any ranges of dates (`min`), the latest possible date (`max`),
+#'   some notion of a central tendency (`mean`, `median`, or `modal`),
+#'   or even a `random` selection from among the candidate dates.
 #'
-#' These functions then, building on `expand()` and the resolve functions,
-#' are particularly useful in converting back out of the `mdate` class
-#' for use with existing methods and models,
-#' especially for checking the robustness of results.
+#'   These functions then, building on `expand()` and the resolve functions,
+#'   are particularly useful in converting back out of the `mdate` class
+#'   for use with existing methods and models,
+#'   especially for checking the robustness of results.
 #' @param x A `mdate` object
 #' @param ... Arguments passed on to the S3 generics.
 #' @param FUN A function that can be used to resolve expanded messy dates
-#' into a single date.
-#' For example, `min()`, `max()`, `mean()`, `median()`,
-#' `modal()`, and `random()`.
+#'   into a single date.
+#'   For example, `min()`, `max()`, `mean()`, `median()`,
+#'   `modal()`, and `random()`.
 #' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
 #' @name coerce_from
 NULL
-#> NULL
 
 #' @rdname coerce_from
 #' @examples
-#' as.Date(as_messydate("2012-01"), min)
-#' as.Date(as_messydate("2012-01-01"), mean)
-#' as.Date(as_messydate("2012-01"), max)
-#' as.Date(as_messydate("2012-01"), median)
-#' as.Date(as_messydate("2012-01"), modal)
-#' as.Date(as_messydate("2012-01"), random)
-#' as.Date(as_messydate("1000 BC"), max)
-#' as.Date(as_messydate("1000 BC"), mean)
-#' as.Date(as_messydate("1000 BC"), median)
-#' as.Date(as_messydate(c("-1000", "2020")), min)
+#' as.Date(as_messydate("2012-01"), FUN = vmin)
+#' as.Date(as_messydate("2012-01"), FUN = vmax)
+#' as.Date(as_messydate("2012-01"), FUN = vmedian)
+#' as.Date(as_messydate("1000 BC"), FUN = vmax)
+#' as.Date(as_messydate("1000 BC"), FUN = vmedian)
+#' as.Date(as_messydate(c("-1000", "2020")), FUN = vmin)
 #' @export
 as.Date.mdate <- function(x, FUN = vmin, ...) {
   # # fix argument ordering issues

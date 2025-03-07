@@ -45,14 +45,10 @@ for use with existing methods and models,
 especially for checking the robustness of results.
 }
 \examples{
-as.Date(as_messydate("2012-01"), min)
-as.Date(as_messydate("2012-01-01"), mean)
-as.Date(as_messydate("2012-01"), max)
-as.Date(as_messydate("2012-01"), median)
-as.Date(as_messydate("2012-01"), modal)
-as.Date(as_messydate("2012-01"), random)
-as.Date(as_messydate("1000 BC"), max)
-as.Date(as_messydate("1000 BC"), mean)
-as.Date(as_messydate("1000 BC"), median)
-as.Date(as_messydate(c("-1000", "2020")), min)
+as.Date(as_messydate("2012-01"), FUN = vmin)
+as.Date(as_messydate("2012-01"), FUN = vmax)
+as.Date(as_messydate("2012-01"), FUN = vmedian)
+as.Date(as_messydate("1000 BC"), FUN = vmax)
+as.Date(as_messydate("1000 BC"), FUN = vmedian)
+as.Date(as_messydate(c("-1000", "2020")), FUN = vmin)
 }

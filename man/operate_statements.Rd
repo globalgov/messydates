@@ -29,7 +29,7 @@ is_approximate(x)
 is_bce(x)
 }
 \arguments{
-\item{x, y, e1, e2}{\code{mdate} or other class objects}
+\item{x, y}{\code{mdate} or other class objects}
 }
 \value{
 A logical vector the same length as the \code{mdate} passed.

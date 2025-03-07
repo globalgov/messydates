@@ -10,6 +10,26 @@ make_messydate(..., resequence = FALSE)
 \arguments{
 \item{...}{One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
 or three (yyyy, mm, dd) variables.}
+
+\item{resequence}{Users have the option to choose the order for
+ambiguous dates with or without separators (e.g. "11-01-12" or "20112112").
+\code{NULL} by default.
+Other options include: 'dmy', 'ymd', 'mdy', 'ym', 'my' and 'interactive'
+If 'dmy', dates are converted from DDMMYY format for 6 digit dates,
+or DDMMYYYY format for 8 digit dates.
+If 'ymd', dates are converted from YYMMDD format for 6 digit dates,
+or YYYYMMDD format for 8 digit dates.
+If 'mdy', dates are converted from MMDDYY format for 6 digit dates
+or MMDDYYYY format for 8 digit dates.
+For these three options, ambiguous dates are converted to YY-MM-DD format
+for 6 digit dates, or YYYY-MM-DD format for 8 digit dates.
+If 'my', ambiguous 6 digit dates are converted from MM-YYYY format
+to YYYY-MM.
+If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
+If 'interactive', it prompts users to select the existing
+component order of ambiguous dates,
+based on which the date is reordered into YYYY-MM-DD format
+and further completed to YYYY-MM-DD format if they choose to do so.}
 }
 \description{
 Composes \code{mdate} from multiple variables

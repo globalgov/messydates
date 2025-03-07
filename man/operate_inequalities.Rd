@@ -16,6 +16,9 @@
 
 \method{>=}{mdate}(e1, e2)
 }
+\arguments{
+\item{e1, e2}{\code{mdate} or other class objects}
+}
 \description{
 Logical operations on messy dates
 }

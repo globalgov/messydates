@@ -4,7 +4,7 @@
 #' @description
 #'   These functions provide various logical statements about messy date objects.
 #' @name operate_statements
-#' @param x,y,e1,e2 `mdate` or other class objects
+#' @param x,y `mdate` or other class objects
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
 

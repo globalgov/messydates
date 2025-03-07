@@ -1,6 +1,7 @@
 # Inequalities ####
 
 #' Logical operations on messy dates
+#' @param e1,e2 `mdate` or other class objects
 #' @name operate_inequalities
 NULL
 

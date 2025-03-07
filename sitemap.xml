@@ -1,84 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://globalgov.github.io/messydates/404.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/articles/messydates.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/index.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/annotate.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/battles.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/class.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/contract.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/defunct.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/duration_class.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/expand.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/extract.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/from_messydate.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/logical_tests.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/messydate.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/mreport.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/operate.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/proportional.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/resolve.html</loc>
-  </url>
-  <url>
-    <loc>https://globalgov.github.io/messydates/reference/set.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://globalgov.github.io/messydates/404.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/CONTRIBUTING.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/LICENSE-text.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/LICENSE.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/authors.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/index.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/news/index.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/battles.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/class_create.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/class_duration.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/class_make.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/coerce_extrema.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/coerce_from.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/coerce_tendency.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/coerce_to.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/component_annotate.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/component_extract.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/convert_contract.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/convert_expand.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/convert_sequence.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/defunct.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/index.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/operate_arithmetic.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/operate_inequalities.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/operate_proportional.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/operate_set.html</loc></url>
+<url><loc>https://globalgov.github.io/messydates/reference/operate_statements.html</loc></url>
 </urlset>
+

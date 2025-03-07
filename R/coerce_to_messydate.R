@@ -63,14 +63,16 @@ as_messydate.Date <- function(x, resequence = FALSE) {
 #' @describeIn coerce_to Coerce from `POSIXct` to `mdate` class
 #' @export
 as_messydate.POSIXct <- function(x, resequence = FALSE) {
-  x <- as.character(x)
+  if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
+  x <- as.character(as.Date(x))
   new_messydate(x)
 }
 
 #' @describeIn coerce_to Coerce from `POSIXlt` to `mdate` class
 #' @export
 as_messydate.POSIXlt <- function(x, resequence = FALSE) {
-  x <- as.character(x)
+  if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
+  x <- as.character(as.Date(x))
   new_messydate(x)
 }
 
@@ -83,6 +85,7 @@ as_messydate.mdate <- function(x, resequence = FALSE) {
 #' @describeIn coerce_to Coerce character date objects to `mdate` class
 #' @export
 as_messydate.character <- function(x, resequence = NULL) {
+  if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
   d <- standardise_text(x)
   d <- standardise_date_separators(d)
   if (!is.null(resequence)) {
@@ -110,6 +113,7 @@ as_messydate.character <- function(x, resequence = NULL) {
 #' @describeIn coerce_to Coerce numeric objects to `mdate` class
 #' @export
 as_messydate.numeric <- function(x, resequence = NULL) {
+  if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
   d <- as.character(x)
   new_messydate(d)
 }

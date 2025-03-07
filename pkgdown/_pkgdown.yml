@@ -4,7 +4,7 @@ development:
 template:
   bootstrap: 5
   params:
-    bootswatch: quartz
+    bootswatch: journal
 authors:
   James Hollway:
     href: https://jameshollway.com
@@ -38,32 +38,25 @@ reference:
   - title: "Coerce to"
     desc: "These functions construct and/or coerce dates to the `mdate` class:"
     contents:
-      - class
-      - messydate
+      - starts_with("class_")
       - component_annotate
-      - duration_class
+      - coerce_to
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:
       - starts_with("as\\.")
-      - coerce_resolve
+      - coerce_extrema
+      - coerce_tendency
   - title: "Manipulation"
     desc: "These functions expand or contract objects of `mdate` class from/into a list:"
     contents:
-      - convert_expand
-      - convert_contract
+      - starts_with("convert_")
   - title: "Operations"
     desc: "These methods help operate on objects of the `mdate` class:"
     contents:
-      - operate
-      - set
-      - logical_tests
-      - is_messydate
+      - starts_with("operate_")
       - component_extract
-      - proportional
-      - messy-sequence
   - title: "Data"
     desc: "Working with 'messy' data:"
     contents:
-      - mreport
       - battles

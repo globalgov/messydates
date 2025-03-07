@@ -1,3 +1,30 @@
+# messydates 0.5.2
+
+## Package
+
+- Moved `mreport()` to `{manydata}`
+- Consolidated and renamed scripts internally
+
+## Coerce to
+
+- Fixed pkgdown#2855 by fixing how as_messydate methods interpret infinite dates
+- Fixed time zone defaults in `as.POSIXct.mdate()` and `as.POSIXlt.mdate()`
+- Fixed set bug in `validate_messydate()`
+
+## Coerce from
+
+- Renamed `as.numeric()` to `as.double()` to fix S3 dispatching
+- Separated extrema functions into `min.mdate()` and `max.mdate()` for summaries 
+and `vmin.mdate()` and `vmax.mdate()` for vector coercion
+- Separated tendency functions into `mean.mdate()`, `median.mdate()`, and `modal.mdate()` for summaries 
+and `vmean.mdate()`, `vmedian.mdate()`, and `vmodal.mdate()` for vector coercion
+- Vector coercion previously in `random.mdate()` now in `vrandom.mdate()`
+- Improved how coercion/resolution functions handle BCE dates
+
+## Manipulation
+
+- Fixed how `precision()` calculates precision
+
 # messydates 0.5.1
 
 ## Package

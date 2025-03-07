@@ -50,7 +50,6 @@ day <- function(x) {
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
 precision <- function(x) {
-  x <- expand(x)
-  out <- sum(lengths(x))
-  out
+  out <- expand(x)
+  lengths(out)
 }

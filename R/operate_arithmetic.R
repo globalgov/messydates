@@ -18,17 +18,17 @@
 #' as_messydate("2001-01-01..2001-01-04") - as_messydate("2001-01-02")
 #' #as_messydate("2001-01-01") - as_messydate("2001-01-03")
 #' }
-#' @name operate
+#' @name operate_arithmetic
 NULL
 
-#' @rdname operate
+#' @rdname operate_arithmetic
 #' @export
 `+.mdate` <- function(e1, e2) {
   e2 <- parse_date_strings(e2)
   add(e1, e2)
 }
 
-#' @rdname operate
+#' @rdname operate_arithmetic
 #' @export
 `-.mdate` <- function(e1, e2) {
   e2 <- parse_date_strings(e2)

@@ -1,20 +1,20 @@
 #' Set operations for messy dates
-#'
-#' Performs intersection (`md_intersect()`) and union (`md_union()`) on,
-#' inter alia, messy date class objects.
-#' For a more typical 'join' that retains all elements, even if duplicated,
-#' please use `md_multiset`.
-#' @name set
+#' @description
+#'   Performs intersection (`md_intersect()`) and union (`md_union()`) on,
+#'   inter alia, messy date class objects.
+#'   For a more typical 'join' that retains all elements, even if duplicated,
+#'   please use `md_multiset`.
+#' @name operate_set
 #' @param e1,e2 Messy date or other class objects
 #' @return A vector of the same mode for `intersect`,
-#' or a common mode for union.
+#'   or a common mode for union.
 NULL
 
-#' @rdname set
+#' @rdname operate_set
 #' @export
 `%intersect%` <- function(e1, e2) UseMethod("%intersect%")
 
-#' @describeIn set Find intersection of sets of messy dates
+#' @describeIn operate_set Find intersection of sets of messy dates
 #' @examples
 #' as_messydate("2012-01-01..2012-01-20") %intersect% as_messydate("2012-01")
 #' @export
@@ -29,11 +29,11 @@ evalqOnLoad({
   registerS3method("%intersect%", "POSIXt", `%intersect%.mdate`)
 })
 
-#' @rdname set
+#' @rdname operate_set
 #' @export
 `%union%` <- function(e1, e2) UseMethod("%union%")
 
-#' @describeIn set Find intersection of sets of messy dates
+#' @describeIn operate_set Find intersection of sets of messy dates
 #' @examples
 #' as_messydate("2012-01-01..2012-01-20") %union% as_messydate("2012-01")
 #' @export

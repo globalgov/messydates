@@ -22,6 +22,11 @@ For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
 \code{modal()}, and \code{random()}.}
 
 \item{...}{Arguments passed on to the S3 generics.}
+
+\item{tz}{Character string specifying the time zone for the conversion,
+if required.
+By default "UTC" (Universal Time Coordinated), equivalent to GMT.
+If "" then the current time zone is used.}
 }
 \value{
 A date object of \code{Date}, \code{POSIXct}, or \code{POSIXlt} class

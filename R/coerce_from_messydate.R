@@ -53,6 +53,10 @@ as.Date.mdate <- function(x, FUN = vmin, ...) {
 }
 
 #' @rdname coerce_from
+#' @param tz Character string specifying the time zone for the conversion,
+#'   if required.
+#'   By default "UTC" (Universal Time Coordinated), equivalent to GMT.
+#'   If "" then the current time zone is used.
 #' @export
 as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]

@@ -1,3 +1,13 @@
+# messydates 0.5.3
+
+## Components
+
+- Improved `year()` to be faster and work on durations
+- Improved `precision()`
+  - `precision()` is now a S3 generic, dispatching to `precision.mdate()`
+  - `precision.mdate()` now returns the inverse of the previous measure,
+  meaning maximising precision makes more sense
+
 # messydates 0.5.2
 
 ## Package

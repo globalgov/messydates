@@ -60,5 +60,5 @@ precision <- function(x)
 #' @export
 precision.mdate <- function(x) {
   out <- expand(x)
-  lengths(out)
+  1/lengths(out)
 }

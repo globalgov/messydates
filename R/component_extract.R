@@ -17,9 +17,8 @@ NULL
 #' year(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
 year <- function(x) {
-  x <- sapply(x, function(y) {
-    stringi::stri_split_regex(y, "-")[[1]][1]
-  })
+  x <- stringi::stri_replace_all_regex(x, "\\.\\..+", "")
+  x <- stringi::stri_replace_all_regex(x, "-.+", "")
   as.integer(x)
 }
 

@@ -60,15 +60,17 @@ jobs:
           path: build/
 
       - name: Calculate code coverage
-        run: Rscript -e "covr::codecov()"
-        if: runner.os == 'Mac'
+        run: |
+         if [ "$RUNNER_OS" == "macOS" ]; then
+           Rscript -e "covr::codecov()"
+         fi
 
       - name: Lint
         run: lintr::lint_package()
-        if: runner.os == 'Mac'
+        if: runner.os == 'macOS'
         shell: Rscript {0}
 
       - name: Spell check
         run: spelling::spell_check_package()
-        if: runner.os == 'Mac'
+        if: runner.os == 'macOS'
         shell: Rscript {0}

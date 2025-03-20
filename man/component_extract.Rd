@@ -5,6 +5,7 @@
 \alias{year}
 \alias{month}
 \alias{day}
+\alias{precision}
 \alias{precision.mdate}
 \title{Extracting components from messy dates}
 \usage{
@@ -13,6 +14,8 @@ year(x)
 month(x)
 
 day(x)
+
+precision(x)
 
 \method{precision}{mdate}(x)
 }

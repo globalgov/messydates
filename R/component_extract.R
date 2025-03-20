@@ -44,9 +44,9 @@ day <- function(x) {
   as.integer(x)
 }
 
+#' @rdname component_extract
 #' @export
-precision <- function(x)
-  UseMethod("precision")
+precision <- function(x) UseMethod("precision")
 
 #' @rdname component_extract
 #' @section Precision:

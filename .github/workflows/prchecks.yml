@@ -61,11 +61,14 @@ jobs:
 
       - name: Calculate code coverage
         run: Rscript -e "covr::codecov()"
+        if: runner.os == 'Mac'
 
       - name: Lint
         run: lintr::lint_package()
+        if: runner.os == 'Mac'
         shell: Rscript {0}
 
       - name: Spell check
         run: spelling::spell_check_package()
+        if: runner.os == 'Mac'
         shell: Rscript {0}

@@ -17,9 +17,8 @@ NULL
 #' year(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
 year <- function(x) {
-  x <- sapply(x, function(y) {
-    stringi::stri_split_regex(y, "-")[[1]][1]
-  })
+  x <- stringi::stri_replace_all_regex(x, "\\.\\..+", "")
+  x <- stringi::stri_replace_all_regex(x, "-.+", "")
   as.integer(x)
 }
 
@@ -46,10 +45,20 @@ day <- function(x) {
 }
 
 #' @rdname component_extract
+#' @export
+precision <- function(x) UseMethod("precision")
+
+#' @rdname component_extract
+#' @section Precision:
+#'   Date precision is measured relative to the day in \eqn{1/days(x)}.
+#'   That is, a date measured to the day will return a precision score
+#'   of 1, a date measured to the month will return a precision score of
+#'   between \eqn{1/28} and \eqn{1/31}, and annual measures will have
+#'   a precision of between \eqn{1/365} and \eqn{1/366}.
 #' @examples
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @export
-precision <- function(x) {
+precision.mdate <- function(x) {
   out <- expand(x)
-  lengths(out)
+  1/lengths(out)
 }

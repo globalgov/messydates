@@ -6,6 +6,7 @@
 \alias{month}
 \alias{day}
 \alias{precision}
+\alias{precision.mdate}
 \title{Extracting components from messy dates}
 \usage{
 year(x)
@@ -15,6 +16,8 @@ month(x)
 day(x)
 
 precision(x)
+
+\method{precision}{mdate}(x)
 }
 \arguments{
 \item{x}{A \code{mdate} object}
@@ -30,6 +33,15 @@ from messy dates, such as the \code{year()}, \code{month()}, and \code{day()}.
 \code{precision()} allows for the identification of the greatest level of
 precision in (currently) the first element of each date.
 }
+\section{Precision}{
+
+Date precision is measured relative to the day in \eqn{1/days(x)}.
+That is, a date measured to the day will return a precision score
+of 1, a date measured to the month will return a precision score of
+between \eqn{1/28} and \eqn{1/31}, and annual measures will have
+a precision of between \eqn{1/365} and \eqn{1/366}.
+}
+
 \examples{
 year(as_messydate(c("2012-02-03","2012","2012-02")))
 month(as_messydate(c("2012-02-03","2012","2012-02")))

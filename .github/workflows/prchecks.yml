@@ -60,10 +60,8 @@ jobs:
           path: build/
 
       - name: Calculate code coverage
-        run: |
-         if [ "$RUNNER_OS" == "macOS" ]; then
-           Rscript -e "covr::codecov()"
-         fi
+        run: Rscript -e "covr::codecov()"
+        if: runner.os == 'macOS'
 
       - name: Lint
         run: lintr::lint_package()

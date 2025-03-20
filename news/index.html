@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.2" id="messydates-052">messydates 0.5.2<a class="anchor" aria-label="anchor" href="#messydates-052"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.5.3" id="messydates-053">messydates 0.5.3<a class="anchor" aria-label="anchor" href="#messydates-053"></a></h2>
+<div class="section level3">
+<h3 id="components-0-5-3">Components<a class="anchor" aria-label="anchor" href="#components-0-5-3"></a></h3>
+<ul><li>Improved <code><a href="../reference/component_extract.html">year()</a></code> to be faster and work on durations</li>
+<li>Improved <code><a href="../reference/component_extract.html">precision()</a></code><ul><li>
+<code><a href="../reference/component_extract.html">precision()</a></code> is now a S3 generic, dispatching to <code><a href="../reference/component_extract.html">precision.mdate()</a></code>
+</li>
+<li>
+<code><a href="../reference/component_extract.html">precision.mdate()</a></code> now returns the inverse of the previous measure, meaning maximising precision makes more sense</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.2" id="messydates-052">messydates 0.5.2<a class="anchor" aria-label="anchor" href="#messydates-052"></a></h2><p class="text-muted">CRAN release: 2025-03-07</p>
 <div class="section level3">
 <h3 id="package-0-5-2">Package<a class="anchor" aria-label="anchor" href="#package-0-5-2"></a></h3>
 <ul><li>Moved <code>mreport()</code> to <a href="https://github.com/globalgov/manydata" class="external-link">manydata</a>

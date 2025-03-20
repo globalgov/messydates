@@ -13,7 +13,7 @@ precision in (currently) the first element of each date."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +55,9 @@ precision in (currently) the first element of each date.</p>
 <span></span>
 <span><span class="fu">day</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">precision</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'mdate'</span></span>
 <span><span class="fu">precision</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -72,6 +75,16 @@ precision in (currently) the first element of each date.</p>
 for the requested date component.
 <code>precision()</code> returns the level of greatest precision for each date.</p>
     </div>
+    <div class="section level2">
+    <h2 id="precision">Precision<a class="anchor" aria-label="anchor" href="#precision"></a></h2>
+
+
+<p>Date precision is measured relative to the day in \(1/days(x)\).
+That is, a date measured to the day will return a precision score
+of 1, a date measured to the month will return a precision score of
+between \(1/28\) and \(1/31\), and annual measures will have
+a precision of between \(1/365\) and \(1/366\).</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -82,7 +95,7 @@ for the requested date component.
 <span class="r-in"><span><span class="fu">day</span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2012-02-03"</span>,<span class="st">"2012"</span>,<span class="st">"2012-02"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  3 NA NA</span>
 <span class="r-in"><span><span class="fu">precision</span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2012-02-03"</span>,<span class="st">"2012"</span>,<span class="st">"2012-02"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   1 366  29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.00000000 0.00273224 0.03448276</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -1,3 +1,10 @@
+# messydates 0.5.4
+
+## Coercion
+
+- Improved how `as_messydates()` handles text with dates in American format,
+e.g. October 10, 2010 (fixes #86)
+
 # messydates 0.5.3
 
 ## Components

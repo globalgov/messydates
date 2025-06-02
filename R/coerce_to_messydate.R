@@ -441,6 +441,12 @@ extract_from_text <- function(v) {
   # get ordinal and numeric dates spelled and replace in text
   out <- stri_squish(stringi::stri_replace_all_regex(v, "\\,|\\.|of | on | and|the | this|
                                   | day|year|month", " "))
+  #reorder American dates
+  if(length(out)==1 && grepl("^[A-z]", out)){
+    out <- paste(stringi::stri_split_fixed(out, " ")[[1]][c(2,1,3)],
+             collapse = " ")
+  }
+
   for (k in seq_len(nrow(text_to_number))) {
     out <- gsub(paste0(text_to_number$text[k]),
                 paste0(text_to_number$numeric[k]),

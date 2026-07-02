@@ -46,6 +46,8 @@ as.Date.mdate <- function(x, FUN = vmin, ...) {
   # }
   # if(missing(FUN)) FUN <- min
   x <- FUN(x)
+  # A calendar date has no time of day, so drop any time components.
+  x <- strip_times(as.character(x))
   x <- suppressWarnings(ifelse(stringi::stri_detect_regex(x, "^-"),
                                lubridate::as_date(negative_dates(x)),
                                lubridate::as_date(zero_padding(x))))
@@ -64,7 +66,7 @@ as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXct(as.character(x), tz = tz)
+  mdate_to_posixct(as.character(x), tz = tz)
 }
 
 #' @rdname coerce_from
@@ -75,7 +77,25 @@ as.POSIXlt.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   if (stringi::stri_detect_regex(x, "^-")) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
-  as.POSIXlt(as.character(x), tz = tz)
+  as.POSIXlt(mdate_to_posixct(as.character(x), tz = tz))
+}
+
+# Parses a canonical mdate string (date or date-time, with optional 'Z'/offset)
+# into POSIXct. When an offset is present the instant is honoured; otherwise the
+# clock time is interpreted in `tz`.
+mdate_to_posixct <- function(s, tz = "UTC") {
+  has_off <- grepl("(Z|[+-][0-9]{2}:[0-9]{2})$", s)
+  out <- as.POSIXct(rep(NA_real_, length(s)), tz = tz)
+  if (any(!has_off)) {
+    plain <- sub("T", " ", s[!has_off])
+    out[!has_off] <- as.POSIXct(plain, tz = tz)
+  }
+  if (any(has_off)) {
+    z <- sub("Z$", "+0000", s[has_off])
+    z <- gsub("([+-][0-9]{2}):([0-9]{2})$", "\\1\\2", z)
+    out[has_off] <- as.POSIXct(z, format = "%Y-%m-%dT%H:%M:%OS%z", tz = tz)
+  }
+  out
 }
 
 # Helper function for returning negative dates in date formats

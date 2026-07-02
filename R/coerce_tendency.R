@@ -118,7 +118,7 @@ vmodal <- function(..., na.rm = TRUE) UseMethod("vmodal")
 vmodal.mdate <- function(..., na.rm = TRUE) {
 
   d <- list(...)[[1]]
-  d <- purrr::map_chr(expand(d), function(y) .getmode(y))
+  d <- vapply(expand(d), function(y) .getmode(y), character(1))
   d
 }
 

@@ -61,19 +61,42 @@ as_messydate.Date <- function(x, resequence = FALSE) {
 }
 
 #' @describeIn coerce_to Coerce from `POSIXct` to `mdate` class
+#' @details
+#'   Coercion from `POSIXct` and `POSIXlt` preserves the time of day
+#'   (and UTC offset) as an ISO 8601-2 date-time.
+#'   Times of exactly midnight (`00:00:00`) are treated as date-only,
+#'   so that timezone-naive dates round-trip unchanged.
 #' @export
 as_messydate.POSIXct <- function(x, resequence = FALSE) {
-  if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
-  x <- as.character(as.Date(x))
-  new_messydate(x)
+  new_messydate(posix_to_iso(x))
 }
 
 #' @describeIn coerce_to Coerce from `POSIXlt` to `mdate` class
 #' @export
 as_messydate.POSIXlt <- function(x, resequence = FALSE) {
-  if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
-  x <- as.character(as.Date(x))
-  new_messydate(x)
+  new_messydate(posix_to_iso(as.POSIXct(x)))
+}
+
+# Formats a POSIXct vector as ISO 8601-2, keeping the time of day unless it
+# is exactly midnight (in which case a date-only string is returned).
+posix_to_iso <- function(x) {
+  inf <- is.infinite(x)
+  base <- format(x, "%Y-%m-%d")
+  clock <- format(x, "%H:%M:%S")
+  offset <- normalise_offset(format(x, "%z"))
+  out <- ifelse(clock == "00:00:00", base,
+                paste0(base, "T", clock, offset))
+  if (any(inf)) out[inf] <- "9999-12-31"
+  out
+}
+
+# Normalises a numeric UTC offset ("+0000", "-0500", "") to ISO form
+# ("Z", "-05:00", ""). UTC is written with the "Z" designator.
+normalise_offset <- function(z) {
+  ifelse(z == "" | is.na(z), "",
+         ifelse(z == "+0000", "Z",
+                stringi::stri_replace_first_regex(z, "^([+-][0-9]{2})([0-9]{2})$",
+                                                  "$1:$2")))
 }
 
 #' @export
@@ -87,6 +110,11 @@ as_messydate.mdate <- function(x, resequence = FALSE) {
 as_messydate.character <- function(x, resequence = NULL) {
   if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
   d <- standardise_text(x)
+  # Protect any time-of-day substrings so the date pipeline (which repurposes
+  # ':' as a range separator and '.' as a component separator) cannot mangle
+  # them. Times are standardised separately and reattached at the end.
+  prot <- protect_times(d)
+  d <- prot$skeleton
   d <- standardise_date_separators(d)
   if (!is.null(resequence)) {
     if (resequence == "dmy") {
@@ -107,6 +135,7 @@ as_messydate.character <- function(x, resequence = NULL) {
   d <- standardise_unspecifieds(d)
   d <- standardise_date_input(d)
   d <- standardise_widths(d)
+  d <- restore_times(d, prot$times)
   new_messydate(d)
 }
 
@@ -292,6 +321,125 @@ standardise_unspecifieds <- function(dates) {
   dates
 }
 
+# Times ####
+
+# Sentinels that no date-pipeline regex touches (control characters, i.e. not
+# digits, letters, or any of - . : , {} ~ ? % that the pipeline manipulates).
+.time_open <- ""
+.time_close <- ""
+
+# A time-of-day token, introduced by 'T' (the ISO date-time separator).
+# Accepts hh[:mm[:ss[.frac]]], optional am/pm, optional 'Z'/offset, and
+# ISO 8601-2 uncertainty/approximation markers on or within the time.
+.time_token_rx <- paste0(
+  "T[~?%]?[0-9X]{1,2}",                    # hour (optional marker, digits/X)
+  "(?::[~?%]?[0-9X]{1,2}){0,2}",           # optional :mm and :ss
+  "(?:\\.[0-9]+)?",                        # optional fractional seconds
+  "(?:[[:space:]]?[apAP][mM])?",           # optional am/pm
+  "(?:Z|[+-][0-9]{1,2}(?::?[0-9]{2})?)?",  # optional Z or numeric offset
+  "[~?%]?")                                # optional whole-time annotation
+
+# Replaces each time substring in every element with an indexed sentinel and
+# returns the standardised times separately, so the date pipeline runs on a
+# skeleton that contains no time characters.
+protect_times <- function(v) {
+  skeleton <- v
+  times <- vector("list", length(v))
+  for (i in seq_along(v)) {
+    s <- v[i]
+    if (is.na(s)) {
+      times[[i]] <- character(0)
+      next
+    }
+    # Treat a space before a clock time ("2019-03-01 14:30") as the ISO 'T'.
+    s <- gsub("([0-9])[[:space:]]+([0-9]{1,2}(?::[0-9]|[[:space:]]?[apAP][mM]))",
+              "\\1T\\2", s, perl = TRUE)
+    matches <- regmatches(s, gregexpr(.time_token_rx, s, perl = TRUE))[[1]]
+    if (length(matches) == 0) {
+      skeleton[i] <- s
+      times[[i]] <- character(0)
+      next
+    }
+    for (k in seq_along(matches)) {
+      s <- sub(matches[k], paste0(.time_open, k, .time_close), s, fixed = TRUE)
+    }
+    times[[i]] <- vapply(matches, standardise_time, character(1),
+                         USE.NAMES = FALSE)
+    skeleton[i] <- s
+  }
+  list(skeleton = skeleton, times = times)
+}
+
+# Reinserts standardised times (with the canonical 'T' separator) in place of
+# the sentinels left by protect_times().
+restore_times <- function(v, times) {
+  for (i in seq_along(v)) {
+    if (length(times[[i]]) == 0) next
+    for (k in seq_along(times[[i]])) {
+      v[i] <- sub(paste0(.time_open, k, .time_close),
+                  paste0("T", times[[i]][k]), v[i], fixed = TRUE)
+    }
+  }
+  v
+}
+
+# A standardised (already parsed) time token, used to detect or strip times.
+.std_time_rx <- paste0(
+  "T[~?%]?[0-9X]{1,2}(:[~?%]?[0-9X]{1,2}){0,2}(\\.[0-9]+)?",
+  "(Z|[+-][0-9]{2}:[0-9]{2})?[~?%]?")
+
+# Removes time-of-day components from a canonical mdate string (per operand,
+# so ranges and sets are handled), leaving the date part(s) intact.
+strip_times <- function(x) {
+  gsub(.std_time_rx, "", x)
+}
+
+# Standardises a single time token (leading 'T' included): zero-pads hour,
+# minute, and second, converts am/pm to 24-hour, and normalises the offset.
+standardise_time <- function(tok) {
+  t <- sub("^T", "", tok)
+  # Whole-time annotation (~ ? %) after any offset
+  ann <- regmatches(t, regexpr("[~?%]$", t))
+  t <- sub("[~?%]$", "", t)
+  # UTC designator or numeric offset
+  offset <- regmatches(t, regexpr("(Z|[+-][0-9]{1,2}(:?[0-9]{2})?)$", t))
+  t <- sub("(Z|[+-][0-9]{1,2}(:?[0-9]{2})?)$", "", t)
+  if (length(offset) && nzchar(offset) && offset != "Z") {
+    sign <- substr(offset, 1, 1)
+    digits <- gsub("[^0-9]", "", offset)
+    oh <- substr(digits, 1, 2)
+    om <- if (nchar(digits) > 2) substr(digits, 3, 4) else "00"
+    if (nchar(oh) == 1) oh <- paste0("0", oh)
+    offset <- if (oh == "00" && om == "00") "Z" else paste0(sign, oh, ":", om)
+  }
+  # am/pm
+  ap <- tolower(regmatches(t, regexpr("[apAP][mM]$", t)))
+  t <- sub("[[:space:]]?[apAP][mM]$", "", t)
+  # Split into hour[:minute[:second]] (keeping any component annotations/X)
+  parts <- strsplit(t, ":", fixed = TRUE)[[1]]
+  parts <- vapply(parts, pad_time_component, character(1), USE.NAMES = FALSE)
+  if (length(ap) && nzchar(ap)) {
+    hr <- suppressWarnings(as.integer(gsub("[^0-9]", "", parts[1])))
+    if (!is.na(hr)) {
+      if (ap == "pm" && hr < 12) hr <- hr + 12
+      if (ap == "am" && hr == 12) hr <- 0
+      parts[1] <- sprintf("%02d", hr)
+    }
+  }
+  paste0(paste(parts, collapse = ":"), offset, ann)
+}
+
+# Zero-pads the numeric part of a single time component to two digits, leaving
+# any leading annotation (~ ?), 'X' placeholders, or fractional part in place.
+pad_time_component <- function(p) {
+  pre <- regmatches(p, regexpr("^[~?%]*", p))
+  rest <- sub("^[~?%]*", "", p)
+  frac <- regmatches(rest, regexpr("\\.[0-9]+$", rest))
+  num <- sub("\\.[0-9]+$", "", rest)
+  if (grepl("^[0-9]$", num)) num <- paste0("0", num)
+  paste0(pre, num, frac)
+}
+
 # BC/AD ####
 
 standardise_date_input <- function(dates) {
@@ -406,7 +554,7 @@ add_zero_range <- function(dates) {
     x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
                 paste0("0", x), x)
   })
-  dates <- purrr::map_chr(dates, paste, collapse = "..")
+  dates <- vapply(dates, paste, character(1), collapse = "..", USE.NAMES = FALSE)
   dates
 }
 
@@ -433,7 +581,7 @@ add_zero_set <- function(dates) {
     x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
                 paste0("0", x), x)
   })
-  dates <- purrr::map_chr(dates, paste, collapse = ",")
+  dates <- vapply(dates, paste, character(1), collapse = ",", USE.NAMES = FALSE)
   dates
 }
 
@@ -533,7 +681,7 @@ reorder_ambiguous <- function(d) {
   input <- utils::menu(c("YMD (Year-Month-Day)", "DMY (Day-Month-Year)",
                          "MDY (Month-Day-Year)", "Ambiguous/Not sure"),
                        title = paste0("What is the component order of ambiguous 6 digit dates in vector
-                                      (e.g. ", dplyr::first(examples[stats::complete.cases(examples)]), ")?"))
+                                      (e.g. ", examples[stats::complete.cases(examples)][1], ")?"))
   if (input == 1) {
     out <- d
     message("Ambiguous 6 digit dates already in standard YMD format")
@@ -556,7 +704,7 @@ reorder_ambiguous <- function(d) {
 
 complete_ambiguous_20 <- function(d) {
   examples <- ifelse(as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "^[:digit:]{2}-"))) < 23, d, NA_character_)
-  examples <- dplyr::first(examples[stats::complete.cases(examples)])
+  examples <- examples[stats::complete.cases(examples)][1]
   input <- utils::menu(c("Yes", "No"),
                        title = paste0("Are all ambiguous 6 digit dates for which the year is between 0 and 23
                        in the 21st century (e.g. ", examples, " is equal to 20", examples, ")?"))
@@ -573,7 +721,7 @@ complete_ambiguous_20 <- function(d) {
 
 complete_ambiguous_19 <- function(d) {
   examples <- ifelse(as.numeric(gsub("-", "", stringi::stri_extract_first_regex(d, "^[:digit:]{2}-"))) > 22, d, NA_character_)
-  examples <- dplyr::first(examples[stats::complete.cases(examples)])
+  examples <- examples[stats::complete.cases(examples)][1]
   input <- utils::menu(c("Yes", "No"),
                        title = paste0("Are all ambiguous 6 digit dates for which the year is larger than 22
                        in the 20th century (e.g. ", examples, " is equal to 19", examples, ")?"))

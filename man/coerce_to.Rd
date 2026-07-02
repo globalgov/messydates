@@ -63,6 +63,12 @@ there is also a direct method for converting text or character strings to \code{
 The function can also extract dates from text,
 though this is a work-in-progress and currently only works in English.
 }
+\details{
+Coercion from \code{POSIXct} and \code{POSIXlt} preserves the time of day
+(and UTC offset) as an ISO 8601-2 date-time.
+Times of exactly midnight (\code{00:00:00}) are treated as date-only,
+so that timezone-naive dates round-trip unchanged.
+}
 \section{Functions}{
 \itemize{
 \item \code{as_messydate()}: Core \code{mdate} class coercion function

@@ -14,3 +14,4 @@
 ^article$
 ^.DS_Store$
 ^next$
+^\.claude$

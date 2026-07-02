@@ -12,20 +12,20 @@
 \usage{
 vmin(..., na.rm = FALSE)
 
-\method{vmin}{mdate}(..., na.rm = TRUE)
+\method{vmin}{mdate}(..., na.rm = FALSE)
 
-\method{min}{mdate}(..., na.rm = TRUE)
+\method{min}{mdate}(..., na.rm = FALSE)
 
 vmax(..., na.rm = FALSE)
 
-\method{vmax}{mdate}(..., na.rm = TRUE)
+\method{vmax}{mdate}(..., na.rm = FALSE)
 
-\method{max}{mdate}(..., na.rm = TRUE)
+\method{max}{mdate}(..., na.rm = FALSE)
 }
 \arguments{
 \item{...}{a mdate object}
 
-\item{na.rm}{Should NAs be removed? True by default.}
+\item{na.rm}{Should NAs be removed? FALSE by default.}
 }
 \value{
 A single scalar or vector of dates

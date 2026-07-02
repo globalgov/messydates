@@ -19,7 +19,7 @@ NULL
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
-  x <- rep(NA, max(length(e1), length(e2)))
+  x <- rep(NA, if (length(e1) == 0 || length(e2) == 0) 0L else max(length(e1), length(e2)))
   x[ranges[["max1"]] < ranges[["min2"]]] <- TRUE
   x[ranges[["min1"]] > ranges[["max2"]]] <- FALSE
   x[ranges[["max1"]] == ranges[["min2"]]] <- FALSE
@@ -75,7 +75,7 @@ numeric_time_ranges <- function(e1, e2) {
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
-  x <- rep(NA, max(length(e1), length(e2)))
+  x <- rep(NA, if (length(e1) == 0 || length(e2) == 0) 0L else max(length(e1), length(e2)))
   x[ranges[["min1"]] > ranges[["max2"]]] <- TRUE
   x[ranges[["max1"]] < ranges[["min2"]]] <- FALSE
   x[ranges[["min1"]] == ranges[["max2"]]] <- FALSE
@@ -96,7 +96,7 @@ evalqOnLoad({
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
-  x <- rep(NA, max(length(e1), length(e2)))
+  x <- rep(NA, if (length(e1) == 0 || length(e2) == 0) 0L else max(length(e1), length(e2)))
   x[ranges[["max1"]] <= ranges[["min2"]]] <- TRUE
   x[ranges[["min1"]] > ranges[["max2"]]] <- FALSE
   x
@@ -115,7 +115,7 @@ evalqOnLoad({
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
-  x <- rep(NA, max(length(e1), length(e2)))
+  x <- rep(NA, if (length(e1) == 0 || length(e2) == 0) 0L else max(length(e1), length(e2)))
   x[ranges[["min1"]] >= ranges[["max2"]]] <- TRUE
   x[ranges[["max1"]] < ranges[["min2"]]] <- FALSE
   x

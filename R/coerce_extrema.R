@@ -9,7 +9,7 @@
 #'   then just that precise date is returned.
 #'   This can be useful for various descriptive or inferential projects.
 #' @param ... a mdate object
-#' @param na.rm Should NAs be removed? True by default.
+#' @param na.rm Should NAs be removed? FALSE by default.
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
 #' @return A single scalar or vector of dates
 #' @examples
@@ -28,7 +28,7 @@ vmin <- function(..., na.rm = FALSE) UseMethod("vmin")
 #' @examples
 #' vmin(d)
 #' @export
-vmin.mdate <- function(..., na.rm = TRUE){
+vmin.mdate <- function(..., na.rm = FALSE){
   d <- list(...)[[1]]
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
@@ -42,7 +42,7 @@ vmin.mdate <- function(..., na.rm = TRUE){
 #' @examples
 #' min(d)
 #' @export
-min.mdate <- function(..., na.rm = TRUE){
+min.mdate <- function(..., na.rm = FALSE){
   d <- list(...)[[1]]
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
@@ -83,7 +83,7 @@ vmax <- function(..., na.rm = FALSE) UseMethod("vmax")
 #' @examples
 #' vmax(d)
 #' @export
-vmax.mdate <- function(..., na.rm = TRUE){
+vmax.mdate <- function(..., na.rm = FALSE){
   d <- list(...)[[1]]
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
@@ -98,7 +98,7 @@ vmax.mdate <- function(..., na.rm = TRUE){
 #' @examples
 #' max(d)
 #' @export
-max.mdate <- function(..., na.rm = TRUE) {
+max.mdate <- function(..., na.rm = FALSE) {
 
   d <- list(...)[[1]]
   dates <- stringi::stri_replace_all_regex(d, "~|\\?", "")

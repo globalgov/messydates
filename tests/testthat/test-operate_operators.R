@@ -60,3 +60,11 @@ test_that("Logical comparisons don't mess up comparisons between non-messy times
   expect_true(as_messydate("2010-09-10") > "2009")
   # expect_false(as_messydate("2010-09-10") > "2011")
 })
+
+test_that("Loading messydates does not break comparisons involving zero-length vectors (#92)", {
+  expect_identical(numeric() < Sys.Date(), logical(0))
+  expect_identical(numeric() > Sys.Date(), logical(0))
+  expect_identical(numeric() <= Sys.Date(), logical(0))
+  expect_identical(numeric() >= Sys.Date(), logical(0))
+  expect_identical(Sys.Date() < Sys.Date()[0], logical(0))
+})

@@ -61,8 +61,11 @@ is_similar <- function(x, y) {
 #' is_precise(as_messydate(c("2012-06-02", "2012-06")))
 #' @export
 is_precise <- function(x) {
-  stringi::stri_detect_regex(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
-                      |^-[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$")
+  stringi::stri_detect_regex(
+    x,
+    paste0("^-?[0-9]{4}-[0-9]{2}-[0-9]{2}",
+           "(T[0-9]{2}(:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?)?",
+           "(Z|[+-][0-9]{2}:[0-9]{2})?)?$"))
 }
 
 #' @describeIn operate_statements tests whether a date is uncertain (i.e. contains ?).

@@ -21,8 +21,8 @@ NULL
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x < min(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x < min(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -44,8 +44,8 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x > max(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x > max(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -67,8 +67,8 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x >= max(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x >= max(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -90,8 +90,8 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x <= min(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x <= min(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -113,9 +113,9 @@ evalqOnLoad({
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   # Need to create fast way to trim ranges or just get dates within the range
-  suppressMessages(purrr::map2_dbl(e1, e2,
-                  ~ length(.x %intersect% .y)/
-                    (length(unlist(expand(.x)))+1)))
+  suppressMessages(mapply(function(.x, .y)
+    length(.x %intersect% .y) / (length(unlist(expand(.x))) + 1),
+    e1, e2, USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -136,8 +136,9 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(e1, e2, ~ length(.x %intersect% .y)/
-                                     length(unlist(expand(.x)))))
+  suppressMessages(mapply(function(.x, .y)
+    length(.x %intersect% .y) / length(unlist(expand(.x))),
+    e1, e2, USE.NAMES = FALSE))
 }
 
 evalqOnLoad({

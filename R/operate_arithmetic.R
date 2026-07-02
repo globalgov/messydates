@@ -11,8 +11,8 @@
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-#' dplyr::tibble(date = d, add = d + 1, subtract = d - 1)
-#' dplyr::tibble(date = d, add = d + "1 year", subtract = d - "1 year")
+#' data.frame(date = d, add = d + 1, subtract = d - 1)
+#' data.frame(date = d, add = d + "1 year", subtract = d - "1 year")
 #' as_messydate("2001-01-01") + as_messydate("2001-01-02..2001-01-04")
 #' as_messydate("2001-01-01") + as_messydate("2001-01-03")
 #' as_messydate("2001-01-01..2001-01-04") - as_messydate("2001-01-02")
@@ -24,6 +24,7 @@ NULL
 #' @rdname operate_arithmetic
 #' @export
 `+.mdate` <- function(e1, e2) {
+  if (is_time_arithmetic(e1, e2)) return(shift_time(e1, e2, 1))
   e2 <- parse_date_strings(e2)
   add(e1, e2)
 }
@@ -31,8 +32,52 @@ NULL
 #' @rdname operate_arithmetic
 #' @export
 `-.mdate` <- function(e1, e2) {
+  if (is_time_arithmetic(e1, e2)) return(shift_time(e1, e2, -1))
   e2 <- parse_date_strings(e2)
   subtract(e1, e2)
+}
+
+# Time arithmetic applies when the operand carries a time of day, or when the
+# amount is expressed in sub-day units (hours, minutes, seconds).
+is_time_arithmetic <- function(e1, e2) {
+  if (is_messydate(e2)) return(FALSE)
+  sub_day <- is.character(e2) && any(grepl("hour|min|sec", e2))
+  has_time <- any(grepl("T", as.character(e1)))
+  sub_day || has_time
+}
+
+# Shifts date-times by an amount, working in seconds via POSIXct. A numeric
+# amount is interpreted as days; unit strings ("2 hours") use their unit.
+# Date-only operands are promoted to a time of day when the shift is sub-day.
+shift_time <- function(e1, e2, sign) {
+  secs <- sign * parse_seconds(e2)
+  out <- vapply(as.character(e1), function(y) {
+    if (grepl("\\.\\.", y)) {
+      ends <- strsplit(y, "\\.\\.")[[1]]
+      return(paste(vapply(ends, shift_one, character(1), secs = secs),
+                   collapse = ".."))
+    }
+    shift_one(y, secs)
+  }, character(1), USE.NAMES = FALSE)
+  as_messydate(out)
+}
+
+shift_one <- function(y, secs) {
+  if (!nzchar(y)) return(y)
+  off <- regmatches(y, regexpr("(Z|[+-][0-9]{2}:[0-9]{2})$", y))
+  base <- sub("(Z|[+-][0-9]{2}:[0-9]{2})$", "", y)
+  p <- as.POSIXct(sub("T", " ", base), tz = "UTC") + secs
+  paste0(format(p, "%Y-%m-%dT%H:%M:%S"), if (length(off)) off else "")
+}
+
+# Converts a shift amount to seconds. Numeric amounts are days.
+parse_seconds <- function(e2) {
+  if (is.numeric(e2)) return(e2 * 86400)
+  num <- as.numeric(stringi::stri_replace_all_regex(e2, "[^0-9.-]", ""))
+  unit <- c(year = 365 * 86400, month = 30.42 * 86400, week = 7 * 86400,
+            day = 86400, hour = 3600, min = 60, sec = 1)
+  key <- names(unit)[vapply(names(unit), function(u) grepl(u, e2), logical(1))][1]
+  num * (if (is.na(key)) 86400 else unit[[key]])
 }
 
 add <- function(x, n) {

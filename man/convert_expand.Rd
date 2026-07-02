@@ -5,7 +5,7 @@
 \alias{expand}
 \title{Expand messy dates to lists of dates}
 \usage{
-expand(x, approx_range = 0)
+expand(x, approx_range = 0, by = "day")
 }
 \arguments{
 \item{x}{A \code{mdate} object.
@@ -20,6 +20,13 @@ If 3, for example, adds 3 days for day approximation,
 3 years for year/whole date approximation,
 3 years and 3 months for year-month approximation,
 and 3 months and 3 days for month-day approximation.}
+
+\item{by}{Granularity of enumeration, "day" by default.
+To avoid combinatorial explosion, ranges are enumerated at day
+granularity and any time-of-day components on ranges are dropped.
+Precise date-times (i.e. non-ranges) keep their time.
+Set \code{by} to a sub-day unit ("hour", "min", or "sec") to opt in to finer
+enumeration of precise date-time ranges.}
 }
 \value{
 A list of dates, including all dates in each range or set.

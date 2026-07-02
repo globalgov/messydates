@@ -20,6 +20,12 @@
 #'   3 years for year/whole date approximation,
 #'   3 years and 3 months for year-month approximation,
 #'   and 3 months and 3 days for month-day approximation.
+#' @param by Granularity of enumeration, "day" by default.
+#'   To avoid combinatorial explosion, ranges are enumerated at day
+#'   granularity and any time-of-day components on ranges are dropped.
+#'   Precise date-times (i.e. non-ranges) keep their time.
+#'   Set `by` to a sub-day unit ("hour", "min", or "sec") to opt in to finer
+#'   enumeration of precise date-time ranges.
 #' @return A list of dates, including all dates in each range or set.
 #' @importFrom lubridate as_date ymd years
 #' @name convert_expand
@@ -29,7 +35,7 @@
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 #' expand(d)
 #' @export
-expand <- function(x, approx_range = 0) {
+expand <- function(x, approx_range = 0, by = "day") {
   if (!is_messydate(x)) {
     message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
@@ -43,6 +49,13 @@ expand <- function(x, approx_range = 0) {
     # otherwise we need to expand approximate dates
     x <- expand_approximate(x, approx_range)
   }
+  if (grepl("^(hour|min|sec)", by)) {
+    return(expand_datetime(x, by))
+  }
+  # Day granularity: keep the time on precise date-times, but drop it from
+  # ranges and imprecise values so the date-level logic below applies.
+  keep <- is_precise(x) & grepl("T", x)
+  if (any(!keep)) x[!keep] <- strip_times(x[!keep])
   x <- expand_unspecified(x)
   # x <- expand_negative(x)
   x <- expand_sets(x) # Can create a list..
@@ -50,16 +63,38 @@ expand <- function(x, approx_range = 0) {
   x
 }
 
+# Enumerates precise date-time ranges at sub-day granularity using POSIXct.
+# Non-range and imprecise values fall back to day-level expansion.
+expand_datetime <- function(x, by) {
+  unit <- c(hour = "hour", min = "min", sec = "sec")[
+    sub("s$", "", sub("^(hour|min|sec).*", "\\1", by))]
+  lapply(x, function(y) {
+    if (grepl("\\.\\.", y) && grepl("T", y)) {
+      ends <- strsplit(y, "\\.\\.")[[1]]
+      s <- as.POSIXct(sub("T", " ", ends[1]), tz = "UTC")
+      e <- as.POSIXct(sub("T", " ", ends[2]), tz = "UTC")
+      format(seq(s, e, by = unit), "%Y-%m-%dT%H:%M:%S")
+    } else {
+      unlist(expand(as_messydate(y)))
+    }
+  })
+}
+
 ## expand approx ####
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
 expand_approximate <- function(dates, approx_range) {
   # Substitute signs
-  dates <- dplyr::case_when(
-    stringi::stri_detect_regex(dates, "^\\~[:digit:]{4}$") ~ paste0(dates, "-01-01"),
-    stringi::stri_detect_regex(dates, "^[:digit:]{4}-\\~[:digit:]{2}$|^[:digit:]{4}-[:digit:]{2}\\~$") ~ paste0(dates, "-01"),
-    stringi::stri_detect_regex(dates, "\\~") & stringi::stri_detect_regex(dates, "\\.\\.") ~ stringi::stri_replace_all_regex(dates, "\\~", ""),
-    .default = dates
-  )
+  dates <- ifelse(
+    stringi::stri_detect_regex(dates, "^\\~[:digit:]{4}$"),
+    paste0(dates, "-01-01"),
+    ifelse(
+      stringi::stri_detect_regex(dates, "^[:digit:]{4}-\\~[:digit:]{2}$|^[:digit:]{4}-[:digit:]{2}\\~$"),
+      paste0(dates, "-01"),
+      ifelse(
+        stringi::stri_detect_regex(dates, "\\~") &
+          stringi::stri_detect_regex(dates, "\\.\\."),
+        stringi::stri_replace_all_regex(dates, "\\~", ""),
+        dates)))
   # expansion for approximate ranges not yet implemented
   dates <- suppressWarnings(expand_approximate_years(dates, approx_range))
   dates <- suppressWarnings(expand_approximate_months(dates, approx_range))
@@ -294,11 +329,10 @@ expand_sets <- function(dates) {
 
 ## expand ranges ####
 
-#' @importFrom purrr map
 expand_ranges <- function(dates) {
 
-  purrr::map(dates, function(x)
-    unlist(purrr::map(x, function(y)
+  lapply(dates, function(x)
+    unlist(lapply(x, function(y)
       if(is_precise(y)) as.character(y) else
         as.character(seq(mdate(y)))))
   )

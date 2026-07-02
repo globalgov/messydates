@@ -50,6 +50,11 @@ Day, month, or year, uncertainty can be indicated by adding a question mark
 to a possibly dubious date (e.g. \verb{1916-10-10?}) or date
 component (e.g. \code{1916-?10-10}).
 }
+\details{
+For date-times, \code{component} may also be "hour", "minute", or "second"
+(the marker is placed to the left of that time component), or "time"
+(the whole time of day is marked).
+}
 \section{Functions}{
 \itemize{
 \item \code{on_or_before()}: prefixes dates with ".." where start date is uncertain
@@ -64,12 +69,12 @@ component (e.g. \code{1916-?10-10}).
 \examples{
 data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
   End = c("1816-12-31", "1916-12-31", "2016-12-31"))
-dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01",
-  on_or_before(Beg), Beg))
-dplyr::mutate(data, End = ifelse(End >= "2016-01-01",
-  on_or_after(End), End))
-dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01",
-  as_approximate(Beg), Beg))
-dplyr::mutate(data, End = ifelse(End == "1916-12-31",
-  as_uncertain(End), End))
+transform(data, Beg = ifelse(Beg <= "1816-01-01",
+  as.character(on_or_before(Beg)), Beg))
+transform(data, End = ifelse(End >= "2016-01-01",
+  as.character(on_or_after(End)), End))
+transform(data, Beg = ifelse(Beg == "1916-01-01",
+  as.character(as_approximate(Beg)), Beg))
+transform(data, End = ifelse(End == "1916-12-31",
+  as.character(as_uncertain(End)), End))
 }

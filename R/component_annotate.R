@@ -30,14 +30,14 @@
 #' @examples
 #' data <- data.frame(Beg = c("1816-01-01", "1916-01-01", "2016-01-01"),
 #'   End = c("1816-12-31", "1916-12-31", "2016-12-31"))
-#' dplyr::mutate(data, Beg = ifelse(Beg <= "1816-01-01",
-#'   on_or_before(Beg), Beg))
-#' dplyr::mutate(data, End = ifelse(End >= "2016-01-01",
-#'   on_or_after(End), End))
-#' dplyr::mutate(data, Beg = ifelse(Beg == "1916-01-01",
-#'   as_approximate(Beg), Beg))
-#' dplyr::mutate(data, End = ifelse(End == "1916-12-31",
-#'   as_uncertain(End), End))
+#' transform(data, Beg = ifelse(Beg <= "1816-01-01",
+#'   as.character(on_or_before(Beg)), Beg))
+#' transform(data, End = ifelse(End >= "2016-01-01",
+#'   as.character(on_or_after(End)), End))
+#' transform(data, Beg = ifelse(Beg == "1916-01-01",
+#'   as.character(as_approximate(Beg)), Beg))
+#' transform(data, End = ifelse(End == "1916-12-31",
+#'   as.character(as_uncertain(End)), End))
 #' @name component_annotate
 NULL
 
@@ -58,63 +58,54 @@ on_or_after <- function(x) {
 }
 
 #' @describeIn component_annotate adds tildes to indicate approximate dates/date components
+#' @details
+#'   For date-times, `component` may also be "hour", "minute", or "second"
+#'   (the marker is placed to the left of that time component), or "time"
+#'   (the whole time of day is marked).
 #' @export
 as_approximate <- function(x, component = NULL) {
-  if (is.null(component)) {
-    x <- paste0(x, "~")
-  }
-  if (!is.null(component)) {
-    day <- vapply(strsplit(x, "-"), `[`, 3, FUN.VALUE = character(1))
-    month <- vapply(strsplit(x, "-"), `[`, 2, FUN.VALUE = character(1))
-    year <- vapply(strsplit(x, "-"), `[`, 1, FUN.VALUE = character(1))
-    if (component == "day") {
-      x <- paste0(year, "-", month, "-", "~", day)
-    }
-    if (component == "month") {
-      x <- paste0(year, "-", "~", month, "-", day)
-    }
-    if (component == "year") {
-      x <- paste0("~", year, "-", month, "-", day)
-    }
-    if (component == "md") {
-      x <- paste0(year, "-", "~", month, "-", "~", day)
-    }
-    if (component == "ym") {
-      x <- paste0(year, "-", month, "~", "-", day)
-    }
-  }
-  x <- as_messydate(x)
-  x
+  annotate_component(x, component, "~")
 }
 
 #' @describeIn component_annotate adds question marks to indicate dubious dates/date components.
 #' @export
 as_uncertain <- function(x, component = NULL) {
-  if (is.null(component)) {
-    x <- paste0(x, "?")
+  annotate_component(x, component, "?")
+}
+
+# Inserts an annotation marker (~ or ?) on a named component of a date or
+# date-time. With no component the whole value is marked.
+annotate_component <- function(x, component, mark) {
+  x <- as.character(x)
+  if (is.null(component)) return(as_messydate(paste0(x, mark)))
+  has_t <- grepl("T", x)
+  date <- sub("T.*$", "", x)
+  time <- ifelse(has_t, sub("^[^T]*T", "", x), "")
+  if (component %in% c("year", "month", "day", "md", "ym")) {
+    dp <- strsplit(date, "-")
+    year <- vapply(dp, `[`, character(1), 1)
+    month <- vapply(dp, `[`, character(1), 2)
+    day <- vapply(dp, `[`, character(1), 3)
+    date <- switch(component,
+      day   = paste0(year, "-", month, "-", mark, day),
+      month = paste0(year, "-", mark, month, "-", day),
+      year  = paste0(mark, year, "-", month, "-", day),
+      md    = paste0(year, "-", mark, month, "-", mark, day),
+      ym    = paste0(year, "-", month, mark, "-", day))
+  } else if (component %in% c("hour", "minute", "second", "time")) {
+    tp <- strsplit(time, ":")
+    hh <- vapply(tp, `[`, character(1), 1)
+    mm <- vapply(tp, `[`, character(1), 2)
+    ss <- vapply(tp, `[`, character(1), 3)
+    opt <- function(v) ifelse(is.na(v), "", paste0(":", v))
+    time <- switch(component,
+      hour   = paste0(mark, hh, opt(mm), opt(ss)),
+      minute = paste0(hh, ":", mark, mm, opt(ss)),
+      second = paste0(hh, ":", mm, ":", mark, ss),
+      time   = paste0(time, mark))
   } else {
-    day <- vapply(strsplit(x, "-"), `[`, 3,
-                  FUN.VALUE = character(1))
-    month <- vapply(strsplit(x, "-"), `[`, 2,
-                    FUN.VALUE = character(1))
-    year <- vapply(strsplit(x, "-"), `[`, 1,
-                   FUN.VALUE = character(1))
-    if (component == "day") {
-      x <- paste0(year, "-", month, "-", "?", day)
-    }
-    if (component == "month") {
-      x <- paste0(year, "-", "?", month, "-", day)
-    }
-    if (component == "year") {
-      x <- paste0("?", year, "-", month, "-", day)
-    }
-    if (component == "md") {
-      x <- paste0(year, "-", "?", month, "-", "?", day)
-    }
-    if (component == "ym") {
-      x <- paste0(year, "-", month, "?", "-", day)
-    }
+    stop("Unknown component: ", component, call. = FALSE)
   }
-  x <- as_messydate(x)
-  x
+  out <- ifelse(has_t, paste0(date, "T", time), date)
+  as_messydate(out)
 }

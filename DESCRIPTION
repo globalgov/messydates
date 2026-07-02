@@ -3,13 +3,15 @@ Title: A Flexible Class for Messy Dates
 Description: Contains a set of tools for constructing and coercing
   into and from the "mdate" class. 
   This date class implements ISO 8601-2:2019(E) and
-  allows regular dates to be annotated 
-  to express unspecified date components,
-  approximate or uncertain date components, 
-  date ranges, and sets of dates. 
+  allows regular dates and times to be annotated
+  to express unspecified date or time components,
+  approximate or uncertain components,
+  ranges, and sets of dates.
+  The package therefore retains, represents, and reasons about data and time imprecision, 
+  resolving to a single data/time only on demand.
   This is useful for describing and analysing temporal information,
-  whether historical or recent, where date precision may vary.
-Version: 0.6.0
+  whether historical or recent, where date or time precision may vary.
+Version: 1.0.0
 Authors@R: 
     c(person(given = "James",
              family = "Hollway",

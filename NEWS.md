@@ -1,3 +1,42 @@
+# messydates 1.0.0
+
+## Package
+
+- Removed the `purrr` and `dplyr` dependencies (replaced with base R), leaving
+  only `stringi` and `lubridate` as imports
+- Updated the cheatsheet to reflect the new time support and other changes
+
+## Times
+
+- Added support for ISO 8601-2:2019 times of day, extending the `mdate` class
+  beyond dates
+  - `as_messydate()` now parses the `T` date-time separator, `hh`, `hh:mm`,
+  and `hh:mm:ss` (with fractional seconds), am/pm times, the UTC designator
+  `Z`, and numeric offsets (e.g. `+02:00`), zero-padding and normalising them
+  - Time components can carry the same annotations as dates: approximate
+  (`~`), uncertain (`?`), both (`%`), and unspecified (`X`),
+  e.g. `2019-03-01T~14:30`
+  - `:` and `_` continue to work as range separators; times are detected and
+  protected first, so `2009-01-01:2019-01-01` is still a range while
+  `2019-03-01T14:30:00` is a time
+- Added `hour()`, `minute()`, `second()`, and `tz()` component extractors
+- `precision()` now extends below the day: 24 to the hour, 1440 to the
+  minute, and 86400 to the second (date-level precision is unchanged)
+- `expand()` gains a `by` argument (default `"day"`). Ranges are enumerated at
+  day granularity to avoid combinatorial explosion; precise date-times keep
+  their time. Set `by` to `"hour"`, `"min"`, or `"sec"` for finer enumeration
+- Arithmetic (`+`/`-`) and `seq()` accept sub-day units ("hours", "minutes",
+  "seconds") and operate on times; `messyduration()` keeps sub-day precision
+- `as_approximate()`/`as_uncertain()` accept "hour", "minute", "second", and
+  "time" components
+- Coercion from `POSIXct`/`POSIXlt` now preserves the time of day (midnight is
+  treated as date-only); `as.POSIXct()`/`as.POSIXlt()` restore it
+
+## Performance
+
+- `month()`, `day()`, and `precision()` are now vectorised and no longer call
+  `expand()` more than necessary
+
 # messydates 0.5.4
 
 ## Coercion

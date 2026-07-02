@@ -53,6 +53,21 @@ An additional modifier, \verb{\%}, is used to indicate
 a value that is both uncertain and approximate.
 }
 
+\section{Times}{
+
+Times of day may be appended to a date using the ISO 8601 \code{T} separator,
+e.g. \verb{2019-03-01T14:30:00}. Hours, minutes, and seconds are accepted
+(with optional fractional seconds), as are 12-hour \code{am}/\code{pm} times and a
+space in place of \code{T}. Coordinated Universal Time is written with the \code{Z}
+designator, and other zones as a numeric offset, e.g. \code{+02:00}.
+Time components accept the same annotations as dates: approximate (\code{~}),
+uncertain (\verb{?}), both (\verb{\%}), and unspecified (\code{X}),
+e.g. \verb{2019-03-01T~14:30} or \verb{2019-03-01T14:XX}.
+Because \code{:} is also used as a range separator, times are detected and
+protected before ranges are parsed, so \code{2009-01-01:2019-01-01} remains a
+range while \verb{2019-03-01T14:30:00} is read as a time.
+}
+
 \section{Date sets}{
 
 These functions also introduce standard notation

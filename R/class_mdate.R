@@ -32,6 +32,19 @@
 #' An additional modifier, `%`, is used to indicate
 #' a value that is both uncertain and approximate.
 #'
+#' @section Times:
+#' Times of day may be appended to a date using the ISO 8601 `T` separator,
+#' e.g. `2019-03-01T14:30:00`. Hours, minutes, and seconds are accepted
+#' (with optional fractional seconds), as are 12-hour `am`/`pm` times and a
+#' space in place of `T`. Coordinated Universal Time is written with the `Z`
+#' designator, and other zones as a numeric offset, e.g. `+02:00`.
+#' Time components accept the same annotations as dates: approximate (`~`),
+#' uncertain (`?`), both (`%`), and unspecified (`X`),
+#' e.g. `2019-03-01T~14:30` or `2019-03-01T14:XX`.
+#' Because `:` is also used as a range separator, times are detected and
+#' protected before ranges are parsed, so `2009-01-01:2019-01-01` remains a
+#' range while `2019-03-01T14:30:00` is read as a time.
+#'
 #' @section Date sets:
 #' These functions also introduce standard notation
 #' for ranges of dates.
@@ -67,17 +80,19 @@ new_messydate <- function(x = character()) {
 #' @export
 validate_messydate <- function(x) {
   values <- unclass(x)
-  if (any(grepl("[A-WYZa-z]", values) & !grepl("^NA$", values))) {
-    stop("The only alpha character allowed in messy dates is 'X' for
-      unspecified time components", call. = FALSE)
+  # 'X' marks unspecified components; 'T' is the ISO date-time separator and
+  # 'Z' the UTC designator. All other letters are disallowed.
+  if (any(grepl("[A-SU-WYa-wyz]", values) & !grepl("^NA$", values))) {
+    stop("The only alpha characters allowed in messy dates are 'X' for
+      unspecified components, and 'T'/'Z' for times", call. = FALSE)
   }
   if (!any(grepl("[0-9]", values))) {
     stop("mdate object requires at least one specified date component.",
          call. = FALSE)
     }
-  if (any(grepl("!|\\(|\\)|\\+|\\=|\\/|;|>|<|_|\\^|'|&|\\$|#", values))) {
+  if (any(grepl("!|\\(|\\)|\\=|;|>|<|_|\\^|'|&|\\$|#", values))) {
     stop("mdate object can only consist of numbers and
-      some special symbols: []{}..X%?~", call. = FALSE)
+      some special symbols: []{}..X%?~ and, for times, T:+Z.", call. = FALSE)
   }
   x
 }
@@ -94,7 +109,6 @@ validate_messydate <- function(x) {
 #'   function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
 #'   If one date variable is passed to `make_messydate()`,
 #'   function defaults to `as_messydate()`.
-#' @importFrom purrr map pmap_chr
 #' @name class_make
 #' @examples
 #' make_messydate("2010", "10", "10")
@@ -105,14 +119,23 @@ make_messydate <- function(..., resequence = FALSE) {
     dots <- do.call(as.character, dots)
     dates <- unlist(dots)
   } else if (length(dots) == 2) {
-    dots <- purrr::map(dots, as.character)
-    dates <- unlist(purrr::pmap_chr(dots, paste, sep = ".."))
+    dots <- lapply(dots, as.character)
+    dates <- do.call(paste, c(dots, sep = ".."))
     dates <- gsub("NA..NA", "NA", dates)
   } else if (length(dots) == 3) {
-    dots <- purrr::map(dots, as.character)
-    dates <- unlist(purrr::pmap_chr(dots, paste, sep = "-"))
+    dots <- lapply(dots, as.character)
+    dates <- do.call(paste, c(dots, sep = "-"))
     dates <- gsub("NA-NA-NA", "NA", dates)
   } else stop("make_messydate() takes one variable (yyyy-mm-dd),
   two variables (yyyy-mm-dd, yyyy-mm-dd), or three variables (yyyy, mm, dd).")
   as_messydate(dates, resequence)
 }
+
+#' #' @noRd
+#' #' @importFrom pillar pillar_shaft
+#' #' @export
+#' pillar_shaft.mdate <- function(x, ...) {
+#'   pillar::new_pillar_shaft_simple(ifelse(x, pillar::style_bold(x),
+#'                                          pillar::style_na(x)), align = "left")
+#' }
+

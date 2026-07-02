@@ -56,8 +56,18 @@ messyduration.mdate <- function(x, approx_range = 0) {
 }
 
 messy_range <- function(x, approx_range) {
-  dates <- strsplit(x, "\\.\\.")
-  dates1 <- as.Date(as_messydate(purrr::map_chr(dates, 1)), FUN = min) + approx_range
-  dates2 <- as.Date(as_messydate(purrr::map_chr(dates, 2)), FUN = max) + approx_range
-  as_messydate(paste0(dates1, "..", dates2))
+  parts <- strsplit(x, "\\.\\.")
+  starts <- vapply(parts, `[`, character(1), 1)
+  ends <- vapply(parts, `[`, character(1), 2)
+  if (any(grepl("T", c(starts, ends)))) {
+    # Date-time ranges keep sub-day precision via POSIXct.
+    s <- mdate_to_posixct(starts) + approx_range * 86400
+    e <- mdate_to_posixct(ends) + approx_range * 86400
+    as_messydate(paste0(format(s, "%Y-%m-%dT%H:%M:%S"), "..",
+                        format(e, "%Y-%m-%dT%H:%M:%S")))
+  } else {
+    dates1 <- as.Date(as_messydate(starts), FUN = min) + approx_range
+    dates2 <- as.Date(as_messydate(ends), FUN = max) + approx_range
+    as_messydate(paste0(dates1, "..", dates2))
+  }
 }

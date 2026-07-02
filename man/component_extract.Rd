@@ -5,6 +5,10 @@
 \alias{year}
 \alias{month}
 \alias{day}
+\alias{hour}
+\alias{minute}
+\alias{second}
+\alias{tz}
 \alias{precision}
 \alias{precision.mdate}
 \title{Extracting components from messy dates}
@@ -15,6 +19,14 @@ month(x)
 
 day(x)
 
+hour(x)
+
+minute(x)
+
+second(x)
+
+tz(x)
+
 precision(x)
 
 \method{precision}{mdate}(x)
@@ -23,13 +35,16 @@ precision(x)
 \item{x}{A \code{mdate} object}
 }
 \value{
-\code{year()}, \code{month()}, and \code{day()} extraction return the integer
-for the requested date component.
+\code{year()}, \code{month()}, \code{day()}, \code{hour()}, \code{minute()}, and \code{second()}
+extraction return the integer for the requested component (\code{NA} where the
+component is absent or unspecified). \code{tz()} returns the time zone
+designator or offset as a string.
 \code{precision()} returns the level of greatest precision for each date.
 }
 \description{
 These functions allow the extraction of particular date components
-from messy dates, such as the \code{year()}, \code{month()}, and \code{day()}.
+from messy dates, such as the \code{year()}, \code{month()}, \code{day()}, and, for
+date-times, \code{hour()}, \code{minute()}, \code{second()}, and the time zone (\code{tz()}).
 \code{precision()} allows for the identification of the greatest level of
 precision in (currently) the first element of each date.
 }
@@ -40,11 +55,18 @@ That is, a date measured to the day will return a precision score
 of 1, a date measured to the month will return a precision score of
 between \eqn{1/28} and \eqn{1/31}, and annual measures will have
 a precision of between \eqn{1/365} and \eqn{1/366}.
+Times of day extend the same scale below the day: a date-time measured
+to the hour returns 24, to the minute 1440, and to the second 86400.
 }
 
 \examples{
 year(as_messydate(c("2012-02-03","2012","2012-02")))
 month(as_messydate(c("2012-02-03","2012","2012-02")))
 day(as_messydate(c("2012-02-03","2012","2012-02")))
+hour(as_messydate(c("2012-02-03T14:30:00","2012-02-03")))
+minute(as_messydate("2012-02-03T14:30:00"))
+second(as_messydate("2012-02-03T14:30:05"))
+tz(as_messydate("2012-02-03T14:30:00+02:00"))
 precision(as_messydate(c("2012-02-03","2012","2012-02")))
+precision(as_messydate("2012-02-03T14:30"))
 }

@@ -31,13 +31,11 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 LazyData: true
-Depends: 
-    R (>= 4.0)
+Depends:
+    R (>= 4.1)
 Imports:
     stringi,
-    purrr,
-    lubridate,
-    dplyr
+    lubridate
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown

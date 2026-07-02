@@ -21,6 +21,18 @@ seq.mdate <- function(from, to, by = "days", ...) {
     from <- min(from)
   }
 
+  # sub-day steps, or endpoints carrying a time of day, use POSIXct
+  if (grepl("hour|min|sec", by) ||
+      any(grepl("T", c(as.character(from), as.character(to))))) {
+    s <- as.POSIXct(sub("T", " ",
+                        sub("(Z|[+-][0-9]{2}:[0-9]{2})$", "",
+                            as.character(from))), tz = "UTC")
+    e <- as.POSIXct(sub("T", " ",
+                        sub("(Z|[+-][0-9]{2}:[0-9]{2})$", "",
+                            as.character(to))), tz = "UTC")
+    return(format(seq(s, e, by = by), "%Y-%m-%dT%H:%M:%S"))
+  }
+
   # straight forward sequence
   if(!any(is_bce(c(from, to)))){
     seq(as.Date(from), as.Date(to), by = by)

@@ -71,7 +71,9 @@ minute <- function(x) {
 #' @export
 second <- function(x) {
   s <- stringi::stri_match_first_regex(
-    as.character(x), "T[0-9X]{2}:[0-9X]{2}:([0-9X]{2}(?:\\.[0-9]+)?)")[, 2]
+    as.character(x),
+    "T[~?%]?[0-9X]{2}:[~?%]?[0-9X]{2}:[~?%]?([0-9X]{2}(?:\\.[0-9]+)?)"
+  )[, 2]
   suppressWarnings(as.numeric(s))
 }
 

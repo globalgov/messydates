@@ -50,7 +50,7 @@ day <- function(x) {
 #' hour(as_messydate(c("2012-02-03T14:30:00","2012-02-03")))
 #' @export
 hour <- function(x) {
-  h <- stringi::stri_match_first_regex(as.character(x), "T([0-9X]{2})")[, 2]
+  h <- stringi::stri_match_first_regex(as.character(x), "T[~?%]?([0-9X]{2})")[, 2]
   suppressWarnings(as.integer(h))
 }
 

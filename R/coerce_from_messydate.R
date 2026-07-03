@@ -93,6 +93,9 @@ mdate_to_posixct <- function(s, tz = "UTC") {
   if (any(has_off)) {
     z <- sub("Z$", "+0000", s[has_off])
     z <- gsub("([+-][0-9]{2}):([0-9]{2})$", "\\1\\2", z)
+    # Ensure offset-bearing strings include seconds for the fixed format below.
+    z <- gsub("(T[0-9]{2})([+-][0-9]{4})$", "\\1:00:00\\2", z)
+    z <- gsub("(T[0-9]{2}:[0-9]{2})([+-][0-9]{4})$", "\\1:00\\2", z)
     out[has_off] <- as.POSIXct(z, format = "%Y-%m-%dT%H:%M:%OS%z", tz = tz)
   }
   out

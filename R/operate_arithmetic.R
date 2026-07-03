@@ -41,9 +41,10 @@ NULL
 # amount is expressed in sub-day units (hours, minutes, seconds).
 is_time_arithmetic <- function(e1, e2) {
   if (is_messydate(e2)) return(FALSE)
-  sub_day <- is.character(e2) && any(grepl("hour|min|sec", e2))
   has_time <- any(grepl("T", as.character(e1)))
-  sub_day || has_time
+  sub_day <- is.character(e2) && any(grepl("hour|min|sec", e2))
+  day_week <- is.character(e2) && any(grepl("day|week", e2))
+  sub_day || (has_time && is.numeric(e2)) || (has_time && day_week)
 }
 
 # Shifts date-times by an amount, working in seconds via POSIXct. A numeric

@@ -94,6 +94,10 @@ validate_messydate <- function(x) {
     stop("mdate object can only consist of numbers and
       some special symbols: []{}..X%?~ and, for times, T:+Z.", call. = FALSE)
   }
+  if (any(grepl("\\+", gsub("\\+[0-9]{2}:[0-9]{2}", "", values)))) {
+    stop("'+' can only appear as part of a timezone offset (+HH:MM).",
+         call. = FALSE)
+  }
   x
 }
 

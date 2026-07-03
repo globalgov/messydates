@@ -59,8 +59,9 @@ hour <- function(x) {
 #' minute(as_messydate("2012-02-03T14:30:00"))
 #' @export
 minute <- function(x) {
-  m <- stringi::stri_match_first_regex(as.character(x),
-                                       "T[0-9X]{2}:([0-9X]{2})")[, 2]
+  m <- stringi::stri_match_first_regex(
+    as.character(x), "T[~?%]?[0-9X]{2}:[~?%]?([0-9X]{2})"
+  )[, 2]
   suppressWarnings(as.integer(m))
 }
 

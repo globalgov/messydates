@@ -93,16 +93,27 @@ annotate_component <- function(x, component, mark) {
       md    = paste0(year, "-", mark, month, "-", mark, day),
       ym    = paste0(year, "-", month, mark, "-", day))
   } else if (component %in% c("hour", "minute", "second", "time")) {
-    tp <- strsplit(time, ":")
+    off <- stringi::stri_match_first_regex(
+      time, "(Z|[+-][0-9]{2}:[0-9]{2})$"
+    )[, 2]
+    core <- stringi::stri_replace_first_regex(
+      time, "(Z|[+-][0-9]{2}:[0-9]{2})$", ""
+    )
+
+    tp <- strsplit(core, ":")
     hh <- vapply(tp, `[`, character(1), 1)
     mm <- vapply(tp, `[`, character(1), 2)
     ss <- vapply(tp, `[`, character(1), 3)
+    ss <- ifelse(is.na(ss), "00", ss)
     opt <- function(v) ifelse(is.na(v), "", paste0(":", v))
-    time <- switch(component,
+
+    core <- switch(component,
       hour   = paste0(mark, hh, opt(mm), opt(ss)),
       minute = paste0(hh, ":", mark, mm, opt(ss)),
       second = paste0(hh, ":", mm, ":", mark, ss),
-      time   = paste0(time, mark))
+      time   = paste0(core, mark))
+
+    time <- paste0(core, ifelse(is.na(off), "", off))
   } else {
     stop("Unknown component: ", component, call. = FALSE)
   }

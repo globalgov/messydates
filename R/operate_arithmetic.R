@@ -43,24 +43,53 @@ is_time_arithmetic <- function(e1, e2) {
   if (is_messydate(e2)) return(FALSE)
   has_time <- any(grepl("T", as.character(e1)))
   sub_day <- is.character(e2) && any(grepl("hour|min|sec", e2))
-  day_week <- is.character(e2) && any(grepl("day|week", e2))
-  sub_day || (has_time && is.numeric(e2)) || (has_time && day_week)
+  cal_day <- is.character(e2) && any(grepl("year|month|week|day", e2))
+  sub_day || (has_time && (is.numeric(e2) || cal_day))
 }
 
-# Shifts date-times by an amount, working in seconds via POSIXct. A numeric
-# amount is interpreted as days; unit strings ("2 hours") use their unit.
-# Date-only operands are promoted to a time of day when the shift is sub-day.
+# Shifts date-times by an amount. Year and month amounts shift the calendar
+# components (preserving the day and time of day); all other units shift the
+# instant in seconds. Date-only operands are promoted to a time when the shift
+# is sub-day.
 shift_time <- function(e1, e2, sign) {
-  secs <- sign * parse_seconds(e2)
+  shifter <- make_shifter(e2, sign)
   out <- vapply(as.character(e1), function(y) {
     if (grepl("\\.\\.", y)) {
       ends <- strsplit(y, "\\.\\.")[[1]]
-      return(paste(vapply(ends, shift_one, character(1), secs = secs),
-                   collapse = ".."))
+      return(paste(vapply(ends, shifter, character(1)), collapse = ".."))
     }
-    shift_one(y, secs)
+    shifter(y)
   }, character(1), USE.NAMES = FALSE)
   as_messydate(out)
+}
+
+# Returns a function that shifts one date-time string. Calendar units (year,
+# month) add a period to the date part; everything else adds seconds.
+make_shifter <- function(e2, sign) {
+  unit <- if (is.character(e2)) {
+    if (grepl("year", e2)) "year" else if (grepl("month", e2)) "month" else NA
+  } else NA
+  if (!is.na(unit)) {
+    n <- sign * as.numeric(stringi::stri_replace_all_regex(e2, "[^0-9.-]", ""))
+    period <- lubridate::period(n, units = unit)
+    function(y) shift_calendar(y, period)
+  } else {
+    secs <- sign * parse_seconds(e2)
+    function(y) shift_one(y, secs)
+  }
+}
+
+# Adds a calendar period to the date part of a date-time, keeping the time of
+# day and any UTC offset unchanged.
+shift_calendar <- function(y, period) {
+  if (!nzchar(y)) return(y)
+  off <- regmatches(y, regexpr("(Z|[+-][0-9]{2}:[0-9]{2})$", y))
+  base <- sub("(Z|[+-][0-9]{2}:[0-9]{2})$", "", y)
+  datepart <- sub("T.*$", "", base)
+  timepart <- if (grepl("T", base)) sub("^[^T]*T", "", base) else ""
+  d <- lubridate::add_with_rollback(as.Date(datepart), period)
+  paste0(format(d), if (nzchar(timepart)) paste0("T", timepart) else "",
+         if (length(off)) off else "")
 }
 
 shift_one <- function(y, secs) {

@@ -1,5 +1,11 @@
 # messydates 1.0.0
 
+## Coercion
+
+- Time arithmetic with calendar units keeps the time of day and shifts the
+  calendar components, so `as_messydate("2012-02-03T14:30") + "1 year"` is
+  `2013-02-03T14:30` (with month-end rollback)
+
 ## Package
 
 - Removed the `purrr` and `dplyr` dependencies (replaced with base R), leaving

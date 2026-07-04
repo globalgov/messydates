@@ -68,3 +68,8 @@ test_that("Loading messydates does not break comparisons involving zero-length v
   expect_identical(numeric() >= Sys.Date(), logical(0))
   expect_identical(Sys.Date() < Sys.Date()[0], logical(0))
 })
+
+test_that("Addition works correctly", {
+  expect_identical(as_messydate("2012-02-03T14:30") + "1 year", as_messydate("2013-02-03T14:30"))
+})
+

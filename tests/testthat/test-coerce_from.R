@@ -39,5 +39,14 @@ test_that("Text parsing works correctly", {
   expect_identical(as_messydate("things happened on 13th and 15th of Feb, 1977"), as_messydate(c("1977-02-13","1977-02-15")))
 })
 
+test_that("Roman date parsing works correctly", {
+  expect_identical(as_messydate("MDCCLXXVI"), as_messydate("1776"))
+  expect_identical(as_messydate("the Kalends of March, 44 BC"), as_messydate("-0044-03-01"))
+  expect_identical(as_messydate("the Nones of February, 44 BC"), as_messydate("-0044-02-05"))
+  expect_identical(as_messydate("the Nones of March, 44 BC"), as_messydate("-0044-03-07"))
+  expect_identical(as_messydate("the Ides of February, 44 BC"), as_messydate("-0044-02-13"))
+  expect_identical(as_messydate("the Ides of March, 44 BC"), as_messydate("-0044-03-15"))
+})
+
 # expect_error(as.POSIXct(as_messydate("-2012"), min))
 # expect_error(as.POSIXlt(as_messydate("-2012"), min))

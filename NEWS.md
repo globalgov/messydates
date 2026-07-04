@@ -2,6 +2,10 @@
 
 ## Coercion
 
+- `as_messydate()` now parses Roman numerals (e.g. `"MDCCLXXVI"` becomes
+  `1776`) and Roman calendar references, e.g. `"the Ides of March, 44 BC"`
+  becomes `-0044-03-15` (Kalends, Nones, and Ides, with the later Nones/Ides
+  of March, May, July, and October)
 - Improved parsing of written dates: ordinal days (`"4th July 1976"`), either
   day-first or month-first order (`"Fourth of July 1976"`, `"July 4th 1976"`),
   "day of" phrasings, and "last day of `<month>`" (leap-year aware for

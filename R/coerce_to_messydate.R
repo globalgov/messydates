@@ -168,6 +168,7 @@ mdate <- as_messydate
 # Helper functions ####
 #' @importFrom stringi stri_detect_regex
 standardise_text <- function(v) {
+  v <- convert_roman(v)
   dates <- ifelse(stringi::stri_detect_regex(v, "([:alpha:]{4})") &
                     !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
@@ -175,6 +176,19 @@ standardise_text <- function(v) {
                         dates, ignore.case = TRUE),
                   written_month(dates), dates)
   dates
+}
+
+# Converts a bare Roman numeral (e.g. a year such as "MDCCLXXVI") to its
+# integer form. Strings of only "X"s are left alone, since "X" marks an
+# unspecified component.
+convert_roman <- function(v) {
+  isrom <- grepl("^[ivxlcdmIVXLCDM]+$", trimws(v)) & !grepl("^[Xx]+$", trimws(v))
+  isrom[is.na(isrom)] <- FALSE
+  if (any(isrom)) {
+    num <- suppressWarnings(as.integer(utils::as.roman(trimws(v[isrom]))))
+    v[isrom] <- ifelse(is.na(num), v[isrom], as.character(num))
+  }
+  v
 }
 
 #' @importFrom stringi stri_replace_all_regex

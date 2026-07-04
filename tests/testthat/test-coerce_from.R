@@ -23,5 +23,21 @@ test_that("Coercion to POSIX works", {
 #   expect_equal(mean(neg_dates), c("-0027-07-02", "-0014-07-02"))
 # })
 
+test_that("Text parsing works correctly", {
+  expect_identical(as_messydate("Fourth of July 1976"), as_messydate("1976-07-04"))
+  expect_identical(as_messydate("Fourth of July 19766"), as_messydate("1976-07-04"))
+  expect_identical(as_messydate("4th July 1976"), as_messydate("1976-07-04"))
+  expect_identical(as_messydate("July Fourth 1976"), as_messydate("1976-07-04"))
+  expect_identical(as_messydate("July 4th 1976"), as_messydate("1976-07-04"))
+  expect_identical(as_messydate("4th day of July, 1976"), as_messydate("1976-07-04"))
+  expect_identical(as_messydate("Last day of July, 1976"), as_messydate("1976-07-31"))
+  expect_identical(as_messydate("February 2004"), as_messydate("2004-02"))
+  expect_identical(as_messydate("signed on the last day of February 2004"), as_messydate("2004-02-29"))
+  expect_identical(as_messydate("it happened around the 13th of Feb in 1977"), as_messydate("1977-02-~13"))
+  expect_identical(as_messydate("it happened between the 13th and 15th of Feb, 1977"), as_messydate("1977-02-13..1977-02-15"))
+  expect_identical(as_messydate("it happened on the 13th or the 15th of Feb, 1977"), as_messydate("{1977-02-13,1977-02-15}"))
+  expect_identical(as_messydate("things happened on 13th and 15th of Feb, 1977"), as_messydate(c("1977-02-13","1977-02-15")))
+})
+
 # expect_error(as.POSIXct(as_messydate("-2012"), min))
 # expect_error(as.POSIXlt(as_messydate("-2012"), min))

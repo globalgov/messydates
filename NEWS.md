@@ -2,6 +2,10 @@
 
 ## Coercion
 
+- Improved parsing of written dates: ordinal days (`"4th July 1976"`), either
+  day-first or month-first order (`"Fourth of July 1976"`, `"July 4th 1976"`),
+  "day of" phrasings, and "last day of `<month>`" (leap-year aware for
+  February)
 - Time arithmetic with calendar units keeps the time of day and shifts the
   calendar components, so `as_messydate("2012-02-03T14:30") + "1 year"` is
   `2013-02-03T14:30` (with month-end rollback)

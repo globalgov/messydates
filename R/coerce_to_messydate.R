@@ -586,12 +586,21 @@ add_zero_set <- function(dates) {
 }
 
 extract_from_text <- function(v) {
+  # Drop ordinal suffixes on numeric days ("4th" -> "4", "22nd" -> "22").
+  v <- gsub("([0-9])(st|nd|rd|th)\\b", "\\1", v, ignore.case = TRUE, perl = TRUE)
+  # "last day of <month>" -> the last day number of that month.
+  v <- replace_last_day(v)
   # get ordinal and numeric dates spelled and replace in text
   out <- stri_squish(stringi::stri_replace_all_regex(v, "\\,|\\.|of | on | and|the | this|
                                   | day|year|month", " "))
-  #reorder American dates
-  if(length(out)==1 && grepl("^[A-z]", out)){
-    out <- paste(stringi::stri_split_fixed(out, " ")[[1]][c(2,1,3)],
+  # Reorder month-first American dates ("July 4 1976" -> "4 July 1976"); a
+  # day-first phrase ("Fourth of July") already leads with the day.
+  first_tok <- stringi::stri_split_fixed(stri_squish(out), " ")[[1]][1]
+  if (length(out) == 1 &&
+      grepl("^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)", first_tok,
+            ignore.case = TRUE) &&
+      length(stringi::stri_split_fixed(out, " ")[[1]]) >= 3) {
+    out <- paste(stringi::stri_split_fixed(out, " ")[[1]][c(2, 1, 3)],
              collapse = " ")
   }
 
@@ -631,6 +640,29 @@ extract_from_text <- function(v) {
                               |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
                               |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}")
   out
+}
+
+# Replaces the word "last" with the last day number of the month named in the
+# same string (e.g. "Last day of July" -> "31 day of July"). For February the
+# year, if present, decides between 28 and 29.
+replace_last_day <- function(v) {
+  mon_last <- c(jan = 31, feb = 28, mar = 31, apr = 30, may = 31, jun = 30,
+                jul = 31, aug = 31, sep = 30, oct = 31, nov = 30, dec = 31)
+  vapply(v, function(s) {
+    if (is.na(s) || !grepl("\\blast\\b", s, ignore.case = TRUE, perl = TRUE))
+      return(s)
+    m3 <- tolower(substr(stringi::stri_extract_first_regex(
+      s, "(?i)jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec"), 1, 3))
+    if (is.na(m3) || !m3 %in% names(mon_last)) return(s)
+    last <- mon_last[[m3]]
+    if (m3 == "feb") {
+      yr <- suppressWarnings(as.integer(
+        stringi::stri_extract_first_regex(s, "[0-9]{4}")))
+      if (!is.na(yr) && ((yr %% 4 == 0 & yr %% 100 != 0) | yr %% 400 == 0))
+        last <- 29
+    }
+    gsub("\\blast\\b", last, s, ignore.case = TRUE, perl = TRUE)
+  }, character(1), USE.NAMES = FALSE)
 }
 
 written_month <- function(dates) {

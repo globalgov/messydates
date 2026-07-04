@@ -109,6 +109,10 @@ as_messydate.mdate <- function(x, resequence = FALSE) {
 #' @export
 as_messydate.character <- function(x, resequence = NULL) {
   if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
+  # Interpret historical prose cues (Roman calendar, qualifiers, connectives)
+  # before the usual text extraction. This may lengthen the vector, e.g. when a
+  # sentence lists several dates joined by "and".
+  x <- interpret_prose(x)
   d <- standardise_text(x)
   # Protect any time-of-day substrings so the date pipeline (which repurposes
   # ':' as a range separator and '.' as a component separator) cannot mangle
@@ -597,6 +601,89 @@ add_zero_set <- function(dates) {
   })
   dates <- vapply(dates, paste, character(1), collapse = ",", USE.NAMES = FALSE)
   dates
+}
+
+# Natural-language interpretation of historical date prose. Recognises Roman
+# calendar references (Kalends/Nones/Ides), approximate or uncertain qualifiers
+# ("around", "circa", "possibly"), and connectives implying a range
+# ("between .. and .."), a set (".. or .."), or several dates (".. and ..").
+# Strings without such cues are returned unchanged for the normal text parser.
+interpret_prose <- function(x) {
+  unlist(lapply(x, interpret_one), use.names = FALSE)
+}
+
+.nl_months <- c(january = 1, february = 2, march = 3, april = 4, may = 5,
+                june = 6, july = 7, august = 8, september = 9, october = 10,
+                november = 11, december = 12, jan = 1, feb = 2, mar = 3,
+                apr = 4, jun = 6, jul = 7, aug = 8, sept = 9, sep = 9,
+                oct = 10, nov = 11, dec = 12)
+
+nl_month_num <- function(s) {
+  m <- stringi::stri_extract_first_regex(
+    tolower(s), paste(names(.nl_months), collapse = "|"))
+  if (is.na(m)) NA_integer_ else unname(.nl_months[m])
+}
+
+# The last (right-most) number in the string, taken to be the year.
+nl_year <- function(s) {
+  y <- stringi::stri_extract_last_regex(s, "[0-9]{3,4}")
+  if (is.na(y)) y <- stringi::stri_extract_last_regex(s, "[0-9]{1,4}")
+  y
+}
+
+# Day-of-month for a Roman calendar reference. Nones and Ides fall later in
+# March, May, July, and October.
+roman_calendar_day <- function(kind, mn) {
+  long <- mn %in% c(3, 5, 7, 10)
+  switch(kind,
+         kalends = 1L,
+         nones = if (long) 7L else 5L,
+         ides = if (long) 15L else 13L)
+}
+
+interpret_one <- function(s) {
+  if (is.na(s) || !is.character(s)) return(s)
+  low <- tolower(s)
+  mn <- nl_month_num(s)
+  has_roman_cal <- grepl("\\b(kalends|nones|ides)\\b", low)
+  if (is.na(mn) && !has_roman_cal) return(s)
+
+  # 1. Roman calendar reference, e.g. "the Ides of March, 44 BC".
+  if (has_roman_cal && !is.na(mn)) {
+    kind <- stringi::stri_extract_first_regex(low, "kalends|nones|ides")
+    yr <- nl_year(s)
+    bc <- grepl("\\bbce?\\b|\\bbc\\b", low)
+    return(sprintf("%04d-%02d-%02d%s", as.integer(yr), mn,
+                   roman_calendar_day(kind, mn), if (bc) " BC" else ""))
+  }
+
+  # 2. Two days joined by a connective ("between the 13th and 15th of Feb").
+  dl <- stringi::stri_match_first_regex(
+    low, "([0-9]{1,2})(?:st|nd|rd|th)?\\s+(to|and|or)\\s+(?:the\\s+)?([0-9]{1,2})(?:st|nd|rd|th)?")
+  if (!is.na(dl[1, 1]) && !is.na(mn)) {
+    conn <- dl[1, 3]
+    between <- grepl("\\bbetween\\b", low)
+    yr <- nl_year(s)
+    d1 <- sprintf("%s-%02d-%02d", yr, mn, as.integer(dl[1, 2]))
+    d2 <- sprintf("%s-%02d-%02d", yr, mn, as.integer(dl[1, 4]))
+    if (between || conn == "to") return(paste0(d1, "..", d2))
+    if (conn == "or") return(paste0("{", d1, ",", d2, "}"))
+    return(c(d1, d2)) # a plain "and" lists several separate dates
+  }
+
+  # 3. A single date carrying an approximate or uncertain qualifier.
+  qual <- if (grepl("\\b(around|circa|approx|approximately|about|roughly|estimated)\\b", low)) "~"
+    else if (grepl("\\b(possibly|perhaps|maybe|uncertain|reportedly|allegedly)\\b", low)) "?"
+    else NA_character_
+  if (!is.na(qual) && !is.na(mn)) {
+    yr <- nl_year(s)
+    day <- stringi::stri_extract_first_regex(low, "[0-9]{1,2}(?=st|nd|rd|th)")
+    if (!is.na(day) && !identical(day, yr))
+      return(sprintf("%s-%02d-%s%02d", yr, mn, qual, as.integer(day)))
+    return(sprintf("%s-%s%02d", yr, qual, mn)) # month precision
+  }
+
+  s
 }
 
 extract_from_text <- function(v) {

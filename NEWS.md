@@ -10,6 +10,12 @@
   day-first or month-first order (`"Fourth of July 1976"`, `"July 4th 1976"`),
   "day of" phrasings, and "last day of `<month>`" (leap-year aware for
   February)
+- Historical prose qualifiers are recognised and annotated: approximate
+  words (`"around"`, `"circa"`, ...) add `~`, uncertain words (`"possibly"`,
+  `"reportedly"`, ...) add `?`, applied to the most specific component
+- Connectives are interpreted: `"between the 13th and 15th of Feb 1977"`
+  becomes a range, `"the 13th or the 15th"` a set, and a plain `"13th and
+  15th"` several dates
 - Time arithmetic with calendar units keeps the time of day and shifts the
   calendar components, so `as_messydate("2012-02-03T14:30") + "1 year"` is
   `2013-02-03T14:30` (with month-end rollback)

@@ -1,5 +1,12 @@
 # messydates 1.0.0
 
+## Package
+
+- Updated and improved the `{messydates}` logo to better reflect the package's purpose
+- Removed the `purrr` and `dplyr` dependencies (replaced with base R), leaving
+  only `stringi` and `lubridate` as imports
+- Updated the cheatsheet to reflect the new time support and other changes
+
 ## Coercion
 
 - `as_messydate()` now parses Roman numerals (e.g. `"MDCCLXXVI"` becomes
@@ -19,12 +26,6 @@
 - Time arithmetic with calendar units keeps the time of day and shifts the
   calendar components, so `as_messydate("2012-02-03T14:30") + "1 year"` is
   `2013-02-03T14:30` (with month-end rollback)
-
-## Package
-
-- Removed the `purrr` and `dplyr` dependencies (replaced with base R), leaving
-  only `stringi` and `lubridate` as imports
-- Updated the cheatsheet to reflect the new time support and other changes
 
 ## Times
 

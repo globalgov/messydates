@@ -68,17 +68,22 @@ function defaults to \code{as_messydate()}.
 }
 \section{Dates and times}{
 
-Times of day may be appended to a date using the ISO 8601 \code{T} separator,
-e.g. \verb{2019-03-01T14:30:00}. Hours, minutes, and seconds are accepted
-(with optional fractional seconds), as are 12-hour \code{am}/\code{pm} times and a
-space in place of \code{T}. Coordinated Universal Time is written with the \code{Z}
-designator, and other zones as a numeric offset, e.g. \code{+02:00}.
+Since v1.0.0, messydates operates with and on both dates and times.
+Times of day may be appended to a date using a space,
+e.g. \verb{2019-03-01 14:30:00}. ISO 8601-1 sec. 4.3.2 and RFC 3339 both
+permit a space as an alternative to the \code{T} separator more commonly
+seen in machine-generated timestamps; messydates uses a space for
+readability, though \code{T} continues to be accepted on input. Hours,
+minutes, and seconds are accepted (with optional fractional seconds),
+as are 12-hour \code{am}/\code{pm} times. Coordinated Universal Time is written
+with the \code{Z} designator, and other zones as a numeric offset,
+e.g. \code{+02:00}.
 Time components accept the same annotations as dates: approximate (\code{~}),
 uncertain (\verb{?}), both (\verb{\%}), and unspecified (\code{X}),
-e.g. \verb{2019-03-01T~14:30} or \verb{2019-03-01T14:XX}.
+e.g. \code{2019-03-01 ~14:30} or \verb{2019-03-01 14:XX}.
 Because \code{:} is also used as a range separator, times are detected and
 protected before ranges are parsed, so \code{2009-01-01:2019-01-01} remains a
-range while \verb{2019-03-01T14:30:00} is read as a time.
+range while \verb{2019-03-01 14:30:00} is read as a time.
 }
 
 \section{Imprecision annotations}{

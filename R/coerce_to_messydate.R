@@ -4,7 +4,8 @@
 #'   They represent the main user-facing class-creating functions in the package.
 #'   In addition to the typical date classes in R (`Date`, `POSIXct`, and `POSIXlt`),
 #'   there is also a direct method for converting text or character strings to `mdate`.
-#'   The function can also extract dates from text,
+#'   The function can also extract dates and times from text,
+#'   including some historical prose conventions,
 #'   though this is a work-in-progress and currently only works in English.
 #' @param x A scalar or vector of a class that can be coerced into `mdate`,
 #'   such as `Date`, `POSIXct`, `POSIXlt`, or character.
@@ -28,6 +29,35 @@
 #'   based on which the date is reordered into YYYY-MM-DD format
 #'   and further completed to YYYY-MM-DD format if they choose to do so.
 #' @return A `mdate` class object
+#' @section Parsing historical prose:
+#' Beyond plain and lightly-formatted dates, `as_messydate()` recognises
+#' several conventions common in historical texts and converts them to their
+#' ISO 8601-2 equivalent before the usual parsing takes place:
+#' \itemize{
+#'  \item{Roman numerals for a bare year, e.g. `"MDCCLXXVI"` becomes `1776`.}
+#'  \item{Roman calendar references, i.e. the Kalends, Nones, and Ides of a
+#'  named month, e.g. `"the Ides of March, 44 BC"` becomes `"-0044-03-15"`.
+#'  The Nones and Ides fall later (the 7th and 15th) in March, May, July,
+#'  and October, and earlier (the 5th and 13th) in other months.}
+#'  \item{Approximate qualifiers ("around", "circa", "about", "roughly", ...)
+#'  add the `~` annotation, and uncertain qualifiers ("possibly", "perhaps",
+#'  "reportedly", ...) add `?`; both together add `%`, e.g.
+#'  `"possibly about 1910"` becomes `"%1910"`.}
+#'  \item{Connectives joining two days of the same month: "between the 13th
+#'  and 15th" or "from the 13th to the 15th" become a range (`..`); "the
+#'  13th or the 15th" becomes a set (`{}`); and a plain "the 13th and the
+#'  15th" becomes two separate dates.}
+#'  \item{"before"/"prior to"/"no later than" and "after"/"since"/"no
+#'  earlier than" become an open range, e.g. `"before 1910"` becomes
+#'  `"..1910"`. The bound may itself be any precision the parser
+#'  understands, including a decade or century.}
+#'  \item{Decades ("the 1920s" becomes `"192X"`) and centuries ("the 19th
+#'  century" becomes `"18XX"`).}
+#'  \item{A comma-separated list of dates in prose, e.g.
+#'  `"13th Feb, 1977, Feb 15 1977, 1910"`, is split into separate dates
+#'  (here, three): a fragment that is only a year is treated as completing
+#'  the date before it.}
+#' }
 #' @name coerce_to
 NULL
 
@@ -49,6 +79,18 @@ NULL
 #' as_messydate(c("010221", "01022021"), resequence = "dmy")
 #' # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 #' # resequence = "interactive")
+#' # ISO 8601-2 times, with the same annotations available on time components
+#' as_messydate("2019-03-01 14:30:00Z")
+#' as_messydate("2019-03-01 2:30pm")
+#' as_messydate("2019-03-01 ~14:30")
+#' # historical prose (see the "Parsing historical prose" section below)
+#' as_messydate("MDCCLXXVI")
+#' as_messydate("the Ides of March, 44 BC")
+#' as_messydate("possibly about 1910")
+#' as_messydate("the 1920s")
+#' as_messydate("the 19th century")
+#' as_messydate("before 1910")
+#' as_messydate("between the 13th and 15th of Feb, 1977")
 #' @export
 as_messydate <- function(x, resequence = FALSE)
   UseMethod("as_messydate")
@@ -80,23 +122,38 @@ as_messydate.POSIXlt <- function(x, resequence = FALSE) {
 # Formats a POSIXct vector as ISO 8601-2, keeping the time of day unless it
 # is exactly midnight (in which case a date-only string is returned).
 posix_to_iso <- function(x) {
-  inf <- is.infinite(x)
+  # Guarded explicitly, rather than relying on paste0()/ifelse() to handle
+  # a zero-length x correctly: paste0() only returns character(0) when
+  # *every* argument is zero-length, but .dt_sep is not, so
+  # paste0(character(0), .dt_sep, character(0), character(0)) would
+  # otherwise silently return .dt_sep (length 1) instead of character(0).
+  if (length(x) == 0) return(character(0))
+  # Built via direct assignment rather than ifelse(): ifelse() silently
+  # returns the wrong type (logical, not character) when its test vector is
+  # entirely NA, which as.POSIXct()/as.POSIXlt() values can legitimately be
+  # (e.g. a zero-row `file.mtime()` result), and that then fails
+  # new_messydate()'s is.character() check downstream.
   base <- format(x, "%Y-%m-%d")
   clock <- format(x, "%H:%M:%S")
   offset <- normalise_offset(format(x, "%z"))
-  out <- ifelse(clock == "00:00:00", base,
-                paste0(base, "T", clock, offset))
-  if (any(inf)) out[inf] <- "9999-12-31"
+  out <- paste0(base, .dt_sep, clock, offset)
+  midnight <- !is.na(clock) & clock == "00:00:00"
+  out[midnight] <- base[midnight]
+  out[is.na(x)] <- NA_character_
+  out[is.infinite(x)] <- "9999-12-31"
   out
 }
 
 # Normalises a numeric UTC offset ("+0000", "-0500", "") to ISO form
-# ("Z", "-05:00", ""). UTC is written with the "Z" designator.
+# ("Z", "-05:00", ""). UTC is written with the "Z" designator. Built with
+# stringi (length-0/NA safe) and direct assignment rather than ifelse(),
+# for the same reason as posix_to_iso() above.
 normalise_offset <- function(z) {
-  ifelse(z == "" | is.na(z), "",
-         ifelse(z == "+0000", "Z",
-                stringi::stri_replace_first_regex(z, "^([+-][0-9]{2})([0-9]{2})$",
-                                                  "$1:$2")))
+  out <- stringi::stri_replace_first_regex(z, "^([+-][0-9]{2})([0-9]{2})$",
+                                           "$1:$2")
+  out[is.na(z) | z == ""] <- ""
+  out[!is.na(z) & z == "+0000"] <- "Z"
+  out
 }
 
 #' @export
@@ -173,6 +230,9 @@ mdate <- as_messydate
 #' @importFrom stringi stri_detect_regex
 standardise_text <- function(v) {
   v <- convert_roman(v)
+  # Drop ordinal suffixes on numeric days ("13th" -> "13") so both the text
+  # extractor and the written-month parser see a plain number.
+  v <- gsub("([0-9])(st|nd|rd|th)\\b", "\\1", v, ignore.case = TRUE, perl = TRUE)
   dates <- ifelse(stringi::stri_detect_regex(v, "([:alpha:]{4})") &
                     !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
@@ -341,6 +401,16 @@ standardise_unspecifieds <- function(dates) {
 
 # Times ####
 
+# The canonical date-time separator used in mdate output. ISO 8601-1 sec.
+# 4.3.2 (and RFC 3339) both permit a space as an alternative to 'T'; a space
+# is used here for readability. It cannot be confused with anything else in
+# a canonical mdate string, since all other whitespace is stripped or
+# squished away during parsing (see stri_squish()) -- so a bare space can
+# only ever be this separator. 'T' continues to be accepted on input (see
+# protect_times() below) and is tolerated, alongside a space, wherever a
+# time is detected in an already-parsed mdate string, for robustness.
+.dt_sep <- " "
+
 # Sentinels that no date-pipeline regex touches (control characters, i.e. not
 # digits, letters, or any of - . : , {} ~ ? % that the pipeline manipulates).
 .time_open <- ""
@@ -369,8 +439,12 @@ protect_times <- function(v) {
       times[[i]] <- character(0)
       next
     }
-    # Treat a space before a clock time ("2019-03-01 14:30") as the ISO 'T'.
-    s <- gsub("([0-9])[[:space:]]+([0-9]{1,2}(?::[0-9]|[[:space:]]?[apAP][mM]))",
+    # Treat a space before a clock time ("2019-03-01 14:30") as the ISO 'T',
+    # so the detection below (which requires a literal 'T') finds it. Either
+    # the hour or the minute may carry an annotation (e.g.
+    # "2019-03-01 ~14:30" or "2019-03-01 14:~30") or be unspecified
+    # ("2019-03-01 XX:30"), matching .time_token_rx's own tolerance.
+    s <- gsub("([0-9])[[:space:]]+([~?%]?[0-9X]{1,2}(?::[~?%]?[0-9X]|[[:space:]]?[apAP][mM]))",
               "\\1T\\2", s, perl = TRUE)
     matches <- regmatches(s, gregexpr(.time_token_rx, s, perl = TRUE))[[1]]
     if (length(matches) == 0) {
@@ -388,22 +462,24 @@ protect_times <- function(v) {
   list(skeleton = skeleton, times = times)
 }
 
-# Reinserts standardised times (with the canonical 'T' separator) in place of
-# the sentinels left by protect_times().
+# Reinserts standardised times (with the canonical .dt_sep separator) in
+# place of the sentinels left by protect_times().
 restore_times <- function(v, times) {
   for (i in seq_along(v)) {
     if (length(times[[i]]) == 0) next
     for (k in seq_along(times[[i]])) {
       v[i] <- sub(paste0(.time_open, k, .time_close),
-                  paste0("T", times[[i]][k]), v[i], fixed = TRUE)
+                  paste0(.dt_sep, times[[i]][k]), v[i], fixed = TRUE)
     }
   }
   v
 }
 
 # A standardised (already parsed) time token, used to detect or strip times.
+# Matches a leading space (the canonical separator) or 'T' (tolerated for
+# robustness, e.g. a manually-constructed mdate string).
 .std_time_rx <- paste0(
-  "T[~?%]?[0-9X]{1,2}(:[~?%]?[0-9X]{1,2}){0,2}(\\.[0-9]+)?",
+  "[T ][~?%]?[0-9X]{1,2}(:[~?%]?[0-9X]{1,2}){0,2}(\\.[0-9]+)?",
   "(Z|[+-][0-9]{2}:[0-9]{2})?[~?%]?")
 
 # Removes time-of-day components from a canonical mdate string (per operand,
@@ -641,12 +717,98 @@ roman_calendar_day <- function(kind, mn) {
          ides = if (long) 15L else 13L)
 }
 
+# Resolves the date phrase that follows "before"/"after" by reusing the full
+# parser, so open ranges can carry any precision (year, month, or full date).
+inner_date <- function(s) {
+  s <- trimws(s)
+  if (!nzchar(s)) return(s)
+  as.character(suppressWarnings(as_messydate(s)))
+}
+
+# Regroups comma-separated fragments into whole dates: a fragment that is only
+# a year is attached to the preceding fragment when that one lacks a year, so
+# "13th Feb", "1977", "Feb 15 1977", "1910" becomes three dates.
+rejoin_date_fragments <- function(frags) {
+  frags <- trimws(frags)
+  frags <- frags[nzchar(frags)]
+  out <- character(0)
+  cur <- ""
+  for (f in frags) {
+    if (!nzchar(cur)) {
+      cur <- f
+    } else if (grepl("^[0-9]{3,4}$", f) && !grepl("[0-9]{4}", cur)) {
+      cur <- paste(cur, f)
+    } else {
+      out <- c(out, cur)
+      cur <- f
+    }
+  }
+  if (nzchar(cur)) out <- c(out, cur)
+  out
+}
+
+# Month range for a (northern-hemisphere meteorological) season in a given
+# year. Winter spans into the following February.
+season_range <- function(season, yr) {
+  switch(season,
+         spring = sprintf("%s-03..%s-05", yr, yr),
+         summer = sprintf("%s-06..%s-08", yr, yr),
+         autumn = ,
+         fall   = sprintf("%s-09..%s-11", yr, yr),
+         winter = sprintf("%s-12..%04d-02", yr, as.integer(yr) + 1L))
+}
+
 interpret_one <- function(s) {
   if (is.na(s) || !is.character(s)) return(s)
   low <- tolower(s)
+
+  # Open ranges (checked first, so the bound may itself be a decade/century):
+  # "before 1910" -> "..1910"; "after the 1920s" -> "192X..".
+  if (grepl("\\b(before|prior to|no later than)\\b", low))
+    return(paste0("..", inner_date(sub(
+      ".*\\b(?:before|prior to|no later than)\\b", "", low, perl = TRUE))))
+  if (grepl("\\b(after|since|no earlier than)\\b", low))
+    return(paste0(inner_date(sub(
+      ".*\\b(?:after|since|no earlier than)\\b", "", low, perl = TRUE)), ".."))
+
+  # Century, e.g. "19th century" -> "18XX" (the 19th century is 1800-1899).
+  cen <- stringi::stri_match_first_regex(low, "([0-9]+)(?:st|nd|rd|th)?\\s+centur")
+  if (!is.na(cen[1, 1]))
+    return(sprintf("%02dXX", as.integer(cen[1, 2]) - 1L))
+
+  # Decade, e.g. "1910s" -> "191X".
+  dec <- stringi::stri_match_first_regex(low, "\\b([0-9]{3})0s\\b")
+  if (!is.na(dec[1, 1])) return(paste0(dec[1, 2], "X"))
+
+  # Seasons and relative parts of a year, expressed as month ranges rather than
+  # EDTF season codes (deliberately undocumented; only applied to a plain year,
+  # so a decade or century keeps precedence above). Northern-hemisphere
+  # meteorological seasons; thirds of the year for early/mid/late.
+  seas <- stringi::stri_match_first_regex(
+    low, "\\b(spring|summer|autumn|fall|winter)\\b\\s+(?:of\\s+)?([0-9]{3,4})")
+  if (!is.na(seas[1, 1])) return(season_range(seas[1, 2], seas[1, 3]))
+  emr <- stringi::stri_match_first_regex(
+    low, "\\b(early|mid|late)\\b\\s+(?:in\\s+|the\\s+)?([0-9]{3,4})")
+  if (!is.na(emr[1, 1])) {
+    r <- switch(emr[1, 2], early = c("01", "04"), mid = c("05", "08"),
+                late = c("09", "12"))
+    return(sprintf("%s-%s..%s-%s", emr[1, 3], r[1], emr[1, 3], r[2]))
+  }
+
   mn <- nl_month_num(s)
   has_roman_cal <- grepl("\\b(kalends|nones|ides)\\b", low)
-  if (is.na(mn) && !has_roman_cal) return(s)
+
+  # 0. A prose list of several dates separated by commas, e.g.
+  # "13th Feb, 1977, Feb 15 1977, 1910". Only triggered for prose (a month name
+  # present) with two or more four-digit years, so ISO sets/ranges are left to
+  # the normal parser. Each date is parsed on its own.
+  if (grepl(",", s) && !is.na(mn) && !grepl("[{}\\[\\]]|\\.\\.", s) &&
+      lengths(regmatches(s, gregexpr("[0-9]{4}", s))) >= 2) {
+    frags <- rejoin_date_fragments(strsplit(s, ",")[[1]])
+    if (length(frags) >= 2)
+      return(unlist(lapply(frags,
+                           function(f) as.character(as_messydate(trimws(f))))))
+  }
 
   # 1. Roman calendar reference, e.g. "the Ides of March, 44 BC".
   if (has_roman_cal && !is.na(mn)) {
@@ -671,16 +833,20 @@ interpret_one <- function(s) {
     return(c(d1, d2)) # a plain "and" lists several separate dates
   }
 
-  # 3. A single date carrying an approximate or uncertain qualifier.
-  qual <- if (grepl("\\b(around|circa|approx|approximately|about|roughly|estimated)\\b", low)) "~"
-    else if (grepl("\\b(possibly|perhaps|maybe|uncertain|reportedly|allegedly)\\b", low)) "?"
-    else NA_character_
-  if (!is.na(qual) && !is.na(mn)) {
+  # 3. A single date carrying an approximate and/or uncertain qualifier
+  # (both together give the EDTF "%" marker).
+  approx <- grepl("\\b(around|circa|approx|approximately|about|roughly|estimated)\\b", low)
+  uncert <- grepl("\\b(possibly|perhaps|maybe|uncertain|reportedly|allegedly)\\b", low)
+  qual <- if (approx && uncert) "%" else if (approx) "~" else if (uncert) "?" else NA_character_
+  if (!is.na(qual)) {
     yr <- nl_year(s)
-    day <- stringi::stri_extract_first_regex(low, "[0-9]{1,2}(?=st|nd|rd|th)")
-    if (!is.na(day) && !identical(day, yr))
-      return(sprintf("%s-%02d-%s%02d", yr, mn, qual, as.integer(day)))
-    return(sprintf("%s-%s%02d", yr, qual, mn)) # month precision
+    if (!is.na(mn)) {
+      day <- stringi::stri_extract_first_regex(low, "[0-9]{1,2}(?=st|nd|rd|th)")
+      if (!is.na(day) && !identical(day, yr))
+        return(sprintf("%s-%02d-%s%02d", yr, mn, qual, as.integer(day)))
+      return(sprintf("%s-%s%02d", yr, qual, mn)) # month precision
+    }
+    if (!is.na(yr)) return(paste0(qual, yr)) # year precision, e.g. "~1850"
   }
 
   s
@@ -727,7 +893,8 @@ extract_from_text <- function(v) {
   # correct double white space left and standardize separators
   out <- stri_squish(stringi::stri_replace_all_regex(out, "- -| -|- |/", "-"))
   # get the first date per row
-  out <- stringi::stri_extract_first_regex(out,
+  pre <- out
+  out <- stringi::stri_extract_first_regex(pre,
                               "^[:digit:]{2}-[:digit:]{2}-[:digit:]{2}$|
                               |^[:digit:]{1}-[:digit:]{2}-[:digit:]{2}$|
                               |^[:digit:]{2}-[:digit:]{1}-[:digit:]{2}$|
@@ -740,6 +907,15 @@ extract_from_text <- function(v) {
                               |[:digit:]{1}-[:digit:]{2}-[:digit:]{4}|
                               |[:digit:]{2}-[:digit:]{1}-[:digit:]{4}|
                               |[:digit:]{1}-[:digit:]{1}-[:digit:]{4}")
+  # Fallback: a converted month (dash-flanked) and a year, but no day, give a
+  # year-month value (e.g. "February 2004" -> "2004-02").
+  need <- which(is.na(out) & !is.na(pre))
+  if (length(need)) {
+    mo <- stringi::stri_match_first_regex(pre[need], "-([:digit:]{2})-")[, 2]
+    yr <- stringi::stri_extract_first_regex(pre[need], "[:digit:]{4}")
+    ok <- !is.na(mo) & !is.na(yr)
+    out[need[ok]] <- paste0(yr[ok], "-", mo[ok])
+  }
   out
 }
 

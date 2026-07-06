@@ -58,10 +58,18 @@
   February)
 - Historical prose qualifiers are recognised and annotated: approximate
   words (`"around"`, `"circa"`, ...) add `~`, uncertain words (`"possibly"`,
-  `"reportedly"`, ...) add `?`, applied to the most specific component
-- Connectives are interpreted: `"between the 13th and 15th of Feb 1977"`
-  becomes a range, `"the 13th or the 15th"` a set, and a plain `"13th and
-  15th"` several dates
+  `"reportedly"`, ...) add `?`, and both together add `%`, applied to the most
+  specific component
+- Connectives are interpreted: `"between the 13th and 15th of Feb 1977"` (or
+  `"from the 13th to the 15th"`) becomes a range, `"the 13th or the 15th"` a
+  set, and a plain `"13th and 15th"`, or a comma-separated list of dates,
+  several dates
+- Reduced-precision expressions are recognised: month-and-year
+  (`"February 2004"` -> `2004-02`), decades (`"the 1910s"` -> `191X`), and
+  centuries (`"the 19th century"` -> `18XX`)
+- Open ranges from prose: `"before 1910"` -> `..1910` and `"after 1910"` ->
+  `1910..`, where the bound may itself be imprecise (`"before the 1920s"` ->
+  `..192X`)
 - Time arithmetic with calendar units keeps the time of day and shifts the
   calendar components, so `as_messydate("2012-02-03 14:30") + "1 year"` is
   `2013-02-03 14:30` (with month-end rollback)

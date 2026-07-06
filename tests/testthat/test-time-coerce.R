@@ -19,6 +19,20 @@ test_that("date-only coercion is unchanged", {
                as.POSIXct("2010-10-20", tz = "UTC"))
 })
 
+
+test_that("comparing empty or all-NA Date/POSIXct objects does not error", {
+  # These comparisons don't involve mdate at all, but since messydates
+  # overrides the "<"/">"/"<="/">=" methods for "Date" and "POSIXt", they
+  # are still routed through messydates' code.
+  expect_length(as.POSIXct(character(0)) < Sys.time(), 0)
+  expect_length(as.POSIXct(character(0)) > Sys.time(), 0)
+  expect_length(as.POSIXct(character(0)) <= Sys.time(), 0)
+  expect_length(as.POSIXct(character(0)) >= Sys.time(), 0)
+  expect_length(as.Date(character(0)) < Sys.Date(), 0)
+  expect_equal(as.POSIXct(NA) < Sys.time(), NA)
+  expect_equal(as.Date(NA) < Sys.Date(), NA)
+})
+
 test_that("arithmetic in sub-day units shifts the time", {
   expect_equal(as.character(as_messydate("2012-02-03T14:30:00") + "2 hours"),
                "2012-02-03T16:30:00")

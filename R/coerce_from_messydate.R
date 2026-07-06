@@ -21,12 +21,18 @@
 #' @param FUN A function that can be used to resolve expanded messy dates
 #'   into a single date.
 #'   For example, `min()`, `max()`, `mean()`, `median()`,
-#'   `modal()`, and `random()`.
+#'   `modal()`, and `random()`. `vmin()`, `vmax()`, `vmean()`, `vmedian()`,
+#'   `vmodal()`, and `vrandom()` are the vectorised equivalents, resolving
+#'   each element separately rather than summarising the whole vector.
 #' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
 #' @name coerce_from
 NULL
 
 #' @rdname coerce_from
+#' @details
+#'   `as.Date()` always drops any time of day carried by `x` (a calendar
+#'   date has no time component); use `as.POSIXct()` or `as.POSIXlt()` to
+#'   keep the time.
 #' @examples
 #' as.Date(as_messydate("2012-01"), FUN = vmin)
 #' as.Date(as_messydate("2012-01-01"), FUN = vmean)
@@ -37,6 +43,8 @@ NULL
 #' as.Date(as_messydate("1000 BC"), FUN = vmax)
 #' as.Date(as_messydate("1000 BC"), FUN = vmedian)
 #' as.Date(as_messydate(c("-1000", "2020")), FUN = vmin)
+#' # the time of day, if any, is dropped
+#' as.Date(as_messydate("2012-01-01 14:30"), FUN = vmin)
 #' @export
 as.Date.mdate <- function(x, FUN = vmin, ...) {
   # # fix argument ordering issues
@@ -59,6 +67,15 @@ as.Date.mdate <- function(x, FUN = vmin, ...) {
 #'   if required.
 #'   By default "UTC" (Universal Time Coordinated), equivalent to GMT.
 #'   If "" then the current time zone is used.
+#' @details
+#'   `as.POSIXct()` and `as.POSIXlt()` keep the time of day (defaulting to
+#'   midnight if `x` is date-only), and honour a UTC offset if `x` carries
+#'   one. They do not support dates before the common era; use `as.Date()`
+#'   for those.
+#' @examples
+#' as.POSIXct(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
+#' as.POSIXct(as_messydate("2012-01-01 14:30:00+02:00"), FUN = vmin)
+#' as.POSIXlt(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
 #' @export
 as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
@@ -82,21 +99,23 @@ as.POSIXlt.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
 
 # Parses a canonical mdate string (date or date-time, with optional 'Z'/offset)
 # into POSIXct. When an offset is present the instant is honoured; otherwise the
-# clock time is interpreted in `tz`.
+# clock time is interpreted in `tz`. Accepts either the canonical space
+# separator or (for robustness) a 'T', normalising to a space throughout so
+# a single fixed format string can be used below.
 mdate_to_posixct <- function(s, tz = "UTC") {
+  s <- sub("T", " ", s, fixed = TRUE)
   has_off <- grepl("(Z|[+-][0-9]{2}:[0-9]{2})$", s)
   out <- as.POSIXct(rep(NA_real_, length(s)), tz = tz)
   if (any(!has_off)) {
-    plain <- sub("T", " ", s[!has_off])
-    out[!has_off] <- as.POSIXct(plain, tz = tz)
+    out[!has_off] <- as.POSIXct(s[!has_off], tz = tz)
   }
   if (any(has_off)) {
     z <- sub("Z$", "+0000", s[has_off])
     z <- gsub("([+-][0-9]{2}):([0-9]{2})$", "\\1\\2", z)
     # Ensure offset-bearing strings include seconds for the fixed format below.
-    z <- gsub("(T[0-9]{2})([+-][0-9]{4})$", "\\1:00:00\\2", z)
-    z <- gsub("(T[0-9]{2}:[0-9]{2})([+-][0-9]{4})$", "\\1:00\\2", z)
-    out[has_off] <- as.POSIXct(z, format = "%Y-%m-%dT%H:%M:%OS%z", tz = tz)
+    z <- gsub("( [0-9]{2})([+-][0-9]{4})$", "\\1:00:00\\2", z)
+    z <- gsub("( [0-9]{2}:[0-9]{2})([+-][0-9]{4})$", "\\1:00\\2", z)
+    out[has_off] <- as.POSIXct(z, format = "%Y-%m-%d %H:%M:%OS%z", tz = tz)
   }
   out
 }
@@ -113,16 +132,36 @@ negative_dates <- function(x) {
   x
 }
 
+#' @rdname coerce_from
+#' @details
+#'   `as.data.frame()` places the (unresolved) `mdate` vector in a
+#'   single-column data frame, as for any other vector.
+#' @examples
+#' as.data.frame(as_messydate(c("2012-01-01", "2012-02")))
 #' @export
 as.data.frame.mdate <- function(x, ...) {
   as.data.frame.vector(x, ...)
 }
 
+#' @rdname coerce_from
+#' @details
+#'   `as.list()` splits `x` into a list of length-one `mdate` objects,
+#'   one per element, without resolving any of them.
+#' @examples
+#' as.list(as_messydate(c("2012-01-01", "2012-02")))
 #' @export
 as.list.mdate <- function(x, ...) {
   lapply(unclass(x), as_messydate)
 }
 
+#' @rdname coerce_from
+#' @details
+#'   `as.double()` converts `x` to the number of days since 1970-01-01 (as
+#'   for `as.double(as.Date(x))`), without resolving ranges, sets, or
+#'   unspecified components first; it is mostly useful for already-precise
+#'   dates.
+#' @examples
+#' as.double(as_messydate("2012-01-01"))
 #' @export
 as.double.mdate <- function(x, ...) {
   if(any(is_bce(x))) x[is_bce(x)] <- negative_dates(x)[is_bce(x)]

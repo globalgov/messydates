@@ -34,14 +34,24 @@
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 #' expand(d)
+#' # widen an approximate day (the '~' before the day) by 3 days either side
+#' expand(as_messydate("2001-01-~15"), approx_range = 3)
+#' # a precise date-time is returned unchanged, keeping its time
+#' expand(as_messydate("2012-01-01 14:30:00"))
+#' # a date-time range drops its time by default (day granularity)...
+#' expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"))
+#' # ...unless a sub-day 'by' is requested
+#' expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"), by = "hour")
 #' @export
 expand <- function(x, approx_range = 0, by = "day") {
   if (!is_messydate(x)) {
     message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
   }
-  # remove initial spaces, braces, and uncerainty
-  x <- stringi::stri_replace_all_regex(x, "[:space:]|\\{|\\}|\\%|\\?", "")
+  # Remove braces and uncertainty. A canonical mdate string is only ever
+  # squished/trimmed of incidental whitespace during parsing, so any space
+  # remaining here is the date-time separator, not stripped alongside braces.
+  x <- stringi::stri_replace_all_regex(x, "\\{|\\}|\\%|\\?", "")
   if (approx_range == 0) {
     # if no approx_range, then can just ignore these annotations
     x <- stringi::stri_replace_all_regex(x, "\\~|^\\.\\.|\\.\\.$", "")
@@ -54,7 +64,7 @@ expand <- function(x, approx_range = 0, by = "day") {
   }
   # Day granularity: keep the time on precise date-times, but drop it from
   # ranges and imprecise values so the date-level logic below applies.
-  keep <- is_precise(x) & grepl("T", x)
+  keep <- is_precise(x) & grepl("[T ]", x)
   if (any(!keep)) x[!keep] <- strip_times(x[!keep])
   x <- expand_unspecified(x)
   # x <- expand_negative(x)
@@ -69,11 +79,11 @@ expand_datetime <- function(x, by) {
   unit <- c(hour = "hour", min = "min", sec = "sec")[
     sub("s$", "", sub("^(hour|min|sec).*", "\\1", by))]
   lapply(x, function(y) {
-    if (grepl("\\.\\.", y) && grepl("T", y)) {
+    if (grepl("\\.\\.", y) && grepl("[T ]", y)) {
       ends <- strsplit(y, "\\.\\.")[[1]]
-      s <- as.POSIXct(sub("T", " ", ends[1]), tz = "UTC")
-      e <- as.POSIXct(sub("T", " ", ends[2]), tz = "UTC")
-      format(seq(s, e, by = unit), "%Y-%m-%dT%H:%M:%S")
+      s <- as.POSIXct(sub("T", " ", ends[1], fixed = TRUE), tz = "UTC")
+      e <- as.POSIXct(sub("T", " ", ends[2], fixed = TRUE), tz = "UTC")
+      format(seq(s, e, by = unit), paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S"))
     } else {
       unlist(expand(as_messydate(y)))
     }
@@ -81,6 +91,16 @@ expand_datetime <- function(x, by) {
 }
 
 ## expand approx ####
+
+# Parses a full "yyyy-mm-dd" date, returning NA (rather than erroring) for
+# reduced-precision values (e.g. a bare year or year-month) that some rows
+# of a vectorised `expand_approximate_*()` call may contain; the surrounding
+# `ifelse()` only uses the result where its regex condition already confirms
+# a complete date is present.
+.safe_as_date <- function(x) {
+  tryCatch(as.Date(x), error = function(e) as.Date(rep(NA_character_, length(x))))
+}
+
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
 expand_approximate <- function(dates, approx_range) {
   # Substitute signs
@@ -108,7 +128,7 @@ expand_approximate_years <- function(dates, approx_range) {
   ly <- as.numeric(strsplit(as.character(approx_range / 4), "\\.")[[1]][1]) +
     (365 * approx_range)
   dates <- lapply(dates, function(x) {
-    asdat <- as.Date(gsub("\\~", "", x))
+    asdat <- .safe_as_date(gsub("\\~", "", x))
 
     # Leap year
     x <- ifelse(stringi::stri_detect_regex(x, "^\\~[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
@@ -149,7 +169,7 @@ expand_approximate_months <- function(dates, approx_range) {
   # For month approximation
   mr <- 30.42 * approx_range
   dates <- lapply(dates, function(x) {
-    asdat <- as.Date(gsub("\\~", "", x))
+    asdat <- .safe_as_date(gsub("\\~", "", x))
     # One Month
     x <- ifelse(approx_range == 1 &
                   stringi::stri_detect_regex(x, "-\\~04-|-\\~06-|-\\~09-|-\\~11-"),
@@ -194,7 +214,7 @@ expand_approximate_months <- function(dates, approx_range) {
 
 expand_approximate_days <- function(dates, approx_range) {
   dates <- lapply(dates, function(x) {
-    asdat <- as.Date(gsub("\\~", "", x))
+    asdat <- .safe_as_date(gsub("\\~", "", x))
     # Day
     x <- ifelse(stringi::stri_detect_regex(x, "^[:digit:]{4}-[:digit:]{2}-\\~[:digit:]{2}$"),
                 paste0(asdat - approx_range, "..",

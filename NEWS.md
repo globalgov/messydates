@@ -12,6 +12,9 @@
 - `<`, `>`, `<=`, and `>=` now compare the time of day between two
   date-times on the same calendar day, instead of silently truncating both
   sides to a date first and treating them as equal
+- `expand()` no longer errors when `approx_range` is set and the vector
+  contains a reduced-precision value (e.g. a bare year-month) alongside an
+  approximate one
 - Adding or subtracting a calendar or sub-day amount (e.g. `+ "2 hours"`,
   `+ "1 month"`) from an open-ended range (`"2012-01-01T09:00.."` or
   `"..2012-01-01T09:00"`) no longer drops the `..` marker

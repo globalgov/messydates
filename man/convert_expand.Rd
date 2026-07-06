@@ -47,4 +47,12 @@ d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 expand(d)
+# widen an approximate day (the '~' before the day) by 3 days either side
+expand(as_messydate("2001-01-~15"), approx_range = 3)
+# a precise date-time is returned unchanged, keeping its time
+expand(as_messydate("2012-01-01 14:30:00"))
+# a date-time range drops its time by default (day granularity)...
+expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"))
+# ...unless a sub-day 'by' is requested
+expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"), by = "hour")
 }

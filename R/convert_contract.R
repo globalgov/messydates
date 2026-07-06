@@ -6,6 +6,11 @@
 #' @name convert_contract
 #' @details The ´contract()´ function first `expand()` 'mdate' objects
 #' to then display their most succinct representation.
+#'
+#' Because `expand()` drops the time of day from ranges (see `?expand`),
+#' contracting a date-time range and then re-expanding it will not restore
+#' the original times; `contract()` is intended for date-level ranges,
+#' sets, and unspecified components.
 #' @param x A list of dates
 #' @param collapse Do you want ranges to be collapsed?
 #'   TRUE by default.
@@ -18,6 +23,10 @@
 #' "{2001-01,2001-02-02}", "28 BC", "-2000-01-01",
 #' "{2001-01-01, 2001-01-02, 2001-01-03}"))
 #' data.frame(d, contracted = contract(d))
+#' # a full-month range collapses to a year-month by default...
+#' contract(as_messydate("2012-06-01..2012-06-30"))
+#' # ...unless collapse = FALSE keeps it as an explicit start..end range
+#' contract(as_messydate("2012-06-01..2012-06-30"), collapse = FALSE)
 #' @export
 contract <- function(x, collapse = TRUE) {
   if (!inherits(x, 'list')) {

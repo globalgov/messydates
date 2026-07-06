@@ -2,6 +2,13 @@
 
 ## Bug fixes
 
+- `median()`/`vmedian()` no longer silently return `NA` when a messy date
+  expands to an even number of dates (e.g. any range spanning an even
+  number of days, or a pair of precise date-times); the two middle values
+  are now properly averaged
+- `mean()`/`vmean()`/`median()`/`vmedian()` now average precise date-times
+  correctly, honouring the time of day, instead of miscomputing via
+  `lubridate::as_date()` on a `T`-separated string
 - `<`, `>`, `<=`, and `>=` now compare the time of day between two
   date-times on the same calendar day, instead of silently truncating both
   sides to a date first and treating them as equal

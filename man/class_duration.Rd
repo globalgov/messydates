@@ -43,12 +43,12 @@ Non-range values (a single date, or a range collapsed to a single
 value) are returned unchanged.
 When both ends of the range carry a time of day, \code{approx_range} is
 still interpreted as a number of days, but the returned range keeps
-sub-day precision (e.g. \code{"2010-01-01T09:00..2010-01-01T17:00"}).
+sub-day precision (e.g. \code{"2010-01-01 09:00..2010-01-01 17:00"}).
 }
 \examples{
 messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
 # widen (or narrow) the range at both ends
 messyduration(as_messydate("2010-06-01..2010-06-10"), approx_range = 3)
 # ranges that carry a time of day keep sub-day precision
-messyduration(as_messydate("2010-01-01T09:00..2010-01-01T17:00"))
+messyduration(as_messydate("2010-01-01 09:00..2010-01-01 17:00"))
 }

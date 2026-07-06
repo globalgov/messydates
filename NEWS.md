@@ -2,9 +2,32 @@
 
 ## Bug fixes
 
+- `<`, `>`, `<=`, and `>=` now compare the time of day between two
+  date-times on the same calendar day, instead of silently truncating both
+  sides to a date first and treating them as equal
 - Adding or subtracting a calendar or sub-day amount (e.g. `+ "2 hours"`,
   `+ "1 month"`) from an open-ended range (`"2012-01-01T09:00.."` or
   `"..2012-01-01T09:00"`) no longer drops the `..` marker
+- Fixed a crash affecting *any* comparison of two `Date`/`POSIXct` objects
+  in a session with `{messydates}` loaded, including in unrelated packages:
+  since `<`/`>`/`<=`/`>=` are registered for classes `"Date"`/`"POSIXt"` (so
+  that e.g. `Date < mdate` works), a zero-length or all-`NA`
+  `Date`/`POSIXct`/`POSIXlt` value being compared -- even one that never
+  involves `mdate` -- was passed through `as_messydate()`, where `ifelse()`
+  and `paste0()` silently changed type or length on such input and tripped
+  an internal `is.character()` check. This broke loading packages whose
+  `.onLoad` hooks compare timestamps, such as `{httr2}`'s cache pruning,
+  which in turn broke `pkgdown::build_news()`
+- Fixed a related, more subtle bug in the same `<`/`>`/`<=`/`>=` comparison
+  path: when one side of a comparison had a time of day and the other did
+  not, their numeric bounds were computed in different units (seconds for
+  the time-bearing side, days for the other) and compared directly without
+  converting to a common unit, which could silently reverse the result. In
+  particular, `Sys.time() < (Sys.time() + Inf)` -- the pattern `{httr2}`
+  uses to represent an unbounded retry deadline -- incorrectly evaluated
+  to `FALSE`, in turn breaking `httr2::req_perform()` (and so any request
+  made while `{messydates}` is loaded, including `pkgdown`'s GitHub
+  release-timeline lookup)
 
 ## Package
 

@@ -1,7 +1,17 @@
 # Inequalities ####
 
 #' Logical operations on messy dates
+#' @description
+#'   These operators (`<`, `>`, `<=`, `>=`) compare `mdate` objects with
+#'   each other, or with `Date`/`POSIXct`/`POSIXlt` objects, by comparing
+#'   the range of dates each side could represent (its minimum and
+#'   maximum), rather than requiring a single, precise value on both sides.
+#'   A comparison returns `NA` wherever the two ranges overlap and the
+#'   order cannot be determined; see the examples below. For a measure of
+#'   *how much* of one side precedes or follows the other, rather than a
+#'   strict `TRUE`/`FALSE`/`NA`, see `?operate_proportional`.
 #' @param e1,e2 `mdate` or other class objects
+#' @return A logical vector the same length as the longer of `e1` and `e2`.
 #' @name operate_inequalities
 NULL
 
@@ -14,6 +24,8 @@ NULL
 #' as_messydate("2012-06-XX") < as.Date("2012-06-02") # NA
 #' # But 2012-06-XX cannot be before 2012-06-01
 #' as_messydate("2012-06-XX") >= as.Date("2012-06-01") # TRUE
+#' # times of day are compared for two dates on the same day
+#' as_messydate("2012-06-02 09:00") < as_messydate("2012-06-02 17:00") # TRUE
 #' @export
 `<.mdate` <- function(e1, e2) {
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
@@ -35,36 +47,54 @@ evalqOnLoad({
 })
 
 numeric_time_ranges <- function(e1, e2) {
-  if (is_messydate(e1)) {
-    min1 <- as.Date(e1, FUN = vmin)
-    max1 <- as.Date(e1, FUN = vmax)
-    if (lubridate::is.POSIXt(e2)) {
-      ptz <- lubridate::tz(e2)
-      min1 <- lubridate::force_tz(min1, ptz)
-      min1 <- as.POSIXct(min1)
-      max1 <- lubridate::force_tz(max1, ptz)
-      max1 <- as.POSIXct(max1)
+  # Both sides must be measured in the *same* unit, decided once for the
+  # whole comparison (not independently per side): mixing seconds (for a
+  # time-bearing endpoint) with days (for a plain date) would compare two
+  # numbers on different scales and silently give the wrong answer, e.g.
+  # treating "now" (~1.7 billion seconds since 1970) as later than
+  # "9999-12-31" (~2.9 million days since 1970). `Sys.time() + Inf` (as
+  # httr2 and others use for an unbounded retry deadline) resolves to
+  # "9999-12-31" here (see as_messydate.POSIXct()'s Inf handling), so this
+  # case is not just theoretical.
+  bce <- .involves_bce(e1) || .involves_bce(e2)
+  b1 <- .time_bounds(e1, bce)
+  b2 <- .time_bounds(e2, bce)
+  list(min1 = b1$min, max1 = b1$max, min2 = b2$min, max2 = b2$max)
+}
+
+# Whether an operand's resolved bounds include a date before the common era.
+# na.rm = TRUE: an NA bound (e.g. from an NA POSIXct) is not itself BCE, and
+# any() of an all-NA vector is NA rather than FALSE, which would otherwise
+# make `if (bce)` in .time_bounds() error instead of just treating it as CE.
+.involves_bce <- function(x) {
+  if (!is_messydate(x)) return(FALSE)
+  any(is_bce(c(as.character(vmin(x)), as.character(vmax(x)))), na.rm = TRUE)
+}
+
+# The numeric minimum and maximum instant implied by one side of a
+# comparison. `<.mdate` and friends coerce both sides to `mdate` before
+# calling this, so `x` is always an `mdate` here in practice; the `else`
+# branch remains as a safeguard for direct callers.
+# Measured in days (via `Date`, which supports BCE years) if `bce` is TRUE,
+# since dates before the common era cannot be represented as `POSIXct`;
+# otherwise measured in seconds (via `POSIXct`), so that a time of day, if
+# present on either endpoint, contributes to the comparison rather than
+# being truncated away (comparing dates alone would treat "2012-01-01 09:00"
+# and "2012-01-01 17:00" as equal).
+.time_bounds <- function(x, bce) {
+  if (is_messydate(x)) {
+    lo <- vmin(x)
+    hi <- vmax(x)
+    if (bce) {
+      list(min = as.numeric(as.Date(lo)), max = as.numeric(as.Date(hi)))
+    } else {
+      list(min = as.numeric(mdate_to_posixct(as.character(lo))),
+           max = as.numeric(mdate_to_posixct(as.character(hi))))
     }
   } else {
-    min1 <- max1 <- e1
+    v <- as.numeric(x)
+    list(min = v, max = v)
   }
-  if (is_messydate(e2)) {
-    min2 <- as.Date(e2, FUN = vmin)
-    max2 <- as.Date(e2, FUN = vmax)
-    if (lubridate::is.POSIXt(e1)) {
-      ptz <- lubridate::tz(e1)
-      min2 <- lubridate::force_tz(min2, ptz)
-      min2 <- as.POSIXct(min2)
-      max2 <- lubridate::force_tz(max2, ptz)
-      max2 <- as.POSIXct(max2)
-    }
-  } else {
-    min2 <- max2 <- e2
-  }
-  list(
-    min1 = as.numeric(min1), max1 = as.numeric(max1),
-    min2 = as.numeric(min2), max2 = as.numeric(max2)
-  )
 }
 
 #' @describeIn operate_inequalities tests whether the dates in the first vector

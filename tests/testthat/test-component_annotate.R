@@ -47,3 +47,8 @@ test_that("Annotate functions work properly", {
   d <- on_or_before(data$Beg)
   expect_equal(as.character(class(d)), "mdate")
 })
+
+test_that("as_approximate/as_uncertain error for an unrecognised component", {
+  expect_error(as_approximate("2019-03-01", "century"), "Unknown component")
+  expect_error(as_uncertain("2019-03-01", "century"), "Unknown component")
+})

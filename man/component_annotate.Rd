@@ -77,4 +77,7 @@ transform(data, Beg = ifelse(Beg == "1916-01-01",
   as.character(as_approximate(Beg)), Beg))
 transform(data, End = ifelse(End == "1916-12-31",
   as.character(as_uncertain(End)), End))
+# time components can be annotated too
+as_approximate("2019-03-01 14:30:00", "hour")
+as_uncertain("2019-03-01 14:30:00", "second")
 }

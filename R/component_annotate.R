@@ -38,6 +38,9 @@
 #'   as.character(as_approximate(Beg)), Beg))
 #' transform(data, End = ifelse(End == "1916-12-31",
 #'   as.character(as_uncertain(End)), End))
+#' # time components can be annotated too
+#' as_approximate("2019-03-01 14:30:00", "hour")
+#' as_uncertain("2019-03-01 14:30:00", "second")
 #' @name component_annotate
 NULL
 
@@ -78,9 +81,9 @@ as_uncertain <- function(x, component = NULL) {
 annotate_component <- function(x, component, mark) {
   x <- as.character(x)
   if (is.null(component)) return(as_messydate(paste0(x, mark)))
-  has_t <- grepl("T", x)
-  date <- sub("T.*$", "", x)
-  time <- ifelse(has_t, sub("^[^T]*T", "", x), "")
+  has_t <- grepl("[T ]", x)
+  date <- sub("[T ].*$", "", x)
+  time <- ifelse(has_t, sub("^[^T ]*[T ]", "", x), "")
   if (component %in% c("year", "month", "day", "md", "ym")) {
     dp <- strsplit(date, "-")
     year <- vapply(dp, `[`, character(1), 1)
@@ -117,6 +120,6 @@ annotate_component <- function(x, component, mark) {
   } else {
     stop("Unknown component: ", component, call. = FALSE)
   }
-  out <- ifelse(has_t, paste0(date, "T", time), date)
+  out <- ifelse(has_t, paste0(date, .dt_sep, time), date)
   as_messydate(out)
 }

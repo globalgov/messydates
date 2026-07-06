@@ -67,15 +67,20 @@
 
 - Added support for ISO 8601-2:2019 times of day, extending the `mdate` class
   beyond dates
-  - `as_messydate()` now parses the `T` date-time separator, `hh`, `hh:mm`,
+  - `as_messydate()` now parses a date-time separator, `hh`, `hh:mm`,
   and `hh:mm:ss` (with fractional seconds), am/pm times, the UTC designator
   `Z`, and numeric offsets (e.g. `+02:00`), zero-padding and normalising them
   - Time components can carry the same annotations as dates: approximate
   (`~`), uncertain (`?`), both (`%`), and unspecified (`X`),
-  e.g. `2019-03-01T~14:30`
+  e.g. `2019-03-01 ~14:30`
   - `:` and `_` continue to work as range separators; times are detected and
   protected first, so `2009-01-01:2019-01-01` is still a range while
-  `2019-03-01T14:30:00` is a time
+  `2019-03-01 14:30:00` is a time
+- The date-time separator is now a space (e.g. `2019-03-01 14:30:00`) rather
+  than `T`, for readability. ISO 8601-1 sec. 4.3.2 and RFC 3339 both permit
+  a space as an alternative to `T`. `T` continues to be accepted on input
+  (e.g. `as_messydate("2019-03-01T14:30:00")` still works) and is
+  normalised to a space in the output
 - Added `hour()`, `minute()`, `second()`, and `tz()` component extractors
 - `precision()` now extends below the day: 24 to the hour, 1440 to the
   minute, and 86400 to the second (date-level precision is unchanged)

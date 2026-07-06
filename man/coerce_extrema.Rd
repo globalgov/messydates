@@ -40,11 +40,26 @@ If the date is not 'messy' (i.e. has no annotations)
 then just that precise date is returned.
 This can be useful for various descriptive or inferential projects.
 }
+\details{
+\code{vmin()}/\code{min()} and \code{vmax()}/\code{max()} work directly on the annotated
+string (dropping \code{~}/\verb{?}/\verb{\%} and, for \code{vmax()}/\code{max()}, filling in
+unspecified \code{X} components) rather than via \code{expand()}, which makes
+them considerably faster than resolving through the full expanded set.
+\code{min()} and \code{max()} further resolve a vector to a single, overall
+extremum (matching the usual behaviour of these generics), while
+\code{vmin()} and \code{vmax()} resolve each element separately.
+
+Dates that carry a time of day are already precise and so pass through
+these functions unchanged, keeping their time; a time of day plays no
+further role in choosing the minimum or maximum.
+}
 \examples{
 d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
   "{2001-01,2001-02-02}", "2008-XX-31", "-0050-01-01"))
 d
+# a precise date-time is returned unchanged
+vmin(as_messydate("2012-01-01 14:30:00"))
 vmin(d)
 min(d)
 vmax(d)

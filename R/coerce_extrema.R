@@ -8,6 +8,18 @@
 #'   If the date is not 'messy' (i.e. has no annotations)
 #'   then just that precise date is returned.
 #'   This can be useful for various descriptive or inferential projects.
+#' @details
+#'   `vmin()`/`min()` and `vmax()`/`max()` work directly on the annotated
+#'   string (dropping `~`/`?`/`%` and, for `vmax()`/`max()`, filling in
+#'   unspecified `X` components) rather than via `expand()`, which makes
+#'   them considerably faster than resolving through the full expanded set.
+#'   `min()` and `max()` further resolve a vector to a single, overall
+#'   extremum (matching the usual behaviour of these generics), while
+#'   `vmin()` and `vmax()` resolve each element separately.
+#'
+#'   Dates that carry a time of day are already precise and so pass through
+#'   these functions unchanged, keeping their time; a time of day plays no
+#'   further role in choosing the minimum or maximum.
 #' @param ... a mdate object
 #' @param na.rm Should NAs be removed? FALSE by default.
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
@@ -17,6 +29,8 @@
 #'   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #'   "{2001-01,2001-02-02}", "2008-XX-31", "-0050-01-01"))
 #' d
+#' # a precise date-time is returned unchanged
+#' vmin(as_messydate("2012-01-01 14:30:00"))
 #' @name coerce_extrema
 NULL
 

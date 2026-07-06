@@ -135,12 +135,3 @@ make_messydate <- function(..., resequence = FALSE) {
   as_messydate(dates, resequence)
 }
 
-#' @noRd
-#' @export
-pillar_shaft.mdate <- function(x, ...) {
-  pillar::new_pillar_shaft_simple(
-    ifelse(!is.na(x), pillar::style_bold(x), pillar::style_na(x)),
-    align = "left"
-  )
-}
-

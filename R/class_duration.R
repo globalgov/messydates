@@ -8,13 +8,23 @@
 #'   approximation might be present.
 #'   The `mdates_duration` class accounts for uncertainty and approximation
 #'   in `mdate` objects to return their duration as a range of possible dates.
+#'
+#'   Non-range values (a single date, or a range collapsed to a single
+#'   value) are returned unchanged.
+#'   When both ends of the range carry a time of day, `approx_range` is
+#'   still interpreted as a number of days, but the returned range keeps
+#'   sub-day precision (e.g. `"2010-01-01 09:00..2010-01-01 17:00"`).
 #' @param x An `mdate` variable with ranges.
 #' @param approx_range Range to expand approximate dates, in days.
 #'   If 3, for example, adds 3 days; if -3, removes 3 days from both sides.
-#' @return Object of class `description`
+#' @return Object of class `mdates_duration`
 #' @name class_duration
 #' @examples
 #' messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
+#' # widen (or narrow) the range at both ends
+#' messyduration(as_messydate("2010-06-01..2010-06-10"), approx_range = 3)
+#' # ranges that carry a time of day keep sub-day precision
+#' messyduration(as_messydate("2010-01-01 09:00..2010-01-01 17:00"))
 NULL
 
 #' @rdname class_duration
@@ -59,12 +69,12 @@ messy_range <- function(x, approx_range) {
   parts <- strsplit(x, "\\.\\.")
   starts <- vapply(parts, `[`, character(1), 1)
   ends <- vapply(parts, `[`, character(1), 2)
-  if (any(grepl("T", c(starts, ends)))) {
+  if (any(grepl("[T ]", c(starts, ends)))) {
     # Date-time ranges keep sub-day precision via POSIXct.
     s <- mdate_to_posixct(starts) + approx_range * 86400
     e <- mdate_to_posixct(ends) + approx_range * 86400
-    as_messydate(paste0(format(s, "%Y-%m-%dT%H:%M:%S"), "..",
-                        format(e, "%Y-%m-%dT%H:%M:%S")))
+    as_messydate(paste0(format(s, paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S")), "..",
+                        format(e, paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S"))))
   } else {
     dates1 <- as.Date(as_messydate(starts), FUN = min) + approx_range
     dates2 <- as.Date(as_messydate(ends), FUN = max) + approx_range

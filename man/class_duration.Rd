@@ -26,7 +26,7 @@ validate_messyduration(x, approx_range = 0)
 If 3, for example, adds 3 days; if -3, removes 3 days from both sides.}
 }
 \value{
-Object of class \code{description}
+Object of class \code{mdates_duration}
 }
 \description{
 The \code{mdates_duration} class introduces methods that annotate a duration or
@@ -38,7 +38,17 @@ However, this is not possible for 'messy' dates where uncertainty or
 approximation might be present.
 The \code{mdates_duration} class accounts for uncertainty and approximation
 in \code{mdate} objects to return their duration as a range of possible dates.
+
+Non-range values (a single date, or a range collapsed to a single
+value) are returned unchanged.
+When both ends of the range carry a time of day, \code{approx_range} is
+still interpreted as a number of days, but the returned range keeps
+sub-day precision (e.g. \code{"2010-01-01T09:00..2010-01-01T17:00"}).
 }
 \examples{
 messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
+# widen (or narrow) the range at both ends
+messyduration(as_messydate("2010-06-01..2010-06-10"), approx_range = 3)
+# ranges that carry a time of day keep sub-day precision
+messyduration(as_messydate("2010-01-01T09:00..2010-01-01T17:00"))
 }

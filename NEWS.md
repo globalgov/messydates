@@ -1,5 +1,11 @@
 # messydates 1.0.0
 
+## Bug fixes
+
+- Adding or subtracting a calendar or sub-day amount (e.g. `+ "2 hours"`,
+  `+ "1 month"`) from an open-ended range (`"2012-01-01T09:00.."` or
+  `"..2012-01-01T09:00"`) no longer drops the `..` marker
+
 ## Package
 
 - Updated and improved the `{messydates}` logo to better reflect the package's purpose
@@ -24,8 +30,8 @@
   becomes a range, `"the 13th or the 15th"` a set, and a plain `"13th and
   15th"` several dates
 - Time arithmetic with calendar units keeps the time of day and shifts the
-  calendar components, so `as_messydate("2012-02-03T14:30") + "1 year"` is
-  `2013-02-03T14:30` (with month-end rollback)
+  calendar components, so `as_messydate("2012-02-03 14:30") + "1 year"` is
+  `2013-02-03 14:30` (with month-end rollback)
 
 ## Times
 

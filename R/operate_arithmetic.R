@@ -3,6 +3,27 @@
 #' These operations allow users to add or subtract dates messydate objects.
 #' Messydate objects include incomplete or uncertain dates,
 #' ranges of dates, negative dates, and date sets.
+#' @details
+#'   When `e2` is a number or a string naming a unit ("day", "week",
+#'   "month", "year", or, for date-times, "hour", "min"/"minute", or
+#'   "sec"/"second"), `e1` is shifted by that amount:
+#'   \itemize{
+#'    \item{A bare number, or a "day"/"week" unit, shifts by that many
+#'    days.}
+#'    \item{"month" and "year" shift the calendar component itself
+#'    (preserving the day of month and any time of day), rolling back to
+#'    the last valid day where necessary, e.g. adding a month to
+#'    `"2012-01-31"` gives `"2012-02-29"` (2012 being a leap year), not an
+#'    invalid `"2012-02-31"`.}
+#'    \item{Sub-day units, or any unit at all when `e1` carries a time of
+#'    day, shift the instant in seconds via `POSIXct`, promoting a
+#'    date-only `e1` to a time if the shift is sub-day.}
+#'   }
+#'   When `e2` is itself an `mdate`, `+`/`-` instead treat both sides as
+#'   sets of dates: `+` returns their union (as a multiset, in the most
+#'   succinct `mdate` notation; see also `?operate_set` for `%union%`, which
+#'   returns a plain vector of the member dates instead), and `-` removes
+#'   the dates in `e2` from `e1`.
 #' @param e1 An `mdate` or date object.
 #' @param e2 An `mdate`, date, or numeric object. Must be a scalar.
 #' @return A messydates vector
@@ -17,6 +38,10 @@
 #' as_messydate("2001-01-01") + as_messydate("2001-01-03")
 #' as_messydate("2001-01-01..2001-01-04") - as_messydate("2001-01-02")
 #' #as_messydate("2001-01-01") - as_messydate("2001-01-03")
+#' # calendar (month/year) arithmetic keeps the day of month and time of day
+#' as_messydate("2012-01-31 09:00") + "1 month"
+#' # sub-day units shift the instant
+#' as_messydate("2012-01-01 14:30:00") + "2 hours"
 #' }
 #' @name operate_arithmetic
 NULL
@@ -41,7 +66,7 @@ NULL
 # amount is expressed in sub-day units (hours, minutes, seconds).
 is_time_arithmetic <- function(e1, e2) {
   if (is_messydate(e2)) return(FALSE)
-  has_time <- any(grepl("T", as.character(e1)))
+  has_time <- any(grepl("[T ]", as.character(e1)))
   sub_day <- is.character(e2) && any(grepl("hour|min|sec", e2))
   cal_day <- is.character(e2) && any(grepl("year|month|week|day", e2))
   sub_day || (has_time && (is.numeric(e2) || cal_day))
@@ -54,6 +79,12 @@ is_time_arithmetic <- function(e1, e2) {
 shift_time <- function(e1, e2, sign) {
   shifter <- make_shifter(e2, sign)
   out <- vapply(as.character(e1), function(y) {
+    # An open range's leading/trailing ".." must be checked (and restored)
+    # explicitly: base::strsplit() silently drops a trailing empty field, so
+    # splitting "2012-01-01 09:00.." on ".." would otherwise lose the
+    # "on or after" marker entirely.
+    if (grepl("^\\.\\.", y)) return(paste0("..", shifter(sub("^\\.\\.", "", y))))
+    if (grepl("\\.\\.$", y)) return(paste0(shifter(sub("\\.\\.$", "", y)), ".."))
     if (grepl("\\.\\.", y)) {
       ends <- strsplit(y, "\\.\\.")[[1]]
       return(paste(vapply(ends, shifter, character(1)), collapse = ".."))
@@ -85,10 +116,10 @@ shift_calendar <- function(y, period) {
   if (!nzchar(y)) return(y)
   off <- regmatches(y, regexpr("(Z|[+-][0-9]{2}:[0-9]{2})$", y))
   base <- sub("(Z|[+-][0-9]{2}:[0-9]{2})$", "", y)
-  datepart <- sub("T.*$", "", base)
-  timepart <- if (grepl("T", base)) sub("^[^T]*T", "", base) else ""
+  datepart <- sub("[T ].*$", "", base)
+  timepart <- if (grepl("[T ]", base)) sub("^[^T ]*[T ]", "", base) else ""
   d <- lubridate::add_with_rollback(as.Date(datepart), period)
-  paste0(format(d), if (nzchar(timepart)) paste0("T", timepart) else "",
+  paste0(format(d), if (nzchar(timepart)) paste0(.dt_sep, timepart) else "",
          if (length(off)) off else "")
 }
 
@@ -96,8 +127,9 @@ shift_one <- function(y, secs) {
   if (!nzchar(y)) return(y)
   off <- regmatches(y, regexpr("(Z|[+-][0-9]{2}:[0-9]{2})$", y))
   base <- sub("(Z|[+-][0-9]{2}:[0-9]{2})$", "", y)
-  p <- as.POSIXct(sub("T", " ", base), tz = "UTC") + secs
-  paste0(format(p, "%Y-%m-%dT%H:%M:%S"), if (length(off)) off else "")
+  p <- as.POSIXct(sub("T", " ", base, fixed = TRUE), tz = "UTC") + secs
+  paste0(format(p, paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S")),
+         if (length(off)) off else "")
 }
 
 # Converts a shift amount to seconds. Numeric amounts are days.

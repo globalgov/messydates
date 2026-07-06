@@ -23,6 +23,28 @@ These operations allow users to add or subtract dates messydate objects.
 Messydate objects include incomplete or uncertain dates,
 ranges of dates, negative dates, and date sets.
 }
+\details{
+When \code{e2} is a number or a string naming a unit ("day", "week",
+"month", "year", or, for date-times, "hour", "min"/"minute", or
+"sec"/"second"), \code{e1} is shifted by that amount:
+\itemize{
+\item{A bare number, or a "day"/"week" unit, shifts by that many
+days.}
+\item{"month" and "year" shift the calendar component itself
+(preserving the day of month and any time of day), rolling back to
+the last valid day where necessary, e.g. adding a month to
+\code{"2012-01-31"} gives \code{"2012-02-29"} (2012 being a leap year), not an
+invalid \code{"2012-02-31"}.}
+\item{Sub-day units, or any unit at all when \code{e1} carries a time of
+day, shift the instant in seconds via \code{POSIXct}, promoting a
+date-only \code{e1} to a time if the shift is sub-day.}
+}
+When \code{e2} is itself an \code{mdate}, \code{+}/\code{-} instead treat both sides as
+sets of dates: \code{+} returns their union (as a multiset, in the most
+succinct \code{mdate} notation; see also \code{?operate_set} for \verb{\%union\%}, which
+returns a plain vector of the member dates instead), and \code{-} removes
+the dates in \code{e2} from \code{e1}.
+}
 \examples{
 \donttest{
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
@@ -34,5 +56,9 @@ as_messydate("2001-01-01") + as_messydate("2001-01-02..2001-01-04")
 as_messydate("2001-01-01") + as_messydate("2001-01-03")
 as_messydate("2001-01-01..2001-01-04") - as_messydate("2001-01-02")
 #as_messydate("2001-01-01") - as_messydate("2001-01-03")
+# calendar (month/year) arithmetic keeps the day of month and time of day
+as_messydate("2012-01-31 09:00") + "1 month"
+# sub-day units shift the instant
+as_messydate("2012-01-01 14:30:00") + "2 hours"
 }
 }

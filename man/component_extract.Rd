@@ -37,14 +37,17 @@ precision(x)
 \value{
 \code{year()}, \code{month()}, \code{day()}, \code{hour()}, \code{minute()}, and \code{second()}
 extraction return the integer for the requested component (\code{NA} where the
-component is absent or unspecified). \code{tz()} returns the time zone
-designator or offset as a string.
+component is absent or unspecified).
+
+\code{tz()} returns the time zone designator or offset as a string.
+
 \code{precision()} returns the level of greatest precision for each date.
 }
 \description{
 These functions allow the extraction of particular date components
 from messy dates, such as the \code{year()}, \code{month()}, \code{day()}, and, for
 date-times, \code{hour()}, \code{minute()}, \code{second()}, and the time zone (\code{tz()}).
+
 \code{precision()} allows for the identification of the greatest level of
 precision in (currently) the first element of each date.
 }
@@ -63,10 +66,10 @@ to the hour returns 24, to the minute 1440, and to the second 86400.
 year(as_messydate(c("2012-02-03","2012","2012-02")))
 month(as_messydate(c("2012-02-03","2012","2012-02")))
 day(as_messydate(c("2012-02-03","2012","2012-02")))
-hour(as_messydate(c("2012-02-03T14:30:00","2012-02-03")))
-minute(as_messydate("2012-02-03T14:30:00"))
-second(as_messydate("2012-02-03T14:30:05"))
-tz(as_messydate("2012-02-03T14:30:00+02:00"))
+hour(as_messydate(c("2012-02-03 14:30:00","2012-02-03")))
+minute(as_messydate("2012-02-03 14:30:00"))
+second(as_messydate("2012-02-03 14:30:05"))
+tz(as_messydate("2012-02-03 14:30:00+02:00"))
 precision(as_messydate(c("2012-02-03","2012","2012-02")))
-precision(as_messydate("2012-02-03T14:30"))
+precision(as_messydate("2012-02-03 14:30"))
 }

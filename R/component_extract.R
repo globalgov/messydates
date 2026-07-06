@@ -3,17 +3,19 @@
 #'   These functions allow the extraction of particular date components
 #'   from messy dates, such as the `year()`, `month()`, `day()`, and, for
 #'   date-times, `hour()`, `minute()`, `second()`, and the time zone (`tz()`).
+#'
 #'   `precision()` allows for the identification of the greatest level of
 #'   precision in (currently) the first element of each date.
 #' @param x A `mdate` object
 #' @return `year()`, `month()`, `day()`, `hour()`, `minute()`, and `second()`
 #'   extraction return the integer for the requested component (`NA` where the
-#'   component is absent or unspecified). `tz()` returns the time zone
-#'   designator or offset as a string.
+#'   component is absent or unspecified).
+#'
+#'   `tz()` returns the time zone designator or offset as a string.
+#'
 #'   `precision()` returns the level of greatest precision for each date.
 #' @name component_extract
 NULL
-#> NULL
 
 #' @rdname component_extract
 #' @examples
@@ -47,39 +49,39 @@ day <- function(x) {
 
 #' @rdname component_extract
 #' @examples
-#' hour(as_messydate(c("2012-02-03T14:30:00","2012-02-03")))
+#' hour(as_messydate(c("2012-02-03 14:30:00","2012-02-03")))
 #' @export
 hour <- function(x) {
-  h <- stringi::stri_match_first_regex(as.character(x), "T[~?%]?([0-9X]{2})")[, 2]
+  h <- stringi::stri_match_first_regex(as.character(x), "[T ][~?%]?([0-9X]{2})")[, 2]
   suppressWarnings(as.integer(h))
 }
 
 #' @rdname component_extract
 #' @examples
-#' minute(as_messydate("2012-02-03T14:30:00"))
+#' minute(as_messydate("2012-02-03 14:30:00"))
 #' @export
 minute <- function(x) {
   m <- stringi::stri_match_first_regex(
-    as.character(x), "T[~?%]?[0-9X]{2}:[~?%]?([0-9X]{2})"
+    as.character(x), "[T ][~?%]?[0-9X]{2}:[~?%]?([0-9X]{2})"
   )[, 2]
   suppressWarnings(as.integer(m))
 }
 
 #' @rdname component_extract
 #' @examples
-#' second(as_messydate("2012-02-03T14:30:05"))
+#' second(as_messydate("2012-02-03 14:30:05"))
 #' @export
 second <- function(x) {
   s <- stringi::stri_match_first_regex(
     as.character(x),
-    "T[~?%]?[0-9X]{2}:[~?%]?[0-9X]{2}:[~?%]?([0-9X]{2}(?:\\.[0-9]+)?)"
+    "[T ][~?%]?[0-9X]{2}:[~?%]?[0-9X]{2}:[~?%]?([0-9X]{2}(?:\\.[0-9]+)?)"
   )[, 2]
   suppressWarnings(as.numeric(s))
 }
 
 #' @rdname component_extract
 #' @examples
-#' tz(as_messydate("2012-02-03T14:30:00+02:00"))
+#' tz(as_messydate("2012-02-03 14:30:00+02:00"))
 #' @export
 tz <- function(x) {
   stringi::stri_match_first_regex(as.character(x),
@@ -101,7 +103,7 @@ precision <- function(x) UseMethod("precision")
 #'   to the hour returns 24, to the minute 1440, and to the second 86400.
 #' @examples
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
-#' precision(as_messydate("2012-02-03T14:30"))
+#' precision(as_messydate("2012-02-03 14:30"))
 #' @export
 precision.mdate <- function(x) {
   out <- expand(x)
@@ -113,8 +115,8 @@ precision.mdate <- function(x) {
 subday_factor <- function(x) {
   x <- as.character(x)
   f <- rep(1, length(x))
-  f[stringi::stri_detect_regex(x, "T[0-9X]{2}")] <- 24
-  f[stringi::stri_detect_regex(x, "T[0-9X]{2}:[0-9X]{2}")] <- 1440
-  f[stringi::stri_detect_regex(x, "T[0-9X]{2}:[0-9X]{2}:[0-9X]{2}")] <- 86400
+  f[stringi::stri_detect_regex(x, "[T ][0-9X]{2}")] <- 24
+  f[stringi::stri_detect_regex(x, "[T ][0-9X]{2}:[0-9X]{2}")] <- 1440
+  f[stringi::stri_detect_regex(x, "[T ][0-9X]{2}:[0-9X]{2}:[0-9X]{2}")] <- 86400
   f
 }

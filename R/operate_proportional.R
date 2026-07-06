@@ -1,10 +1,16 @@
 #' Proportion of messy dates meeting logical test
 #' @description
-#'   These functions provide various proportional tests for messy date objects.
+#'   These functions provide various proportional tests for messy date
+#'   objects, complementing the strict logical comparisons in
+#'   `?operate_inequalities`. Where a plain `<`/`>`/etc. comparison can only
+#'   return `TRUE`, `FALSE`, or `NA` for a messy (imprecise) date, these
+#'   functions instead report *what proportion* of the dates implied by
+#'   `e1` satisfy the comparison against `e2`, by expanding both to their
+#'   full sets of possible dates first.
 #' @name operate_proportional
-#' @param e1,e2 `mdate` or other class objects
-#' @return The proportion that the comparison is true.
-#' @return A logical vector the same length as the `mdate` passed.
+#' @param e1,e2 `mdate` or other class objects; must be of equal length.
+#' @return A numeric vector, the same length as `e1` and `e2`, of
+#'   proportions between 0 and 1.
 NULL
 
 #' @rdname operate_proportional

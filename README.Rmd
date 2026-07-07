@@ -42,16 +42,16 @@ Other times there exists a _set_ or _range_ of possible dates for an event.
 Although researchers generally recognise this messiness,
 many feel expected to force artificial precision or unfortunate imprecision 
 on temporal data to proceed with analysis.
-For example, if we only know something happened in `2021`,
+For example, if we only know that, for one observation, it happened sometime in `2021`,
 then we might revert to a panel data design
-_even if greater precision is available_,
+_even if greater precision is available_ throughout the rest of the dataset,
 or opt to replace this date with the start of that year (`2021-01-01`),
 assuming that erring on the earlier (or later) side is more justifiable than 
 a random date within that month or year.
 
 However, this can create inferential issues when timing or sequence is important.
-`{messydates}` assists with this problem by retaining and working
-with various kinds of date messiness.
+`{messydates}` assists with this problem by retaining, representing, and reasoning 
+about messy dates and times, rather than discarding them.
 It implements ISO 8601-2:2019 in R, introducing a new `mdate` class that can represent
 a wide range of messy dates and times, and provides methods for coercing into and from this class,
 as well as tools for working with messy dates and times in a way that is compatible with existing packages.
@@ -90,9 +90,9 @@ library(messydates)
 
 ## A quick overview
 
-`{messydates}` implements for R the Extended Date/Time Format (EDTF) annotations
+`{messydates}` implements the Extended Date/Time Format (EDTF) annotations
 set by the International Organization for Standardization (ISO) 
-outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html).
+outlined in [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html) for R.
 `{messydates}` introduces a new `mdate` class that embeds these annotations,
 and offers a set of methods for constructing and coercing into and from the `mdate` class,
 as well as tools for working with such 'messy' dates.
@@ -109,7 +109,7 @@ pkg_comparison <- data.frame(
                    "31-10-2012", "2012-31-10", "2012-01-12~", "2012-01-01?",
                    "2012-01", "..2012-01-12", "2012-11-01:2012-12-01",
                    "2012-5-26, 2012-11-19, 2012-12-4",
-                   "2012-01-01T14:30", "2012-01-01T~14:30"),
+                   "2012-01-01 14:30", "2012-01-01 ~14:30"),
   stringsAsFactors = FALSE)
 pkg_comparison$base <- as.Date(pkg_comparison$OriginalDate)
 pkg_comparison$lubridate <-
@@ -197,21 +197,23 @@ allowing researchers to use messy dates in an analytic strategy that uses any ot
 ### Times
 
 Following ISO 8601-2:2019, `mdate` objects can also carry a time of day,
-appended to a date with the `T` separator. Hours, minutes, and seconds
-(with fractional seconds), am/pm times, the UTC designator `Z`, and numeric
-offsets such as `+02:00` are all parsed and standardised. Time components
-accept the same approximate (`~`), uncertain (`?`), and unspecified (`X`)
-annotations as dates.
+appended to a date with a space (as ISO 8601-1 and RFC 3339 both permit as
+an alternative to `T`, and messydates uses for readability; `T` continues
+to be accepted on input). Hours, minutes, and seconds (with fractional
+seconds), am/pm times, the UTC designator `Z`, and numeric offsets such as
+`+02:00` are all parsed and standardised. Time components accept the same
+approximate (`~`), uncertain (`?`), and unspecified (`X`) annotations as
+dates.
 
 ```{r times, warning=FALSE, message=FALSE}
 library(messydates)
-as_messydate(c("2019-03-01T14:30:00Z", "2019-03-01 2:30pm", "2019-03-01T~14:30"))
+as_messydate(c("2019-03-01 14:30:00Z", "2019-03-01 2:30pm", "2019-03-01 ~14:30"))
 # extract and measure sub-day components
-hour(as_messydate("2019-03-01T14:30:00"))
-precision(as_messydate("2019-03-01T14:30")) # 1440 = 1/minute of a day
+hour(as_messydate("2019-03-01 14:30:00"))
+precision(as_messydate("2019-03-01 14:30")) # 1440 = 1/minute of a day
 # sub-day arithmetic and sequences
-as_messydate("2019-03-01T14:30:00") + "2 hours"
-seq(as_messydate("2019-03-01T09:00"), as_messydate("2019-03-01T12:00"), by = "hour")
+as_messydate("2019-03-01 14:30:00") + "2 hours"
+seq(as_messydate("2019-03-01 09:00"), as_messydate("2019-03-01 12:00"), by = "hour")
 ```
 
 Because `:` also serves as a range separator, times are detected first, so

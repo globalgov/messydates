@@ -36,19 +36,21 @@ possible dates for an event.
 Although researchers generally recognise this messiness, many feel
 expected to force artificial precision or unfortunate imprecision on
 temporal data to proceed with analysis. For example, if we only know
-something happened in `2021`, then we might revert to a panel data
-design *even if greater precision is available*, or opt to replace this
-date with the start of that year (`2021-01-01`), assuming that erring on
-the earlier (or later) side is more justifiable than a random date
-within that month or year.
+that, for one observation, it happened sometime in `2021`, then we might
+revert to a panel data design *even if greater precision is available*
+throughout the rest of the dataset, or opt to replace this date with the
+start of that year (`2021-01-01`), assuming that erring on the earlier
+(or later) side is more justifiable than a random date within that month
+or year.
 
 However, this can create inferential issues when timing or sequence is
-important. `{messydates}` assists with this problem by retaining and
-working with various kinds of date messiness. It implements ISO
-8601-2:2019 in R, introducing a new `mdate` class that can represent a
-wide range of messy dates and times, and provides methods for coercing
-into and from this class, as well as tools for working with messy dates
-and times in a way that is compatible with existing packages.
+important. `{messydates}` assists with this problem by retaining,
+representing, and reasoning about messy dates and times, rather than
+discarding them. It implements ISO 8601-2:2019 in R, introducing a new
+`mdate` class that can represent a wide range of messy dates and times,
+and provides methods for coercing into and from this class, as well as
+tools for working with messy dates and times in a way that is compatible
+with existing packages.
 
 ### How does this compare to other date packages?
 
@@ -79,13 +81,14 @@ rather than overlaps `{messydates}`.)
 
 ## A quick overview
 
-`{messydates}` implements for R the Extended Date/Time Format (EDTF)
+`{messydates}` implements the Extended Date/Time Format (EDTF)
 annotations set by the International Organization for Standardization
 (ISO) outlined in [ISO
-8601-2_2019(E)](https://www.iso.org/standard/70908.html). `{messydates}`
-introduces a new `mdate` class that embeds these annotations, and offers
-a set of methods for constructing and coercing into and from the `mdate`
-class, as well as tools for working with such ‘messy’ dates.
+8601-2_2019(E)](https://www.iso.org/standard/70908.html) for R.
+`{messydates}` introduces a new `mdate` class that embeds these
+annotations, and offers a set of methods for constructing and coercing
+into and from the `mdate` class, as well as tools for working with such
+‘messy’ dates.
 
 ``` r
 pkg_comparison <- data.frame(
@@ -99,7 +102,7 @@ pkg_comparison <- data.frame(
                    "31-10-2012", "2012-31-10", "2012-01-12~", "2012-01-01?",
                    "2012-01", "..2012-01-12", "2012-11-01:2012-12-01",
                    "2012-5-26, 2012-11-19, 2012-12-4",
-                   "2012-01-01T14:30", "2012-01-01T~14:30"),
+                   "2012-01-01 14:30", "2012-01-01 ~14:30"),
   stringsAsFactors = FALSE)
 pkg_comparison$base <- as.Date(pkg_comparison$OriginalDate)
 pkg_comparison$lubridate <-
@@ -124,8 +127,8 @@ pkg_comparison$messydates <-
 | Censored date | ..2012-01-12 | NA | 2012-01-12 | ..2012-01-12 |
 | Range of dates | 2012-11-01:2012-12-01 | 2012-11-01 | 2012-11-01 | 2012-11-01..2012-12-01 |
 | Set of dates | 2012-5-26, 2012-11-19, 2012-12-4 | 2012-05-26 | NA | {2012-05-26,2012-11-19,2012-12-04} |
-| Date-time | 2012-01-01T14:30 | 2012-01-01 | 2020-12-01 | 2012-01-01T14:30 |
-| Approximate time | 2012-01-01T~14:30 | 2012-01-01 | 2020-12-01 | 2012-01-01T~14:30 |
+| Date-time | 2012-01-01 14:30 | 2012-01-01 | 2020-12-01 | 2012-01-01 14:30 |
+| Approximate time | 2012-01-01 ~14:30 | 2012-01-01 | 2020-12-01 | 2012-01-01 ~14:30 |
 
 As can be seen in the table above, other date/time packages in R do not
 handle ‘messy’ dates well. Normal “yyyy-mm-dd” structures or other date
@@ -185,7 +188,7 @@ resolve_mdate <- data.frame(
 |:-----------------------------------|:-----------|:-----------|:-----------|
 | 2012-01-01                         | 2012-01-01 | 2012-01-01 | 2012-01-01 |
 | 2599-12-31                         | 2599-12-31 | 2599-12-31 | 2599-12-31 |
-| 0476                               | 0476-01-01 | 0476-07-02 | 0476-12-31 |
+| 0476                               | 0476-01-01 | 0476-07-01 | 0476-12-31 |
 | -0033                              | -033-01-01 | -033-07-02 | -033-12-31 |
 | 2012-02-01                         | 2012-02-01 | 2012-02-01 | 2012-02-01 |
 | 2012-10-31                         | 2012-10-31 | 2012-10-31 | 2012-10-31 |
@@ -197,8 +200,8 @@ resolve_mdate <- data.frame(
 | ..2012-01-12                       | 2012-01-12 | 2012-01-12 | 2012-01-12 |
 | 2012-11-01..2012-12-01             | 2012-11-01 | 2012-11-16 | 2012-12-01 |
 | {2012-05-26,2012-11-19,2012-12-04} | 2012-05-26 | 2012-11-19 | 2012-12-04 |
-| 2012-01-01T14:30                   | 2012-01-01 | 2012-01-01 | 2012-01-01 |
-| 2012-01-01T~14:30                  | 2012-01-01 | 2012-01-01 | 2012-01-01 |
+| 2012-01-01 14:30                   | 2012-01-01 | 2012-01-01 | 2012-01-01 |
+| 2012-01-01 ~14:30                  | 2012-01-01 | 2012-01-01 | 2012-01-01 |
 
 As can be seen in the table above, all ‘precise’ dates are respected as
 such, and returned no matter what ‘resolution’ function is given. But
@@ -220,27 +223,29 @@ analytic strategy that uses any other package.
 ### Times
 
 Following ISO 8601-2:2019, `mdate` objects can also carry a time of day,
-appended to a date with the `T` separator. Hours, minutes, and seconds
-(with fractional seconds), am/pm times, the UTC designator `Z`, and
-numeric offsets such as `+02:00` are all parsed and standardised. Time
+appended to a date with a space (as ISO 8601-1 and RFC 3339 both permit
+as an alternative to `T`, and messydates uses for readability; `T`
+continues to be accepted on input). Hours, minutes, and seconds (with
+fractional seconds), am/pm times, the UTC designator `Z`, and numeric
+offsets such as `+02:00` are all parsed and standardised. Time
 components accept the same approximate (`~`), uncertain (`?`), and
 unspecified (`X`) annotations as dates.
 
 ``` r
 library(messydates)
-as_messydate(c("2019-03-01T14:30:00Z", "2019-03-01 2:30pm", "2019-03-01T~14:30"))
-#>  'mdate' chr [1:3] "2019-03-01T14:30:00Z" "2019-03-01T14:30" ...
+as_messydate(c("2019-03-01 14:30:00Z", "2019-03-01 2:30pm", "2019-03-01 ~14:30"))
+#>  'mdate' chr [1:3] "2019-03-01 14:30:00Z" "2019-03-01 14:30" ...
 # extract and measure sub-day components
-hour(as_messydate("2019-03-01T14:30:00"))
+hour(as_messydate("2019-03-01 14:30:00"))
 #> [1] 14
-precision(as_messydate("2019-03-01T14:30")) # 1440 = 1/minute of a day
+precision(as_messydate("2019-03-01 14:30")) # 1440 = 1/minute of a day
 #> [1] 1440
 # sub-day arithmetic and sequences
-as_messydate("2019-03-01T14:30:00") + "2 hours"
-#>  'mdate' chr "2019-03-01T16:30:00"
-seq(as_messydate("2019-03-01T09:00"), as_messydate("2019-03-01T12:00"), by = "hour")
-#> [1] "2019-03-01T09:00:00" "2019-03-01T10:00:00" "2019-03-01T11:00:00"
-#> [4] "2019-03-01T12:00:00"
+as_messydate("2019-03-01 14:30:00") + "2 hours"
+#>  'mdate' chr "2019-03-01 16:30:00"
+seq(as_messydate("2019-03-01 09:00"), as_messydate("2019-03-01 12:00"), by = "hour")
+#> [1] "2019-03-01 09:00:00" "2019-03-01 10:00:00" "2019-03-01 11:00:00"
+#> [4] "2019-03-01 12:00:00"
 ```
 
 Because `:` also serves as a range separator, times are detected first,

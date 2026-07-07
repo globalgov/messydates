@@ -1,4 +1,4 @@
-#' Coercion from regular date classes to mdate
+#' Coercion from common date classes to `mdate`
 #' @description
 #'   These methods coerce various date classes into the `mdate` class.
 #'   They represent the main user-facing class-creating functions in the package.
@@ -29,10 +29,11 @@
 #'   based on which the date is reordered into YYYY-MM-DD format
 #'   and further completed to YYYY-MM-DD format if they choose to do so.
 #' @return A `mdate` class object
-#' @section Parsing historical prose:
+#' @family coerce
+#' @section Parsing prose:
 #' Beyond plain and lightly-formatted dates, `as_messydate()` recognises
-#' several conventions common in historical texts and converts them to their
-#' ISO 8601-2 equivalent before the usual parsing takes place:
+#' several conventions common in e.g. historical texts and converts them to
+#' their ISO 8601-2 equivalent before the usual parsing takes place:
 #' \itemize{
 #'  \item{Roman numerals for a bare year, e.g. `"MDCCLXXVI"` becomes `1776`.}
 #'  \item{Roman calendar references, i.e. the Kalends, Nones, and Ides of a

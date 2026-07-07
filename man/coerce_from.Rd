@@ -8,7 +8,7 @@
 \alias{as.data.frame.mdate}
 \alias{as.list.mdate}
 \alias{as.double.mdate}
-\title{Coercion from messy dates}
+\title{Coercion from \code{mdate} to common date classes}
 \usage{
 \method{as.Date}{mdate}(x, FUN = vmin, ...)
 
@@ -45,10 +45,9 @@ A date object of \code{Date}, \code{POSIXct}, or \code{POSIXlt} class
 \description{
 These functions coerce objects of \code{mdate} class to
 common date classes such as \code{Date}, \code{POSIXct}, and \code{POSIXlt}.
-Since \code{mdate} objects can hold multiple individual dates,
-however, an additional function must be passed as an argument
-so that these functions know how to coerce resolve multiple dates
-into a single date.
+Since \code{mdate} objects can hold multiple individual dates, however,
+an additional function must be passed as an argument so that
+these functions know how to resolve multiple dates into a single date.
 
 For example, one might wish to use the earliest possible date
 in any ranges of dates (\code{min}), the latest possible date (\code{max}),
@@ -100,3 +99,10 @@ as.data.frame(as_messydate(c("2012-01-01", "2012-02")))
 as.list(as_messydate(c("2012-01-01", "2012-02")))
 as.double(as_messydate("2012-01-01"))
 }
+\seealso{
+\code{\link[=resolve_extrema]{resolve_extrema()}}, \code{\link[=resolve_tendency]{resolve_tendency()}}
+
+Other coerce:
+\code{\link{coerce_to}}
+}
+\concept{coerce}

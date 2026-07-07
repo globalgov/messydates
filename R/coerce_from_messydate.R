@@ -1,11 +1,10 @@
-#' Coercion from messy dates
+#' Coercion from `mdate` to common date classes
 #' @description
 #'   These functions coerce objects of `mdate` class to
 #'   common date classes such as `Date`, `POSIXct`, and `POSIXlt`.
-#'   Since `mdate` objects can hold multiple individual dates,
-#'   however, an additional function must be passed as an argument
-#'   so that these functions know how to coerce resolve multiple dates
-#'   into a single date.
+#'   Since `mdate` objects can hold multiple individual dates, however,
+#'   an additional function must be passed as an argument so that
+#'   these functions know how to resolve multiple dates into a single date.
 #'
 #'   For example, one might wish to use the earliest possible date
 #'   in any ranges of dates (`min`), the latest possible date (`max`),
@@ -25,6 +24,8 @@
 #'   `vmodal()`, and `vrandom()` are the vectorised equivalents, resolving
 #'   each element separately rather than summarising the whole vector.
 #' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
+#' @family coerce
+#' @seealso [resolve_extrema()], [resolve_tendency()]
 #' @name coerce_from
 NULL
 

@@ -10,7 +10,7 @@
 \alias{as_messydate.numeric}
 \alias{as_messydate.list}
 \alias{mdate}
-\title{Coercion from regular date classes to mdate}
+\title{Coercion from common date classes to \code{mdate}}
 \usage{
 as_messydate(x, resequence = FALSE)
 
@@ -88,11 +88,11 @@ so that timezone-naive dates round-trip unchanged.
 representation of \code{mdate} class
 
 }}
-\section{Parsing historical prose}{
+\section{Parsing prose}{
 
 Beyond plain and lightly-formatted dates, \code{as_messydate()} recognises
-several conventions common in historical texts and converts them to their
-ISO 8601-2 equivalent before the usual parsing takes place:
+several conventions common in e.g. historical texts and converts them to
+their ISO 8601-2 equivalent before the usual parsing takes place:
 \itemize{
 \item{Roman numerals for a bare year, e.g. \code{"MDCCLXXVI"} becomes \code{1776}.}
 \item{Roman calendar references, i.e. the Kalends, Nones, and Ides of a
@@ -153,3 +153,8 @@ as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 }
+\seealso{
+Other coerce:
+\code{\link{coerce_from}}
+}
+\concept{coerce}

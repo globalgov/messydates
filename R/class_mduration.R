@@ -13,7 +13,9 @@
 #'   sub-day precision (e.g. `"2010-01-01 09:00..2010-01-01 17:00"`).
 #' @param x An `mdate` variable with ranges.
 #' @param approx_range Range to expand approximate dates, in days.
-#'   If 3, for example, adds 3 days; if -3, removes 3 days from both sides.
+#'   If 3, for example, widens the range by 3 days on both sides,
+#'   moving the start 3 days earlier and the end 3 days later;
+#'   if -3, narrows the range by 3 days from both sides.
 #' @return Object of class `mduration`
 #' @name class_mduration
 #' @examples
@@ -68,12 +70,12 @@ messy_range <- function(x, approx_range) {
   ends <- vapply(parts, `[`, character(1), 2)
   if (any(grepl("[T ]", c(starts, ends)))) {
     # Date-time ranges keep sub-day precision via POSIXct.
-    s <- mdate_to_posixct(starts) + approx_range * 86400
+    s <- mdate_to_posixct(starts) - approx_range * 86400
     e <- mdate_to_posixct(ends) + approx_range * 86400
     as_messydate(paste0(format(s, paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S")), "..",
                         format(e, paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S"))))
   } else {
-    dates1 <- as.Date(as_messydate(starts), FUN = min) + approx_range
+    dates1 <- as.Date(as_messydate(starts), FUN = min) - approx_range
     dates2 <- as.Date(as_messydate(ends), FUN = max) + approx_range
     as_messydate(paste0(dates1, "..", dates2))
   }
@@ -82,6 +84,6 @@ messy_range <- function(x, approx_range) {
 #' @rdname class_mduration
 #' @importFrom utils str
 #' @export
-print.mdates_duration <- function(x, ...) {
+print.mduration <- function(x, ...) {
   str(x)
 }

@@ -25,6 +25,7 @@
     e.g. `2019-03-01 ~14:30`
 - Renamed `messyduration()` to `make_messyduration()` for consistency with other `make_*()` functions, 
   and renamed resulting class from `messyduration` to `mduration`
+- Fixed bug where a messyrange would shift instead of widen upon approximation
 
 ## Coercion
 

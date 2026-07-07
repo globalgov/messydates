@@ -52,3 +52,8 @@ test_that("as_approximate/as_uncertain error for an unrecognised component", {
   expect_error(as_approximate("2019-03-01", "century"), "Unknown component")
   expect_error(as_uncertain("2019-03-01", "century"), "Unknown component")
 })
+
+test_that("as_approximate/as_uncertain combine", {
+  expect_identical(as_uncertain(as_approximate("2019-03-01")), mdate("2019-03-01%"))
+  expect_identical(as_approximate(as_uncertain("2019-03-01")), mdate("2019-03-01%"))
+})

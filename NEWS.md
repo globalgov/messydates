@@ -53,21 +53,19 @@
 - Coercion from `POSIXct`/`POSIXlt` now preserves the time of day (midnight is
   treated as date-only); `as.POSIXct()`/`as.POSIXlt()` restore it
   
+## Annotation
+
+- Improved `as_approximate()`/`as_uncertain()` to accept 
+  "hour", "minute", "second", and "time" components
+- Improved `as_approximate()`/`as_uncertain()` to combine annotations as `%` 
+  when both are applied to the same component
+
 ## Resolution
 
 - Fixed how `median()`/`vmedian()` treat an even number of dates,
   which no longer silently returns `NA` but instead averages the two middle values
 - Fixed how `mean()`/`vmean()`/`median()`/`vmedian()` average precise date-times,
   honouring the time of day, instead of miscomputing via `lubridate::as_date()`
-  
-## Expand/Contract
-
-- Fixed `expand()` error when `approx_range` was set and the vector contained a 
-  reduced-precision value (e.g. a bare year-month) alongside an approximate one
-- Improved `expand()` with a `by` argument (default `"day"`)
-  - Ranges are enumerated at day granularity to avoid combinatorial explosion;
-    set `by` to `"hour"`, `"min"`, or `"sec"` for finer enumeration 
-  - Precise date-times keep their time
   
 ## Operations
 
@@ -99,11 +97,6 @@
     (and so any request made while `{messydates}` is loaded, 
     including `pkgdown`'s GitHub release-timeline lookup)
 
-## Annotation
-
-- Improved `as_approximate()`/`as_uncertain()` to accept 
-  "hour", "minute", "second", and "time" components
-
 ## Extraction
   
 - Added `hour()`, `minute()`, `second()`, and `tz()` time component extractors
@@ -112,6 +105,15 @@
 - Improved `precision()` to extend below the day: 24 to the hour, 1440 to the
   minute, and 86400 to the second (date-level precision is unchanged)
 
+## Expand/Contract
+
+- Fixed `expand()` error when `approx_range` was set and the vector contained a 
+  reduced-precision value (e.g. a bare year-month) alongside an approximate one
+- Improved `expand()` with a `by` argument (default `"day"`)
+  - Ranges are enumerated at day granularity to avoid combinatorial explosion;
+    set `by` to `"hour"`, `"min"`, or `"sec"` for finer enumeration 
+  - Precise date-times keep their time
+  
 # messydates 0.5.4
 
 ## Coercion

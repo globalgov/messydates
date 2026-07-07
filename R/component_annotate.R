@@ -80,7 +80,19 @@ as_uncertain <- function(x, component = NULL) {
 # date-time. With no component the whole value is marked.
 annotate_component <- function(x, component, mark) {
   x <- as.character(x)
-  if (is.null(component)) return(as_messydate(paste0(x, mark)))
+  if (is.null(component)) {
+    # A whole-date marker may already be present; adding the other kind of
+    # marker combines them into "%" (approximate *and* uncertain) rather than
+    # stacking them (e.g. "2019-03-01~" + "?" -> "2019-03-01%").
+    prev <- stringi::stri_match_first_regex(x, "([~?%]+)$")[, 2]
+    base <- stringi::stri_replace_first_regex(x, "[~?%]+$", "")
+    combined <- vapply(prev, function(p) {
+      marks <- c(if (is.na(p)) character(0) else strsplit(p, "")[[1]], mark)
+      if ("%" %in% marks || all(c("~", "?") %in% marks)) "%"
+      else if ("?" %in% marks) "?" else "~"
+    }, character(1), USE.NAMES = FALSE)
+    return(as_messydate(paste0(base, combined)))
+  }
   has_t <- grepl("[T ]", x)
   date <- sub("[T ].*$", "", x)
   time <- ifelse(has_t, sub("^[^T ]*[T ]", "", x), "")

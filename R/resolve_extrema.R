@@ -31,14 +31,14 @@
 #' d
 #' # a precise date-time is returned unchanged
 #' vmin(as_messydate("2012-01-01 14:30:00"))
-#' @name coerce_extrema
+#' @name resolve_extrema
 NULL
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @export
 vmin <- function(..., na.rm = FALSE) UseMethod("vmin")
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' vmin(d)
 #' @export
@@ -52,7 +52,7 @@ vmin.mdate <- function(..., na.rm = FALSE){
   mdate(dates)
 }
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' min(d)
 #' @export
@@ -89,11 +89,11 @@ min.mdate <- function(..., na.rm = FALSE){
   dates
 }
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @export
 vmax <- function(..., na.rm = FALSE) UseMethod("vmax")
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' vmax(d)
 #' @export
@@ -108,7 +108,7 @@ vmax.mdate <- function(..., na.rm = FALSE){
   mdate(dates)
 }
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' max(d)
 #' @export

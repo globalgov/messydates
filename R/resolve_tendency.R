@@ -19,8 +19,8 @@
 #'   middle values in that case, and `mean()`/`vmean()` may be unreliable for
 #'   solely negative-year inputs (a documented limitation, not a supported
 #'   feature).
-#' @name coerce_tendency
-#' @inheritParams coerce_extrema
+#' @name resolve_tendency
+#' @inheritParams resolve_extrema
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
 #'   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
@@ -32,7 +32,7 @@
 #' mean(r)
 NULL
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @importFrom stats median
 #' @examples
 #' median(d)
@@ -78,11 +78,11 @@ median.mdate <- function(..., na.rm = TRUE) {
   as.character(mean(as.Date(c(lo, hi))))
 }
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @export
 vmedian <- function(..., na.rm = TRUE) UseMethod("vmedian")
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @importFrom stats median
 #' @examples
 #' vmedian(d)
@@ -95,7 +95,7 @@ vmedian.mdate <- function(..., na.rm = TRUE) {
   }, FUN.VALUE = character(1))
 }
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @param trim the fraction (0 to 0.5) of observations to be trimmed
 #'   from each end of x before the mean is computed.
 #'   Values of trim outside that range are taken as the nearest endpoint.
@@ -120,11 +120,11 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE) {
   as.character(lubridate::as_date(mean(as.double(lubridate::as_date(y)))))
 }
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @export
 vmean <- function(..., na.rm = TRUE) UseMethod("vmean")
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @examples
 #' vmean(d)
 #' @export
@@ -133,11 +133,11 @@ vmean.mdate <- function(..., trim = 0, na.rm = TRUE) {
   vapply(expand(x), .mean_value, FUN.VALUE = character(1))
 }
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @export
 modal <- function(..., na.rm = TRUE) UseMethod("modal")
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @examples
 #' modal(d)
 #' @export
@@ -151,11 +151,11 @@ modal.mdate <- function(..., na.rm = TRUE) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @export
 vmodal <- function(..., na.rm = TRUE) UseMethod("vmodal")
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @examples
 #' vmodal(d)
 #' @export
@@ -166,11 +166,11 @@ vmodal.mdate <- function(..., na.rm = TRUE) {
   d
 }
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @export
 random <- function(..., na.rm = TRUE) UseMethod("random")
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @examples
 #' random(d)
 #' @export
@@ -189,11 +189,11 @@ random.character <- function(..., na.rm = TRUE) {
   sample(y, 1)
 }
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @export
 vrandom <- function(..., na.rm = TRUE) UseMethod("vrandom")
 
-#' @rdname coerce_tendency
+#' @rdname resolve_tendency
 #' @examples
 #' vrandom(d)
 #' @export

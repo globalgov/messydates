@@ -8,8 +8,6 @@
 \alias{[[<-.mdate}
 \alias{c.mdate}
 \alias{rep.mdate}
-\alias{print.mdate}
-\alias{print.mdates_duration}
 \title{Basic vector methods for \code{mdate} objects}
 \usage{
 \method{[}{mdate}(x, ..., drop = TRUE)
@@ -23,10 +21,6 @@
 \method{c}{mdate}(...)
 
 \method{rep}{mdate}(x, ...)
-
-\method{print}{mdate}(x, ...)
-
-\method{print}{mdates_duration}(x, ...)
 }
 \arguments{
 \item{x}{An \code{mdate} object.}
@@ -46,7 +40,7 @@ result when called on a single object.
 }
 \description{
 These methods let \code{mdate} vectors behave like ordinary character vectors
-for subsetting, replacement, concatenation, repetition, and printing,
+for subsetting, replacement, concatenation, and repetition,
 while ensuring the result remains a validated \code{mdate} object.
 }
 \examples{

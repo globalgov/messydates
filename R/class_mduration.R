@@ -1,24 +1,21 @@
-#' A duration class for mdates
+#' A flexible duration class for messy durations
 #' @description
-#'   The `mdates_duration` class introduces methods that annotate a duration or
-#'   period with representations of its uncertainty.
-#' @details
 #'   Most R packages handle duration and periods as exact time or date intervals.
 #'   However, this is not possible for 'messy' dates where uncertainty or
 #'   approximation might be present.
-#'   The `mdates_duration` class accounts for uncertainty and approximation
+#'   The `mduration` class accounts for uncertainty and approximation
 #'   in `mdate` objects to return their duration as a range of possible dates.
 #'
-#'   Non-range values (a single date, or a range collapsed to a single
-#'   value) are returned unchanged.
+#'   Non-range values (a single date, or a range collapsed to a single value)
+#'   are returned unchanged.
 #'   When both ends of the range carry a time of day, `approx_range` is
 #'   still interpreted as a number of days, but the returned range keeps
 #'   sub-day precision (e.g. `"2010-01-01 09:00..2010-01-01 17:00"`).
 #' @param x An `mdate` variable with ranges.
 #' @param approx_range Range to expand approximate dates, in days.
 #'   If 3, for example, adds 3 days; if -3, removes 3 days from both sides.
-#' @return Object of class `mdates_duration`
-#' @name class_duration
+#' @return Object of class `mduration`
+#' @name class_mduration
 #' @examples
 #' messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
 #' # widen (or narrow) the range at both ends
@@ -27,29 +24,29 @@
 #' messyduration(as_messydate("2010-01-01 09:00..2010-01-01 17:00"))
 NULL
 
-#' @rdname class_duration
+#' @rdname class_mduration
 #' @export
 new_messyduration <- function(x = character()) {
   stopifnot(is.character(x))
-  structure(x, class = "mdates_duration")
+  structure(x, class = "mduration")
 }
 
-#' @rdname class_duration
-#' @export
-messyduration <- function(x, approx_range = 0) UseMethod("messyduration")
-
-#' @rdname class_duration
+#' @rdname class_mduration
 #' @export
 validate_messyduration <- function(x, approx_range = 0) {
   if (any(!grepl("\\.\\.", x))) {
-    stop("mdates_duration class objects should have at least one date range",
+    stop("mduration class objects should have at least one date range",
          call. = FALSE)
   }
 }
 
-#' @rdname class_duration
+#' @rdname class_mduration
 #' @export
-messyduration.character <- function(x, approx_range = 0) {
+make_messyduration <- function(x, approx_range = 0) UseMethod("make_messyduration")
+
+#' @rdname class_mduration
+#' @export
+make_messyduration.character <- function(x, approx_range = 0) {
   message("Converting to mdate class.")
   x <- as_messydate(x)
   validate_messyduration(x)
@@ -57,9 +54,9 @@ messyduration.character <- function(x, approx_range = 0) {
   new_messyduration(x)
 }
 
-#' @rdname class_duration
+#' @rdname class_mduration
 #' @export
-messyduration.mdate <- function(x, approx_range = 0) {
+make_messyduration.mdate <- function(x, approx_range = 0) {
   validate_messyduration(x)
   x <- ifelse(grepl("\\.\\.", x), messy_range(x, approx_range), x)
   new_messyduration(x)
@@ -80,4 +77,11 @@ messy_range <- function(x, approx_range) {
     dates2 <- as.Date(as_messydate(ends), FUN = max) + approx_range
     as_messydate(paste0(dates1, "..", dates2))
   }
+}
+
+#' @rdname class_mduration
+#' @importFrom utils str
+#' @export
+print.mdates_duration <- function(x, ...) {
+  str(x)
 }

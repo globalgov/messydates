@@ -1,7 +1,7 @@
 #' Basic vector methods for `mdate` objects
 #' @description
 #'   These methods let `mdate` vectors behave like ordinary character vectors
-#'   for subsetting, replacement, concatenation, repetition, and printing,
+#'   for subsetting, replacement, concatenation, and repetition,
 #'   while ensuring the result remains a validated `mdate` object.
 #' @param x An `mdate` object.
 #' @param i,... Index or indices, as for the default methods; for `c()`,
@@ -66,20 +66,4 @@ c.mdate <- function(...) {
 rep.mdate <- function(x, ...) {
   as_messydate(NextMethod("rep", unclass(x)))
 }
-
-# Printing ####
-
-#' @rdname class_methods
-#' @importFrom utils str
-#' @export
-print.mdate <- function(x, ...) {
-  str(x)
-}
-#' @rdname class_methods
-#' @importFrom utils str
-#' @export
-print.mdates_duration <- function(x, ...) {
-  str(x)
-}
-
 

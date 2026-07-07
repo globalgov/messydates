@@ -38,3 +38,10 @@ md_multiset <- function(.data) {
   .Deprecated(new = "messydates::`+`()",
               package = "messydates")
 }
+
+#' @describeIn defunct Deprecated on 2023-08-25.
+#' @export
+messyduration <- function(.data) {
+  .Deprecated(new = "make_messyduration",
+              package = "messydates")
+}

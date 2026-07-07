@@ -23,6 +23,8 @@
   - Time components can carry the same annotations as dates: 
     approximate (`~`), uncertain (`?`), both (`%`), and unspecified (`X`),
     e.g. `2019-03-01 ~14:30`
+- Renamed `messyduration()` to `make_messyduration()` for consistency with other `make_*()` functions, 
+  and renamed resulting class from `messyduration` to `mduration`
 
 ## Coercion
 

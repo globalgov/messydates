@@ -2,15 +2,15 @@
 #' @description
 #'   Recent extensions to standardised date notation in
 #'   [ISO 8601-2_2019(E)](https://www.iso.org/standard/70908.html)
-#'   create space for unspecified, uncertain, and approximate dates,
-#'   as well as succinct representation of ranges of dates.
-#'   These functions create and validate a new date class for R
-#'   that can contain and parse these annotations.
+#'   enable the recording of dates as unspecified, uncertain, approximate,
+#'   and as a set or a range.
+#'   These functions create and validate a new date class for R that can contain
+#'   and parse these annotations.
 #'   Whereas `new_messydate()` creates a new `mdate` object,
-#'   `validate_messydate()` checks that the object is valid,
-#'   and `make_messydate()` creates a new `mdate` object from one, two, or three date variables.
+#'   and `make_messydate()` creates a new `mdate` object from one, two, or three date variables,
+#'   `validate_messydate()` checks that the object is valid.
 #'
-#'   The functions documented here are typically used internally, not by users;
+#'   Note that the functions documented here are typically used internally, not by users;
 #'   users are recommended to use `as_messydate()` to coerce dates and character strings,
 #'   including historical prose, into `mdate` objects.
 #' @section Dates and times:
@@ -56,18 +56,14 @@
 #'   a value that is both uncertain and approximate.
 #'
 #' @section Set annotations:
-#'   These functions also introduce standard notation
-#'   for ranges of dates.
-#'   Rather than the typical R notation for ranges,
-#'   `:`, ISO 8601-2_2019(E) recommends `..`.
-#'   This then can be applied between two time scale
-#'   components to create a standard range between
-#'   these dates (inclusive), e.g. `2009-01-01..2019-01-01`.
+#'   These functions also introduce standard notation for ranges of dates.
+#'   Rather than the typical R notation for ranges, `:`,
+#'   ISO 8601-2_2019(E) recommends `..`.
+#'   This then can be applied between two time scale components to create a
+#'   standard range between these dates (inclusive), e.g. `2009-01-01..2019-01-01`.
 #'   But it can also be used as an affix,
-#'   indicating "on or before" if used as a prefix,
-#'   e.g. `..2019-01-01`,
-#'   or indicating "on or after" if used as a suffix,
-#'   e.g. `2009-01-01..`.
+#'   indicating "on or before" if used as a prefix, e.g. `..2019-01-01`,
+#'   or indicating "on or after" if used as a suffix, e.g. `2009-01-01..`.
 #'
 #'   And lastly, notation for sets of dates is also included.
 #'   Here braces, `{}`, are used to mean "all members of the set",
@@ -75,7 +71,7 @@
 #' @param x A character scalar or vector in the expected `"yyyy-mm-dd"` format
 #'   annotated, as necessary, according to ISO 8601-2_2019(E).
 #' @return Object of class `mdate`
-#' @name mdate_create
+#' @name class_mdate
 #' @seealso `as_messydate()` for the full, user-facing coercion pipeline,
 #'   including parsing of free text and historical prose (e.g. Roman
 #'   numerals, "circa", "between ... and ...").
@@ -87,14 +83,14 @@
 #'          error = function(e) e$message)
 NULL
 
-#' @rdname mdate_create
+#' @rdname class_mdate
 #' @export
 new_messydate <- function(x = character()) {
   stopifnot(is.character(x))
   structure(x, class = "mdate")
 }
 
-#' @rdname mdate_create
+#' @rdname class_mdate
 #' @export
 validate_messydate <- function(x) {
   values <- unclass(x)
@@ -119,7 +115,7 @@ validate_messydate <- function(x) {
   x
 }
 
-#' @rdname mdate_create
+#' @rdname class_mdate
 #' @param ... One (yyyy-mm-dd), two (yyyy-mm-dd, yyyy-mm-dd),
 #'   or three (yyyy, mm, dd) variables.
 #' @inheritParams coerce_to
@@ -150,3 +146,9 @@ make_messydate <- function(..., resequence = FALSE) {
   as_messydate(dates, resequence)
 }
 
+#' @rdname class_mdate
+#' @importFrom utils str
+#' @export
+print.mdate <- function(x, ...) {
+  str(x)
+}

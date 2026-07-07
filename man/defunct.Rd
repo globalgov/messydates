@@ -6,6 +6,7 @@
 \alias{md_intersect}
 \alias{md_union}
 \alias{md_multiset}
+\alias{messyduration}
 \title{Functions that have been renamed, superseded, or are no longer working}
 \usage{
 is_element(.data)
@@ -15,6 +16,8 @@ md_intersect(.data)
 md_union(.data)
 
 md_multiset(.data)
+
+messyduration(.data)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -34,6 +37,8 @@ wherever possible and update your scripts accordingly.
 \item \code{md_union()}: Deprecated on 2023-08-25.
 
 \item \code{md_multiset()}: Deprecated on 2023-08-25.
+
+\item \code{messyduration()}: Deprecated on 2023-08-25.
 
 }}
 \keyword{internal}

@@ -36,9 +36,8 @@ navbar:
       aria-label: Take me to the Github repository
 reference:
   - title: "Class construction"
-    desc: "These functions construct dates to the `mdate` class:"
+    desc: "These functions construct dates in the `mdate` class and durations in the `mduration` class:"
     contents:
-      - mdate_create
       - starts_with("class_")
   - title: "Coerce to"
     desc: "These functions coerce dates from other classes to the `mdate` class:"

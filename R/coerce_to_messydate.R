@@ -836,18 +836,32 @@ interpret_one <- function(s) {
 
   # 3. A single date carrying an approximate and/or uncertain qualifier
   # (both together give the EDTF "%" marker).
-  approx <- grepl("\\b(around|circa|approx|approximately|about|roughly|estimated)\\b", low)
-  uncert <- grepl("\\b(possibly|perhaps|maybe|uncertain|reportedly|allegedly)\\b", low)
+  approx_words <- "around|circa|approx|approximately|about|roughly|estimated"
+  uncert_words <- "possibly|perhaps|maybe|uncertain|reportedly|allegedly"
+  approx <- grepl(paste0("\\b(", approx_words, ")\\b"), low)
+  uncert <- grepl(paste0("\\b(", uncert_words, ")\\b"), low)
   qual <- if (approx && uncert) "%" else if (approx) "~" else if (uncert) "?" else NA_character_
   if (!is.na(qual)) {
-    yr <- nl_year(s)
-    if (!is.na(mn)) {
-      day <- stringi::stri_extract_first_regex(low, "[0-9]{1,2}(?=st|nd|rd|th)")
-      if (!is.na(day) && !identical(day, yr))
-        return(sprintf("%s-%02d-%s%02d", yr, mn, qual, as.integer(day)))
-      return(sprintf("%s-%s%02d", yr, qual, mn)) # month precision
-    }
-    if (!is.na(yr)) return(paste0(qual, yr)) # year precision, e.g. "~1850"
+    # Strip the qualifier words before reading the date, so a qualifier that
+    # embeds a month name (the "may" inside "maybe") cannot be mistaken for a
+    # month, and the residual is a clean date phrase.
+    bare <- trimws(gsub(paste0("\\b(", approx_words, "|", uncert_words, ")\\b"),
+                        " ", low, perl = TRUE))
+    yr <- nl_year(bare)
+    mnb <- nl_month_num(bare)
+    # An explicit ordinal day keeps the qualifier on that day component
+    # (e.g. "around the 13th of Feb 1977" -> "1977-02-~13").
+    day <- stringi::stri_extract_first_regex(bare, "[0-9]{1,2}(?=st|nd|rd|th)")
+    if (!is.na(mnb) && !is.na(day) && !identical(day, yr))
+      return(sprintf("%s-%02d-%s%02d", yr, mnb, qual, as.integer(day)))
+    # A fully specified date (numeric ISO or written month) keeps its month and
+    # day; the qualifier applies to the whole date, as a suffix
+    # (e.g. "approximately 2024-01-22" -> "2024-01-22~").
+    iso <- inner_date(bare)
+    if (!is.na(iso) && iso != "NA" && grepl("-", sub("^-", "", iso)))
+      return(paste0(iso, qual))
+    # Otherwise only a year is known: prefix it (e.g. "circa 2012" -> "~2012").
+    if (!is.na(yr)) return(paste0(qual, yr))
   }
 
   s

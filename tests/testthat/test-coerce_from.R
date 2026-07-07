@@ -47,6 +47,23 @@ test_that("Text parsing works correctly", {
   expect_identical(as_messydate("it happened after 1910"), as_messydate("1910.."))
 })
 
+test_that("approximate/uncertain qualifiers keep the full date", {
+  # Regression: qualifiers used to collapse a fully specified date to its year
+  # (e.g. "~2024"), or misread the month name embedded in the qualifier word
+  # ("may" inside "maybe" gave "2024-?05").
+  expect_identical(as_messydate("Approximately 2024-01-22"), as_messydate("2024-01-22~"))
+  expect_identical(as_messydate("Maybe 2024-02-02"), as_messydate("2024-02-02?"))
+  expect_identical(as_messydate("around 2024-04-04"), as_messydate("2024-04-04~"))
+  expect_identical(as_messydate("perhaps 2024-03-03"), as_messydate("2024-03-03?"))
+  expect_identical(as_messydate("roughly 1999-12-31"), as_messydate("1999-12-31~"))
+  # Month-precision dates keep their month.
+  expect_identical(as_messydate("circa 2012-03"), as_messydate("2012-03~"))
+  expect_identical(as_messydate("maybe March 1910"), as_messydate("1910-03?"))
+  # Year-precision qualifiers are unchanged.
+  expect_identical(as_messydate("circa 2012"), as_messydate("~2012"))
+  expect_identical(as_messydate("possibly 1850"), as_messydate("?1850"))
+})
+
 test_that("Roman date parsing works correctly", {
   expect_identical(as_messydate("MDCCLXXVI"), as_messydate("1776"))
   expect_identical(as_messydate("the Kalends of March, 44 BC"), as_messydate("-0044-03-01"))

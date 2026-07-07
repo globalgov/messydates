@@ -7,7 +7,7 @@
 \alias{make_messyduration}
 \alias{make_messyduration.character}
 \alias{make_messyduration.mdate}
-\alias{print.mdates_duration}
+\alias{print.mduration}
 \title{A flexible duration class for messy durations}
 \usage{
 new_messyduration(x = character())
@@ -20,13 +20,15 @@ make_messyduration(x, approx_range = 0)
 
 \method{make_messyduration}{mdate}(x, approx_range = 0)
 
-\method{print}{mdates_duration}(x, ...)
+\method{print}{mduration}(x, ...)
 }
 \arguments{
 \item{x}{An \code{mdate} variable with ranges.}
 
 \item{approx_range}{Range to expand approximate dates, in days.
-If 3, for example, adds 3 days; if -3, removes 3 days from both sides.}
+If 3, for example, widens the range by 3 days on both sides,
+moving the start 3 days earlier and the end 3 days later;
+if -3, narrows the range by 3 days from both sides.}
 }
 \value{
 Object of class \code{mduration}

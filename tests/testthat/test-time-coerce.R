@@ -93,7 +93,7 @@ test_that("as.Date drops the time of day", {
 
 test_that("messyduration keeps sub-day precision", {
   expect_equal(
-    as.character(messyduration(
+    as.character(make_messyduration(
       as_messydate("2010-01-01T09:00..2010-01-01T17:00"))),
     "2010-01-01 09:00:00..2010-01-01 17:00:00")
 })

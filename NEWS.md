@@ -1,114 +1,113 @@
 # messydates 1.0.0
 
-## Bug fixes
-
-- `median()`/`vmedian()` no longer silently return `NA` when a messy date
-  expands to an even number of dates (e.g. any range spanning an even
-  number of days, or a pair of precise date-times); the two middle values
-  are now properly averaged
-- `mean()`/`vmean()`/`median()`/`vmedian()` now average precise date-times
-  correctly, honouring the time of day, instead of miscomputing via
-  `lubridate::as_date()` on a `T`-separated string
-- `<`, `>`, `<=`, and `>=` now compare the time of day between two
-  date-times on the same calendar day, instead of silently truncating both
-  sides to a date first and treating them as equal
-- `expand()` no longer errors when `approx_range` is set and the vector
-  contains a reduced-precision value (e.g. a bare year-month) alongside an
-  approximate one
-- Adding or subtracting a calendar or sub-day amount (e.g. `+ "2 hours"`,
-  `+ "1 month"`) from an open-ended range (`"2012-01-01T09:00.."` or
-  `"..2012-01-01T09:00"`) no longer drops the `..` marker
-- Fixed a crash affecting *any* comparison of two `Date`/`POSIXct` objects
-  in a session with `{messydates}` loaded, including in unrelated packages:
-  since `<`/`>`/`<=`/`>=` are registered for classes `"Date"`/`"POSIXt"` (so
-  that e.g. `Date < mdate` works), a zero-length or all-`NA`
-  `Date`/`POSIXct`/`POSIXlt` value being compared -- even one that never
-  involves `mdate` -- was passed through `as_messydate()`, where `ifelse()`
-  and `paste0()` silently changed type or length on such input and tripped
-  an internal `is.character()` check. This broke loading packages whose
-  `.onLoad` hooks compare timestamps, such as `{httr2}`'s cache pruning,
-  which in turn broke `pkgdown::build_news()`
-- Fixed a related, more subtle bug in the same `<`/`>`/`<=`/`>=` comparison
-  path: when one side of a comparison had a time of day and the other did
-  not, their numeric bounds were computed in different units (seconds for
-  the time-bearing side, days for the other) and compared directly without
-  converting to a common unit, which could silently reverse the result. In
-  particular, `Sys.time() < (Sys.time() + Inf)` -- the pattern `{httr2}`
-  uses to represent an unbounded retry deadline -- incorrectly evaluated
-  to `FALSE`, in turn breaking `httr2::req_perform()` (and so any request
-  made while `{messydates}` is loaded, including `pkgdown`'s GitHub
-  release-timeline lookup)
-
 ## Package
 
-- Updated and improved the `{messydates}` logo to better reflect the package's purpose
-- Removed the `purrr` and `dplyr` dependencies (replaced with base R), leaving
-  only `stringi` and `lubridate` as imports
+- Updated the `{messydates}` logo to better reflect the package's purpose
+  and be more brand-consistent with manydata packages
+- Removed `purrr` and `dplyr` dependencies (replaced with base R), 
+  leaving only `stringi` and `lubridate` as imports
 - Updated the cheatsheet to reflect the new time support and other changes
+
+## Class
+
+- Added support for ISO 8601-2:2019 **times** of day in the `mdate` class
+  - `as_messydate()` now parses an optional date-time separator, 
+    `hh`, `hh:mm`, and `hh:mm:ss` (with fractional seconds), am/pm times, the UTC designator
+    `Z`, and numeric offsets (e.g. `+02:00`), zero-padding and normalising them
+  - Dates and times are separated by a space (e.g. `2019-03-01 14:30:00`)
+    for readability (as permitted by ISO 8601-1 sec. 4.3.2 and RFC 3339),
+    but a `T` separator can be used on input and is normalised to a space in the output
+  - `:` and `_` continue to work as range separators; 
+    times are detected and protected first, 
+    so `2009-01-01:2019-01-01` is a range while `2019-03-01 14:30:00` is a time
+  - Time components can carry the same annotations as dates: 
+    approximate (`~`), uncertain (`?`), both (`%`), and unspecified (`X`),
+    e.g. `2019-03-01 ~14:30`
 
 ## Coercion
 
-- `as_messydate()` now parses Roman numerals (e.g. `"MDCCLXXVI"` becomes
-  `1776`) and Roman calendar references, e.g. `"the Ides of March, 44 BC"`
-  becomes `-0044-03-15` (Kalends, Nones, and Ides, with the later Nones/Ides
-  of March, May, July, and October)
-- Improved parsing of written dates: ordinal days (`"4th July 1976"`), either
-  day-first or month-first order (`"Fourth of July 1976"`, `"July 4th 1976"`),
-  "day of" phrasings, and "last day of `<month>`" (leap-year aware for
-  February)
-- Historical prose qualifiers are recognised and annotated: approximate
-  words (`"around"`, `"circa"`, ...) add `~`, uncertain words (`"possibly"`,
-  `"reportedly"`, ...) add `?`, and both together add `%`, applied to the most
-  specific component
-- Connectives are interpreted: `"between the 13th and 15th of Feb 1977"` (or
-  `"from the 13th to the 15th"`) becomes a range, `"the 13th or the 15th"` a
-  set, and a plain `"13th and 15th"`, or a comma-separated list of dates,
-  several dates
-- Reduced-precision expressions are recognised: month-and-year
-  (`"February 2004"` -> `2004-02`), decades (`"the 1910s"` -> `191X`), and
-  centuries (`"the 19th century"` -> `18XX`)
-- Open ranges from prose: `"before 1910"` -> `..1910` and `"after 1910"` ->
-  `1910..`, where the bound may itself be imprecise (`"before the 1920s"` ->
-  `..192X`)
-- Time arithmetic with calendar units keeps the time of day and shifts the
-  calendar components, so `as_messydate("2012-02-03 14:30") + "1 year"` is
-  `2013-02-03 14:30` (with month-end rollback)
-
-## Times
-
-- Added support for ISO 8601-2:2019 times of day, extending the `mdate` class
-  beyond dates
-  - `as_messydate()` now parses a date-time separator, `hh`, `hh:mm`,
-  and `hh:mm:ss` (with fractional seconds), am/pm times, the UTC designator
-  `Z`, and numeric offsets (e.g. `+02:00`), zero-padding and normalising them
-  - Time components can carry the same annotations as dates: approximate
-  (`~`), uncertain (`?`), both (`%`), and unspecified (`X`),
-  e.g. `2019-03-01 ~14:30`
-  - `:` and `_` continue to work as range separators; times are detected and
-  protected first, so `2009-01-01:2019-01-01` is still a range while
-  `2019-03-01 14:30:00` is a time
-- The date-time separator is now a space (e.g. `2019-03-01 14:30:00`) rather
-  than `T`, for readability. ISO 8601-1 sec. 4.3.2 and RFC 3339 both permit
-  a space as an alternative to `T`. `T` continues to be accepted on input
-  (e.g. `as_messydate("2019-03-01T14:30:00")` still works) and is
-  normalised to a space in the output
-- Added `hour()`, `minute()`, `second()`, and `tz()` component extractors
-- `precision()` now extends below the day: 24 to the hour, 1440 to the
-  minute, and 86400 to the second (date-level precision is unchanged)
-- `expand()` gains a `by` argument (default `"day"`). Ranges are enumerated at
-  day granularity to avoid combinatorial explosion; precise date-times keep
-  their time. Set `by` to `"hour"`, `"min"`, or `"sec"` for finer enumeration
-- Arithmetic (`+`/`-`) and `seq()` accept sub-day units ("hours", "minutes",
-  "seconds") and operate on times; `messyduration()` keeps sub-day precision
-- `as_approximate()`/`as_uncertain()` accept "hour", "minute", "second", and
-  "time" components
+- Improved parsing of written dates (closed #52): 
+  - Ordinal days (`"4th July 1976"`): either day-first or month-first order 
+    (`"Fourth of July 1976"`, `"July 4th 1976"`), "day of" phrasings, 
+    and "last day of `<month>`" (leap-year aware for February)
+  - Connectives: 
+    - `"between the 13th and 15th of Feb 1977"` (or `"from the 13th to the 15th"`) becomes a range
+    - `"the 13th or the 15th"` a set
+    - plain `"13th and 15th"`, or a comma-separated list of dates, becomes several dates
+  - Reduced-precision expressions: 
+    - month-and-year (`"February 2004"` -> `2004-02`)
+    - decades (`"the 1910s"` -> `191X`)
+    - centuries (`"the 19th century"` -> `18XX`)
+  - Open ranges: `"before 1910"` -> `..1910` and `"after 1910"` -> `1910..`, 
+    where the bound may itself be imprecise (`"before the 1920s"` -> `..192X`)
+  - Prose qualifiers: 
+    - approximate words (`"around"`, `"circa"`, ...) add `~`
+    - uncertain words (`"possibly"`, `"reportedly"`, ...) add `?`
+    - both together add `%`, applied to the most specific component
+  - Roman numerals (e.g. `"MDCCLXXVI"` becomes `1776`)
+  - Roman calendar references, e.g. `"the Ides of March, 44 BC"` becomes `-0044-03-15` 
+  (Kalends, Nones, and Ides, with the later Nones/Ides of March, May, July, and October)
 - Coercion from `POSIXct`/`POSIXlt` now preserves the time of day (midnight is
   treated as date-only); `as.POSIXct()`/`as.POSIXlt()` restore it
+  
+## Resolution
 
-## Performance
+- Fixed how `median()`/`vmedian()` treat an even number of dates,
+  which no longer silently returns `NA` but instead averages the two middle values
+- Fixed how `mean()`/`vmean()`/`median()`/`vmedian()` average precise date-times,
+  honouring the time of day, instead of miscomputing via `lubridate::as_date()`
+  
+## Expand/Contract
 
-- `month()`, `day()`, and `precision()` are now vectorised and no longer call
-  `expand()` more than necessary
+- Fixed `expand()` error when `approx_range` was set and the vector contained a 
+  reduced-precision value (e.g. a bare year-month) alongside an approximate one
+- Improved `expand()` with a `by` argument (default `"day"`)
+  - Ranges are enumerated at day granularity to avoid combinatorial explosion;
+    set `by` to `"hour"`, `"min"`, or `"sec"` for finer enumeration 
+  - Precise date-times keep their time
+  
+## Operations
+
+- Improved arithmetic (`+`/`-`) and `seq()` to accept sub-day units 
+  ("hours", "minutes", "seconds") and operate on times
+  - `messyduration()` keeps sub-day precision
+- Improved how arithmetic treats time of day and shifts the calendar components, 
+  so `"2012-02-03 14:30" + "1 year"` is `2013-02-03 14:30` (with month-end rollback)
+- Fixed bug where adding/subtracting from an open-ended range (`"2012-01-01T09:00.." + "2 hours"` 
+  or `"..2012-01-01T09:00" + "1 month"`) dropped `..` marker
+- Fixed how `<`/`>`/`<=`/`>=` compare time of day on the same calendar day, 
+  no longer silently truncating both sides to a date first and treating them as equal
+- Fixed two related bugs (#92) affecting *any* comparison of two `Date`/`POSIXct` 
+  objects in a session with `{messydates}` loaded, including in unrelated packages:
+  - since `<`/`>`/`<=`/`>=` are registered for `"Date"`/`"POSIXt"` classes
+    (so that e.g. `Date < mdate` works), 
+    *any* comparison of a zero-length or all-`NA` `Date`/`POSIXct`/`POSIXlt` value
+    was passed through `as_messydate()`, 
+    where `ifelse()` and `paste0()` silently changed type or length
+    and tripped an internal `is.character()` check. 
+    This broke loading packages whose `.onLoad` hooks compare timestamps, 
+    such as `{httr2}`'s cache pruning, which in turn broke `pkgdown::build_news()`
+  - when one side of a comparison had a time of day and the other did not, 
+    their numeric bounds were computed in different units (e.g. seconds, days)
+    without converting to a common unit, which could silently reverse the result. 
+    In particular, `Sys.time() < (Sys.time() + Inf)` -- 
+    the pattern `{httr2}` uses to represent an unbounded retry deadline -- 
+    incorrectly evaluated to `FALSE`, in turn breaking `httr2::req_perform()` 
+    (and so any request made while `{messydates}` is loaded, 
+    including `pkgdown`'s GitHub release-timeline lookup)
+
+## Annotation
+
+- Improved `as_approximate()`/`as_uncertain()` to accept 
+  "hour", "minute", "second", and "time" components
+
+## Extraction
+  
+- Added `hour()`, `minute()`, `second()`, and `tz()` time component extractors
+- Improved `month()`, `day()`, and `precision()` to be vectorised and 
+  no longer call `expand()` more than necessary
+- Improved `precision()` to extend below the day: 24 to the hour, 1440 to the
+  minute, and 86400 to the second (date-level precision is unchanged)
 
 # messydates 0.5.4
 

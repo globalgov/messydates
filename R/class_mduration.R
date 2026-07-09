@@ -19,11 +19,11 @@
 #' @return Object of class `mduration`
 #' @name class_mduration
 #' @examples
-#' messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
+#' make_messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
 #' # widen (or narrow) the range at both ends
-#' messyduration(as_messydate("2010-06-01..2010-06-10"), approx_range = 3)
+#' make_messyduration(as_messydate("2010-06-01..2010-06-10"), approx_range = 3)
 #' # ranges that carry a time of day keep sub-day precision
-#' messyduration(as_messydate("2010-01-01 09:00..2010-01-01 17:00"))
+#' make_messyduration(as_messydate("2010-01-01 09:00..2010-01-01 17:00"))
 NULL
 
 #' @rdname class_mduration
@@ -83,7 +83,8 @@ messy_range <- function(x, approx_range) {
 
 #' @rdname class_mduration
 #' @importFrom utils str
+#' @param ... Additional arguments passed to `str()`.
 #' @export
 print.mduration <- function(x, ...) {
-  str(x)
+  str(x, ...)
 }

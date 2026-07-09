@@ -29,6 +29,8 @@ make_messyduration(x, approx_range = 0)
 If 3, for example, widens the range by 3 days on both sides,
 moving the start 3 days earlier and the end 3 days later;
 if -3, narrows the range by 3 days from both sides.}
+
+\item{...}{Additional arguments passed to \code{str()}.}
 }
 \value{
 Object of class \code{mduration}
@@ -47,9 +49,9 @@ still interpreted as a number of days, but the returned range keeps
 sub-day precision (e.g. \code{"2010-01-01 09:00..2010-01-01 17:00"}).
 }
 \examples{
-messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
+make_messyduration(as_messydate(c("2010-01-01..2010-12-31", "2010-01..2010-12")))
 # widen (or narrow) the range at both ends
-messyduration(as_messydate("2010-06-01..2010-06-10"), approx_range = 3)
+make_messyduration(as_messydate("2010-06-01..2010-06-10"), approx_range = 3)
 # ranges that carry a time of day keep sub-day precision
-messyduration(as_messydate("2010-01-01 09:00..2010-01-01 17:00"))
+make_messyduration(as_messydate("2010-01-01 09:00..2010-01-01 17:00"))
 }

@@ -7,6 +7,8 @@
 \alias{md_union}
 \alias{md_multiset}
 \alias{messyduration}
+\alias{as_approximate}
+\alias{as_uncertain}
 \title{Functions that have been renamed, superseded, or are no longer working}
 \usage{
 is_element(.data)
@@ -18,6 +20,10 @@ md_union(.data)
 md_multiset(.data)
 
 messyduration(.data)
+
+as_approximate(x, component = NULL)
+
+as_uncertain(x, component = NULL)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -39,6 +45,10 @@ wherever possible and update your scripts accordingly.
 \item \code{md_multiset()}: Deprecated on 2023-08-25.
 
 \item \code{messyduration()}: Deprecated on 2023-08-25.
+
+\item \code{as_approximate()}: Deprecated on 2026-07-09.
+
+\item \code{as_uncertain()}: Deprecated on 2026-07-09.
 
 }}
 \keyword{internal}

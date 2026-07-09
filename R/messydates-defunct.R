@@ -45,3 +45,17 @@ messyduration <- function(.data) {
   .Deprecated(new = "make_messyduration",
               package = "messydates")
 }
+
+#' @describeIn defunct Deprecated on 2026-07-09.
+#' @export
+as_approximate <- function(x, component = NULL) {
+  .Deprecated(new = "messydates::approximate()",
+              package = "messydates")
+}
+
+#' @describeIn defunct Deprecated on 2026-07-09.
+#' @export
+as_uncertain <- function(x, component = NULL) {
+  .Deprecated(new = "messydates::uncertain()",
+              package = "messydates")
+}

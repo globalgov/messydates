@@ -4,17 +4,17 @@
 \alias{component_annotate}
 \alias{on_or_before}
 \alias{on_or_after}
-\alias{as_approximate}
-\alias{as_uncertain}
+\alias{approximate}
+\alias{uncertain}
 \title{Annotates dates as censored, uncertain, or approximate}
 \usage{
 on_or_before(x)
 
 on_or_after(x)
 
-as_approximate(x, component = NULL)
+approximate(x, component = NULL)
 
-as_uncertain(x, component = NULL)
+uncertain(x, component = NULL)
 }
 \arguments{
 \item{x}{A date vector}
@@ -61,9 +61,9 @@ For date-times, \code{component} may also be "hour", "minute", or "second"
 
 \item \code{on_or_after()}: suffixes dates with ".." where end date is uncertain
 
-\item \code{as_approximate()}: adds tildes to indicate approximate dates/date components
+\item \code{approximate()}: adds tildes to indicate approximate dates/date components
 
-\item \code{as_uncertain()}: adds question marks to indicate dubious dates/date components.
+\item \code{uncertain()}: adds question marks to indicate dubious dates/date components.
 
 }}
 \examples{
@@ -74,10 +74,10 @@ transform(data, Beg = ifelse(Beg <= "1816-01-01",
 transform(data, End = ifelse(End >= "2016-01-01",
   as.character(on_or_after(End)), End))
 transform(data, Beg = ifelse(Beg == "1916-01-01",
-  as.character(as_approximate(Beg)), Beg))
+  as.character(approximate(Beg)), Beg))
 transform(data, End = ifelse(End == "1916-12-31",
-  as.character(as_uncertain(End)), End))
+  as.character(uncertain(End)), End))
 # time components can be annotated too
-as_approximate("2019-03-01 14:30:00", "hour")
-as_uncertain("2019-03-01 14:30:00", "second")
+approximate("2019-03-01 14:30:00", "hour")
+uncertain("2019-03-01 14:30:00", "second")
 }

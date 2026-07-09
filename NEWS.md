@@ -29,7 +29,7 @@
     is still a year, and a bare am/pm hour (`2pm`) fills to `14:00`. 
     A leading "at" (`"at 2:30pm"`, `"at around 2pm"`) is recognised and dropped. 
     `hour()`/`minute()`/`second()`/`tz()`, `precision()`, `expand()`, 
-    and `as_approximate()`/`as_uncertain()` all handle date-less times
+    and `approximate()`/`uncertain()` all handle date-less times
 - Renamed `messyduration()` to `make_messyduration()` for consistency with other `make_*()` functions, 
   and renamed resulting class from `messyduration` to `mduration`
 - Fixed bug where a messyrange would shift instead of widen upon approximation
@@ -62,9 +62,12 @@
   
 ## Annotation
 
-- Improved `as_approximate()`/`as_uncertain()` to accept 
+- Renamed `as_approximate()`/`as_uncertain()` to `approximate()`/`uncertain()` 
+  for consistency with `on_or_before()`/`on_or_after()` (these aren't coercion functions); 
+  old names are defunct and warn
+- Improved `approximate()`/`uncertain()` to accept 
   "hour", "minute", "second", and "time" components
-- Improved `as_approximate()`/`as_uncertain()` to combine annotations as `%` 
+- Improved `approximate()`/`uncertain()` to combine annotations as `%` 
   when both are applied to the same component
 
 ## Resolution

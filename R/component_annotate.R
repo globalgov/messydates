@@ -35,12 +35,12 @@
 #' transform(data, End = ifelse(End >= "2016-01-01",
 #'   as.character(on_or_after(End)), End))
 #' transform(data, Beg = ifelse(Beg == "1916-01-01",
-#'   as.character(as_approximate(Beg)), Beg))
+#'   as.character(approximate(Beg)), Beg))
 #' transform(data, End = ifelse(End == "1916-12-31",
-#'   as.character(as_uncertain(End)), End))
+#'   as.character(uncertain(End)), End))
 #' # time components can be annotated too
-#' as_approximate("2019-03-01 14:30:00", "hour")
-#' as_uncertain("2019-03-01 14:30:00", "second")
+#' approximate("2019-03-01 14:30:00", "hour")
+#' uncertain("2019-03-01 14:30:00", "second")
 #' @name component_annotate
 NULL
 
@@ -66,13 +66,13 @@ on_or_after <- function(x) {
 #'   (the marker is placed to the left of that time component), or "time"
 #'   (the whole time of day is marked).
 #' @export
-as_approximate <- function(x, component = NULL) {
+approximate <- function(x, component = NULL) {
   annotate_component(x, component, "~")
 }
 
 #' @describeIn component_annotate adds question marks to indicate dubious dates/date components.
 #' @export
-as_uncertain <- function(x, component = NULL) {
+uncertain <- function(x, component = NULL) {
   annotate_component(x, component, "?")
 }
 

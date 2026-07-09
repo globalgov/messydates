@@ -265,11 +265,12 @@ Precise values pass through untouched whatever the choice,
 and POSIX methods keep time-of-day.
 \end{mdbox}
 
-% ------------- TEST -------------
-\begin{mdbox}{Logical tests}
-\code|is_messydate(x)| \code|is_precise(x)| \code|is_uncertain(x)|
-\code|is_approximate(x)| \code|is_bce(x)|\\[2pt]
-\code|is_intersecting(x,y)| \code|is_subset(x,y)| \code|is_similar(x,y)|
+% ------------- COMPONENTS -------------
+\begin{mdbox}{Extracting components}
+\code|{lubridate}|-style accessors extract components of messy dates and return them as numerical values:
+\begin{center}
+\code|year() month() day() hour() minute() second() tz()|
+\end{center}
 \end{mdbox}
 
 % ------------- COMPARE -------------

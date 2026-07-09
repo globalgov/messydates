@@ -126,22 +126,33 @@ Tidy sources are precise; annotate information about messiness:
 \end{center}
 \end{mdbox}
 
+% ------------- PIPELINE 2: MESSY TEXT -------------
+\begin{mdbox}{2. Parse from (messy) text}
+\begin{center}
+"free text" \pipe{as\_messydate()} \code|mdate|\\[2pt]
+\end{center}
+Messydates parser converts prose into annotated \code|mdate|:
 
 \smallskip
-\renewcommand{\arraystretch}{1.2}
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
 \begin{tabular}{@{}ll@{}}
-\textbf{input} & \textbf{mdate}\\ \hline
-\code|"2021-04"|            & \code|2021-04|\\
-\code|"2012-09-12~"|        & \code|2012-09-12~|\\
-\code|"2012-01..2012-03"|   & \code|2012-01..2012-03|\\
-\code|"first of Feb 2012"|  & \code|2012-02-01|\\
-\code|"2019-03-01 2:30pm"|  & \code|2019-03-01T14:30|\\
+\code|"it happened about 44 BCE"|\arrow          & \code|"~-0044"|\\
+\code|"before 4th January 2024"|\arrow   & \code|"..2024-01-04"|\\
+\code|"sometime in the 1980s"|\arrow               & \code|"198X"|\\
+\code|"last day of Feb 2012"|\arrow   & \code|"2012-02-29"|\\
+\code|"it was around 2:30pm"|\arrow   & \code|"14:30~"|\\
 \end{tabular}
+\end{center}
 
-\smallskip
-\code|make_messydate(year, month, day)| builds from columns:
-\code|(2007, 2, 17)| \arrow \code|2007-02-17|.
+See also \code|is_bce()|.
+\code|contract(md)| finds most concise messy form:\\[-12pt]
+\begin{center}
+\code|"2021-04-01..2021-04-30"| \arrow \code|"2021-04"|
+\end{center}
 \end{mdbox}
+\end{minipage}\hfill
+%
 
 % ------------- 2. EXPAND / CONTRACT -------------
 \begin{mdbox}{2. Expand \& contract}

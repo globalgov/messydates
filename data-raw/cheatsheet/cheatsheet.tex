@@ -3,14 +3,13 @@
 % See build.R in this folder to compile and refresh the PDF/PNG copies.
 \documentclass[9pt]{extarticle}
 
-\usepackage[paperwidth=11in,paperheight=7.6in,margin=0.4in]{geometry}
+\usepackage[paperwidth=11in,paperheight=7.6in,margin=0.28in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{inconsolata}
 \usepackage{graphicx}
 \usepackage{xcolor}
-\usepackage{multicol}
 \usepackage{array}
 \usepackage[most]{tcolorbox}
 \usepackage{fontawesome5}
@@ -40,8 +39,8 @@
   colbacktitle=#1, fonttitle=\bfseries,
   title={#2}, boxrule=0.5pt, arc=2pt,
   left=3pt, right=3pt, top=2pt, bottom=3pt,
-  before skip=6pt, after skip=6pt,
-  fontupper=\small
+  before skip=4pt, after skip=4pt,
+  fontupper=\footnotesize
 }
 \newtcolorbox{greybox}[1]{
   enhanced, breakable=false,
@@ -49,10 +48,16 @@
   colbacktitle=mdgreyd, fonttitle=\bfseries,
   title={#1}, boxrule=0.5pt, arc=2pt,
   left=3pt, right=3pt, top=2pt, bottom=3pt,
-  before skip=6pt, after skip=6pt,
-  fontupper=\small
+  before skip=4pt, after skip=4pt,
+  fontupper=\footnotesize
 }
 \newcommand{\arrow}{\;\textcolor{mddark}{$\rightarrow$}\;}
+% pipeline step arrow with label above
+\newcommand{\pipe}[1]{\;\textcolor{mddark}{$\xrightarrow{\;\text{\scriptsize #1}\;}$}\;}
+% column header strip
+\newcommand{\colhead}[2]{%
+  {\color{mdbrown}\bfseries\large #1\; #2}\\[-4pt]
+  {\color{mddark}\rule{\linewidth}{1.2pt}}\vspace{1pt}}
 
 \begin{document}
 
@@ -60,36 +65,43 @@
 \begin{tcolorbox}[enhanced, colback=mdbrown, colframe=mdbrown, arc=3pt,
   left=8pt, right=8pt, top=4pt, bottom=4pt]
 \begin{minipage}[c]{0.80\textwidth}
-  {\color{white}\bfseries\fontsize{22}{24}\selectfont
-   Arrange your messy dates \& times \; : : \; CHEAT SHEET}\\[2pt]
+  {\color{white}\bfseries\fontsize{20}{22}\selectfont
+   Messy dates \& times \; : : \; CHEAT SHEET}\\[2pt]
   {\color{mdtan}\small Retain, represent, and reason about date/time
    imprecision — an implementation of ISO 8601-2:2019 (EDTF) for R.}
 \end{minipage}\hfill
 \begin{minipage}[c]{0.16\textwidth}\raggedleft
-  \includegraphics[height=1.05in]{messydates_hexlogo.png}
+  \includegraphics[height=0.72in]{messydates_hexlogo.png}
 \end{minipage}
 \end{tcolorbox}
 
-\vspace{2pt}
-\setlength{\columnsep}{9pt}
-\begin{multicols}{3}
+\vspace{3pt}
 
-% ------------- BASICS / ANNOTATIONS -------------
-\begin{greybox}{Basics: annotate dates \& times}
-The \code|mdate| class embeds EDTF annotations, so one value can express
-imprecision instead of forcing a false precise date:
+% ======================= THREE FIXED COLUMNS =======================
+\begin{minipage}[t]{0.323\textwidth}
+\colhead{\faCalendarPlus}{Constructing messy dates}
+
+% ------------- ANATOMY -------------
+\begin{greybox}{Anatomy of a messy date}
+One \code|mdate| value holds a date (and potentially time) in a standard layout:
+\begin{center}
+\code|2012-09-12 14:30:00|\\[-2pt]
+{\color{mdgreyd}\code|yyyy-mm-dd hh:mm:ss|}
+\end{center}
+Each component ({\color{mdgreyd}\code|y|, \code|m|, \code|d|, \code|h|, \code|m|, \code|s|}) or the whole date-time can be annotated:
 
 \smallskip
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{@{}p{1.05cm}l@{}}
-\code|?|  & uncertain \quad\code|2008-01-18?|\\
-\code|~|  & approximate \quad\code|2012-09-12~|\\
-\code|%|  & uncertain \& approximate\\
-\code|X|  & unspecified \quad\code|2012-XX-18|\\
-\code|..| & range \quad\code|2012-01..2012-03|\\
-\code|{} []| & set (all) / one-of\\
-\code|T|  & time + zone \quad\code|...T14:30Z|\\
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}ll@{}}
+Unspecified component (X) & \texttt{2012-\textbf{XX}-12}\\
+Uncertain date-time (? suffixed) & \texttt{2012-09-12 14:30\textbf{?}}\\
+Approximate time only (\code|~| prefixed) & \texttt{2012-09-12 \textbf{\textasciitilde}14:30}\\
+Set of dates (\code|{}| all, \code|[]| one-of) & \texttt{\textbf{\{}2012-09\textbf{,}2012-11\textbf{\}}}\\
+Range of dates (joined by \code|..|) & \texttt{2012-09\textbf{..}2012-10}\\
+Open ended: on or before/after & \texttt{\textbf{..}2012-09-12}\\
 \end{tabular}
+\end{center}
 \end{greybox}
 
 % ------------- 1. COERCE -------------

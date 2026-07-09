@@ -153,17 +153,17 @@ See also \code|is_bce()|.
 \end{mdbox}
 \end{minipage}\hfill
 %
+\begin{minipage}[t]{0.323\textwidth}
+\colhead{\faCogs}{Working with messy dates}
 
-% ------------- 2. EXPAND / CONTRACT -------------
-\begin{mdbox}{2. Expand \& contract}
-\code|expand(md)| opens a messy date into \emph{all} compatible dates
-(day granularity; use \code|by="hour"/"min"/"sec"| for times):
-\begin{itemize}
-  \item \code|"2021-04"| \arrow 30 dates \code|2021-04-01 ... -04-30|
-  \item \code|"2019-02-01..2019-02-03"| \arrow 3 dates
-\end{itemize}
-\code|contract(md)| is the inverse — the most concise form:
-\code|"2021-04-01..2021-04-30"| \arrow \code|2021-04|.
+% ------------- ARITHMETIC -------------
+\begin{mdbox}{Adding, subtracting}
+Shift by days (numeric) or period strings, down to seconds:
+\begin{quote}
+\code|"2012-01-31" + 1| \arrow \code|"2012-02-01"|\\
+\code|"2012-01-31 09:00" + "1 month"| \arrow \code|2012-02-29 09:00|
+\end{quote}
+Calendar arithmetic retains day-of-month \& time.
 \end{mdbox}
 
 % ------------- 3. RESOLVE -------------

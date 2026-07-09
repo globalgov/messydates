@@ -166,20 +166,17 @@ Shift by days (numeric) or period strings, down to seconds:
 Calendar arithmetic retains day-of-month \& time.
 \end{mdbox}
 
-% ------------- 3. RESOLVE -------------
-\begin{mdbox}{3. Resolve to one date/time}
-Coerce back with \code|as.Date()|, \code|as.POSIXct()|, or \code|as.POSIXlt()|
-(the POSIX methods keep the time). Choose \emph{how} to resolve with
-\code|FUN =|:
-\smallskip
+% ------------- COMBINE -------------
+\begin{mdbox}{Combining two mdates}
+Finding multisets/ranges (with \code|=|, \code|-|, \code|%intersect%|, \code|%union%|) is easy:\\[2pt]
+\begin{tabular}{@{}ll@{}}
+& \code|"2012-01-31" + "2012-02-01"| \arrow \code|"2012-01-31..2012-02-01"|\\
+& \code|"2012-01" - "2012-01-31"| \arrow \code|"2012-01-01..2012-01-30"|\\
+& \code|"2012-01" %intersect% "2012-01-31"| \arrow \code|"2012-01-31"|\\[2pt]
+\end{tabular}
 
-\code|min max mean median modal random| (whole vector), or vectorised
-\code|vmin vmax vmean vmedian vmodal vrandom| (element-wise).
-\smallskip
-
-\code|as.Date(as_messydate("2021-04"), vmin)| \arrow \code|2021-04-01|\\
-\code|                          ..., vmax)| \arrow \code|2021-04-30|\\
-\code|                          ..., vmean)| \arrow \code|2021-04-16|
+See also \code|is_intersecting(x,y)|, \code|is_subset(x,y)|, \code|is_similar(x,y)|.
+\end{mdbox}
 
 \smallskip
 \begin{center}

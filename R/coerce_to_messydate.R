@@ -84,6 +84,9 @@ NULL
 #' as_messydate("2019-03-01 14:30:00Z")
 #' as_messydate("2019-03-01 2:30pm")
 #' as_messydate("2019-03-01 ~14:30")
+#' # a time of day may also be given on its own, with no date part
+#' as_messydate("2:30pm")
+#' as_messydate("around 2pm")
 #' # historical prose (see the "Parsing historical prose" section below)
 #' as_messydate("MDCCLXXVI")
 #' as_messydate("the Ides of March, 44 BC")
@@ -447,6 +450,11 @@ protect_times <- function(v) {
     # ("2019-03-01 XX:30"), matching .time_token_rx's own tolerance.
     s <- gsub("([0-9])[[:space:]]+([~?%]?[0-9X]{1,2}(?::[~?%]?[0-9X]|[[:space:]]?[apAP][mM]))",
               "\\1T\\2", s, perl = TRUE)
+    # A time with no date part at all (the whole string is a clock time, e.g.
+    # "2:30pm" or "14:30"). Prefix a 'T' so it is protected like any other
+    # time; restore_times() reattaches it without a date-time separator.
+    st <- trimws(s)
+    if (!grepl("T", st) && grepl(.bare_time_rx, st, perl = TRUE)) s <- paste0("T", st)
     matches <- regmatches(s, gregexpr(.time_token_rx, s, perl = TRUE))[[1]]
     if (length(matches) == 0) {
       skeleton[i] <- s
@@ -469,12 +477,34 @@ restore_times <- function(v, times) {
   for (i in seq_along(v)) {
     if (length(times[[i]]) == 0) next
     for (k in seq_along(times[[i]])) {
-      v[i] <- sub(paste0(.time_open, k, .time_close),
-                  paste0(.dt_sep, times[[i]][k]), v[i], fixed = TRUE)
+      sentinel <- paste0(.time_open, k, .time_close)
+      pos <- regexpr(sentinel, v[i], fixed = TRUE)
+      # Only insert the date-time separator when a date component (digit or
+      # 'X') immediately precedes the time. A bare time (sentinel at the very
+      # start) is reattached on its own, with no leading separator.
+      before <- if (pos > 1) substr(v[i], pos - 1, pos - 1) else ""
+      sep <- if (grepl("[0-9X]", before)) .dt_sep else ""
+      v[i] <- sub(sentinel, paste0(sep, times[[i]][k]), v[i], fixed = TRUE)
     }
   }
   v
 }
+
+# A bare time-of-day occupying a whole string, with no date part (e.g.
+# "2:30pm", "14:30", "~14:30", "2pm+02:00"). Deliberately anchored to the
+# whole (trimmed) string and requiring a strong time signal -- a colon-clock
+# or an am/pm suffix -- so it can never misread the space before a second
+# date in a set/list (e.g. "2012-01-01, 2012-02-02") as a time. A lone hour
+# ("14") is not enough; without a date to anchor it, that is read as a year.
+.bare_time_rx <- paste0(
+  "^[~?%]?[0-9X]{1,2}",                          # hour (optional marker)
+  "(?:",
+  "(?::[~?%]?[0-9X]{1,2}){1,2}(?:\\.[0-9]+)?",   # :mm[:ss[.frac]] (colon clock)
+  "(?:[[:space:]]?[apAP][mM])?",                 #   with optional am/pm
+  "|[[:space:]]?[apAP][mM]",                     # or a bare am/pm hour
+  ")",
+  "(?:Z|[+-][0-9]{1,2}(?::?[0-9]{2})?)?",        # optional Z or numeric offset
+  "[~?%]?$")                                     # optional whole-time marker
 
 # A standardised (already parsed) time token, used to detect or strip times.
 # Matches a leading space (the canonical separator) or 'T' (tolerated for
@@ -520,6 +550,9 @@ standardise_time <- function(tok) {
       if (ap == "am" && hr == 12) hr <- 0
       parts[1] <- sprintf("%02d", hr)
     }
+    # A bare am/pm hour ("2pm") names an exact hour, so fill the minutes to
+    # ":00" (unlike an ISO "T14", which stays at hour precision).
+    if (length(parts) == 1L) parts <- c(parts, "00")
   }
   paste0(paste(parts, collapse = ":"), offset, ann)
 }
@@ -759,9 +792,29 @@ season_range <- function(season, yr) {
          winter = sprintf("%s-12..%04d-02", yr, as.integer(yr) + 1L))
 }
 
+# Prose qualifier words (approximate and/or uncertain), shared between the
+# qualifier-detection branch of interpret_one() and its leading-"at" stripper.
+.approx_words_rx <- "around|circa|approx|approximately|about|roughly|estimated"
+.uncert_words_rx <- "possibly|perhaps|maybe|uncertain|reportedly|allegedly"
+
 interpret_one <- function(s) {
   if (is.na(s) || !is.character(s)) return(s)
   low <- tolower(s)
+
+  # "at 2:30pm" / "at around 2pm": "at" is just a preposition introducing a
+  # time, but it defeats the anchored bare-time match (.bare_time_rx) below.
+  # Strip it whenever what remains -- once any qualifier word is set aside --
+  # is itself a bare time, so both "at 2:30pm" and "at around 2pm" reach the
+  # normal bare-time handling.
+  if (grepl("^at\\s+", low)) {
+    rest <- sub("^at\\s+", "", low)
+    plain <- trimws(gsub(paste0("\\b(", .approx_words_rx, "|", .uncert_words_rx, ")\\b"),
+                         " ", rest, perl = TRUE))
+    if (grepl(.bare_time_rx, plain, perl = TRUE)) {
+      s <- sub("(?i)^at\\s+", "", s, perl = TRUE)
+      low <- rest
+    }
+  }
 
   # Open ranges (checked first, so the bound may itself be a decade/century):
   # "before 1910" -> "..1910"; "after the 1920s" -> "192X..".
@@ -836,8 +889,8 @@ interpret_one <- function(s) {
 
   # 3. A single date carrying an approximate and/or uncertain qualifier
   # (both together give the EDTF "%" marker).
-  approx_words <- "around|circa|approx|approximately|about|roughly|estimated"
-  uncert_words <- "possibly|perhaps|maybe|uncertain|reportedly|allegedly"
+  approx_words <- .approx_words_rx
+  uncert_words <- .uncert_words_rx
   approx <- grepl(paste0("\\b(", approx_words, ")\\b"), low)
   uncert <- grepl(paste0("\\b(", uncert_words, ")\\b"), low)
   qual <- if (approx && uncert) "%" else if (approx) "~" else if (uncert) "?" else NA_character_
@@ -847,6 +900,9 @@ interpret_one <- function(s) {
     # month, and the residual is a clean date phrase.
     bare <- trimws(gsub(paste0("\\b(", approx_words, "|", uncert_words, ")\\b"),
                         " ", low, perl = TRUE))
+    # A qualified bare time ("around 2pm"): carry the qualifier as a whole-time
+    # annotation and let the time pipeline standardise it (-> "14:00~").
+    if (grepl(.bare_time_rx, bare, perl = TRUE)) return(paste0(bare, qual))
     yr <- nl_year(bare)
     mnb <- nl_month_num(bare)
     # An explicit ordinal day keeps the qualifier on that day component

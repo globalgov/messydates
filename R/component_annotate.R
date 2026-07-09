@@ -93,9 +93,12 @@ annotate_component <- function(x, component, mark) {
     }, character(1), USE.NAMES = FALSE)
     return(as_messydate(paste0(base, combined)))
   }
+  # A bare time (no date part, e.g. "14:30") is treated as all time and no
+  # date, so time-component markers apply and date-component markers no-op.
+  bare <- grepl("^[~?%]?[0-9X]{1,2}:", x)
   has_t <- grepl("[T ]", x)
-  date <- sub("[T ].*$", "", x)
-  time <- ifelse(has_t, sub("^[^T ]*[T ]", "", x), "")
+  date <- ifelse(bare, "", sub("[T ].*$", "", x))
+  time <- ifelse(bare, x, ifelse(has_t, sub("^[^T ]*[T ]", "", x), ""))
   if (component %in% c("year", "month", "day", "md", "ym")) {
     dp <- strsplit(date, "-")
     year <- vapply(dp, `[`, character(1), 1)
@@ -107,6 +110,7 @@ annotate_component <- function(x, component, mark) {
       year  = paste0(mark, year, "-", month, "-", day),
       md    = paste0(year, "-", mark, month, "-", mark, day),
       ym    = paste0(year, "-", month, mark, "-", day))
+    date <- ifelse(bare, "", date) # no date component to annotate on a time
   } else if (component %in% c("hour", "minute", "second", "time")) {
     off <- stringi::stri_match_first_regex(
       time, "(Z|[+-][0-9]{2}:[0-9]{2})$"
@@ -132,6 +136,8 @@ annotate_component <- function(x, component, mark) {
   } else {
     stop("Unknown component: ", component, call. = FALSE)
   }
-  out <- ifelse(has_t, paste0(date, .dt_sep, time), date)
+  out <- ifelse(nzchar(date),
+                ifelse(has_t | bare, paste0(date, .dt_sep, time), date),
+                time)
   as_messydate(out)
 }

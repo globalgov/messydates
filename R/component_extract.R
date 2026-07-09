@@ -24,7 +24,9 @@ NULL
 year <- function(x) {
   x <- stringi::stri_replace_all_regex(x, "\\.\\..+", "")
   x <- stringi::stri_replace_all_regex(x, "-.+", "")
-  as.integer(x)
+  # A bare time ("14:30") has no year component; return NA rather than warning.
+  x[stringi::stri_detect_regex(x, "^[~?%]?[0-9X]{1,2}:")] <- NA_character_
+  suppressWarnings(as.integer(x))
 }
 
 #' @rdname component_extract
@@ -47,12 +49,23 @@ day <- function(x) {
   suppressWarnings(as.integer(d))
 }
 
+# The shared time regexes anchor on the '[T ]' date-time separator. A bare
+# time (no date part, e.g. "14:30") has no such separator, so prefix a space
+# to those elements, letting the same regexes extract their time components.
+mark_bare_time <- function(x) {
+  x <- as.character(x)
+  bare <- stringi::stri_detect_regex(x, "^[~?%]?[0-9X]{1,2}:")
+  bare[is.na(bare)] <- FALSE
+  x[bare] <- paste0(" ", x[bare])
+  x
+}
+
 #' @rdname component_extract
 #' @examples
 #' hour(as_messydate(c("2012-02-03 14:30:00","2012-02-03")))
 #' @export
 hour <- function(x) {
-  h <- stringi::stri_match_first_regex(as.character(x), "[T ][~?%]?([0-9X]{2})")[, 2]
+  h <- stringi::stri_match_first_regex(mark_bare_time(x), "[T ][~?%]?([0-9X]{2})")[, 2]
   suppressWarnings(as.integer(h))
 }
 
@@ -62,7 +75,7 @@ hour <- function(x) {
 #' @export
 minute <- function(x) {
   m <- stringi::stri_match_first_regex(
-    as.character(x), "[T ][~?%]?[0-9X]{2}:[~?%]?([0-9X]{2})"
+    mark_bare_time(x), "[T ][~?%]?[0-9X]{2}:[~?%]?([0-9X]{2})"
   )[, 2]
   suppressWarnings(as.integer(m))
 }
@@ -73,7 +86,7 @@ minute <- function(x) {
 #' @export
 second <- function(x) {
   s <- stringi::stri_match_first_regex(
-    as.character(x),
+    mark_bare_time(x),
     "[T ][~?%]?[0-9X]{2}:[~?%]?[0-9X]{2}:[~?%]?([0-9X]{2}(?:\\.[0-9]+)?)"
   )[, 2]
   suppressWarnings(as.numeric(s))
@@ -84,7 +97,7 @@ second <- function(x) {
 #' tz(as_messydate("2012-02-03 14:30:00+02:00"))
 #' @export
 tz <- function(x) {
-  stringi::stri_match_first_regex(as.character(x),
+  stringi::stri_match_first_regex(mark_bare_time(x),
                                   "(Z|[+-][0-9]{2}:[0-9]{2})$")[, 2]
 }
 
@@ -113,7 +126,7 @@ precision.mdate <- function(x) {
 # Multiplier extending the 1/days precision scale below the day: 24 for hour,
 # 1440 for minute, 86400 for second precision; 1 when no time is present.
 subday_factor <- function(x) {
-  x <- as.character(x)
+  x <- mark_bare_time(x)
   f <- rep(1, length(x))
   f[stringi::stri_detect_regex(x, "[T ][0-9X]{2}")] <- 24
   f[stringi::stri_detect_regex(x, "[T ][0-9X]{2}:[0-9X]{2}")] <- 1440

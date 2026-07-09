@@ -31,3 +31,14 @@ test_that("date-only annotation behaviour is unchanged", {
   expect_equal(as.character(as_approximate("1916-01-01", "ym")), "1916-01~-01")
   expect_equal(as.character(as_uncertain("1916-12-31", "day")), "1916-12-?31")
 })
+
+test_that("a bare time (no date part) can be annotated", {
+  bt <- as_messydate("14:30:05")
+  expect_equal(as.character(as_approximate(bt, "hour")), "~14:30:05")
+  expect_equal(as.character(as_uncertain(bt, "minute")), "14:?30:05")
+  expect_equal(as.character(as_approximate(bt, "second")), "14:30:~05")
+  expect_equal(as.character(as_approximate(bt, "time")), "14:30:05~")
+  expect_equal(as.character(as_uncertain(bt)), "14:30:05?")
+  # a date-component marker has nothing to annotate on a bare time (no-op)
+  expect_equal(as.character(as_approximate(bt, "year")), "14:30:05")
+})

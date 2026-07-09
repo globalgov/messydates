@@ -23,6 +23,13 @@
   - Time components can carry the same annotations as dates: 
     approximate (`~`), uncertain (`?`), both (`%`), and unspecified (`X`),
     e.g. `2019-03-01 ~14:30`
+  - A time of day can now be given on its own, with no date part 
+    (e.g. `as_messydate("2:30pm")` -> `14:30`, `as_messydate("around 2pm")` -> `14:00~`); 
+    this requires a clear time signal (a colon-clock or am/pm), so a bare `2019` 
+    is still a year, and a bare am/pm hour (`2pm`) fills to `14:00`. 
+    A leading "at" (`"at 2:30pm"`, `"at around 2pm"`) is recognised and dropped. 
+    `hour()`/`minute()`/`second()`/`tz()`, `precision()`, `expand()`, 
+    and `as_approximate()`/`as_uncertain()` all handle date-less times
 - Renamed `messyduration()` to `make_messyduration()` for consistency with other `make_*()` functions, 
   and renamed resulting class from `messyduration` to `mduration`
 - Fixed bug where a messyrange would shift instead of widen upon approximation

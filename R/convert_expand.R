@@ -62,15 +62,26 @@ expand <- function(x, approx_range = 0, by = "day") {
   if (grepl("^(hour|min|sec)", by)) {
     return(expand_datetime(x, by))
   }
+  # Bare times (no date part, e.g. "14:30") have nothing to expand as a date;
+  # set them aside and return each unchanged, running the date-level logic on
+  # the rest only.
+  bare <- stringi::stri_detect_regex(x, "^[~?%]?[0-9X]{1,2}:")
+  bare[is.na(bare)] <- FALSE
   # Day granularity: keep the time on precise date-times, but drop it from
   # ranges and imprecise values so the date-level logic below applies.
   keep <- is_precise(x) & grepl("[T ]", x)
-  if (any(!keep)) x[!keep] <- strip_times(x[!keep])
-  x <- expand_unspecified(x)
-  # x <- expand_negative(x)
-  x <- expand_sets(x) # Can create a list..
-  x <- expand_ranges(x)
-  x
+  strip <- !keep & !bare
+  if (any(strip)) x[strip] <- strip_times(x[strip])
+  out <- as.list(x)
+  if (any(!bare)) {
+    xr <- x[!bare]
+    xr <- expand_unspecified(xr)
+    # xr <- expand_negative(xr)
+    xr <- expand_sets(xr) # Can create a list..
+    xr <- expand_ranges(xr)
+    out[!bare] <- xr
+  }
+  out
 }
 
 # Enumerates precise date-time ranges at sub-day granularity using POSIXct.

@@ -87,6 +87,11 @@ e.g. \code{2019-03-01 ~14:30} or \verb{2019-03-01 14:XX}.
 Because \code{:} is also used as a range separator, times are detected and
 protected before ranges are parsed, so \code{2009-01-01:2019-01-01} remains a
 range while \verb{2019-03-01 14:30:00} is read as a time.
+A time of day may also be given on its own, with no date part, e.g.
+\code{14:30} or \verb{2:30pm}. This requires a clear time signal (a colon-separated
+clock or an \code{am}/\code{pm} suffix), so a bare number such as \code{2019} is still
+read as a year rather than an hour; a bare \code{am}/\code{pm} hour (\verb{2pm}) is taken
+as an exact hour and filled to \code{14:00}.
 }
 
 \section{Imprecision annotations}{

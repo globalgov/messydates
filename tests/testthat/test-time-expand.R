@@ -24,6 +24,15 @@ test_that("a sub-day 'by' falls back to normal expansion for a non-range value",
                "2019-03-01")
 })
 
+test_that("a bare time (no date part) expands to itself", {
+  expect_equal(unlist(expand(as_messydate("14:30"))), "14:30")
+  expect_equal(unlist(expand(as_messydate("14:30:05"))), "14:30:05")
+  # even when mixed with a date range, order is preserved and each is handled
+  expect_equal(
+    expand(as_messydate(c("14:30", "2012-01-01..2012-01-02", "2pm"))),
+    list("14:30", c("2012-01-01", "2012-01-02"), "14:00"))
+})
+
 test_that("date-only expansion is unaffected by the new time handling", {
   expect_equal(unlist(expand(as_messydate("2012-02"))),
                as.character(seq(as.Date("2012-02-01"), as.Date("2012-02-29"),

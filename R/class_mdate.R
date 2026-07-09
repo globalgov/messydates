@@ -30,6 +30,11 @@
 #'   Because `:` is also used as a range separator, times are detected and
 #'   protected before ranges are parsed, so `2009-01-01:2019-01-01` remains a
 #'   range while `2019-03-01 14:30:00` is read as a time.
+#'   A time of day may also be given on its own, with no date part, e.g.
+#'   `14:30` or `2:30pm`. This requires a clear time signal (a colon-separated
+#'   clock or an `am`/`pm` suffix), so a bare number such as `2019` is still
+#'   read as a year rather than an hour; a bare `am`/`pm` hour (`2pm`) is taken
+#'   as an exact hour and filled to `14:00`.
 #'
 #' @section Imprecision annotations:
 #'   _Unspecified date components_, such as when the day is unknown,

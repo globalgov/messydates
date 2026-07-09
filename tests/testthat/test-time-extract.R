@@ -12,6 +12,32 @@ test_that("time components extract, NA when absent", {
   expect_equal(second(dt), c(5, NA, NA, NA))
 })
 
+test_that("time can be parsed without a date", {
+  expect_equal(as.character(as_messydate("2:30pm")), "14:30")
+  expect_equal(as.character(as_messydate("around 2pm")), "14:00~")
+})
+
+test_that("time components extract from a bare time (no date part)", {
+  bt <- as_messydate(c("14:30:05", "14:30", "2pm", "14:30:00+02:00"))
+  expect_equal(hour(bt), c(14L, 14L, 14L, 14L))
+  expect_equal(minute(bt), c(30L, 30L, 0L, 30L))
+  expect_equal(second(bt), c(5, NA, NA, 0))
+  expect_equal(tz(bt), c(NA, NA, NA, "+02:00"))
+  # a bare time has no date components
+  expect_true(all(is.na(year(bt))))
+  expect_true(all(is.na(month(bt))))
+  expect_true(all(is.na(day(bt))))
+})
+
+test_that("year() does not warn on a bare time", {
+  expect_silent(year(as_messydate("14:30")))
+})
+
+test_that("precision extends below the day for a bare time", {
+  expect_equal(precision(as_messydate("14:30")), 1440)
+  expect_equal(precision(as_messydate("14:30:05")), 86400)
+})
+
 test_that("fractional seconds return a numeric", {
   expect_equal(second(as_messydate("2012-02-03T14:30:05.5")), 5.5)
 })

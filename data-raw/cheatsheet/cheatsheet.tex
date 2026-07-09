@@ -218,13 +218,51 @@ Precision of date-times in parts per day:
 See also \code|is_precise| \code|is_uncertain| \code|is_approximate|
 \end{mdbox}
 
-% ------------- COMBINE -------------
-\begin{mdbox}{Combine two mdates}
+\end{minipage}\hfill
+%
+\begin{minipage}[t]{0.323\textwidth}
+\colhead{\faCalendarCheck}{Analysing with messy dates}
+
+% ------------- COERCE = EXPAND + RESOLVE -------------
+\begin{mdbox}{Coercion: expand, then resolve}
+\code|as.Date(mdate, FUN)|, \code|as.POSIXct(mdate, FUN)|, \code|as.POSIXlt(mdate, FUN)| coerce
+\code|mdate| to classes other packages expect for analysis.\\
+
+Each coercion takes two steps:
 \begin{itemize}
-  \item \code|x %intersect% y| — dates common to both
-  \item \code|x %union% y| — dates in either
-  \item \code|x + y| — multiset (union of ranges/sets)
+\item \emph{expand} to all compatible dates, also available directly using \code|expand(mdate)|, then
+\item \emph{resolve} them to a single date according to an explicit \code|FUN| rule
 \end{itemize}
+\begin{center}
+\code|"2021-04"| \pipe{expand()}
+\begin{tabular}[c]{@{}c@{}}
+  \code|"2024-04-01"| \\
+  \code|"2024-04-02"| \\
+  \code|...|
+\end{tabular}
+\pipe{FUN} \code|"2021-04-01"|
+\end{center}
+\code|FUN =| makes the resolution rule an explicit, visible choice,
+and can be:
+\begin{itemize}
+\item vectorised/element-wise (\code|vmin vmax vmean vmedian vmodal|), or
+\item summarise the whole vector (\code|min max mean median modal random|)
+\end{itemize}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}l@{}}
+\code|vmin(c("2012","2013"))|\arrow \code|"2012-01-01","2013-01-01"|\\
+\code|min(c("2012","2013"))|\arrow \code|"2012-01-01"|\\
+\code|vmax(c("2012","2013"))|\arrow \code|"2012-12-31","2013-12-31"|\\
+\code|max(c("2012","2013"))|\arrow \code|"2013-12-31"|\\
+\code|vmean(c("2012","2013"))|\arrow \code|"2012-07-01","2013-07-02"|\\
+\code|mean(c("2012","2013"))|\arrow \code|"2012-12-31"|\\
+\end{tabular}
+\end{center}
+
+Precise values pass through untouched whatever the choice,
+and POSIX methods keep time-of-day.
 \end{mdbox}
 
 % ------------- TEST -------------

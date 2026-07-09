@@ -207,17 +207,15 @@ dates passing test against \code|y|:
 \end{quote}
 \end{mdbox}
 
-% ------------- ANNOTATE -------------
-\begin{mdbox}{Annotate uncertainty}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{@{}ll@{}}
-\code|on_or_before(x)|   & \arrow \code|..x|\\
-\code|on_or_after(x)|    & \arrow \code|x..|\\
-\code|as_approximate(x)| & \arrow \code|x~|\\
-\code|as_uncertain(x)|   & \arrow \code|x?|\\
-\end{tabular}\\[2pt]
-Add \code|component=| to mark one part: \code|"year" "month" "day"|
-\code|"hour" "minute" "second"|, or groups \code|"ym" "md" "time"|.
+% ------------- QUANTIFY -------------
+\begin{mdbox}{Quantify precision}
+Precision of date-times in parts per day:
+\begin{quote}
+\code|precision("2012")| $\approx$ \code|0.003|\\
+\code|precision("2012-01-01")| = \code|1|\\
+\code|precision("2012-01-01 14:30")| = \code|1440|
+\end{quote}
+See also \code|is_precise| \code|is_uncertain| \code|is_approximate|
 \end{mdbox}
 
 % ------------- COMBINE -------------

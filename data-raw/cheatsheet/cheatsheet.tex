@@ -191,21 +191,20 @@ See also \code|is_intersecting(x,y)|, \code|is_subset(x,y)|, \code|is_similar(x,
 See also \code|seq(a, b, by = "hour")| to step through instants
 \end{mdbox}
 
-% ------------- TIMES -------------
-\begin{mdbox}[mdbrown]{\faClock\; Times (new in 1.0.0)}
-Times of day use the ISO \code|T| separator, and take the same
-annotations as dates:
-\begin{itemize}
-  \item \textbf{Parse:} \code|"2019-03-01T14:30:00Z"|, am/pm,
-        \code|+02:00| offsets, fractional seconds.
-  \item \textbf{Extract:} \code|hour() minute() second() tz()|.
-  \item \textbf{Annotate a part:} \code|as_approximate(x,"hour")|
-        \arrow \code|...T~14:30|.
-  \item \textbf{Precision below a day:} \code|precision("...T14:30")|=1440
-        (\code|24| hr, \code|1440| min, \code|86400| sec).
-  \item \textbf{Shift \& step:} \code|md + "2 hours"|;
-        \code|seq(a, b, by="hour")|.
-\end{itemize}
+% ------------- COMPARE -------------
+\begin{mdbox}{Comparisons: exact or proportional}
+Exact comparisons (\code|< > <= >=|) answer only when certain:
+\begin{quote}
+\code|"2012-06" < "2012-07-02"| $=$ \code|TRUE|, but\\
+\code|"2012-06" < "2012-06-02"| $=$ \code|NA| — not a false \code|FALSE|.
+\end{quote}
+Proportional operators (\code|%l%,%le%,%g%,%ge%,%><%| within, \code|%>=<%| within incl.) return \emph{proportion} of \code|x|'s
+dates passing test against \code|y|:
+\begin{quote}
+\code|"2012-06" %l% "2012-06-02"| $\approx$ \code|0.033|\\
+\code|"2012-06" %le% "2012-06-02"| $\approx$ \code|0.067|\\
+\code|"2012-05..2012-06" %><% "2012-06-02"| $\approx$ \code|0.016|
+\end{quote}
 \end{mdbox}
 
 % ------------- ANNOTATE -------------

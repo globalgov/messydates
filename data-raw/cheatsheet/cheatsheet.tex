@@ -273,25 +273,21 @@ and POSIX methods keep time-of-day.
 \end{center}
 \end{mdbox}
 
-% ------------- COMPARE -------------
-\begin{mdbox}{Proportional comparison}
-Proportion of \code|x|'s possible dates meeting a test against \code|y|:
+% ------------- INFER -------------
+\begin{greybox}{Describing \& inferring across possibilities}
+Since resolution is an explicit step, varying it opens up opportunities to:
+
 \begin{itemize}
-  \item \code|x %l% y| before min \hfill \code|x %le% y| $\le$
-  \item \code|x %g% y| after max \hfill \code|x %ge% y| $\ge$
-  \item \code|x %><% y| within \hfill \code|x %>=<% y| within, incl.
+  \item describe according to \code|vmean|/\code|vmodal| most likely dates
+  \item drop uncertain dates using \code|!is_uncertain|
+  \item treat \code|vrandom| draws as multiple imputation for dates
+  \item weight observations by \code|precision|
+  \item bound result under \code|vmin| and \code|vmax|
 \end{itemize}
-\end{mdbox}
 
-% ------------- COMPONENTS / DURATION -------------
-\begin{mdbox}{Components \& durations}
-Extract \code|year() month() day() hour() minute() second() tz()|,
-or measure \code|precision()|.\\[2pt]
-\code|messyduration(range)| returns a duration that accounts for the
-uncertainty at each end.
-\end{mdbox}
-
-\end{multicols}
+See \code|vignette("messydates")| for a worked example.
+\end{greybox}
+\end{minipage}
 
 \vfill
 {\scriptsize\color{mdink}

@@ -15,3 +15,4 @@
 ^.DS_Store$
 ^next$
 ^\.claude$
+^CLAUDE\.md$

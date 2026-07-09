@@ -178,18 +178,17 @@ Finding multisets/ranges (with \code|=|, \code|-|, \code|%intersect%|, \code|%un
 See also \code|is_intersecting(x,y)|, \code|is_subset(x,y)|, \code|is_similar(x,y)|.
 \end{mdbox}
 
-\smallskip
+% ------------- MDURATION -------------
+\begin{mdbox}{Durations: the \texttt{mduration} class}
+\code|make_messyduration(x, approx_range)| adds messy endpoints:
 \begin{center}
-\begin{tikzpicture}
-\draw[mddark, line width=1pt] (0,0) -- (4.6,0);
-\foreach \x in {0, 2.1, 2.9, 4.6}
-  \draw[mddark, line width=1pt] (\x,-2.5pt) -- (\x,2.5pt);
-\node[below, font=\scriptsize] at (0,-3pt){min};
-\node[above, font=\scriptsize] at (2.1,3pt){median};
-\node[below, font=\scriptsize] at (2.9,-3pt){mean};
-\node[below, font=\scriptsize] at (4.6,-3pt){max};
-\end{tikzpicture}
+\begin{tabular}{@{}ll@{}}
+\code|"2012-01"|, \code|approx_range = 0| & \arrow \code|"2012-01-01..2012-01-31"|\\
+\code|"2012-01"|, \code|approx_range = 3| & \arrow \code|"2011-12-29..2012-02-03"|\\
+\code|"2012-01"|, \code|approx_range = -3| & \arrow \code|"2012-01-04..2012-01-28"|\\
+\end{tabular}
 \end{center}
+See also \code|seq(a, b, by = "hour")| to step through instants
 \end{mdbox}
 
 % ------------- TIMES -------------

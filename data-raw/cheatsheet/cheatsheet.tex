@@ -104,10 +104,28 @@ Open ended: on or before/after & \texttt{\textbf{..}2012-09-12}\\
 \end{center}
 \end{greybox}
 
-% ------------- 1. COERCE -------------
-\begin{mdbox}{1. Coerce objects to \texttt{mdate}}
-\code|as_messydate(x)| coerces \code|Date|, \code|POSIXct|, \code|POSIXlt|,
-character, or written text (dates \emph{and} times) into \code|mdate|:
+% ------------- PIPELINE 1: TIDY -------------
+\begin{mdbox}{1. Annotate precise formats}
+\begin{center}
+\code|Date/POSIXct| \pipe{\shortstack[c]{annotate \\ as\_messydate() \\ make\_messydate()}} \code|mdate|\\[2pt]
+\end{center}
+Tidy sources are precise; annotate information about messiness:
+\vspace{-10pt}
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}ll@{}}
+\code|on_or_before("2010")| \arrow \code|"..2010"| &
+\code|on_or_after("2010")| \arrow \code|"2010.."|\\
+\code|approximate("2010")| \arrow \code|"2010~"| &
+\code|uncertain("2010")| \arrow \code|"2010?"|\\
+\end{tabular}\\[2pt]
+\end{center}
+\code|component=| specifies part e.g.:
+\begin{center}
+\code|uncertain(x, component = "month")| \arrow \code|2026-?07-07|
+\end{center}
+\end{mdbox}
+
 
 \smallskip
 \renewcommand{\arraystretch}{1.2}

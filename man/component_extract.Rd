@@ -2,30 +2,30 @@
 % Please edit documentation in R/component_extract.R
 \name{component_extract}
 \alias{component_extract}
-\alias{year}
-\alias{month}
-\alias{day}
-\alias{hour}
-\alias{minute}
-\alias{second}
-\alias{tz}
+\alias{year.mdate}
+\alias{month.mdate}
+\alias{mday.mdate}
+\alias{hour.mdate}
+\alias{minute.mdate}
+\alias{second.mdate}
+\alias{tz.mdate}
 \alias{precision}
 \alias{precision.mdate}
 \title{Extracting components from messy dates}
 \usage{
-year(x)
+\method{year}{mdate}(x, ...)
 
-month(x)
+\method{month}{mdate}(x, ...)
 
-day(x)
+\method{mday}{mdate}(x, ...)
 
-hour(x)
+\method{hour}{mdate}(x, ...)
 
-minute(x)
+\method{minute}{mdate}(x, ...)
 
-second(x)
+\method{second}{mdate}(x, ...)
 
-tz(x)
+\method{tz}{mdate}(x, ...)
 
 precision(x)
 
@@ -33,6 +33,9 @@ precision(x)
 }
 \arguments{
 \item{x}{A \code{mdate} object}
+
+\item{...}{Additional arguments passed to or from other methods
+(accepted for compatibility with the \code{{lubridate}} generics; unused).}
 }
 \value{
 \code{year()}, \code{month()}, \code{day()}, \code{hour()}, \code{minute()}, and \code{second()}
@@ -48,8 +51,20 @@ These functions allow the extraction of particular date components
 from messy dates, such as the \code{year()}, \code{month()}, \code{day()}, and, for
 date-times, \code{hour()}, \code{minute()}, \code{second()}, and the time zone (\code{tz()}).
 
+These are methods for the same-named generics in \code{{lubridate}}, so they
+extend rather than mask them: calling e.g. \code{year()} on an \code{mdate} returns
+the messy-date-aware result (understanding partial precision such as
+\code{2012-06-XX}), while calling it on a \code{Date} or \code{POSIXct} still dispatches
+to \code{{lubridate}}'s own methods. This lets \code{{messydates}} and \code{{lubridate}}
+be loaded together, in either order, without one masking the other.
+
 \code{precision()} allows for the identification of the greatest level of
 precision in (currently) the first element of each date.
+}
+\details{
+Unlike \code{{lubridate}}'s \code{tz()}, which returns an Olson time zone name,
+\code{tz.mdate()} returns the ISO 8601 UTC offset \emph{designator} carried by the
+date-time string (\code{"Z"} or e.g. \code{"+02:00"}), or \code{NA} when none is present.
 }
 \section{Precision}{
 

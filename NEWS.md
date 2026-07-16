@@ -114,6 +114,11 @@
   no longer call `expand()` more than necessary
 - Improved `precision()` to extend below the day: 24 to the hour, 1440 to the
   minute, and 86400 to the second (date-level precision is unchanged)
+- `year()`, `month()`, `day()`, `hour()`, `minute()`, `second()`, and `tz()` are 
+  now S3 methods on the same-named `{lubridate}` generics rather than plain 
+  functions, so the two packages can be loaded together (in either order) 
+  without one masking the other: these accessors dispatch to the messy-date 
+  logic on an `mdate` but to `{lubridate}`'s own methods on a `Date`/`POSIXct`
 
 ## Expand/Contract
 

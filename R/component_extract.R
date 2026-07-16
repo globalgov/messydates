@@ -4,9 +4,18 @@
 #'   from messy dates, such as the `year()`, `month()`, `day()`, and, for
 #'   date-times, `hour()`, `minute()`, `second()`, and the time zone (`tz()`).
 #'
+#'   These are methods for the same-named generics in `{lubridate}`, so they
+#'   extend rather than mask them: calling e.g. `year()` on an `mdate` returns
+#'   the messy-date-aware result (understanding partial precision such as
+#'   `2012-06-XX`), while calling it on a `Date` or `POSIXct` still dispatches
+#'   to `{lubridate}`'s own methods. This lets `{messydates}` and `{lubridate}`
+#'   be loaded together, in either order, without one masking the other.
+#'
 #'   `precision()` allows for the identification of the greatest level of
 #'   precision in (currently) the first element of each date.
 #' @param x A `mdate` object
+#' @param ... Additional arguments passed to or from other methods
+#'   (accepted for compatibility with the `{lubridate}` generics; unused).
 #' @return `year()`, `month()`, `day()`, `hour()`, `minute()`, and `second()`
 #'   extraction return the integer for the requested component (`NA` where the
 #'   component is absent or unspecified).
@@ -17,11 +26,49 @@
 #' @name component_extract
 NULL
 
+# Re-export the {lubridate} accessor generics so that {messydates}' methods
+# below extend them (rather than masking them with plain functions).
+
+#' @importFrom lubridate year
+#' @export
+lubridate::year
+
+#' @importFrom lubridate month
+#' @export
+lubridate::month
+
+#' @importFrom lubridate day
+#' @export
+lubridate::day
+
+# {lubridate}'s day() dispatches via UseMethod("mday"), so the method below is
+# registered on mday() (day() then finds it too).
+#' @importFrom lubridate mday
+#' @export
+lubridate::mday
+
+#' @importFrom lubridate hour
+#' @export
+lubridate::hour
+
+#' @importFrom lubridate minute
+#' @export
+lubridate::minute
+
+#' @importFrom lubridate second
+#' @export
+lubridate::second
+
+#' @importFrom lubridate tz
+#' @export
+lubridate::tz
+
 #' @rdname component_extract
 #' @examples
 #' year(as_messydate(c("2012-02-03","2012","2012-02")))
-#' @export
-year <- function(x) {
+#' @exportS3Method lubridate::year
+year.mdate <- function(x, ...) {
+  x <- as.character(x)
   x <- stringi::stri_replace_all_regex(x, "\\.\\..+", "")
   x <- stringi::stri_replace_all_regex(x, "-.+", "")
   # A bare time ("14:30") has no year component; return NA rather than warning.
@@ -32,8 +79,8 @@ year <- function(x) {
 #' @rdname component_extract
 #' @examples
 #' month(as_messydate(c("2012-02-03","2012","2012-02")))
-#' @export
-month <- function(x) {
+#' @exportS3Method lubridate::month
+month.mdate <- function(x, ...) {
   m <- stringi::stri_match_first_regex(as.character(x),
                                        "^-?[0-9X]{4}-([0-9X]{1,2})")[, 2]
   suppressWarnings(as.integer(m))
@@ -42,8 +89,8 @@ month <- function(x) {
 #' @rdname component_extract
 #' @examples
 #' day(as_messydate(c("2012-02-03","2012","2012-02")))
-#' @export
-day <- function(x) {
+#' @exportS3Method lubridate::mday
+mday.mdate <- function(x, ...) {
   d <- stringi::stri_match_first_regex(
     as.character(x), "^-?[0-9X]{4}-[0-9X]{1,2}-([0-9X]{1,2})")[, 2]
   suppressWarnings(as.integer(d))
@@ -63,8 +110,8 @@ mark_bare_time <- function(x) {
 #' @rdname component_extract
 #' @examples
 #' hour(as_messydate(c("2012-02-03 14:30:00","2012-02-03")))
-#' @export
-hour <- function(x) {
+#' @exportS3Method lubridate::hour
+hour.mdate <- function(x, ...) {
   h <- stringi::stri_match_first_regex(mark_bare_time(x), "[T ][~?%]?([0-9X]{2})")[, 2]
   suppressWarnings(as.integer(h))
 }
@@ -72,8 +119,8 @@ hour <- function(x) {
 #' @rdname component_extract
 #' @examples
 #' minute(as_messydate("2012-02-03 14:30:00"))
-#' @export
-minute <- function(x) {
+#' @exportS3Method lubridate::minute
+minute.mdate <- function(x, ...) {
   m <- stringi::stri_match_first_regex(
     mark_bare_time(x), "[T ][~?%]?[0-9X]{2}:[~?%]?([0-9X]{2})"
   )[, 2]
@@ -83,8 +130,8 @@ minute <- function(x) {
 #' @rdname component_extract
 #' @examples
 #' second(as_messydate("2012-02-03 14:30:05"))
-#' @export
-second <- function(x) {
+#' @exportS3Method lubridate::second
+second.mdate <- function(x, ...) {
   s <- stringi::stri_match_first_regex(
     mark_bare_time(x),
     "[T ][~?%]?[0-9X]{2}:[~?%]?[0-9X]{2}:[~?%]?([0-9X]{2}(?:\\.[0-9]+)?)"
@@ -93,10 +140,14 @@ second <- function(x) {
 }
 
 #' @rdname component_extract
+#' @details
+#'   Unlike `{lubridate}`'s `tz()`, which returns an Olson time zone name,
+#'   `tz.mdate()` returns the ISO 8601 UTC offset *designator* carried by the
+#'   date-time string (`"Z"` or e.g. `"+02:00"`), or `NA` when none is present.
 #' @examples
 #' tz(as_messydate("2012-02-03 14:30:00+02:00"))
-#' @export
-tz <- function(x) {
+#' @exportS3Method lubridate::tz
+tz.mdate <- function(x, ...) {
   stringi::stri_match_first_regex(mark_bare_time(x),
                                   "(Z|[+-][0-9]{2}:[0-9]{2})$")[, 2]
 }

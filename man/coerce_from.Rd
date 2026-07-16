@@ -8,6 +8,7 @@
 \alias{as.data.frame.mdate}
 \alias{as.list.mdate}
 \alias{as.double.mdate}
+\alias{as_datetime,mdate-method}
 \title{Coercion from \code{mdate} to common date classes}
 \usage{
 \method{as.Date}{mdate}(x, FUN = vmin, ...)
@@ -21,6 +22,8 @@
 \method{as.list}{mdate}(x, ...)
 
 \method{as.double}{mdate}(x, ...)
+
+\S4method{as_datetime}{mdate}(x, ...)
 }
 \arguments{
 \item{x}{A \code{mdate} object}
@@ -79,6 +82,10 @@ one per element, without resolving any of them.
 for \code{as.double(as.Date(x))}), without resolving ranges, sets, or
 unspecified components first; it is mostly useful for already-precise
 dates.
+
+\code{{lubridate}}'s \code{as_date()} and \code{as_datetime()} also accept an \code{mdate}
+(delegating to \code{as.Date()}/\code{as.POSIXct()} above, so the \code{FUN} resolver
+still applies).
 }
 \examples{
 as.Date(as_messydate("2012-01"), FUN = vmin)

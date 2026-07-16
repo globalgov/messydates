@@ -81,7 +81,9 @@ as.Date.mdate <- function(x, FUN = vmin, ...) {
 as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
-  if (stringi::stri_detect_regex(x, "^-")) {
+  # Vectorised guard: any() rather than a bare if(), which errors on a
+  # length > 1 condition (R >= 4.2) and so broke conversion of vectors.
+  if (any(stringi::stri_detect_regex(as.character(x), "^-"), na.rm = TRUE)) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
   mdate_to_posixct(as.character(x), tz = tz)
@@ -92,7 +94,9 @@ as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
 as.POSIXlt.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
   # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
   x <- FUN(x)
-  if (stringi::stri_detect_regex(x, "^-")) {
+  # Vectorised guard: any() rather than a bare if(), which errors on a
+  # length > 1 condition (R >= 4.2) and so broke conversion of vectors.
+  if (any(stringi::stri_detect_regex(as.character(x), "^-"), na.rm = TRUE)) {
     stop("For conversion of negative dates from mdate class use as.Date()")
   }
   as.POSIXlt(mdate_to_posixct(as.character(x), tz = tz))
@@ -168,4 +172,26 @@ as.double.mdate <- function(x, ...) {
   if(any(is_bce(x))) x[is_bce(x)] <- negative_dates(x)[is_bce(x)]
   as.double(lubridate::as_date(x))
 }
+
+# {lubridate}'s as_date() is an S4 generic whose fallback calls base::as.Date(),
+# which dispatches to as.Date.mdate() above, so as_date(<mdate>) already works
+# (honouring `FUN`). as_datetime(), however, derives a default time zone via
+# lubridate::tz(x); for an mdate that now returns the ISO *offset* designator
+# (or NA), not an Olson zone name, which as.POSIXct() would reject. Register an
+# S4 method that goes straight to as.POSIXct.mdate() instead, so
+# as_datetime(<mdate>) behaves exactly like as.POSIXct(<mdate>).
+#' @importFrom methods setOldClass setMethod
+methods::setOldClass("mdate")
+
+#' @rdname coerce_from
+#' @details
+#'   `{lubridate}`'s `as_date()` and `as_datetime()` also accept an `mdate`
+#'   (delegating to `as.Date()`/`as.POSIXct()` above, so the `FUN` resolver
+#'   still applies).
+#' @aliases as_datetime,mdate-method
+#' @importFrom lubridate as_datetime
+#' @exportMethod as_datetime
+methods::setMethod("as_datetime", "mdate", function(x, ...) {
+  as.POSIXct(x, ...)
+})
 

@@ -6,6 +6,7 @@
 \alias{validate_messydate}
 \alias{make_messydate}
 \alias{print.mdate}
+\alias{format.mdate}
 \title{A flexible date class for messy dates}
 \usage{
 new_messydate(x = character())
@@ -15,6 +16,8 @@ validate_messydate(x)
 make_messydate(..., resequence = FALSE)
 
 \method{print}{mdate}(x, ...)
+
+\method{format}{mdate}(x, ...)
 }
 \arguments{
 \item{x}{A character scalar or vector in the expected \code{"yyyy-mm-dd"} format
@@ -68,6 +71,10 @@ If two date variables are passed to \code{make_messydate()},
 function will create a range of dates from it (yyyy-mm-dd..yyyy-mm-dd).
 If one date variable is passed to \code{make_messydate()},
 function defaults to \code{as_messydate()}.
+
+\code{format()} returns the underlying ISO 8601-2 strings, so that \code{mdate}
+vectors render legibly when held in a \code{data.frame} or tibble column
+(which format their columns rather than printing them).
 }
 \section{Dates and times}{
 

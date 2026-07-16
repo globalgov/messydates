@@ -50,6 +50,10 @@ is_subset <- function(x, y) {
 #' is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 #' @export
 is_similar <- function(x, y) {
+  # Coerce to mdate so the component accessors dispatch to their `.mdate`
+  # methods (rather than {lubridate}'s) even when passed bare strings.
+  if (!is_messydate(x)) x <- as_messydate(x)
+  if (!is_messydate(y)) y <- as_messydate(y)
   year(x) == year(y) & month(x) == day(y) & day(x) == month(y)
 }
 

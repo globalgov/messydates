@@ -157,3 +157,13 @@ make_messydate <- function(..., resequence = FALSE) {
 print.mdate <- function(x, ...) {
   str(x)
 }
+
+#' @rdname class_mdate
+#' @details
+#'   `format()` returns the underlying ISO 8601-2 strings, so that `mdate`
+#'   vectors render legibly when held in a `data.frame` or tibble column
+#'   (which format their columns rather than printing them).
+#' @export
+format.mdate <- function(x, ...) {
+  format(unclass(x), ...)
+}

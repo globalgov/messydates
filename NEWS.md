@@ -59,6 +59,12 @@
   (Kalends, Nones, and Ides, with the later Nones/Ides of March, May, July, and October)
 - Coercion from `POSIXct`/`POSIXlt` now preserves the time of day (midnight is
   treated as date-only); `as.POSIXct()`/`as.POSIXlt()` restore it
+- Improved interoperability with `{lubridate}`: its `as_date()` and 
+  `as_datetime()` coercion verbs now work on an `mdate`, honouring the `FUN` 
+  resolver (e.g. `as_date(md, FUN = vmax)`), as do `format()` on `mdate` columns 
+  in data frames and tibbles
+- Fixed `as.POSIXct()`/`as.POSIXlt()` erroring on a vector of two or more 
+  `mdate`s (the check for pre-common-era dates was not vectorised)
   
 ## Annotation
 

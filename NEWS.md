@@ -7,6 +7,8 @@
 - Removed `purrr` and `dplyr` dependencies (replaced with base R), 
   leaving only `stringi` and `lubridate` as imports
 - Updated the cheatsheet to reflect the new time support and other changes
+- Declared `anytime` and `clock` in Suggests, since the interoperability
+  tests exercise them where installed
 
 ## Class
 

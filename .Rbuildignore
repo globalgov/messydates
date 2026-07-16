@@ -8,10 +8,9 @@
 ^cran-comments\.md$
 ^CRAN-RELEASE$
 ^data-raw$
-^vignettes-old$
 ^iso_standards
 ^CRAN-SUBMISSION$
-^article$
+^paper$
 ^.DS_Store$
 ^next$
 ^\.claude$

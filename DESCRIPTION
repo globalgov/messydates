@@ -36,11 +36,14 @@ LazyData: true
 Depends:
     R (>= 4.1)
 Imports:
-    stringi,
-    lubridate
-Suggests: 
+    methods,
+    lubridate,
+    stringi
+Suggests:
     testthat (>= 3.0.0),
-    rmarkdown
+    rmarkdown,
+    anytime,
+    clock
 URL: https://globalgov.github.io/messydates/
 BugReports: https://github.com/globalgov/messydates/issues
 Config/Needs/build: 

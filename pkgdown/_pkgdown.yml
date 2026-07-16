@@ -35,27 +35,31 @@ navbar:
       href: https://github.com/globalgov/messydates
       aria-label: Take me to the Github repository
 reference:
-  - title: "Coerce to"
-    desc: "These functions construct and/or coerce dates to the `mdate` class:"
+  - title: "Class construction"
+    desc: "These functions construct dates in the `mdate` class and durations in the `mduration` class:"
     contents:
       - starts_with("class_")
-      - component_annotate
+  - title: "Coerce to"
+    desc: "These functions coerce dates from other classes to the `mdate` class:"
+    contents:
       - coerce_to
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:
       - starts_with("as\\.")
-      - coerce_extrema
-      - coerce_tendency
+      - starts_with("resolve_")
   - title: "Manipulation"
     desc: "These functions expand or contract objects of `mdate` class from/into a list:"
     contents:
       - starts_with("convert_")
+  - title: "Components"
+    desc: "These functions annotate or extract components of dates and times:"
+    contents:
+      - starts_with("component_")
   - title: "Operations"
     desc: "These methods help operate on objects of the `mdate` class:"
     contents:
       - starts_with("operate_")
-      - component_extract
   - title: "Data"
     desc: "Working with 'messy' data:"
     contents:

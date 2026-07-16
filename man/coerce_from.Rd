@@ -5,13 +5,25 @@
 \alias{as.Date.mdate}
 \alias{as.POSIXct.mdate}
 \alias{as.POSIXlt.mdate}
-\title{Coercion from messy dates}
+\alias{as.data.frame.mdate}
+\alias{as.list.mdate}
+\alias{as.double.mdate}
+\alias{as_datetime,mdate-method}
+\title{Coercion from \code{mdate} to common date classes}
 \usage{
 \method{as.Date}{mdate}(x, FUN = vmin, ...)
 
 \method{as.POSIXct}{mdate}(x, tz = "UTC", FUN = vmin, ...)
 
 \method{as.POSIXlt}{mdate}(x, tz = "UTC", FUN = vmin, ...)
+
+\method{as.data.frame}{mdate}(x, ...)
+
+\method{as.list}{mdate}(x, ...)
+
+\method{as.double}{mdate}(x, ...)
+
+\S4method{as_datetime}{mdate}(x, ...)
 }
 \arguments{
 \item{x}{A \code{mdate} object}
@@ -19,7 +31,9 @@
 \item{FUN}{A function that can be used to resolve expanded messy dates
 into a single date.
 For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
-\code{modal()}, and \code{random()}.}
+\code{modal()}, and \code{random()}. \code{vmin()}, \code{vmax()}, \code{vmean()}, \code{vmedian()},
+\code{vmodal()}, and \code{vrandom()} are the vectorised equivalents, resolving
+each element separately rather than summarising the whole vector.}
 
 \item{...}{Arguments passed on to the S3 generics.}
 
@@ -34,10 +48,9 @@ A date object of \code{Date}, \code{POSIXct}, or \code{POSIXlt} class
 \description{
 These functions coerce objects of \code{mdate} class to
 common date classes such as \code{Date}, \code{POSIXct}, and \code{POSIXlt}.
-Since \code{mdate} objects can hold multiple individual dates,
-however, an additional function must be passed as an argument
-so that these functions know how to coerce resolve multiple dates
-into a single date.
+Since \code{mdate} objects can hold multiple individual dates, however,
+an additional function must be passed as an argument so that
+these functions know how to resolve multiple dates into a single date.
 
 For example, one might wish to use the earliest possible date
 in any ranges of dates (\code{min}), the latest possible date (\code{max}),
@@ -49,6 +62,31 @@ are particularly useful in converting back out of the \code{mdate} class
 for use with existing methods and models,
 especially for checking the robustness of results.
 }
+\details{
+\code{as.Date()} always drops any time of day carried by \code{x} (a calendar
+date has no time component); use \code{as.POSIXct()} or \code{as.POSIXlt()} to
+keep the time.
+
+\code{as.POSIXct()} and \code{as.POSIXlt()} keep the time of day (defaulting to
+midnight if \code{x} is date-only), and honour a UTC offset if \code{x} carries
+one. They do not support dates before the common era; use \code{as.Date()}
+for those.
+
+\code{as.data.frame()} places the (unresolved) \code{mdate} vector in a
+single-column data frame, as for any other vector.
+
+\code{as.list()} splits \code{x} into a list of length-one \code{mdate} objects,
+one per element, without resolving any of them.
+
+\code{as.double()} converts \code{x} to the number of days since 1970-01-01 (as
+for \code{as.double(as.Date(x))}), without resolving ranges, sets, or
+unspecified components first; it is mostly useful for already-precise
+dates.
+
+\code{{lubridate}}'s \code{as_date()} and \code{as_datetime()} also accept an \code{mdate}
+(delegating to \code{as.Date()}/\code{as.POSIXct()} above, so the \code{FUN} resolver
+still applies).
+}
 \examples{
 as.Date(as_messydate("2012-01"), FUN = vmin)
 as.Date(as_messydate("2012-01-01"), FUN = vmean)
@@ -59,4 +97,19 @@ as.Date(as_messydate("2012-01"), FUN = vrandom)
 as.Date(as_messydate("1000 BC"), FUN = vmax)
 as.Date(as_messydate("1000 BC"), FUN = vmedian)
 as.Date(as_messydate(c("-1000", "2020")), FUN = vmin)
+# the time of day, if any, is dropped
+as.Date(as_messydate("2012-01-01 14:30"), FUN = vmin)
+as.POSIXct(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
+as.POSIXct(as_messydate("2012-01-01 14:30:00+02:00"), FUN = vmin)
+as.POSIXlt(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
+as.data.frame(as_messydate(c("2012-01-01", "2012-02")))
+as.list(as_messydate(c("2012-01-01", "2012-02")))
+as.double(as_messydate("2012-01-01"))
 }
+\seealso{
+\code{\link[=resolve_extrema]{resolve_extrema()}}, \code{\link[=resolve_tendency]{resolve_tendency()}}
+
+Other coerce:
+\code{\link{coerce_to}}
+}
+\concept{coerce}

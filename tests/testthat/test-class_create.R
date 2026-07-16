@@ -48,6 +48,12 @@ test_that("validate_messydate works", {
   expect_error(validate_messydate(as_messydate("28>>")))
 })
 
+test_that("validate_messydate rejects '+' outside a timezone offset", {
+  expect_silent(validate_messydate(new_messydate("2012-01-01T14:30:00+02:00")))
+  expect_error(validate_messydate(new_messydate("2012-01-01+")),
+               "timezone offset")
+})
+
 test_that("print method works", {
   expect_output(print(as_messydate("28 BC")), "-0028")
 })
@@ -55,6 +61,8 @@ test_that("print method works", {
 test_that("c method works", {
   expect_identical(as_messydate(c("2012-01-01", "2012-06-01")),
                    c(as_messydate("2012-01-01"), as_messydate("2012-06-01")))
+  # a single object is stripped of its class rather than validated/rebuilt
+  expect_identical(c(as_messydate("2012-01-01")), "2012-01-01")
 })
 
 test_that("subset and subset-assign methods work", {

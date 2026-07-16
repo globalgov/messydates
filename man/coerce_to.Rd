@@ -10,7 +10,7 @@
 \alias{as_messydate.numeric}
 \alias{as_messydate.list}
 \alias{mdate}
-\title{Coercion from regular date classes to mdate}
+\title{Coercion from common date classes to \code{mdate}}
 \usage{
 as_messydate(x, resequence = FALSE)
 
@@ -60,8 +60,15 @@ These methods coerce various date classes into the \code{mdate} class.
 They represent the main user-facing class-creating functions in the package.
 In addition to the typical date classes in R (\code{Date}, \code{POSIXct}, and \code{POSIXlt}),
 there is also a direct method for converting text or character strings to \code{mdate}.
-The function can also extract dates from text,
+The function can also extract dates and times from text,
+including some historical prose conventions,
 though this is a work-in-progress and currently only works in English.
+}
+\details{
+Coercion from \code{POSIXct} and \code{POSIXlt} preserves the time of day
+(and UTC offset) as an ISO 8601-2 date-time.
+Times of exactly midnight (\code{00:00:00}) are treated as date-only,
+so that timezone-naive dates round-trip unchanged.
 }
 \section{Functions}{
 \itemize{
@@ -81,6 +88,38 @@ though this is a work-in-progress and currently only works in English.
 representation of \code{mdate} class
 
 }}
+\section{Parsing prose}{
+
+Beyond plain and lightly-formatted dates, \code{as_messydate()} recognises
+several conventions common in e.g. historical texts and converts them to
+their ISO 8601-2 equivalent before the usual parsing takes place:
+\itemize{
+\item{Roman numerals for a bare year, e.g. \code{"MDCCLXXVI"} becomes \code{1776}.}
+\item{Roman calendar references, i.e. the Kalends, Nones, and Ides of a
+named month, e.g. \code{"the Ides of March, 44 BC"} becomes \code{"-0044-03-15"}.
+The Nones and Ides fall later (the 7th and 15th) in March, May, July,
+and October, and earlier (the 5th and 13th) in other months.}
+\item{Approximate qualifiers ("around", "circa", "about", "roughly", ...)
+add the \code{~} annotation, and uncertain qualifiers ("possibly", "perhaps",
+"reportedly", ...) add \verb{?}; both together add \verb{\%}, e.g.
+\code{"possibly about 1910"} becomes \code{"\%1910"}.}
+\item{Connectives joining two days of the same month: "between the 13th
+and 15th" or "from the 13th to the 15th" become a range (\code{..}); "the
+13th or the 15th" becomes a set (\code{{}}); and a plain "the 13th and the
+15th" becomes two separate dates.}
+\item{"before"/"prior to"/"no later than" and "after"/"since"/"no
+earlier than" become an open range, e.g. \code{"before 1910"} becomes
+\code{"..1910"}. The bound may itself be any precision the parser
+understands, including a decade or century.}
+\item{Decades ("the 1920s" becomes \code{"192X"}) and centuries ("the 19th
+century" becomes \code{"18XX"}).}
+\item{A comma-separated list of dates in prose, e.g.
+\code{"13th Feb, 1977, Feb 15 1977, 1910"}, is split into separate dates
+(here, three): a fragment that is only a year is treated as completing
+the date before it.}
+}
+}
+
 \examples{
 as_messydate("2021")
 as_messydate("2021-02")
@@ -98,7 +137,27 @@ as_messydate(c("210201", "20210201"), resequence = "ymd")
 as_messydate(c("010221", "01022021"), resequence = "dmy")
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 # resequence = "interactive")
+# ISO 8601-2 times, with the same annotations available on time components
+as_messydate("2019-03-01 14:30:00Z")
+as_messydate("2019-03-01 2:30pm")
+as_messydate("2019-03-01 ~14:30")
+# a time of day may also be given on its own, with no date part
+as_messydate("2:30pm")
+as_messydate("around 2pm")
+# historical prose (see the "Parsing historical prose" section below)
+as_messydate("MDCCLXXVI")
+as_messydate("the Ides of March, 44 BC")
+as_messydate("possibly about 1910")
+as_messydate("the 1920s")
+as_messydate("the 19th century")
+as_messydate("before 1910")
+as_messydate("between the 13th and 15th of Feb, 1977")
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 }
+\seealso{
+Other coerce:
+\code{\link{coerce_from}}
+}
+\concept{coerce}

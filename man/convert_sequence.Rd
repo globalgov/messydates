@@ -14,7 +14,8 @@ If 'from' is a range and 'to' is not specified,
 
 \item{to}{A messydate.}
 
-\item{by}{Increment of the sequence. By default "days".}
+\item{by}{Increment of the sequence. By default "days". Use a sub-day
+unit ("hour", "min", or "sec") for a date-time sequence.}
 
 \item{...}{Arguments passed to or from methods.}
 }
@@ -24,6 +25,19 @@ This can be used with ranges or unspecified dates,
 and is particularly useful for defining a sequence of dates
 before the common era or between eras.
 }
+\details{
+If \code{from}/\code{to} (or \code{by}) carry a time of day, the sequence is
+generated at the requested sub-day granularity (e.g. \code{by = "hour"})
+via \code{POSIXct}, and each element of the result keeps a time of day.
+Otherwise, dates are sequenced by calendar day (or another day-based
+\code{by}, e.g. \code{"week"} or \code{"month"}), including across the boundary
+between BCE and CE dates.
+}
 \examples{
 seq(mdate("-0001-12-20"), mdate("0001-01-10"))
+# a range's endpoints are used when only 'from' is given
+seq(as_messydate("2012-01-01..2012-01-05"))
+# date-time sequences use a sub-day 'by'
+seq(as_messydate("2019-03-01 09:00"), as_messydate("2019-03-01 12:00"),
+    by = "hour")
 }

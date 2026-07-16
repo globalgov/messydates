@@ -5,7 +5,7 @@
 \alias{expand}
 \title{Expand messy dates to lists of dates}
 \usage{
-expand(x, approx_range = 0)
+expand(x, approx_range = 0, by = "day")
 }
 \arguments{
 \item{x}{A \code{mdate} object.
@@ -20,6 +20,13 @@ If 3, for example, adds 3 days for day approximation,
 3 years for year/whole date approximation,
 3 years and 3 months for year-month approximation,
 and 3 months and 3 days for month-day approximation.}
+
+\item{by}{Granularity of enumeration, "day" by default.
+To avoid combinatorial explosion, ranges are enumerated at day
+granularity and any time-of-day components on ranges are dropped.
+Precise date-times (i.e. non-ranges) keep their time.
+Set \code{by} to a sub-day unit ("hour", "min", or "sec") to opt in to finer
+enumeration of precise date-time ranges.}
 }
 \value{
 A list of dates, including all dates in each range or set.
@@ -40,4 +47,12 @@ d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
 expand(d)
+# widen an approximate day (the '~' before the day) by 3 days either side
+expand(as_messydate("2001-01-~15"), approx_range = 3)
+# a precise date-time is returned unchanged, keeping its time
+expand(as_messydate("2012-01-01 14:30:00"))
+# a date-time range drops its time by default (day granularity)...
+expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"))
+# ...unless a sub-day 'by' is requested
+expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"), by = "hour")
 }

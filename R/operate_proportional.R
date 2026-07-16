@@ -1,10 +1,16 @@
 #' Proportion of messy dates meeting logical test
 #' @description
-#'   These functions provide various proportional tests for messy date objects.
+#'   These functions provide various proportional tests for messy date
+#'   objects, complementing the strict logical comparisons in
+#'   `?operate_inequalities`. Where a plain `<`/`>`/etc. comparison can only
+#'   return `TRUE`, `FALSE`, or `NA` for a messy (imprecise) date, these
+#'   functions instead report *what proportion* of the dates implied by
+#'   `e1` satisfy the comparison against `e2`, by expanding both to their
+#'   full sets of possible dates first.
 #' @name operate_proportional
-#' @param e1,e2 `mdate` or other class objects
-#' @return The proportion that the comparison is true.
-#' @return A logical vector the same length as the `mdate` passed.
+#' @param e1,e2 `mdate` or other class objects; must be of equal length.
+#' @return A numeric vector, the same length as `e1` and `e2`, of
+#'   proportions between 0 and 1.
 NULL
 
 #' @rdname operate_proportional
@@ -21,8 +27,8 @@ NULL
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x < min(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x < min(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -44,8 +50,8 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x > max(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x > max(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -67,8 +73,8 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x >= max(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x >= max(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -90,8 +96,8 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(expand(e1), expand(e2),
-                                   ~ mean(.x <= min(.y))))
+  suppressMessages(mapply(function(.x, .y) mean(.x <= min(.y)),
+                          expand(e1), expand(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -113,9 +119,9 @@ evalqOnLoad({
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   # Need to create fast way to trim ranges or just get dates within the range
-  suppressMessages(purrr::map2_dbl(e1, e2,
-                  ~ length(.x %intersect% .y)/
-                    (length(unlist(expand(.x)))+1)))
+  suppressMessages(mapply(function(.x, .y)
+    length(.x %intersect% .y) / (length(unlist(expand(.x))) + 1),
+    e1, e2, USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -136,8 +142,9 @@ evalqOnLoad({
   if(length(e1)!=length(e2))
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
-  suppressMessages(purrr::map2_dbl(e1, e2, ~ length(.x %intersect% .y)/
-                                     length(unlist(expand(.x)))))
+  suppressMessages(mapply(function(.x, .y)
+    length(.x %intersect% .y) / length(unlist(expand(.x))),
+    e1, e2, USE.NAMES = FALSE))
 }
 
 evalqOnLoad({

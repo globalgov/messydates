@@ -20,20 +20,24 @@ e1 \%union\% e2
 \item{e1, e2}{Messy date or other class objects}
 }
 \value{
-A vector of the same mode for \code{intersect},
-or a common mode for union.
+A vector of the same mode for \verb{\%intersect\%},
+or a common mode for \verb{\%union\%}.
 }
 \description{
-Performs intersection (\code{md_intersect()}) and union (\code{md_union()}) on,
-inter alia, messy date class objects.
-For a more typical 'join' that retains all elements, even if duplicated,
-please use \code{md_multiset}.
+Performs intersection (\verb{\%intersect\%}) and union (\verb{\%union\%}) on the
+dates or date-times implied by messy date class objects, treating each
+as the (day-granularity) set of dates it expands to. Both return a
+plain character vector of the individual member dates.
+
+For a union that instead returns an \code{mdate} object in its most
+succinct (contracted) notation, e.g. a range rather than a list of
+every day within it, use \code{+} (see \code{?operate_arithmetic}) instead.
 }
 \section{Functions}{
 \itemize{
 \item \code{ \%intersect\% }: Find intersection of sets of messy dates
 
-\item \code{ \%union\% }: Find intersection of sets of messy dates
+\item \code{ \%union\% }: Find union of sets of messy dates
 
 }}
 \examples{

@@ -41,15 +41,20 @@ e1 \%>=<\% e2
 \method{\%>=<\%}{mdate}(e1, e2)
 }
 \arguments{
-\item{e1, e2}{\code{mdate} or other class objects}
+\item{e1, e2}{\code{mdate} or other class objects; must be of equal length.}
 }
 \value{
-The proportion that the comparison is true.
-
-A logical vector the same length as the \code{mdate} passed.
+A numeric vector, the same length as \code{e1} and \code{e2}, of
+proportions between 0 and 1.
 }
 \description{
-These functions provide various proportional tests for messy date objects.
+These functions provide various proportional tests for messy date
+objects, complementing the strict logical comparisons in
+\code{?operate_inequalities}. Where a plain \code{<}/\code{>}/etc. comparison can only
+return \code{TRUE}, \code{FALSE}, or \code{NA} for a messy (imprecise) date, these
+functions instead report \emph{what proportion} of the dates implied by
+\code{e1} satisfy the comparison against \code{e2}, by expanding both to their
+full sets of possible dates first.
 }
 \section{Functions}{
 \itemize{

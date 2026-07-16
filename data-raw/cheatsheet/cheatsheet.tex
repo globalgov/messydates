@@ -1,0 +1,298 @@
+% messydates cheat sheet — editable source
+% Build:  pdflatex cheatsheet.tex   (run from this directory)
+% See build.R in this folder to compile and refresh the PDF/PNG copies.
+\documentclass[9pt]{extarticle}
+
+\usepackage[paperwidth=11in,paperheight=7.6in,margin=0.28in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage{fontawesome5}
+\usepackage{tikz}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.15em, itemsep=1pt, topsep=1pt, parsep=0pt}
+
+\graphicspath{{../../man/figures/}}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+% --- palette (matches the wooden/sundial theme) ---
+\definecolor{mdtan}{HTML}{E9D8B4}
+\definecolor{mddark}{HTML}{B58B4C}
+\definecolor{mdbrown}{HTML}{6E5334}
+\definecolor{mdgrey}{HTML}{E7E7E7}
+\definecolor{mdgreyd}{HTML}{8A8A8A}
+\definecolor{mdink}{HTML}{2B2016}
+
+% inline verbatim code (no escaping needed): \code|as_messydate(x)|
+\let\code\verb
+
+% --- section boxes ---
+\newtcolorbox{mdbox}[2][mddark]{
+  enhanced, breakable=false,
+  colback=mdtan!22, colframe=#1, coltitle=white,
+  colbacktitle=#1, fonttitle=\bfseries,
+  title={#2}, boxrule=0.5pt, arc=2pt,
+  left=3pt, right=3pt, top=2pt, bottom=3pt,
+  before skip=4pt, after skip=4pt,
+  fontupper=\footnotesize
+}
+\newtcolorbox{greybox}[1]{
+  enhanced, breakable=false,
+  colback=mdgrey, colframe=mdgreyd, coltitle=white,
+  colbacktitle=mdgreyd, fonttitle=\bfseries,
+  title={#1}, boxrule=0.5pt, arc=2pt,
+  left=3pt, right=3pt, top=2pt, bottom=3pt,
+  before skip=4pt, after skip=4pt,
+  fontupper=\footnotesize
+}
+\newcommand{\arrow}{\;\textcolor{mddark}{$\rightarrow$}\;}
+% pipeline step arrow with label above
+\newcommand{\pipe}[1]{\;\textcolor{mddark}{$\xrightarrow{\;\text{\scriptsize #1}\;}$}\;}
+% column header strip
+\newcommand{\colhead}[2]{%
+  {\color{mdbrown}\bfseries\large #1\; #2}\\[-4pt]
+  {\color{mddark}\rule{\linewidth}{1.2pt}}\vspace{1pt}}
+
+\begin{document}
+
+% ======================= HEADER =======================
+\begin{tcolorbox}[enhanced, colback=mdbrown, colframe=mdbrown, arc=3pt,
+  left=8pt, right=8pt, top=4pt, bottom=4pt]
+\begin{minipage}[c]{0.80\textwidth}
+  {\color{white}\bfseries\fontsize{20}{22}\selectfont
+   Messy dates \& times \; : : \; CHEAT SHEET}\\[2pt]
+  {\color{mdtan}\small Retain, represent, and reason about date/time
+   imprecision — an implementation of ISO 8601-2:2019 (EDTF) for R.}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.16\textwidth}\raggedleft
+  \includegraphics[height=0.72in]{messydates_hexlogo.png}
+\end{minipage}
+\end{tcolorbox}
+
+\vspace{3pt}
+
+% ======================= THREE FIXED COLUMNS =======================
+\begin{minipage}[t]{0.323\textwidth}
+\colhead{\faCalendarPlus}{Constructing messy dates}
+
+% ------------- ANATOMY -------------
+\begin{greybox}{Anatomy of a messy date}
+One \code|mdate| value holds a date (and potentially time) in a standard layout:
+\begin{center}
+\code|2012-09-12 14:30:00|\\[-2pt]
+{\color{mdgreyd}\code|yyyy-mm-dd hh:mm:ss|}
+\end{center}
+Each component ({\color{mdgreyd}\code|y|, \code|m|, \code|d|, \code|h|, \code|m|, \code|s|}) or the whole date-time can be annotated:
+
+\smallskip
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}ll@{}}
+Unspecified component (X) & \texttt{2012-\textbf{XX}-12}\\
+Uncertain date-time (? suffixed) & \texttt{2012-09-12 14:30\textbf{?}}\\
+Approximate time only (\code|~| prefixed) & \texttt{2012-09-12 \textbf{\textasciitilde}14:30}\\
+Set of dates (\code|{}| all, \code|[]| one-of) & \texttt{\textbf{\{}2012-09\textbf{,}2012-11\textbf{\}}}\\
+Range of dates (joined by \code|..|) & \texttt{2012-09\textbf{..}2012-10}\\
+Open ended: on or before/after & \texttt{\textbf{..}2012-09-12}\\
+\end{tabular}
+\end{center}
+\end{greybox}
+
+% ------------- PIPELINE 1: TIDY -------------
+\begin{mdbox}{1. Annotate precise formats}
+\begin{center}
+\code|Date/POSIXct| \pipe{\shortstack[c]{annotate \\ as\_messydate() \\ make\_messydate()}} \code|mdate|\\[2pt]
+\end{center}
+Tidy sources are precise; annotate information about messiness:
+\vspace{-10pt}
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}ll@{}}
+\code|on_or_before("2010")| \arrow \code|"..2010"| &
+\code|on_or_after("2010")| \arrow \code|"2010.."|\\
+\code|approximate("2010")| \arrow \code|"2010~"| &
+\code|uncertain("2010")| \arrow \code|"2010?"|\\
+\end{tabular}\\[2pt]
+\end{center}
+\code|component=| specifies part e.g.:
+\begin{center}
+\code|uncertain(x, component = "month")| \arrow \code|2026-?07-07|
+\end{center}
+\end{mdbox}
+
+% ------------- PIPELINE 2: MESSY TEXT -------------
+\begin{mdbox}{2. Parse from (messy) text}
+\begin{center}
+"free text" \pipe{as\_messydate()} \code|mdate|\\[2pt]
+\end{center}
+Messydates parser converts prose into annotated \code|mdate|:
+
+\smallskip
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}ll@{}}
+\code|"it happened about 44 BCE"|\arrow          & \code|"~-0044"|\\
+\code|"before 4th January 2024"|\arrow   & \code|"..2024-01-04"|\\
+\code|"sometime in the 1980s"|\arrow               & \code|"198X"|\\
+\code|"last day of Feb 2012"|\arrow   & \code|"2012-02-29"|\\
+\code|"it was around 2:30pm"|\arrow   & \code|"14:30~"|\\
+\end{tabular}
+\end{center}
+
+See also \code|is_bce()|.
+\code|contract(md)| finds most concise messy form:\\[-12pt]
+\begin{center}
+\code|"2021-04-01..2021-04-30"| \arrow \code|"2021-04"|
+\end{center}
+\end{mdbox}
+\end{minipage}\hfill
+%
+\begin{minipage}[t]{0.323\textwidth}
+\colhead{\faCogs}{Working with messy dates}
+
+% ------------- ARITHMETIC -------------
+\begin{mdbox}{Adding, subtracting}
+Shift by days (numeric) or period strings, down to seconds:
+\begin{quote}
+\code|"2012-01-31" + 1| \arrow \code|"2012-02-01"|\\
+\code|"2012-01-31 09:00" + "1 month"| \arrow \code|2012-02-29 09:00|
+\end{quote}
+Calendar arithmetic retains day-of-month \& time.
+\end{mdbox}
+
+% ------------- COMBINE -------------
+\begin{mdbox}{Combining two mdates}
+Finding multisets/ranges (with \code|=|, \code|-|, \code|%intersect%|, \code|%union%|) is easy:\\[2pt]
+\begin{tabular}{@{}ll@{}}
+& \code|"2012-01-31" + "2012-02-01"| \arrow \code|"2012-01-31..2012-02-01"|\\
+& \code|"2012-01" - "2012-01-31"| \arrow \code|"2012-01-01..2012-01-30"|\\
+& \code|"2012-01" %intersect% "2012-01-31"| \arrow \code|"2012-01-31"|\\[2pt]
+\end{tabular}
+
+See also \code|is_intersecting(x,y)|, \code|is_subset(x,y)|, \code|is_similar(x,y)|.
+\end{mdbox}
+
+% ------------- MDURATION -------------
+\begin{mdbox}{Durations: the \texttt{mduration} class}
+\code|make_messyduration(x, approx_range)| adds messy endpoints:
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\code|"2012-01"|, \code|approx_range = 0| & \arrow \code|"2012-01-01..2012-01-31"|\\
+\code|"2012-01"|, \code|approx_range = 3| & \arrow \code|"2011-12-29..2012-02-03"|\\
+\code|"2012-01"|, \code|approx_range = -3| & \arrow \code|"2012-01-04..2012-01-28"|\\
+\end{tabular}
+\end{center}
+See also \code|seq(a, b, by = "hour")| to step through instants
+\end{mdbox}
+
+% ------------- COMPARE -------------
+\begin{mdbox}{Comparisons: exact or proportional}
+Exact comparisons (\code|< > <= >=|) answer only when certain:
+\begin{quote}
+\code|"2012-06" < "2012-07-02"| $=$ \code|TRUE|, but\\
+\code|"2012-06" < "2012-06-02"| $=$ \code|NA| — not a false \code|FALSE|.
+\end{quote}
+Proportional operators (\code|%l%,%le%,%g%,%ge%,%><%| within, \code|%>=<%| within incl.) return \emph{proportion} of \code|x|'s
+dates passing test against \code|y|:
+\begin{quote}
+\code|"2012-06" %l% "2012-06-02"| $\approx$ \code|0.033|\\
+\code|"2012-06" %le% "2012-06-02"| $\approx$ \code|0.067|\\
+\code|"2012-05..2012-06" %><% "2012-06-02"| $\approx$ \code|0.016|
+\end{quote}
+\end{mdbox}
+
+% ------------- QUANTIFY -------------
+\begin{mdbox}{Quantify precision}
+Precision of date-times in parts per day:
+\begin{quote}
+\code|precision("2012")| $\approx$ \code|0.003|\\
+\code|precision("2012-01-01")| = \code|1|\\
+\code|precision("2012-01-01 14:30")| = \code|1440|
+\end{quote}
+See also \code|is_precise| \code|is_uncertain| \code|is_approximate|
+\end{mdbox}
+
+\end{minipage}\hfill
+%
+\begin{minipage}[t]{0.323\textwidth}
+\colhead{\faCalendarCheck}{Analysing with messy dates}
+
+% ------------- COERCE = EXPAND + RESOLVE -------------
+\begin{mdbox}{Coercion: expand, then resolve}
+\code|as.Date(mdate, FUN)|, \code|as.POSIXct(mdate, FUN)|, \code|as.POSIXlt(mdate, FUN)| coerce
+\code|mdate| to classes other packages expect for analysis.\\
+
+Each coercion takes two steps:
+\begin{itemize}
+\item \emph{expand} to all compatible dates, also available directly using \code|expand(mdate)|, then
+\item \emph{resolve} them to a single date according to an explicit \code|FUN| rule
+\end{itemize}
+\begin{center}
+\code|"2021-04"| \pipe{expand()}
+\begin{tabular}[c]{@{}c@{}}
+  \code|"2024-04-01"| \\
+  \code|"2024-04-02"| \\
+  \code|...|
+\end{tabular}
+\pipe{FUN} \code|"2021-04-01"|
+\end{center}
+\code|FUN =| makes the resolution rule an explicit, visible choice,
+and can be:
+\begin{itemize}
+\item vectorised/element-wise (\code|vmin vmax vmean vmedian vmodal|), or
+\item summarise the whole vector (\code|min max mean median modal random|)
+\end{itemize}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}l@{}}
+\code|vmin(c("2012","2013"))|\arrow \code|"2012-01-01","2013-01-01"|\\
+\code|min(c("2012","2013"))|\arrow \code|"2012-01-01"|\\
+\code|vmax(c("2012","2013"))|\arrow \code|"2012-12-31","2013-12-31"|\\
+\code|max(c("2012","2013"))|\arrow \code|"2013-12-31"|\\
+\code|vmean(c("2012","2013"))|\arrow \code|"2012-07-01","2013-07-02"|\\
+\code|mean(c("2012","2013"))|\arrow \code|"2012-12-31"|\\
+\end{tabular}
+\end{center}
+
+Precise values pass through untouched whatever the choice,
+and POSIX methods keep time-of-day.
+\end{mdbox}
+
+% ------------- COMPONENTS -------------
+\begin{mdbox}{Extracting components}
+\code|{lubridate}|-style accessors extract components of messy dates and return them as numerical values:
+\begin{center}
+\code|year() month() day() hour() minute() second() tz()|
+\end{center}
+\end{mdbox}
+
+% ------------- INFER -------------
+\begin{greybox}{Describing \& inferring across possibilities}
+Since resolution is an explicit step, varying it opens up opportunities to:
+
+\begin{itemize}
+  \item describe according to \code|vmean|/\code|vmodal| most likely dates
+  \item drop uncertain dates using \code|!is_uncertain|
+  \item treat \code|vrandom| draws as multiple imputation for dates
+  \item weight observations by \code|precision|
+  \item bound result under \code|vmin| and \code|vmax|
+\end{itemize}
+
+See \code|vignette("messydates")| for a worked example.
+\end{greybox}
+\end{minipage}
+
+\vfill
+{\scriptsize\color{mdink}
+MIT License \copyright\ 2021--2026 \; \textbullet\; www.panarchic.ch \; \textbullet\;
+Learn more at \textbf{https://globalgov.github.io/messydates/} \; \textbullet\;
+package version 1.0.0 \; \textbullet\; Updated: 2026-07}
+
+\end{document}

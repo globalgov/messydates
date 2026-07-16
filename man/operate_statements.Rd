@@ -51,10 +51,12 @@ within a messy date range or set.
 \item \code{is_similar()}: tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.
 
-\item \code{is_precise()}: tests whether a date is precise (i.e. an 8 digit date).
-Non-precise dates contain markers that they are approximate (i.e. ~),
-unreliable (i.e. ?), are incomplete dates (i.e. year only),
-or date ranges and sets.
+\item \code{is_precise()}: tests whether a date (or date-time) is
+precise, i.e. a full "yyyy-mm-dd", optionally with a time of day (down
+to the hour, minute, or second) and time zone. Non-precise dates
+contain markers that they are approximate (i.e. ~), unreliable (i.e.
+?), are incomplete (e.g. year or year-month only, or a date with an
+unspecified \code{X} component), or are date ranges and sets.
 
 \item \code{is_uncertain()}: tests whether a date is uncertain (i.e. contains ?).
 
@@ -77,6 +79,7 @@ is_subset(as_messydate("2012-01-01"), as_messydate("2012-02"))
 is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 is_precise(as_messydate(c("2012-06-02", "2012-06")))
+is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
 is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
 is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))

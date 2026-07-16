@@ -6,20 +6,27 @@
 #' @name convert_contract
 #' @details The ´contract()´ function first `expand()` 'mdate' objects
 #' to then display their most succinct representation.
+#'
+#' Because `expand()` drops the time of day from ranges (see `?expand`),
+#' contracting a date-time range and then re-expanding it will not restore
+#' the original times; `contract()` is intended for date-level ranges,
+#' sets, and unspecified components.
 #' @param x A list of dates
 #' @param collapse Do you want ranges to be collapsed?
 #'   TRUE by default.
 #'   If FALSE ranges are returned in compact format.
 #' @return A `mdate` vector
-#' @importFrom dplyr tibble
 #' @importFrom lubridate NA_Date_
-#' @importFrom dplyr lead last first
 #' @examples
 #' d <- as_messydate(c("2001-01-01", "2001-01", "2001",
 #' "2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}",
 #' "{2001-01,2001-02-02}", "28 BC", "-2000-01-01",
 #' "{2001-01-01, 2001-01-02, 2001-01-03}"))
-#' dplyr::tibble(d, contract(d))
+#' data.frame(d, contracted = contract(d))
+#' # a full-month range collapses to a year-month by default...
+#' contract(as_messydate("2012-06-01..2012-06-30"))
+#' # ...unless collapse = FALSE keeps it as an explicit start..end range
+#' contract(as_messydate("2012-06-01..2012-06-30"), collapse = FALSE)
 #' @export
 contract <- function(x, collapse = TRUE) {
   if (!inherits(x, 'list')) {
@@ -39,7 +46,7 @@ contract <- function(x, collapse = TRUE) {
 compact_negative_dates <- function(x) {
   lapply(x, function(d) {
     if (stringi::stri_detect_regex(d[1], "^-") & length(d) > 1) {
-      d <- paste0(dplyr::first(d), "..", dplyr::last(d))
+      d <- paste0(d[1], "..", d[length(d)])
     }
     d
   })
@@ -51,7 +58,8 @@ compact_ranges <- function(x) {
       sequ <- is_sequence(d)
       if (any(sequ)) {
         starts <- d[which(sequ == FALSE)]
-        ends <- d[dplyr::lead(sequ) == FALSE | is.na(dplyr::lead(sequ))]
+        led <- c(sequ[-1], NA)
+        ends <- d[led == FALSE | is.na(led)]
         if (any(starts == ends)) ends[starts == ends] <- NA
         d <- paste(starts, ends, sep = "..")
         d <- stringi::stri_replace_all_regex(d, "\\.\\.NA", "")

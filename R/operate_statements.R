@@ -50,19 +50,29 @@ is_subset <- function(x, y) {
 #' is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 #' @export
 is_similar <- function(x, y) {
+  # Coerce to mdate so the component accessors dispatch to their `.mdate`
+  # methods (rather than {lubridate}'s) even when passed bare strings.
+  if (!is_messydate(x)) x <- as_messydate(x)
+  if (!is_messydate(y)) y <- as_messydate(y)
   year(x) == year(y) & month(x) == day(y) & day(x) == month(y)
 }
 
-#' @describeIn operate_statements tests whether a date is precise (i.e. an 8 digit date).
-#'   Non-precise dates contain markers that they are approximate (i.e. ~),
-#'   unreliable (i.e. ?), are incomplete dates (i.e. year only),
-#'   or date ranges and sets.
+#' @describeIn operate_statements tests whether a date (or date-time) is
+#'   precise, i.e. a full "yyyy-mm-dd", optionally with a time of day (down
+#'   to the hour, minute, or second) and time zone. Non-precise dates
+#'   contain markers that they are approximate (i.e. ~), unreliable (i.e.
+#'   ?), are incomplete (e.g. year or year-month only, or a date with an
+#'   unspecified `X` component), or are date ranges and sets.
 #' @examples
 #' is_precise(as_messydate(c("2012-06-02", "2012-06")))
+#' is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
 #' @export
 is_precise <- function(x) {
-  stringi::stri_detect_regex(x, "^[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$|
-                      |^-[:digit:]{4}-[:digit:]{2}-[:digit:]{2}$")
+  stringi::stri_detect_regex(
+    x,
+    paste0("^-?[0-9]{4}-[0-9]{2}-[0-9]{2}",
+           "([T ][0-9]{2}(:[0-9]{2}(:[0-9]{2}(\\.[0-9]+)?)?)?",
+           "(Z|[+-][0-9]{2}:[0-9]{2})?)?$"))
 }
 
 #' @describeIn operate_statements tests whether a date is uncertain (i.e. contains ?).

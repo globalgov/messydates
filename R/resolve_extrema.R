@@ -8,8 +8,20 @@
 #'   If the date is not 'messy' (i.e. has no annotations)
 #'   then just that precise date is returned.
 #'   This can be useful for various descriptive or inferential projects.
+#' @details
+#'   `vmin()`/`min()` and `vmax()`/`max()` work directly on the annotated
+#'   string (dropping `~`/`?`/`%` and, for `vmax()`/`max()`, filling in
+#'   unspecified `X` components) rather than via `expand()`, which makes
+#'   them considerably faster than resolving through the full expanded set.
+#'   `min()` and `max()` further resolve a vector to a single, overall
+#'   extremum (matching the usual behaviour of these generics), while
+#'   `vmin()` and `vmax()` resolve each element separately.
+#'
+#'   Dates that carry a time of day are already precise and so pass through
+#'   these functions unchanged, keeping their time; a time of day plays no
+#'   further role in choosing the minimum or maximum.
 #' @param ... a mdate object
-#' @param na.rm Should NAs be removed? True by default.
+#' @param na.rm Should NAs be removed? FALSE by default.
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
 #' @return A single scalar or vector of dates
 #' @examples
@@ -17,18 +29,20 @@
 #'   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
 #'   "{2001-01,2001-02-02}", "2008-XX-31", "-0050-01-01"))
 #' d
-#' @name coerce_extrema
+#' # a precise date-time is returned unchanged
+#' vmin(as_messydate("2012-01-01 14:30:00"))
+#' @name resolve_extrema
 NULL
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @export
 vmin <- function(..., na.rm = FALSE) UseMethod("vmin")
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' vmin(d)
 #' @export
-vmin.mdate <- function(..., na.rm = TRUE){
+vmin.mdate <- function(..., na.rm = FALSE){
   d <- list(...)[[1]]
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
@@ -38,11 +52,11 @@ vmin.mdate <- function(..., na.rm = TRUE){
   mdate(dates)
 }
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' min(d)
 #' @export
-min.mdate <- function(..., na.rm = TRUE){
+min.mdate <- function(..., na.rm = FALSE){
   d <- list(...)[[1]]
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
@@ -75,15 +89,15 @@ min.mdate <- function(..., na.rm = TRUE){
   dates
 }
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @export
 vmax <- function(..., na.rm = FALSE) UseMethod("vmax")
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' vmax(d)
 #' @export
-vmax.mdate <- function(..., na.rm = TRUE){
+vmax.mdate <- function(..., na.rm = FALSE){
   d <- list(...)[[1]]
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
@@ -94,11 +108,11 @@ vmax.mdate <- function(..., na.rm = TRUE){
   mdate(dates)
 }
 
-#' @rdname coerce_extrema
+#' @rdname resolve_extrema
 #' @examples
 #' max(d)
 #' @export
-max.mdate <- function(..., na.rm = TRUE) {
+max.mdate <- function(..., na.rm = FALSE) {
 
   d <- list(...)[[1]]
   dates <- stringi::stri_replace_all_regex(d, "~|\\?", "")

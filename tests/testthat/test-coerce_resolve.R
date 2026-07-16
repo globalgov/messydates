@@ -13,20 +13,42 @@ test_that("Max resolving works properly", {
                c("2014-01-05","1999-12-31","-1004-02-29"))
 })
 
-# test_that("Median resolving works properly", {
-#   expect_equal(as.character(median(test_dates)),
-#                c("2014-01-03","1999-07-02","-1004-02-15"))
-# })
-#
-# test_that("Mean resolving works properly", {
-#   expect_equal(as.character(mean(test_dates)),
-#                c("2014-01-03","1999-07-02","-1004-02-15"))
-# })
+test_that("Vectorised median resolving works properly", {
+  expect_equal(vmedian(test_dates),
+               c("2014-01-03","1999-07-02","-1004-02-15"))
+})
 
-# test_that("Modal resolving works properly", {
-#   expect_equal(as.character(modal(test_dates)),
-#                c("2014-01-01","1999-01-01","-1004-02-01"))
-# })
+test_that("Vectorised mean resolving works properly for CE dates", {
+  # Averaging BCE dates is a known limitation (see ?coerce_tendency), so only
+  # the two CE elements are checked here.
+  expect_equal(vmean(test_dates)[1:2], c("2014-01-03","1999-07-02"))
+})
+
+test_that("Vectorised modal resolving works properly", {
+  expect_equal(vmodal(test_dates),
+               c("2014-01-01","1999-01-01","-1004-02-01"))
+})
+
+test_that("median() and mean() summarise a whole mdate vector to one value", {
+  # Unlike vmedian()/vmean(), these expand and combine *all* elements first.
+  single <- as_messydate("2014-01-01..2014-01-05")
+  expect_equal(as.character(median(single)), "2014-01-03")
+  expect_equal(as.character(mean(single)), "2014-01-03")
+})
+
+test_that("median() and mean() average an even number of expanded dates", {
+  # Regression test: base R's median() cannot average two character dates,
+  # so an even-length expansion (e.g. a 4-day range) used to return NA.
+  even <- as_messydate("2001-01-01..2001-01-04")
+  expect_equal(as.character(median(even)), "2001-01-02")
+  expect_equal(as.character(mean(even)), "2001-01-02")
+})
+
+test_that("median() and mean() average precise date-times", {
+  dt <- as_messydate(c("2012-06-01T09:00", "2012-06-01T17:00"))
+  expect_equal(as.character(median(dt)), "2012-06-01 13:00:00")
+  expect_equal(as.character(mean(dt)), "2012-06-01 13:00:00")
+})
 
 test_that("Random resolving works properly", {
   expect_length(vrandom(test_dates), 3)

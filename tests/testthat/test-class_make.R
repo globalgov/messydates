@@ -9,3 +9,8 @@ test_that("mutiple variables are properly bind", {
   expect_equal(make_messydate("2012-01-01?","2012-01-02~"),
                as_messydate("2012-01-01?..2012-01-02~"))
 })
+
+test_that("make_messydate errors for other than one, two, or three variables", {
+  expect_error(make_messydate("2010", "01", "01", "extra"),
+               "one variable")
+})

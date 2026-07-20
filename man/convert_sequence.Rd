@@ -30,8 +30,10 @@ If \code{from}/\code{to} (or \code{by}) carry a time of day, the sequence is
 generated at the requested sub-day granularity (e.g. \code{by = "hour"})
 via \code{POSIXct}, and each element of the result keeps a time of day.
 Otherwise, dates are sequenced by calendar day (or another day-based
-\code{by}, e.g. \code{"week"} or \code{"month"}), including across the boundary
-between BCE and CE dates.
+\code{by}, e.g. \code{"week"} or \code{"month"}). Because years are numbered
+astronomically (proleptic Gregorian, with a year zero), a sequence that
+spans the BCE/CE boundary passes through the astronomical year zero
+(= 1 BCE) rather than jumping straight from \code{-0001} to \code{0001}.
 }
 \examples{
 seq(mdate("-0001-12-20"), mdate("0001-01-10"))

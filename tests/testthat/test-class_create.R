@@ -36,8 +36,11 @@ test_that("ranges work", {
 })
 
 test_that("negative works", {
-  expect_equal(unclass(as_messydate("28 BC")), "-0028")
-  expect_equal(unclass(as_messydate("200 BC:100 BC")), "-0200..-0100")
+  # "BC" prose is historical and converts to astronomical years (28 BCE is
+  # astronomical year -0027); a signed ISO year like "-200" is already
+  # astronomical and is left unchanged.
+  expect_equal(unclass(as_messydate("28 BC")), "-0027")
+  expect_equal(unclass(as_messydate("200 BC:100 BC")), "-0199..-0099")
   expect_equal(unclass(as_messydate("{-200, -100}")), "{-0200,-0100}")
 })
 
@@ -55,7 +58,7 @@ test_that("validate_messydate rejects '+' outside a timezone offset", {
 })
 
 test_that("print method works", {
-  expect_output(print(as_messydate("28 BC")), "-0028")
+  expect_output(print(as_messydate("28 BC")), "-0027")
 })
 
 test_that("c method works", {

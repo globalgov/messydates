@@ -116,7 +116,7 @@ pkg_comparison$messydates <-
 | Normal date | 2012-01-01 | 2012-01-01 | 2012-01-01 | 2012-01-01 |
 | Future date | 2599-12-31 | 2599-12-31 | 2599-12-31 | 2599-12-31 |
 | Historical date | 476 | NA | NA | 0476 |
-| Era date | 33 BC | NA | NA | -0033 |
+| Era date | 33 BC | NA | NA | -0032 |
 | Written date | First of February, two thousand and twelve | NA | NA | 2012-02-01 |
 | DMY date | 10-31-2012 | NA | NA | 2012-10-31 |
 | MDY date | 31-10-2012 | 0031-10-20 | NA | 2012-10-31 |
@@ -189,7 +189,7 @@ resolve_mdate <- data.frame(
 | 2012-01-01                         | 2012-01-01 | 2012-01-01 | 2012-01-01 |
 | 2599-12-31                         | 2599-12-31 | 2599-12-31 | 2599-12-31 |
 | 0476                               | 0476-01-01 | 0476-07-01 | 0476-12-31 |
-| -0033                              | -033-01-01 | -033-07-02 | -033-12-31 |
+| -0032                              | -032-01-01 | -032-07-02 | -032-12-31 |
 | 2012-02-01                         | 2012-02-01 | 2012-02-01 | 2012-02-01 |
 | 2012-10-31                         | 2012-10-31 | 2012-10-31 | 2012-10-31 |
 | 2012-10-31                         | 2012-10-31 | 2012-10-31 | 2012-10-31 |
@@ -206,7 +206,7 @@ resolve_mdate <- data.frame(
 As can be seen in the table above, all ‘precise’ dates are respected as
 such, and returned no matter what ‘resolution’ function is given. But
 for messy dates, the choice of function can make a difference. Where
-only a year is given, e.g. `0476` or `-0033`, we draw from all the days
+only a year is given, e.g. `0476` or `-0032`, we draw from all the days
 in the year. The minimum is the first of January and the maximum the
 31st of December. Dates are also drawn from a set or range of dates when
 given.

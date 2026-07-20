@@ -28,11 +28,20 @@ test_that("seq.mdate works across a BCE gap spanning several whole middle years"
   expect_equal(tail(r, 3), c("-0001-01-03", "-0001-01-04", "-0001-01-05"))
 })
 
-test_that("seq.mdate crosses the BCE/CE boundary without a year zero", {
+test_that("seq.mdate crosses the BCE/CE boundary through astronomical year zero", {
+  # ISO 8601-2 numbers years astronomically, so a year zero (= 1 BCE) sits
+  # between -0001 and 0001; the sequence must pass through the whole of it
+  # (a 366-day leap year) rather than jumping straight from -0001 to 0001.
   r <- seq(as_messydate("-0001-12-28"), as_messydate("0001-01-05"))
-  expect_equal(r, c("-0001-12-28", "-0001-12-29", "-0001-12-30", "-0001-12-31",
-                     "0001-01-01", "0001-01-02", "0001-01-03", "0001-01-04",
-                     "0001-01-05"))
+  expect_length(r, 375)
+  # end of year -1, then straight into year 0 (not year 1)
+  expect_equal(head(r, 5),
+               c("-0001-12-28", "-0001-12-29", "-0001-12-30", "-0001-12-31",
+                 "0000-01-01"))
+  expect_equal(tail(r, 3), c("0001-01-03", "0001-01-04", "0001-01-05"))
+  # year 0 is a full 366-day leap year, including 29 February
+  expect_equal(sum(grepl("^0000-", r)), 366L)
+  expect_true(all(c("0000-02-29", "0000-12-31", "0001-01-01") %in% r))
 })
 
 test_that("seq.mdate accepts a non-day 'by'", {

@@ -8,7 +8,9 @@ test_that("Coercion from other date classes into messydt works", {
   dmy_text <- "10 October 2010"
   mdy_text <- "October 10, 2010"
   messy <- as_messydate("2010-10-10")
-  messyneg <- as_messydate("{-2010-10-10,-2010-10-11,-2010-10-12}")
+  # "BC2010" is historical 2010 BCE, i.e. astronomical year -2009 (year zero
+  # exists in ISO 8601-2), so the prose set below resolves to -2009-...
+  messyneg <- as_messydate("{-2009-10-10,-2009-10-11,-2009-10-12}")
   expect_equal(as_messydate(date), messy)
   expect_equal(as_messydate(POSIXct), messy)
   expect_equal(as_messydate(POSIXlt), messy)

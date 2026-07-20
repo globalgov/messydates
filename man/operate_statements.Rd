@@ -63,7 +63,11 @@ unspecified \code{X} component), or are date ranges and sets.
 \item \code{is_approximate()}: tests whether a date is approximate (i.e. contains ~).
 
 \item \code{is_bce()}: tests whether one or more messy dates are found
-before the common era.
+before the common era, i.e. carry a negative (astronomical) year.
+Note that astronomical year zero (\code{"0000"}, historically 1 BCE) is not
+sign-negative and so returns \code{FALSE}; it is handled natively as a
+non-negative year throughout, which R's proleptic Gregorian \code{Date}
+supports directly.
 
 }}
 \examples{

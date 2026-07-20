@@ -1,3 +1,6 @@
+# "1004-02 BC" is historical Feb of 1004 BCE, i.e. astronomical -1003-02
+# (year zero exists in ISO 8601-2). Astronomical year -1003 is not a leap
+# year, so its February has 28 days.
 test_dates <- c(range = as_messydate("2014-01-01..2014-01-05"),
                 unspec = as_messydate("1999"),
                 neg = as_messydate("1004-02 BC"))
@@ -5,17 +8,17 @@ test_dates <- c(range = as_messydate("2014-01-01..2014-01-05"),
 
 test_that("Min resolving works properly", {
   expect_equal(as.character(vmin(test_dates)),
-               c("2014-01-01","1999-01-01","-1004-02-01"))
+               c("2014-01-01","1999-01-01","-1003-02-01"))
 })
 
 test_that("Max resolving works properly", {
   expect_equal(as.character(vmax(test_dates)),
-               c("2014-01-05","1999-12-31","-1004-02-29"))
+               c("2014-01-05","1999-12-31","-1003-02-28"))
 })
 
 test_that("Vectorised median resolving works properly", {
   expect_equal(vmedian(test_dates),
-               c("2014-01-03","1999-07-02","-1004-02-15"))
+               c("2014-01-03","1999-07-02","-1003-02-15"))
 })
 
 test_that("Vectorised mean resolving works properly for CE dates", {
@@ -26,7 +29,7 @@ test_that("Vectorised mean resolving works properly for CE dates", {
 
 test_that("Vectorised modal resolving works properly", {
   expect_equal(vmodal(test_dates),
-               c("2014-01-01","1999-01-01","-1004-02-01"))
+               c("2014-01-01","1999-01-01","-1003-02-01"))
 })
 
 test_that("median() and mean() summarise a whole mdate vector to one value", {

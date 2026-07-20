@@ -37,7 +37,7 @@
 #' \itemize{
 #'  \item{Roman numerals for a bare year, e.g. `"MDCCLXXVI"` becomes `1776`.}
 #'  \item{Roman calendar references, i.e. the Kalends, Nones, and Ides of a
-#'  named month, e.g. `"the Ides of March, 44 BC"` becomes `"-0044-03-15"`.
+#'  named month, e.g. `"the Ides of March, 44 BC"` becomes `"-0043-03-15"`.
 #'  The Nones and Ides fall later (the 7th and 15th) in March, May, July,
 #'  and October, and earlier (the 5th and 13th) in other months.}
 #'  \item{Approximate qualifiers ("around", "circa", "about", "roughly", ...)
@@ -59,6 +59,17 @@
 #'  (here, three): a fragment that is only a year is treated as completing
 #'  the date before it.}
 #' }
+#' @section Eras and year numbering:
+#' `{messydates}` stores years in the ISO 8601-2 (proleptic Gregorian)
+#' astronomical numbering, in which a year zero exists and equals 1 BCE, `-0001`
+#' equals 2 BCE, and so on. Historical "BC"/"BCE" prose uses the older
+#' convention that has no year zero, so it is converted on input: a historical
+#' year `N BCE` becomes the astronomical year `-(N-1)`, e.g. `"1 BCE"` becomes
+#' `"0000"`, `"2 BCE"` becomes `"-0001"`, and `"44 BCE"` becomes `"-0043"`.
+#' A year written directly in signed ISO form (e.g. `"-0044"`) is already
+#' astronomical and is left unchanged, so `as_messydate("-0044")` (astronomical
+#' year -44, i.e. 45 BCE) and `as_messydate("44 BCE")` (`"-0043"`) intentionally
+#' differ. "AD"/"CE" prose is simply dropped, the year being unchanged.
 #' @name coerce_to
 NULL
 
@@ -102,7 +113,14 @@ as_messydate <- function(x, resequence = FALSE)
 #' @describeIn coerce_to Coerce from `Date` to `mdate` class
 #' @export
 as_messydate.Date <- function(x, resequence = FALSE) {
+  # zero_padding() makes the year width canonical (four digits): R's
+  # as.character.Date() does not always pad years below 1000 (and pads
+  # negative, i.e. BCE, years to only three digits), which varies by platform.
+  # Only non-NA elements are padded, both to leave NAs untouched and to avoid
+  # ifelse() collapsing an all-NA vector to a logical (breaking is.character()).
   x <- as.character(x)
+  ok <- !is.na(x)
+  x[ok] <- zero_padding(x[ok])
   new_messydate(x)
 }
 
@@ -385,7 +403,9 @@ ask_user <- function(dates) {
 standardise_unspecifieds <- function(dates) {
   dates <- stringi::stri_replace_all_regex(dates, "^NA", "XXXX")
   dates <- stringi::stri_replace_all_regex(dates, "-NA", "-XX")
-  dates <- stringi::stri_replace_all_regex(dates, "0000", "XXXX")
+  # NB: a 4-digit year of "0000" denotes ISO 8601-2 astronomical year zero
+  # (= 1 BCE), so it is *not* treated as unspecified; an unknown year uses
+  # "XXXX" instead.
   dates <- stringi::stri_replace_all_regex(dates, "-00-|-0-|-0$|-00$|-\\?\\?-", "-XX-")
   dates <- stringi::stri_replace_all_regex(dates, "\\?\\?\\?\\?", "XXXX")
   dates <- stringi::stri_replace_all_regex(dates, "^(XX)-([:digit:]{4}$)", "$2")
@@ -587,26 +607,44 @@ as_bc_dates <- function(dates) {
                   st_negative(dates), dates)
 }
 
+# Converts BC-stripped, trimmed tokens (e.g. "44", "44-03-15", "1004-02",
+# tolerating a leading ~/?/% and a trailing "..") from historical BCE reckoning
+# to ISO 8601-2 astronomical year numbering, applying the shift to the leading
+# year only and preserving month/day and range punctuation. Historical year Y
+# (no year zero) maps to astronomical year V = 1 - Y, so 1 BCE -> 0 (later
+# padded to "0000"), 2 BCE -> -1, 44 BCE -> -43. Vectorised; an element with no
+# leading year is returned unchanged.
+.hist_to_astro <- function(x) {
+  pre <- stringi::stri_extract_first_regex(x, "^[~?%]*")
+  pre[is.na(pre)] <- ""
+  body <- stringi::stri_replace_first_regex(x, "^[~?%]*", "")
+  yr <- suppressWarnings(
+    as.integer(stringi::stri_extract_first_regex(body, "^[0-9]+")))
+  rest <- stringi::stri_replace_first_regex(body, "^[0-9]+", "")
+  v <- 1L - yr
+  yout <- ifelse(v == 0L, "0", paste0("-", -v))
+  ifelse(is.na(yr), x, paste0(pre, yout, rest))
+}
+
 st_negative_range <- function(dates) {
   dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
   dates <- gsub(" ", "", dates)
-  dates <- paste0("-", strsplit(dates, "\\.\\.")[[1]][1],
-                  "..-", strsplit(dates, "\\.\\.")[[1]][2])
+  ends <- strsplit(dates, "\\.\\.")[[1]]
+  paste0(.hist_to_astro(ends[1]), "..", .hist_to_astro(ends[2]))
 }
 
 st_negative_sets <- function(dates) {
   dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
   dates <- gsub(" ", "", dates)
   dates <- unlist(strsplit(dates, "\\,"))
-  dates <- ifelse(length(dates) > 1,
-                  paste0("-", paste(dates, collapse = ", -")),
-                  paste0("-", dates))
+  dates <- vapply(dates, .hist_to_astro, character(1), USE.NAMES = FALSE)
+  paste(dates, collapse = ", ")
 }
 
 st_negative <- function(dates) {
   dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
   dates <- stringi::stri_trim_both(dates)
-  dates <- paste0("-", dates)
+  .hist_to_astro(dates)
 }
 
 # Widths ####

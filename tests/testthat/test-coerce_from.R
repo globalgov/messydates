@@ -66,11 +66,13 @@ test_that("approximate/uncertain qualifiers keep the full date", {
 
 test_that("Roman date parsing works correctly", {
   expect_identical(as_messydate("MDCCLXXVI"), as_messydate("1776"))
-  expect_identical(as_messydate("the Kalends of March, 44 BC"), as_messydate("-0044-03-01"))
-  expect_identical(as_messydate("the Nones of February, 44 BC"), as_messydate("-0044-02-05"))
-  expect_identical(as_messydate("the Nones of March, 44 BC"), as_messydate("-0044-03-07"))
-  expect_identical(as_messydate("the Ides of February, 44 BC"), as_messydate("-0044-02-13"))
-  expect_identical(as_messydate("the Ides of March, 44 BC"), as_messydate("-0044-03-15"))
+  # 44 BCE is astronomical year -0043 (ISO 8601-2, with a year zero); these
+  # pin the Roman calendar day (Kalends/Nones/Ides) as well as the year.
+  expect_identical(as_messydate("the Kalends of March, 44 BC"), as_messydate("-0043-03-01"))
+  expect_identical(as_messydate("the Nones of February, 44 BC"), as_messydate("-0043-02-05"))
+  expect_identical(as_messydate("the Nones of March, 44 BC"), as_messydate("-0043-03-07"))
+  expect_identical(as_messydate("the Ides of February, 44 BC"), as_messydate("-0043-02-13"))
+  expect_identical(as_messydate("the Ides of March, 44 BC"), as_messydate("-0043-03-15"))
 })
 
 # Seasons and relative parts of a year are interpreted as month ranges. This

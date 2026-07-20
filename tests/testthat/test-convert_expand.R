@@ -15,8 +15,9 @@ out <- expand(test_dates)
 test_that("Expand dates lengths are correct", {
   expect_equal(length(out), length(test_dates))
   expect_equal(vapply(out, length, FUN.VALUE = numeric(1)),
+               # "20 BC" is astronomical year -0019 (non-leap) -> 365 days
                c(1,1,3,#365,31,
-                 1,12,2,366,730))
+                 1,12,2,365,730))
 })
 
 regular_date <- as.Date("2010-01-01")
@@ -42,7 +43,9 @@ test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_equal(as.character(expand(set)[[1]][1]), "2012-01-01")
   expect_length(expand(range), 1)
   expect_length(expand(unspecified), 1)
-  expect_equal(lengths(expand(negative)), 366)
+  # "20 BC" is astronomical year -0019 (year zero exists in ISO 8601-2), which
+  # is not a leap year, so it expands to 365 days.
+  expect_equal(lengths(expand(negative)), 365)
   expect_equal(as.character(expand(unspecified_range)[[1]][1]), "2010-01-01")
   expect_equal(lengths(expand(unspecified_range)), 365)
   expect_equal(lengths(expand(negative_incomplete_range)), 730)

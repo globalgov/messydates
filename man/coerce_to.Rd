@@ -96,7 +96,7 @@ their ISO 8601-2 equivalent before the usual parsing takes place:
 \itemize{
 \item{Roman numerals for a bare year, e.g. \code{"MDCCLXXVI"} becomes \code{1776}.}
 \item{Roman calendar references, i.e. the Kalends, Nones, and Ides of a
-named month, e.g. \code{"the Ides of March, 44 BC"} becomes \code{"-0044-03-15"}.
+named month, e.g. \code{"the Ides of March, 44 BC"} becomes \code{"-0043-03-15"}.
 The Nones and Ides fall later (the 7th and 15th) in March, May, July,
 and October, and earlier (the 5th and 13th) in other months.}
 \item{Approximate qualifiers ("around", "circa", "about", "roughly", ...)
@@ -118,6 +118,20 @@ century" becomes \code{"18XX"}).}
 (here, three): a fragment that is only a year is treated as completing
 the date before it.}
 }
+}
+
+\section{Eras and year numbering}{
+
+\code{{messydates}} stores years in the ISO 8601-2 (proleptic Gregorian)
+astronomical numbering, in which a year zero exists and equals 1 BCE, \code{-0001}
+equals 2 BCE, and so on. Historical "BC"/"BCE" prose uses the older
+convention that has no year zero, so it is converted on input: a historical
+year \verb{N BCE} becomes the astronomical year \code{-(N-1)}, e.g. \code{"1 BCE"} becomes
+\code{"0000"}, \code{"2 BCE"} becomes \code{"-0001"}, and \code{"44 BCE"} becomes \code{"-0043"}.
+A year written directly in signed ISO form (e.g. \code{"-0044"}) is already
+astronomical and is left unchanged, so \code{as_messydate("-0044")} (astronomical
+year -44, i.e. 45 BCE) and \code{as_messydate("44 BCE")} (\code{"-0043"}) intentionally
+differ. "AD"/"CE" prose is simply dropped, the year being unchanged.
 }
 
 \examples{

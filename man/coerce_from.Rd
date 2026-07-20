@@ -94,6 +94,8 @@ as.Date(as_messydate("2012-01"), FUN = vmax)
 as.Date(as_messydate("2012-01"), FUN = vmedian)
 as.Date(as_messydate("2012-01"), FUN = vmodal)
 as.Date(as_messydate("2012-01"), FUN = vrandom)
+# "1000 BC" is the astronomical year -0999 (year zero exists), whereas the
+# signed ISO "-1000" below is astronomical year -1000
 as.Date(as_messydate("1000 BC"), FUN = vmax)
 as.Date(as_messydate("1000 BC"), FUN = vmedian)
 as.Date(as_messydate(c("-1000", "2020")), FUN = vmin)

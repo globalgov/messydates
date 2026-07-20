@@ -1,3 +1,18 @@
+# messydates 1.1.0
+
+## Coercion
+
+- BCE/CE prose is now converted to ISO 8601-2 astronomical year numbering
+  (proleptic Gregorian, in which a year zero exists and equals 1 BCE), fixing an
+  off-by-one error (closed #94, thanks @njbart):
+  - a historical `N BCE` maps to the astronomical year `-(N-1)`, so `"44 BC"`
+    becomes `-0043` and `"1 BC"` becomes `0000` (year zero); a signed ISO year
+    such as `"-0044"` is already astronomical and is left unchanged
+  - year zero is preserved on input (previously `0000` was misread as an
+    unspecified year) and is traversed by `seq()` and `expand()`, so a sequence
+    spanning the BCE/CE boundary now passes through the whole of year `0000`
+    rather than jumping from `-0001` straight to `0001`
+
 # messydates 1.0.0
 
 ## Package

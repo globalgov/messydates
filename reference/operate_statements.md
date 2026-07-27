@@ -63,7 +63,11 @@ A logical vector the same length as the `mdate` passed.
   ~).
 
 - `is_bce()`: tests whether one or more messy dates are found before the
-  common era.
+  common era, i.e. carry a negative (astronomical) year. Note that
+  astronomical year zero (`"0000"`, historically 1 BCE) is not
+  sign-negative and so returns `FALSE`; it is handled natively as a
+  non-negative year throughout, which R's proleptic Gregorian `Date`
+  supports directly.
 
 ## Examples
 

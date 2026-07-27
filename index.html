@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -171,16 +171,17 @@
 <td align="center">✓</td>
 </tr>
 <tr>
-<td>Full ISO 8601-2 (EDTF) support</td>
+<td>ISO 8601-2 (EDTF) support</td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
-<td align="center">✓</td>
+<td align="center">~</td>
 </tr>
 </tbody>
 </table>
 <p>(✓ = supported, ~ = partially supported. <a href="https://clock.r-lib.org" class="external-link">clock</a> excels at high-precision arithmetic on <em>valid, complete</em> dates, which complements rather than overlaps <a href="https://globalgov.github.io/messydates/">messydates</a>.)</p>
+<p><a href="https://globalgov.github.io/messydates/">messydates</a> covers the parts of ISO 8601-2 that carry imprecision: unspecified components, approximate and uncertain annotations, ranges, open ranges, sets, and times of day. Durations are covered too, by the <code>mduration</code> class, which expresses them as a range of possible dates so that uncertainty at either end is preserved. Not implemented are week dates (<code>2019-W12</code>), ordinal dates (<code>2019-123</code>), season codes (<code>2019-21</code>), significant digits (<code>1234S3</code>), extended years (<code>Y17E7</code>), the <code>P</code>-style duration notation (<code>P1Y2M</code>), and repeating intervals; these are rejected on coercion rather than silently passed through.</p>
 </div>
 </div>
 <div class="section level2">
@@ -248,7 +249,7 @@
 <td align="left">33 BC</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
-<td align="left">-0033</td>
+<td align="left">-0032</td>
 </tr>
 <tr>
 <td align="left">Written date</td>
@@ -389,10 +390,10 @@
 <td align="left">0476-12-31</td>
 </tr>
 <tr>
-<td align="left">-0033</td>
-<td align="left">-033-01-01</td>
-<td align="left">-033-07-02</td>
-<td align="left">-033-12-31</td>
+<td align="left">-0032</td>
+<td align="left">-032-01-01</td>
+<td align="left">-032-07-02</td>
+<td align="left">-032-12-31</td>
 </tr>
 <tr>
 <td align="left">2012-02-01</td>
@@ -468,7 +469,7 @@
 </tr>
 </tbody>
 </table>
-<p>As can be seen in the table above, all ‘precise’ dates are respected as such, and returned no matter what ‘resolution’ function is given. But for messy dates, the choice of function can make a difference. Where only a year is given, e.g. <code>0476</code> or <code>-0033</code>, we draw from all the days in the year. The minimum is the first of January and the maximum the 31st of December. Dates are also drawn from a set or range of dates when given.</p>
+<p>As can be seen in the table above, all ‘precise’ dates are respected as such, and returned no matter what ‘resolution’ function is given. But for messy dates, the choice of function can make a difference. Where only a year is given, e.g. <code>0476</code> or <code>-0032</code>, we draw from all the days in the year. The minimum is the first of January and the maximum the 31st of December. Dates are also drawn from a set or range of dates when given.</p>
 <p>When only an approximate or censored date is known, then depending on whether the whole date or just a component of the date is annotated, then a range of dates is imputed based on some window (by default 3 years, months, or days), and then a precise date is resolved from that.</p>
 <p>This translation via an expanded list of compatible dates is fast, robust, and extensible, allowing researchers to use messy dates in an analytic strategy that uses any other package.</p>
 <div class="section level3">

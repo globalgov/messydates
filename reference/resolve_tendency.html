@@ -17,7 +17,7 @@ vector of the same length as the input."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,6 +118,15 @@ that expanded set. For <code><a href="https://rdrr.io/r/stats/median.html" class
 expanded values is resolved by averaging the two middle values (via
 <code>POSIXct</code> when a time of day is present, or <code>Date</code> otherwise); an odd
 number simply returns the middle value.</p>
+<p>Both kinds of set are expanded to their members and summarised the same
+way, but the result means different things for each. For a <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> ("all
+members of") set, which records that something happened on several
+dates, the central tendency describes where those occurrences sit. For a
+<code>[]</code> ("one member of") set, which records that something happened on
+exactly one of those dates but not which, the central tendency is a point
+estimate of that single unknown date, as it is for a range or an
+unspecified component. <code>vrandom()</code> draws a member uniformly in either
+case, which for a <code>[]</code> set is a draw from the candidates themselves.</p>
 <p>Averaging across the BCE/CE boundary, or between two BCE dates, is not
 currently supported: <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median()</a></code> falls back to the earlier of the two
 middle values in that case, and <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>/<code>vmean()</code> may be unreliable for

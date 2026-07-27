@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,76 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0" id="messydates-100">messydates 1.0.0<a class="anchor" aria-label="anchor" href="#messydates-100"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0" id="messydates-110">messydates 1.1.0<a class="anchor" aria-label="anchor" href="#messydates-110"></a></h2>
+<div class="section level3">
+<h3 id="package-1-1-0">Package<a class="anchor" aria-label="anchor" href="#package-1-1-0"></a></h3>
+<ul><li>Improved package architecture documentation in <code>.github/CONTRIBUTING.md</code> so that human contributors and coding agents read the same notes</li>
+<li>Added a PR metadata job to the PR checks workflow, which verifies that the <code>DESCRIPTION</code> version is bumped, that the PR title names the new version, and that the PR description itemizes changes under subsection titles; these items are consequently dropped from the pull request template</li>
+<li>Fixed the website deploy job installing <code>Config/Needs/check</code> packages instead of <code>Config/Needs/website</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="class-1-1-0">Class<a class="anchor" aria-label="anchor" href="#class-1-1-0"></a></h3>
+<ul><li>Improved <code><a href="../reference/class_mdate.html">validate_messydate()</a></code> to report which elements failed and what they contained, instead of naming only the rule that was broken
+<ul><li>No longer passes a vector of empty strings as valid because a single element somewhere in it happened to contain a digit</li>
+</ul></li>
+<li>Assigning an unparseable value into an <code>mdate</code> with <code>[&lt;-</code> or <code>[[&lt;-</code> now reports what could not be parsed, rather than silently blanking the element</li>
+<li>Added <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> and <code><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated()</a></code> methods for <code>mdate</code> objects (closes <a href="https://github.com/globalgov/messydates/issues/106" class="external-link">#106</a>)
+<ul><li>Previously <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> fell through to the character method and dropped the class, so a deduplicated column silently stopped being an <code>mdate</code>
+</li>
+<li>Both compare the annotated strings rather than the dates they expand to, so <code>"2012-01"</code> and <code>"2012-01-01..2012-01-31"</code> remain distinct</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="coercion-1-1-0">Coercion<a class="anchor" aria-label="anchor" href="#coercion-1-1-0"></a></h3>
+<ul><li>Improved <code><a href="../reference/coerce_to.html">as_messydate()</a></code> to validate its input rather than carrying values it cannot interpret:
+<ul><li>dates with impossible components are rejected, so <code>"2019-02-30"</code>, <code>"2019-06-31"</code> and <code>"2019-01-01 25:00"</code> now error instead of being accepted as written; relatedly, <code>"2019-13-45"</code> is no longer silently reordered into <code>"2019-45-13"</code>, since month and day are only swapped where the swap yields a date that could exist</li>
+<li>ISO 8601-2 notations that <a href="https://globalgov.github.io/messydates/">messydates</a> does not represent (week dates, ordinal dates, season codes, significant digits, extended years, the <code>P</code>-style duration notation, and repeating intervals) now error naming the format, instead of passing through as strings that nothing downstream could expand, resolve or compare. Durations themselves are unaffected: they are written as date ranges and handled by <code>mduration</code>, and the error for <code>"P1Y2M"</code> points there</li>
+<li>text naming no date at all still becomes <code>NA</code>, but now warns, listing what could not be read</li>
+</ul></li>
+<li>Added <code><a href="../reference/md_problems.html">md_problems()</a></code>, which reports one row per unparseable element of a vector, with the reason for each, for checking a column of dates before coercing it</li>
+<li>Added <code><a href="../reference/coerce_to.html">as_messydate()</a></code> methods for factors (coerced via their labels, the common case when a column was read in with <code>stringsAsFactors = TRUE</code>) and a default method that names the offending class rather than failing with R’s <code>UseMethod</code> message</li>
+<li>Improved parsing consistency across scalars and vectors
+<ul><li>a month-first date such as <code>"July 4 1976"</code> previously lost its day whenever another value shared the vector with it</li>
+</ul></li>
+<li>Fixed how <code>[]</code> sets (“one member of”) silently rewrote as <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> sets (“all members of”).
+<ul><li>Note that the two still expand and resolve alike; giving <code>[]</code> its own meaning in the resolution functions remains outstanding</li>
+</ul></li>
+<li>Fixed BCE/CE prose off-by-one error (closed <a href="https://github.com/globalgov/messydates/issues/94" class="external-link">#94</a>, thanks <a href="https://github.com/njbart" class="external-link">@njbart</a>) to convert to ISO 8601-2 astronomical year numbering (proleptic Gregorian, in which a year zero exists and equals 1 BCE):
+<ul><li>A historical <code>N BCE</code> maps to the astronomical year <code>-(N-1)</code>, so <code>"44 BC"</code> becomes <code>-0043</code> and <code>"1 BC"</code> becomes <code>0000</code> (year zero); a signed ISO year such as <code>"-0044"</code> is already astronomical and is left unchanged</li>
+<li>Year zero is preserved on input (previously <code>0000</code> was misread as an unspecified year) and is traversed by <code><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq()</a></code> and <code><a href="../reference/convert_expand.html">expand()</a></code>, so a sequence spanning the BCE/CE boundary now passes through the whole of year <code>0000</code> rather than jumping from <code>-0001</code> straight to <code>0001</code>
+</li>
+<li>Era markers <em>on input</em> are now resolved for each year in an expression separately, rather than by counting how many markers a string contains (they are, as before, always removed in the parsed <code>mdate</code>, which records the era in the sign of the year alone). So an input marker written once at the end of a range or set applies to every bound of it: <code>"..200 BC"</code>, <code>"200..100 BC"</code> and <code>"44, 33 BC"</code> now give <code>..-199</code>, <code>-0199..-0099</code> and <code>{-0043,-0032}</code>, where previously the non-leading bounds silently stayed CE; an input marker written before a date still governs that date, so <code>"{BC2010-10-10,BC2010-10-11}"</code> gives <code>{-2009-10-10,-2009-10-11}</code>; and <code>"200 BC..100 AD"</code> spans the two eras, giving <code>-0199..0100</code>
+</li>
+<li>Fixed how era markers could be dropped from approximate or uncertain dates given in prose, so <code>"circa 200 BC"</code> is now <code>~-199</code> rather than <code>0200~</code>
+</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="expandcontract-1-1-0">Expand/Contract<a class="anchor" aria-label="anchor" href="#expandcontract-1-1-0"></a></h3>
+<ul><li>Fixed how <code><a href="../reference/convert_expand.html">expand()</a></code> handles unspecified years
+<ul><li>Previously <code>"192X"</code> raised <code>'from' must be a finite number</code> and <code>"18XX"</code> silently returned a single date, even though these are what the prose parser produces for decades and centuries</li>
+<li>Now a bare unspecified year expands to the whole span (<code>"192X"</code> gives every day of the 1920s)</li>
+<li>Now an attached month or day picks out that month or day in each candidate year (<code>"192X-05-04"</code> gives ten dates, not nine years of them)</li>
+<li>Now BCE years are bounded the other way round, <code>-1999</code> being earlier than <code>-1900</code>
+</li>
+<li>Now a year too vague to enumerate, such as <code>"XXXX"</code>, refused with a message suggesting <code><a href="../reference/resolve_extrema.html">vmin()</a></code>/<code><a href="../reference/resolve_extrema.html">vmax()</a></code>
+</li>
+</ul></li>
+<li>Fixed how <code><a href="../reference/convert_expand.html">expand()</a></code> applies unspecified-component rules to each member of a set separately, fixing over-expansion of sets whose members had an unspecified month: <code>"{2008-XX-31,2009-XX-31}"</code> gave 671 dates and now gives 24</li>
+<li>Fixed <code><a href="../reference/convert_contract.html">contract()</a></code> returning every set in <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> notation, so that a <code>[]</code> set no longer became a <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> set on a round-trip through <code><a href="../reference/convert_expand.html">expand()</a></code>/<code><a href="../reference/convert_contract.html">contract()</a></code> (closes <a href="https://github.com/globalgov/messydates/issues/99" class="external-link">#99</a>)
+<ul><li>Only applies where <code><a href="../reference/convert_contract.html">contract()</a></code> is given an <code>mdate</code>, since a list of dates does not record which kind of set its members came from</li>
+<li>Documented what the two set types mean once resolved or operated on, having established that both should continue to expand to the same members (closes <a href="https://github.com/globalgov/messydates/issues/99" class="external-link">#99</a>):
+<ul><li>
+<code><a href="../reference/resolve_tendency.html">?resolve_tendency</a></code> now distinguishes a central tendency that describes where several recorded occurrences sit (<code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>) from one that is a point estimate of a single unknown date (<code>[]</code>), as for a range</li>
+<li>
+<code><a href="../reference/operate_set.html">?operate_set</a></code> and <code><a href="../reference/operate_proportional.html">?operate_proportional</a></code> now note that a result for a <code>[]</code> set reads as the candidates that remain possible, or the probability that a comparison holds, rather than a share of recorded occurrences</li>
+</ul></li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="messydates-100">messydates 1.0.0<a class="anchor" aria-label="anchor" href="#messydates-100"></a></h2><p class="text-muted">CRAN release: 2026-07-16</p>
 <div class="section level3">
 <h3 id="package-1-0-0">Package<a class="anchor" aria-label="anchor" href="#package-1-0-0"></a></h3>
 <ul><li>Updated the <a href="https://globalgov.github.io/messydates/">messydates</a> logo to better reflect the package’s purpose and be more brand-consistent with manydata packages</li>

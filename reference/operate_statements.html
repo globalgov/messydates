@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,11 @@ unspecified <code>X</code> component), or are date ranges and sets.</p></li>
 <li><p><code>is_uncertain()</code>: tests whether a date is uncertain (i.e. contains ?).</p></li>
 <li><p><code>is_approximate()</code>: tests whether a date is approximate (i.e. contains ~).</p></li>
 <li><p><code>is_bce()</code>: tests whether one or more messy dates are found
-before the common era.</p></li>
+before the common era, i.e. carry a negative (astronomical) year.
+Note that astronomical year zero (<code>"0000"</code>, historically 1 BCE) is not
+sign-negative and so returns <code>FALSE</code>; it is handled natively as a
+non-negative year throughout, which R's proleptic Gregorian <code>Date</code>
+supports directly.</p></li>
 </ul></div>
 
     <div class="section level2">

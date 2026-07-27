@@ -54,6 +54,17 @@ e1 %>=<% e2
 A numeric vector, the same length as `e1` and `e2`, of proportions
 between 0 and 1.
 
+## Details
+
+Both kinds of set are expanded to their members, so
+[`{}`](https://rdrr.io/r/base/Paren.html) ("all members of") and `[]`
+("one member of") sets give the same proportion. For a `[]` set that
+proportion reads as a probability that the comparison holds, under the
+assumption that each candidate is equally likely, in the same way as for
+a range or an unspecified component. For a
+[`{}`](https://rdrr.io/r/base/Paren.html) set it instead reads as the
+share of the recorded occurrences that satisfy it.
+
 ## Functions
 
 - ` %l% `: Tests proportion of dates in the first vector that precede

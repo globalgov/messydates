@@ -19,7 +19,7 @@ though this is a work-in-progress and currently only works in English."></head><
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,9 @@ though this is a work-in-progress and currently only works in English.</p>
 <span><span class="fu">as_messydate</span><span class="op">(</span><span class="va">x</span>, resequence <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'character'</span></span>
+<span><span class="fu">as_messydate</span><span class="op">(</span><span class="va">x</span>, resequence <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'factor'</span></span>
 <span><span class="fu">as_messydate</span><span class="op">(</span><span class="va">x</span>, resequence <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'numeric'</span></span>
@@ -131,6 +134,9 @@ so that timezone-naive dates round-trip unchanged.</p>
 <li><p><code>as_messydate(POSIXct)</code>: Coerce from <code>POSIXct</code> to <code>mdate</code> class</p></li>
 <li><p><code>as_messydate(POSIXlt)</code>: Coerce from <code>POSIXlt</code> to <code>mdate</code> class</p></li>
 <li><p><code>as_messydate(character)</code>: Coerce character date objects to <code>mdate</code> class</p></li>
+<li><p><code>as_messydate(factor)</code>: Coerce factors to <code>mdate</code> class, via their labels.
+This is the common case when a date column has been read in with
+<code>stringsAsFactors = TRUE</code>.</p></li>
 <li><p><code>as_messydate(numeric)</code>: Coerce numeric objects to <code>mdate</code> class</p></li>
 <li><p><code>as_messydate(list)</code>: Coerce list date objects to the most concise
 representation of <code>mdate</code> class</p></li>
@@ -143,7 +149,7 @@ representation of <code>mdate</code> class</p></li>
 several conventions common in e.g. historical texts and converts them to
 their ISO 8601-2 equivalent before the usual parsing takes place:</p><ul><li><p>Roman numerals for a bare year, e.g. <code>"MDCCLXXVI"</code> becomes <code>1776</code>.</p></li>
 <li><p>Roman calendar references, i.e. the Kalends, Nones, and Ides of a
-named month, e.g. <code>"the Ides of March, 44 BC"</code> becomes <code>"-0044-03-15"</code>.
+named month, e.g. <code>"the Ides of March, 44 BC"</code> becomes <code>"-0043-03-15"</code>.
 The Nones and Ides fall later (the 7th and 15th) in March, May, July,
 and October, and earlier (the 5th and 13th) in other months.</p></li>
 <li><p>Approximate qualifiers ("around", "circa", "about", "roughly", ...)
@@ -165,6 +171,29 @@ century" becomes <code>"18XX"</code>).</p></li>
 (here, three): a fragment that is only a year is treated as completing
 the date before it.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="eras-and-year-numbering">Eras and year numbering<a class="anchor" aria-label="anchor" href="#eras-and-year-numbering"></a></h2>
+
+
+<p><code>{messydates}</code> stores years in the ISO 8601-2 (proleptic Gregorian)
+astronomical numbering, in which a year zero exists and equals 1 BCE, <code>-0001</code>
+equals 2 BCE, and so on. Historical "BC"/"BCE" prose uses the older
+convention that has no year zero, so it is converted on input: a historical
+year <code>N BCE</code> becomes the astronomical year <code>-(N-1)</code>, e.g. <code>"1 BCE"</code> becomes
+<code>"0000"</code>, <code>"2 BCE"</code> becomes <code>"-0001"</code>, and <code>"44 BCE"</code> becomes <code>"-0043"</code>.
+A year written directly in signed ISO form (e.g. <code>"-0044"</code>) is already
+astronomical and is left unchanged, so <code>as_messydate("-0044")</code> (astronomical
+year -44, i.e. 45 BCE) and <code>as_messydate("44 BCE")</code> (<code>"-0043"</code>) intentionally
+differ. "AD"/"CE" prose is simply dropped, the year being unchanged.</p>
+<p>Era prose is a matter of input only: it is always removed on parsing, the
+era of a date in an <code>mdate</code> being carried by the sign of its year alone.
+Where it appears in the input, it is resolved for each year separately. A
+marker written before a date governs that date (<code>"{BC1044-03-15,BC1033}"</code>);
+otherwise a year takes the era of the first marker written after it, so a
+marker given once at the end still applies to every bound of a range or set:
+<code>"200..100 BC"</code>, <code>"..200 BC"</code> and <code>"200 BC.."</code> are all wholly BCE, whereas
+<code>"200 BC..100 AD"</code> spans the two eras and gives <code>"-0199..0100"</code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other coerce:
@@ -196,7 +225,7 @@ the date before it.</p></li>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"{2021-02-01,2021-02-28}"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "{2021-02-01,2021-02-28}"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-2021"</span>, <span class="st">"2021 BC"</span>, <span class="st">"-2021-02-01"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr [1:3] "-2021" "-2021" "-2021-02-01"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr [1:3] "-2021" "-2020" "-2021-02-01"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"210201"</span>, <span class="st">"20210201"</span><span class="op">)</span>, resequence <span class="op">=</span> <span class="st">"ymd"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr [1:2] "0021-02-01" "2021-02-01"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"010221"</span>, <span class="st">"01022021"</span><span class="op">)</span>, resequence <span class="op">=</span> <span class="st">"dmy"</span><span class="op">)</span></span></span>
@@ -219,7 +248,7 @@ the date before it.</p></li>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"MDCCLXXVI"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "1776"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"the Ides of March, 44 BC"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "-0044-03-15"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "-0043-03-15"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"possibly about 1910"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "%1910"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"the 1920s"</span><span class="op">)</span></span></span>

@@ -156,7 +156,7 @@ validate_messydate(new_messydate(c("2012-03-03", "2012-XX-03~")))
 # invalid characters or missing digits raise an error
 tryCatch(validate_messydate(new_messydate("2012-03-03g")),
          error = function(e) e$message)
-#> [1] "The only alpha characters allowed in messy dates are 'X' for\n      unspecified components, and 'T'/'Z' for times"
+#> [1] "The only alpha characters allowed in messy dates are 'X' for\n      unspecified components, and 'T'/'Z' for times\nin:\n  [1] 2012-03-03g"
 make_messydate("2010", "10", "10")
 #>  'mdate' chr "2010-10-10"
 ```

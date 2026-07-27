@@ -138,10 +138,12 @@ as.Date(as_messydate("2012-01"), FUN = vmodal)
 #> [1] "2012-01-01"
 as.Date(as_messydate("2012-01"), FUN = vrandom)
 #> [1] "2012-01-13"
+# "1000 BC" is the astronomical year -0999 (year zero exists), whereas the
+# signed ISO "-1000" below is astronomical year -1000
 as.Date(as_messydate("1000 BC"), FUN = vmax)
-#> [1] "-1000-12-31"
+#> [1] "-999-12-31"
 as.Date(as_messydate("1000 BC"), FUN = vmedian)
-#> [1] "-1000-07-02"
+#> [1] "-999-07-02"
 as.Date(as_messydate(c("-1000", "2020")), FUN = vmin)
 #> [1] "-1000-01-01" "2020-01-01" 
 # the time of day, if any, is dropped

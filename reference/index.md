@@ -24,6 +24,8 @@ the `mduration` class:
   [`` `[[<-`( ``*`<mdate>`*`)`](https://globalgov.github.io/messydates/reference/class_methods.md)
   [`c(`*`<mdate>`*`)`](https://globalgov.github.io/messydates/reference/class_methods.md)
   [`rep(`*`<mdate>`*`)`](https://globalgov.github.io/messydates/reference/class_methods.md)
+  [`unique(`*`<mdate>`*`)`](https://globalgov.github.io/messydates/reference/class_methods.md)
+  [`duplicated(`*`<mdate>`*`)`](https://globalgov.github.io/messydates/reference/class_methods.md)
   :
 
   Basic vector methods for `mdate` objects
@@ -37,6 +39,9 @@ These functions coerce dates from other classes to the `mdate` class:
   :
 
   Coercion from common date classes to `mdate`
+
+- [`md_problems()`](https://globalgov.github.io/messydates/reference/md_problems.md)
+  : Diagnose unparseable dates
 
 ## Coerce from
 

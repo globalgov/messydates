@@ -29,7 +29,7 @@ including historical prose, into mdate objects."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -221,7 +221,7 @@ numerals, "circa", "between ... and ...").</p></div>
 <span class="r-in"><span><span class="co"># invalid characters or missing digits raise an error</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu">validate_messydate</span><span class="op">(</span><span class="fu">new_messydate</span><span class="op">(</span><span class="st">"2012-03-03g"</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>         error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="va">e</span><span class="op">$</span><span class="va">message</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The only alpha characters allowed in messy dates are 'X' for\n      unspecified components, and 'T'/'Z' for times"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "The only alpha characters allowed in messy dates are 'X' for\n      unspecified components, and 'T'/'Z' for times\nin:\n  [1] 2012-03-03g"</span>
 <span class="r-in"><span><span class="fu">make_messydate</span><span class="op">(</span><span class="st">"2010"</span>, <span class="st">"10"</span>, <span class="st">"10"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "2010-10-10"</span>
 </code></pre></div>

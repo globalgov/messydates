@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,121 +35,158 @@
 
 <div id="contributing" class="section level1">
 
-<p>Contributions to <code>qData</code>, whether in the form of issue identification, bug fixes, new code or documentation are encouraged and welcome, both from research assistants and (early) users of the package:</p>
-<ul><li><a href="#issues">Submit an issue</a></li>
-<li><a href="#adding-new-code">Fix a bug or implement new features</a></li>
-<li><a href="#documentation">Document existing code</a></li>
-</ul><p>This outlines how to propose a change to a package from the Global Governance Observatory’s ecosystem. Please note that the <code>qData</code> project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<p>Contributions to <code>messydates</code>, whether in the form of issue identification, bug fixes, new code or documentation are encouraged and welcome.</p>
 <div class="section level2">
-<h2 id="issues">Issues<a class="anchor" aria-label="anchor" href="#issues"></a></h2>
-<p>Please use the issue tracker on GitHub to identify problems or suggest new functionality, before submitting changes to the code. We use issues to identify bugs and tasks, discuss feature requests, and to track implementation of changes.</p>
-<p>When submitting an issue, please provide at least a ‘Type’ label that best describes what the issue is about. The most useful issues are ones that precisely identify a bug, or propose a test that should pass but instead fails.</p>
+<h2 id="git">Git<a class="anchor" aria-label="anchor" href="#git"></a></h2>
+<p><code>globalgov</code> projects are maintained using the git version control system. A plain-English introduction to git can be found <a href="https://blog.red-badger.com/2016/11/29/gitgithub-in-plain-english" class="external-link">here</a>. I recommend you read this before continuing. A more recent motivation can be found <a href="https://www.r-bloggers.com/2024/04/git-gud-version-control-best-practices/" class="external-link">here</a>. It will explain the basics of git version control, committing and repos, pulling and pushing, branching and merging.</p>
+<p>Using git from the command line on your lap- or desktop can be intimidating, but I recommend <a href="https://git-fork.com" class="external-link">Fork</a> software for Mac and Windows. This allows mostly visual management of commits, diffs, branches, etc. There are various other git software packages available, but this one is fairly fully featured.</p>
+<p>The GitHub page allows to access the issues assigned to you and check the commits. You can also access the documents in the repository, although this won’t be necessary after you have cloned it on your computer via Fork.</p>
 </div>
 <div class="section level2">
-<h2 id="adding-new-code">Adding new code<a class="anchor" aria-label="anchor" href="#adding-new-code"></a></h2>
-<p>Independent or assigned code contributions are most welcome. When writing new code, please follow <a href="https://style.tidyverse.org/index.html" class="external-link">tidyverse style guide</a> which is based on <a href="https://google.github.io/styleguide/Rguide.xml" class="external-link">standard R guidelines</a>.</p>
-<p>It can help to use packages such as <code>lintr</code> and <code>goodpractice</code> to ensure these are followed. These packages are incorporated into the checks made when a pull request is made. The <code>styler</code> package fixes in a non-invasive way the code to adhere to the tidyverse formatting rules, and it also provides an RStudio Addins to help with this task. To run the <code>lintr</code> and <code>goodpractice</code> checks or use <code>styler</code> in a file run:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># basic lintr checking</span></span>
-<span><span class="fu">lintr</span><span class="fu">::</span><span class="fu"><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lint_package</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"qData/"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># goodpractices checks. Exclude length 80</span></span>
-<span><span class="fu">goodpractice</span><span class="fu">::</span><span class="fu">gp</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"qData/"</span>,</span>
-<span>   checks <span class="op">=</span> <span class="fu">all_checks</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># styler fix some of the styling issues</span></span>
-<span><span class="fu">styler</span><span class="fu">::</span><span class="fu">style_file</span><span class="op">(</span><span class="st">"filePath"</span><span class="op">)</span></span></code></pre></div>
+<h2 id="fork">Fork<a class="anchor" aria-label="anchor" href="#fork"></a></h2>
+<div class="section level3">
+<h3 id="cloning">Cloning<a class="anchor" aria-label="anchor" href="#cloning"></a></h3>
+<p>Once you have downloaded Fork, the first thing you have to do is to clone the remote repository on your computer. Before cloning, you will be able to choose on which <code>branch</code> you want to work: develop or main.</p>
+</div>
+<div class="section level3">
+<h3 id="pull">Pull<a class="anchor" aria-label="anchor" href="#pull"></a></h3>
+<p>This command allows you to <code>pull</code> changes from the remote repository to your local repository. Make sure you do that before starting working on your files so you have the newest versions. When pulling, make sure you choose main or develop, depending on the branch you decided to work with. Once you pulled, you have now all the new commits and files and you can start working on your assigned tasks. Note that you can access and open the files either from the Finder or from Fork.</p>
+</div>
+<div class="section level3">
+<h3 id="commit-and-push">Commit and Push<a class="anchor" aria-label="anchor" href="#commit-and-push"></a></h3>
+<p>Once you have made modifications on a file and saved them, it will appear in your <code>commit</code> window. Here you can control one last time your file, write the commit message with the issue reference (see below) and commit. Once your commit is ready, you can <code>push</code> them to the origin/main repository. Note that you can click the “push immediately” box in the commit window if you don’t want to do it in two steps. If you are working on a separate branch, it is important to select this branch when pushing to origin/main.</p>
+</div>
 </div>
 <div class="section level2">
-<h2 id="pull-request-process">Pull request process<a class="anchor" aria-label="anchor" href="#pull-request-process"></a></h2>
-<p>The title of your PR should briefly describe the change. Please include a summary of the changes and which issues are fixed and the relevant motivation and context. List any dependencies that are required for this change, indicating whether this is a major (breaking), minor, or patch change. The body of your PR should contain <code>Fixes #issue-number</code>. A checklist is provided to check off the cases as the different elements listed have been completed to make sure all the steps have been respected. Make sure the package passes R CMD check by running <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> before commiting changes to a pull request.</p>
-<p>If you want to make a bigger change, it’s a good idea to first file an issue and make sure someone from the team agrees that it’s needed before openning a pull request. If you’ve found a bug, please file an issue that illustrates the bug with a minimal <a href="https://www.tidyverse.org/help/#reprex" class="external-link">reprex</a>.</p>
-<p>Please follow the qData pull request guideline (<a href="https://github.com/globalgov/qData/blob/main/.github/pull_request_template.md" class="external-link uri">https://github.com/globalgov/qData/blob/main/.github/pull_request_template.md</a>)</p>
-<div class="section level3">
-<h3 id="branches">Branches<a class="anchor" aria-label="anchor" href="#branches"></a></h3>
-<p>We use two <strong>main branches</strong> in this project:</p>
-<ol style="list-style-type: decimal"><li><p>The <code>origin/main</code> branch is reserved for fully functional releases of the model. When the <code>develop</code> branch reaches a stable point, a code maintainer merges it back into to the <code>master</code> branch, and tags it with a release number there.</p></li>
-<li><p>The <code>origin/develop</code> branch reflects the latest model development stage. Contributers are encouraged to submit minor changes to this branch that enhance existing functionality. New features that may break existing functionality should be committed to supporting branches.</p></li>
-</ol><p>We use two types of <strong>supporting branches</strong>:</p>
-<ol start="3" style="list-style-type: decimal"><li><p><em>Feature branches</em> are used to develop new functionality. They exist as long as the feature is developed, and are then either merged into the <code>develop</code> branch for incorporation in a release, or deleted if the feature is abandoned. Feature branches should branch off from <code>origin/develop</code>.</p></li>
-<li><p><em>Hotfix branches</em> are used to provide fixes to severe bugs in the <code>main</code> branch. That way, the code maintainer does not have to incorporate (potentially unstable) changes from the <code>develop</code> branch to fix an issue. Branch names should be prefixed with <code>hotfix-</code>.</p></li>
-</ol><p>This branching model is based on: <a href="https://nvie.com/posts/a-successful-git-branching-model/" class="external-link uri">https://nvie.com/posts/a-successful-git-branching-model/</a>.</p>
+<h2 id="issues-and-tests">Issues and tests<a class="anchor" aria-label="anchor" href="#issues-and-tests"></a></h2>
+<p>Please use the issues tracker on GitHub to identify any function-related issues. You can use these issues to track progress on the issue and to comment or continue a conversation on that issue.</p>
+<p>The most useful issues are ones that precisely identify an error, or propose a test that should pass but instead fails. This package uses the <code>testthat</code> package for testing functions. Please see the <a href="https://testthat.r-lib.org" class="external-link">testthat website</a> for more details.</p>
 </div>
-<div class="section level3">
-<h3 id="main-branch-code-maintainer-only">Main Branch (code maintainer only)<a class="anchor" aria-label="anchor" href="#main-branch-code-maintainer-only"></a></h3>
-<p>To create a release version of the code:</p>
-<ol style="list-style-type: decimal"><li>Ensure that the repository is up-to-date: <code>git pull</code>.</li>
-<li>Switch to the <strong>main</strong> branch: <code>git checkout master</code>.</li>
-<li>Merge changes to the <strong>develop</strong> branch: <code>git merge --no-ff develop</code>.</li>
-<li>Tag release version: <code>git tag -a VX.Y.Z -m "VERSION-NAME"</code>.</li>
-<li>Push changes to this repository <code>git push origin master --tags</code>.</li>
-</ol></div>
-<div class="section level3">
-<h3 id="develop-branch-minor-changes-to-existing-functionality">Develop Branch (minor changes to existing functionality)<a class="anchor" aria-label="anchor" href="#develop-branch-minor-changes-to-existing-functionality"></a></h3>
-<p>To make minor changes directly to the <code>develop</code> branch, follow standard git procedures:</p>
-<ol style="list-style-type: decimal"><li>Make sure you switched to the <strong>develop</strong> branch of the project: <code>git checkout -b develop</code>.</li>
-<li>Make sure your local version of the code is up-to-date: <code>git pull origin develop</code>.</li>
-<li>Make your changes</li>
-<li>Stage your changes for a commit: <code>git add PATH-TO-CHANGED-FILE</code>.</li>
-<li>Commit your changes <a href="#commit-messages">using an appropriate message</a>: <code>git commit -m "DESCRIPTION"</code>.</li>
-<li>Push your commit: <code>git push origin develop</code>.</li>
-</ol></div>
-<div class="section level3">
-<h3 id="feature-branches-new-functionality">Feature Branches (new functionality)<a class="anchor" aria-label="anchor" href="#feature-branches-new-functionality"></a></h3>
-<p>To create a new feature branch: <code>git checkout -b myfeature develop</code>.</p>
-<p>To merge a feature branch back into <code>develop</code>:</p>
-<pre><code>git checkout develop
-git merge --no-ff myfeature
-git branch -d myfeature
-git push origin develop</code></pre>
-</div>
-<div class="section level3">
-<h3 id="hotfix-branches-to-fix-critical-bugs-in-release-versions">Hotfix Branches (to fix critical bugs in release versions)<a class="anchor" aria-label="anchor" href="#hotfix-branches-to-fix-critical-bugs-in-release-versions"></a></h3>
-<p>To create a new hotfix branch: <code>git checkout -b hotfix-VERSION master</code>.</p>
-<p>To merge a hotfix back into <code>master</code> (code maintainer only):</p>
-<pre><code>git checkout master
-git merge --no-ff hotfix-VERSION
-git tag -a VERSION
-git push origin develop</code></pre>
-<p>And into develop:</p>
-<pre><code>git checkout develop
-git merge --no-ff hotfix-VERSION</code></pre>
-<p>Every hotfix should increment the <a href="#versioning">PATCH digit of the version number</a>: a hotfix branch for <code>V1.3.0</code> is named <code>hotfix-V1.3.1</code>, and the new release is tagged as <code>V1.3.1</code>.</p>
-<p>Once merged into <code>master</code> and <code>develop</code>, the hotfix branch can be deleted: <code>git branch -d hotfix-VERSION</code>.</p>
-</div>
-<div class="section level3">
-<h3 id="commit-messages">Commit messages<a class="anchor" aria-label="anchor" href="#commit-messages"></a></h3>
-<p>Commits that relate to existing issues should reference the updated status of those issues, and mention the issue number (preceded by a hash symbol: #) in the commit description:</p>
-<p><code>Resolved #31 by adding a new function that does things, also updated documentation</code></p>
-<p>Where the issue hash (i.e. #31) is preceded by <code>resolve</code>, <code>resolves</code>, <code>resolved</code>, <code>close</code>, <code>closes</code>, <code>closed</code>, <code>fix</code>, <code>fixes</code>, or <code>fixed</code> (capitalised or not), the status of the issue(s) mentioned is updated automatically. Our current syntactical standard is to mention the issue first and then provide a short description of what the committed changes do in relation to that issue. Any ancillary changes can be mentioned after a comma.</p>
-<p>It should all be written in a single line, like so: #<code>{verb} {issue} {describe main action/changes}, {additional actions/changes}</code>.</p>
-<p>Note that it is important to write a structured commit message to improve efficiency in collaboration. Please make sure of: * Making the title clear and concise with correct reference to an issue as described above. * Using a subject line in the description part when the commit message outlines many different changes. * Explaining in details the changes made and why you made them by using bullet points. * Separating each paragraph with a blank line.</p>
-</div>
-<div class="section level3">
-<h3 id="testing">Testing<a class="anchor" aria-label="anchor" href="#testing"></a></h3>
-<p>We use the <a href="https://testthat.r-lib.org/" class="external-link">testthat</a> package to write unit tests. By convention, tests are located in <a href="qData/tests/testthat">testthat/tests/</a>.</p>
-<p>You should verify that all tests pass before issuing a commit to existing code. To run all tests for the latest version manually:</p>
-<pre><code>git pull
-library("testthat")
-testthat::test_dir("tests/testthat")</code></pre>
-<p>When writing a new function, consider writing a unit test for that function. We follow several conventions for writing tests:</p>
-<ul><li><p>A unit test file should test one or more aspects of a single function. This makes it easier to identify the source of bugs, and prevents lower-level tests from failing when higher-level functions change.</p></li>
-<li><p>The <a href="https://www.tidyverse.org/articles/2019/04/testthat-2-1-0/" class="external-link">naming convention</a> for test files is: <code>test-FILENAME_IN_R_DIRECTORY-FUNCTION_NAME.R</code>, i.e. test files are named after the file containing the original function in the <a href="qData/R">R</a> directory, pre-fixed with “test”, and optionally post-fixed with the name of the function that is being tested.</p></li>
-<li><p>If a test requires auxiliary functions from the package, e.g. to initialize a network with sample data, these belong in a helper file. There should be only one helper file for each <code>R</code> file, named <code>helper-FILENAME_IN_R_DIRECTORY-FUNCTION_NAME.R</code>. Re-using existing test data is preferable to creating new data for every test.</p></li>
-</ul></div>
+<div class="section level2">
+<h2 id="bug-fixing-or-adding-new-code">Bug fixing or adding new code<a class="anchor" aria-label="anchor" href="#bug-fixing-or-adding-new-code"></a></h2>
+<p>Independent or assigned code contributions are most welcome. When writing new code, please follow <a href="https://www.r-bloggers.com/%F0%9F%96%8A-r-coding-style-guide/" class="external-link">standard R guidelines</a>. It can help to use packages such as <code>lintr</code>, <code>goodpractice</code> and <code>formatR</code> to ensure these are followed.</p>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a></h2>
-<p>A final way of contributing to the package is in developing the vignettes/articles that illustrate the value added in the package. Please contact us directly with proposals for updating the documentation, or submit an issue if existing documentation is unclear.</p>
+<p>A final way of contributing to the package is in developing the vignettes/articles that illustrate the value added in the package. Please contact me with any proposals here.</p>
+<p>Please note that the <code>messydates</code> project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 <div class="section level2">
-<h2 id="versioning">Versioning<a class="anchor" aria-label="anchor" href="#versioning"></a></h2>
-<p>Note that the package is versioned according to <a href="https://www.jvandemo.com/a-simple-guide-to-semantic-versioning/" class="external-link">semantic versioning</a>. This means that versions follow the Major.Minor.Patch semantic format.</p>
-<p>Each minor or major level version is also given a new version name, which should be updated in the <code>zzz.R</code> file.</p>
+<h2 id="package-architecture">Package architecture<a class="anchor" aria-label="anchor" href="#package-architecture"></a></h2>
+<div class="section level3">
+<h3 id="project-overview">Project overview<a class="anchor" aria-label="anchor" href="#project-overview"></a></h3>
+<p><code>messydates</code> is an R package implementing ISO 8601-2:2019(E) “messy” dates and times. It introduces an <code>mdate</code> S3 class (a character vector under the hood) that can represent unspecified components (<code>X</code>), approximate (<code>~</code>) and uncertain (<code>?</code>, or both <code>%</code>) annotations, ranges (<code>..</code>), open-ended ranges (<code>..2019-01-01</code> / <code>2009-01-01..</code>), sets (<code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>/<code>[]</code>), and sub-day times of day with the same annotation system.</p>
+<p>The design principle is: retain and reason about imprecision, and only resolve to a single precise date/time when the user explicitly asks for it (via <code>min</code>/<code>max</code>/<code>mean</code>/<code>median</code>/<code>random</code> resolution). New functionality should preserve that principle rather than resolving imprecision early or discarding annotations.</p>
 </div>
-<div class="section level2">
-<h2 id="for-developers-using-macos">For developers using MacOS<a class="anchor" aria-label="anchor" href="#for-developers-using-macos"></a></h2>
-<p>Develops using MacOS might meet problems compiling the packages since the compiling configuration of R in MacOS is usually incorrect. If one meet an error with error info “/usr/bin/ld: cannot find -lgfortran”, then he can either correct the configuration himself or follows the following steps to solve the problem: 1. Run “.libPaths()” command in R and get a path, e.g. one might get “/Library/Frameworks/R.framework/Versions/3.6/Resources/library” 2. If the path one get in the first step is “something/library”, then open the file “something/etc/Makeconf” and comment out the line starting with “FLIBS”. e.g. one might open the file ” /Library/Frameworks/R.framework/Versions/3.6/Resources/etc/Makeconf” and change the line “FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin15/6.1.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm” to “#FLIBS = -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin15/6.1.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath - lm”</p>
+<div class="section level3">
+<h3 id="consistency">Consistency<a class="anchor" aria-label="anchor" href="#consistency"></a></h3>
+<p>We are aiming for pleasant predictability in terms of user experience. To that end, we have a regular syntax that users can rely on producing expected effects. Functions in the same family (<code>as_*()</code>, <code><a href="https://lubridate.tidyverse.org/reference/year.html" class="external-link">year()</a></code>/<code><a href="https://lubridate.tidyverse.org/reference/month.html" class="external-link">month()</a></code>/<code><a href="https://lubridate.tidyverse.org/reference/day.html" class="external-link">day()</a></code>, <code><a href="reference/convert_expand.html">expand()</a></code>/<code><a href="reference/convert_contract.html">contract()</a></code>, etc.) should share argument order and naming, so that behaviour is guessable across the family.</p>
+</div>
+<div class="section level3">
+<h3 id="common-commands">Common commands<a class="anchor" aria-label="anchor" href="#common-commands"></a></h3>
+<p>This is a standard R package developed with <code>devtools</code>/<code>roxygen2</code>. Run these from an R console with the working directory set to the package root (or via <code>Rscript -e</code>).</p>
+<ul><li>Install dependencies / load for development: <code><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">devtools::load_all()</a></code>
+</li>
+<li>Regenerate docs &amp; NAMESPACE after editing roxygen comments: <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code>
+</li>
+<li>Run full test suite: <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code>
+</li>
+<li>Run a single test file: <code>devtools::test(filter = "time-parse")</code> (matches <code>test-time-parse.R</code>), or <code>testthat::test_file("tests/testthat/test-time-parse.R")</code>
+</li>
+<li>Full package check (mirrors CI): <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> or <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck()</a></code>
+</li>
+<li>Lint: <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code>
+</li>
+<li>Spell check: <code><a href="https://docs.ropensci.org/spelling//reference/spell_check_package.html" class="external-link">spelling::spell_check_package()</a></code>
+</li>
+<li>Code coverage: <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>
+</li>
+<li>Build pkgdown site locally: <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code>
+</li>
+</ul><p>There is no non-R build system — no package.json/Makefile.</p>
+<p>Note that <code>README.md</code> is generated from <code>README.Rmd</code> — edit <code>README.Rmd</code> and re-knit (<code><a href="https://devtools.r-lib.org/reference/build_readme.html" class="external-link">devtools::build_readme()</a></code>), never edit <code>README.md</code> directly.</p>
+<p><code>DESCRIPTION</code> sets <code>Config/testthat/parallel: true</code> for CI. Some local setups cannot spawn the parallel testthat subprocesses; if the suite fails to start rather than failing a test, force sequential execution with <code>Sys.setenv(TESTTHAT_PARALLEL = "false")</code> before <code>testthat::test_dir("tests/testthat")</code> rather than changing the <code>DESCRIPTION</code> setting. <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> is unaffected.</p>
+</div>
+<div class="section level3">
+<h3 id="file-organization-file-naming--verbpurpose">File organization (file naming = verb/purpose)<a class="anchor" aria-label="anchor" href="#file-organization-file-naming--verbpurpose"></a></h3>
+<p><code>R/</code> files are grouped by verb/purpose, not by exported function, so related functions across the public API often live in different files that share a prefix:</p>
+<table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Prefix</th>
+<th>Contains</th>
+</tr></thead><tbody><tr><td><code>class_*.R</code></td>
+<td>the <code>mdate</code> class itself: <code>class_mdate.R</code> holds the constructor/validator (<code><a href="reference/class_mdate.html">new_messydate()</a></code>/<code><a href="reference/class_mdate.html">validate_messydate()</a></code>/<code><a href="reference/class_mdate.html">make_messydate()</a></code>) <em>and</em> the S3 dispatch methods (<code>print</code>/<code>format</code>/<code>Ops</code>/comparison); <code>class_methods.R</code> covers basic vector semantics (<code>[</code>, <code>[&lt;-</code>, <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code>, <code><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep()</a></code>) so that <code>mdate</code> behaves like an ordinary vector; duration handling lives in <code>class_mduration.R</code>
+</td>
+</tr><tr><td><code>coerce_to_messydate.R</code></td>
+<td>the largest file: <code><a href="reference/coerce_to.html">as_messydate()</a></code>, the main user-facing entry point that parses character strings, <code>Date</code>, <code>POSIXct</code>/<code>POSIXlt</code> into <code>mdate</code>, including the prose parser (Roman numerals, “circa”, “the Ides of March”, decades/centuries, “before X”, comma-separated prose lists, etc. — see the roxygen <code>@section Parsing prose</code> there for the full list of supported conventions)</td>
+</tr><tr><td><code>coerce_from_messydate.R</code></td>
+<td>the inverse: <code>mdate</code> → <code>Date</code>/<code>POSIXct</code>/<code>POSIXlt</code>
+</td>
+</tr><tr><td><code>validate_input.R</code></td>
+<td>input validation shared across the coercion pipeline, and <code><a href="reference/md_problems.html">md_problems()</a></code>, which reports what could not be parsed</td>
+</tr><tr><td>
+<code>resolve_extrema.R</code>, <code>resolve_tendency.R</code>
+</td>
+<td>resolution functions (<code><a href="reference/resolve_extrema.html">vmin()</a></code>/<code><a href="reference/resolve_extrema.html">vmax()</a></code>/<code><a href="reference/resolve_tendency.html">vmedian()</a></code>/<code><a href="reference/resolve_tendency.html">vmean()</a></code>/<code><a href="reference/resolve_tendency.html">random()</a></code>, etc.) used to collapse a messy date/range/set to one precise value</td>
+</tr><tr><td>
+<code>component_extract.R</code>, <code>component_annotate.R</code>
+</td>
+<td>pulling out or tagging individual date/time components (year, month, day, hour, …) and their annotation state</td>
+</tr><tr><td>
+<code>convert_expand.R</code>, <code>convert_contract.R</code>, <code>convert_sequence.R</code>
+</td>
+<td>expanding an <code>mdate</code> (range/set/approximate window) out to all compatible concrete dates, contracting a vector of dates back into the most compact messy representation, and generating <code><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq()</a></code>-style sequences over <code>mdate</code>s. <code>convert_expand.R</code> is the second-largest file and encodes the “imputation window” logic (default 3 years for year-only approximation, 3 years + 3 months for year-month approximation, etc.) for approximate/censored dates</td>
+</tr><tr><td><code>operate_*.R</code></td>
+<td>arithmetic on mdates and durations (<code>operate_arithmetic.R</code>), inequality/comparison operators (<code>operate_comparison.R</code>), set operations on mdate sets/ranges (<code>operate_set.R</code>), proportional overlap (<code>operate_proportional.R</code>), and higher-level statement helpers (<code>operate_statements.R</code>)</td>
+</tr><tr><td><code>data_battles.R</code></td>
+<td>a bundled example dataset (<code>battles</code>, in <code>data/battles.rda</code>) used in docs and examples</td>
+</tr><tr><td><code>messydates-defunct.R</code></td>
+<td>deprecated/removed function stubs kept for a graceful transition</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="time-of-day-support">Time-of-day support<a class="anchor" aria-label="anchor" href="#time-of-day-support"></a></h3>
+<p>Times are appended to a date with a space, e.g. <code>2019-03-01 14:30:00</code> (a space is preferred for readability but <code>T</code> is still accepted on input, per ISO 8601-1/RFC 3339). Because <code>:</code> is also a range separator, the parser detects and protects time components before range-splitting occurs, so <code>2009-01-01:2019-01-01</code> still parses as a range while <code>2019-03-01 14:30:00</code> parses as a time. Time components accept the same <code>~</code>/<code>?</code>/<code>%</code>/<code>X</code> annotations as date components. This logic is spread across the coercion pipeline (<code>coerce_to_messydate.R</code>), component extraction, and the arithmetic/sequence files — when changing time parsing, check all three.</p>
+</div>
+<div class="section level3">
+<h3 id="tests">Tests<a class="anchor" aria-label="anchor" href="#tests"></a></h3>
+<p>Tests in <code>tests/testthat/</code> mirror the <code>R/</code> files closely by topic (e.g. <code>test-coerce_to.R</code>, <code>test-convert_expand.R</code>, <code>test-operate_set.R</code>), alongside <code>test-time-*.R</code> files that cover time-of-day parsing, annotation, expansion and extraction across those same stages. When adding a feature to one of the <code>R/*.R</code> files above, the corresponding <code>test-*.R</code> file is almost always the right place to add coverage.</p>
+<p><code>testthat</code> edition 3 with parallel execution is configured in <code>DESCRIPTION</code> (<code>Config/testthat/parallel: true</code>).</p>
+</div>
+<div class="section level3">
+<h3 id="newsmd-conventions">
+<code>NEWS.md</code> conventions<a class="anchor" aria-label="anchor" href="#newsmd-conventions"></a></h3>
+<p>Every user-facing change (new feature, behaviour change, bug fix) gets an entry under the <em>current unreleased</em> version at the top of <code>NEWS.md</code>:</p>
+<ul><li>A version gets a top-level heading, <code># messydates X.Y.Z</code>; entries for a not-yet-released version accumulate under the existing top heading rather than each getting their own.</li>
+<li>Within a version, group entries under <code>##</code> subsections named after the area of the package they touch, not the R file — e.g. <code>Package</code> (dependencies, build, branding), <code>Class</code>, <code>Coercion</code>, <code>Annotation</code>, <code>Resolution</code>, <code>Operations</code>, <code>Extraction</code>, <code>Expand/Contract</code>. Reuse an existing subsection heading if one already fits rather than inventing a new one, and use each heading at most once per version.</li>
+<li>Every bullet sits under one of those <code>##</code> subsections; never leave a bullet directly under the version heading.</li>
+<li>One bullet per change, written as what changed (not what the code does internally).</li>
+</ul><p>Start each bullet with a verb matching the change type:</p>
+<ul><li>
+<code>- Added ...</code> — new functionality</li>
+<li>
+<code>- Improved ...</code> — functional updates to existing behaviour</li>
+<li>
+<code>- Renamed ... to ...</code> — function or argument name migrations</li>
+<li>
+<code>- Fixed ...</code> — bug fixes</li>
+</ul><p>Suffix any bullet that resolves an open issue with the issue number in parentheses, e.g. <code>(closed #123)</code>. Where a user reported the bug or proposed the fix or change, thank them by <code>@</code>-tag in the same parentheses, e.g. <code>(closed #123, thanks @anon_user)</code>.</p>
+<p>Where several changes are related — several fixes to the same function, or the sub-parts of one feature — a lead bullet naming the function with indented sub-bullets under it often reads better than a flat list:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ss">- </span>Improved <span class="in">`as_messydate()`</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ss">  - </span>dates with impossible components are now rejected</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="ss">  - </span>month and day are only swapped where the swap yields a date that could exist</span></code></pre></div>
+<p>Update <code>NEWS.md</code> in the same commit/PR as the code change it documents, not as an afterthought — don’t batch it up separately.</p>
+</div>
+<div class="section level3">
+<h3 id="branching-and-ci">Branching and CI<a class="anchor" aria-label="anchor" href="#branching-and-ci"></a></h3>
+<ul><li>
+<code>main</code> is the release branch; <code>develop</code> is the working branch (clone/work on <code>develop</code>).</li>
+<li>PRs into <code>main</code> trigger <a href="workflows/prchecks.yml">prchecks.yml</a>: R CMD check (macOS/Windows/Linux), binary build, codecov, lintr, spell check, and PR metadata checks (DESCRIPTION version bump, PR title/description conventions).</li>
+<li>Merges/pushes to <code>main</code> trigger <a href="workflows/pushrelease.yml">pushrelease.yml</a>: check, auto-bump version tag, GitHub release with binaries, then pkgdown site deploy.</li>
+<li>Commenting <code>/document</code> or <code>/style</code> on a PR triggers <a href="workflows/prcommands.yml">prcommands.yml</a>, which runs <code><a href="https://roxygen2.r-lib.org/reference/roxygenize.html" class="external-link">roxygen2::roxygenise()</a></code> or <code>styler::style_pkg()</code> and pushes the result back to the PR branch.</li>
+<li>Commits should reference an existing GitHub issue number (<code>#123</code>), see below.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="versioning">Versioning<a class="anchor" aria-label="anchor" href="#versioning"></a></h3>
+<p>The package is versioned according to <a href="https://www.jvandemo.com/a-simple-guide-to-semantic-versioning/" class="external-link">semantic versioning</a>, i.e. Major.Minor.Patch. Every PR into <code>main</code> must bump the <code>Version</code> field in <code>DESCRIPTION</code> by the appropriate increment, and say the new version number in the PR title; CI checks both.</p>
+</div>
 </div>
 </div>
 

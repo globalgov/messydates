@@ -25,6 +25,9 @@ as_messydate(x, resequence = FALSE)
 # S3 method for class 'character'
 as_messydate(x, resequence = NULL)
 
+# S3 method for class 'factor'
+as_messydate(x, resequence = NULL)
+
 # S3 method for class 'numeric'
 as_messydate(x, resequence = NULL)
 
@@ -84,6 +87,10 @@ round-trip unchanged.
 - `as_messydate(character)`: Coerce character date objects to `mdate`
   class
 
+- `as_messydate(factor)`: Coerce factors to `mdate` class, via their
+  labels. This is the common case when a date column has been read in
+  with `stringsAsFactors = TRUE`.
+
 - `as_messydate(numeric)`: Coerce numeric objects to `mdate` class
 
 - `as_messydate(list)`: Coerce list date objects to the most concise
@@ -99,7 +106,7 @@ their ISO 8601-2 equivalent before the usual parsing takes place:
 
 - Roman calendar references, i.e. the Kalends, Nones, and Ides of a
   named month, e.g. `"the Ides of March, 44 BC"` becomes
-  `"-0044-03-15"`. The Nones and Ides fall later (the 7th and 15th) in
+  `"-0043-03-15"`. The Nones and Ides fall later (the 7th and 15th) in
   March, May, July, and October, and earlier (the 5th and 13th) in other
   months.
 
@@ -126,6 +133,30 @@ their ISO 8601-2 equivalent before the usual parsing takes place:
   `"13th Feb, 1977, Feb 15 1977, 1910"`, is split into separate dates
   (here, three): a fragment that is only a year is treated as completing
   the date before it.
+
+## Eras and year numbering
+
+`{messydates}` stores years in the ISO 8601-2 (proleptic Gregorian)
+astronomical numbering, in which a year zero exists and equals 1 BCE,
+`-0001` equals 2 BCE, and so on. Historical "BC"/"BCE" prose uses the
+older convention that has no year zero, so it is converted on input: a
+historical year `N BCE` becomes the astronomical year `-(N-1)`, e.g.
+`"1 BCE"` becomes `"0000"`, `"2 BCE"` becomes `"-0001"`, and `"44 BCE"`
+becomes `"-0043"`. A year written directly in signed ISO form (e.g.
+`"-0044"`) is already astronomical and is left unchanged, so
+`as_messydate("-0044")` (astronomical year -44, i.e. 45 BCE) and
+`as_messydate("44 BCE")` (`"-0043"`) intentionally differ. "AD"/"CE"
+prose is simply dropped, the year being unchanged.
+
+Era prose is a matter of input only: it is always removed on parsing,
+the era of a date in an `mdate` being carried by the sign of its year
+alone. Where it appears in the input, it is resolved for each year
+separately. A marker written before a date governs that date
+(`"{BC1044-03-15,BC1033}"`); otherwise a year takes the era of the first
+marker written after it, so a marker given once at the end still applies
+to every bound of a range or set: `"200..100 BC"`, `"..200 BC"` and
+`"200 BC.."` are all wholly BCE, whereas `"200 BC..100 AD"` spans the
+two eras and gives `"-0199..0100"`.
 
 ## See also
 
@@ -158,7 +189,7 @@ as_messydate("2021-02-01..2021-02-28")
 as_messydate("{2021-02-01,2021-02-28}")
 #>  'mdate' chr "{2021-02-01,2021-02-28}"
 as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
-#>  'mdate' chr [1:3] "-2021" "-2021" "-2021-02-01"
+#>  'mdate' chr [1:3] "-2021" "-2020" "-2021-02-01"
 as_messydate(c("210201", "20210201"), resequence = "ymd")
 #>  'mdate' chr [1:2] "0021-02-01" "2021-02-01"
 as_messydate(c("010221", "01022021"), resequence = "dmy")
@@ -181,7 +212,7 @@ as_messydate("around 2pm")
 as_messydate("MDCCLXXVI")
 #>  'mdate' chr "1776"
 as_messydate("the Ides of March, 44 BC")
-#>  'mdate' chr "-0044-03-15"
+#>  'mdate' chr "-0043-03-15"
 as_messydate("possibly about 1910")
 #>  'mdate' chr "%1910"
 as_messydate("the 1920s")

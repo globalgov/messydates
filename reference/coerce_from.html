@@ -31,7 +31,7 @@ especially for checking the robustness of results."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -172,10 +172,12 @@ still applies).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-01"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-01"</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="va">vrandom</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "2012-01-13"</span>
+<span class="r-in"><span><span class="co"># "1000 BC" is the astronomical year -0999 (year zero exists), whereas the</span></span></span>
+<span class="r-in"><span><span class="co"># signed ISO "-1000" below is astronomical year -1000</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="st">"1000 BC"</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="va">vmax</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-12-31"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-999-12-31"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="st">"1000 BC"</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="va">vmedian</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-07-02"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-999-07-02"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-1000"</span>, <span class="st">"2020"</span><span class="op">)</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="va">vmin</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-1000-01-01" "2020-01-01" </span>
 <span class="r-in"><span><span class="co"># the time of day, if any, is dropped</span></span></span>

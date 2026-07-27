@@ -11,7 +11,7 @@ of messy dates."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,13 @@ to then display their most succinct representation.</p>
 contracting a date-time range and then re-expanding it will not restore
 the original times; <code>contract()</code> is intended for date-level ranges,
 sets, and unspecified components.</p>
+<p>Sets are returned in the notation they were given in: a <code>[]</code> ("one member
+of") set contracts back to <code>[]</code> rather than <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>. This is only possible
+when <code>contract()</code> is passed an <code>mdate</code> (or something coercible to one),
+since <code><a href="convert_expand.html">expand()</a></code> returns the member dates without recording which kind of
+set they came from. A list of dates therefore always contracts to <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>.
+Note that a set whose members happen to be consecutive days contracts to a
+range, <code>..</code>, whichever notation it was given in.</p>
     </div>
 
     <div class="section level2">
@@ -91,7 +98,7 @@ sets, and unspecified components.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4             2001-01-01..2001-02-02  2001-01-01..2001-02-02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5            {2001-10-01,2001-10-04} {2001-10-01,2001-10-04}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6               {2001-01,2001-02-02}    {2001-01,2001-02-02}</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                              -0028                   -0028</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                              -0027                   -0027</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8                        -2000-01-01             -2000-01-01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9 {2001-01-01,2001-01-02,2001-01-03}  2001-01-01..2001-01-03</span>
 <span class="r-in"><span><span class="co"># a full-month range collapses to a year-month by default...</span></span></span>
@@ -100,6 +107,9 @@ sets, and unspecified components.</p>
 <span class="r-in"><span><span class="co"># ...unless collapse = FALSE keeps it as an explicit start..end range</span></span></span>
 <span class="r-in"><span><span class="fu">contract</span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="st">"2012-06-01..2012-06-30"</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "2012-06-01..2012-06-30"</span>
+<span class="r-in"><span><span class="co"># a '[]' set stays a '[]' set</span></span></span>
+<span class="r-in"><span><span class="fu">contract</span><span class="op">(</span><span class="fu"><a href="coerce_to.html">as_messydate</a></span><span class="op">(</span><span class="st">"[2001-01-01,2001-02-02]"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "[2001-01-01,2001-02-02]"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

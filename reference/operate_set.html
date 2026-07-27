@@ -19,7 +19,7 @@ every day within it, use + (see ?operate_arithmetic) instead."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,6 +81,15 @@ every day within it, use <code>+</code> (see <code><a href="operate_arithmetic.h
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A vector of the same mode for <code>%intersect%</code>,
 or a common mode for <code>%union%</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Both kinds of set expand to the same members, so these operators return
+the same dates for <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> ("all members of") and <code>[]</code> ("one member of")
+alike. What differs is the reading: for a <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code> set the result lists dates
+that are shared with (or covered by) the other operand, whereas for a
+<code>[]</code> set it lists the <em>candidates</em> that remain possible, so an empty
+intersection rules the other operand out rather than showing no overlap.</p>
     </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>

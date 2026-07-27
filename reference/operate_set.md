@@ -36,6 +36,17 @@ e1 %union% e2
 A vector of the same mode for `%intersect%`, or a common mode for
 `%union%`.
 
+## Details
+
+Both kinds of set expand to the same members, so these operators return
+the same dates for [`{}`](https://rdrr.io/r/base/Paren.html) ("all
+members of") and `[]` ("one member of") alike. What differs is the
+reading: for a [`{}`](https://rdrr.io/r/base/Paren.html) set the result
+lists dates that are shared with (or covered by) the other operand,
+whereas for a `[]` set it lists the *candidates* that remain possible,
+so an empty intersection rules the other operand out rather than showing
+no overlap.
+
 ## Functions
 
 - ` %intersect% `: Find intersection of sets of messy dates

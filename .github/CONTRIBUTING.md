@@ -4,24 +4,6 @@ Contributions to `messydates`,
 whether in the form of issue identification, bug fixes, new code or documentation 
 are encouraged and welcome.
 
-## Aims
-
-Here is some things that Guy Kawasaki, Silicon Valley venture capitalist,
-learned from Steve Jobs:
-
-- "Experts" are clueless. Especially self-declared ones.
-- Customers cannot tell you what they need. They can help with evolution, but not revolution.
-- Biggest challenges beget the best work.
-- Design counts. Users will see the skin/UI of your product, not the great algorithms.
-- Big graphics, big fonts.
-- Jump curves---do things 10 times better, not 10 percent.
-- All that truly matters is whether something works or doesn't work. Open or close, iPhone or Android, car or train, doesn't matter---make
-it work.
-- "Value" is different from "price". There is a class of people who do care about value. Ease of use -> less support costs. You have to create a unique and valuable product as an engineer.
-- Real CEOs can demo. If you can't demo your own product, then quit.
-- Real entrepreneurs ship, not slip.
-- Some things need to be believed to be seen.
-
 ## Git
 
 `globalgov` projects are maintained using the git version control system.
@@ -40,12 +22,62 @@ The GitHub page allows to access the issues assigned to you and check the commit
 You can also access the documents in the repository, 
 although this won't be necessary after you have cloned it on your computer via Fork.
 
-## Style
+## Fork
 
-In terms of style, we are aiming for pleasant predictability in terms of user experience.
-To that end, we have a regular syntax that users can rely on producing expected effects.
-Functions in the same family (`as_*()`, `year()`/`month()`/`day()`, `expand()`/`contract()`, etc.)
-should share argument order and naming, so that behaviour is guessable across the family.
+### Cloning
+Once you have downloaded Fork, the first thing you have to do is to 
+clone the remote repository on your computer. 
+Before cloning, you will be able to choose on which `branch` you want to work: 
+develop or main. 
+
+### Pull 
+This command allows you to `pull` changes from the remote repository to your local repository.
+Make sure you do that before starting working on your files so you have the newest versions. 
+When pulling, make sure you choose main or develop, 
+depending on the branch you decided to work with. 
+Once you pulled, you have now all the new commits and files and 
+you can start working on your assigned tasks.
+Note that you can access and open the files either from the Finder or from Fork. 
+
+### Commit and Push
+
+Once you have made modifications on a file and saved them, it will appear in your `commit` window. 
+Here you can control one last time your file, write the commit message with the 
+issue reference (see below) and commit. 
+Once your commit is ready, you can `push` them to the origin/main repository.
+Note that you can click the "push immediately" box in the commit window 
+if you don't want to do it in two steps. 
+If you are working on a separate branch, 
+it is important to select this branch when pushing to origin/main.
+
+## Issues and tests
+
+Please use the issues tracker on GitHub to identify any function-related issues.
+You can use these issues to track progress on the issue and 
+to comment or continue a conversation on that issue.
+
+The most useful issues are ones that precisely identify an error,
+or propose a test that should pass but instead fails.
+This package uses the `testthat` package for testing functions.
+Please see the [testthat website](https://testthat.r-lib.org) for more details.
+
+## Bug fixing or adding new code
+
+Independent or assigned code contributions are most welcome.
+When writing new code, please follow 
+[standard R guidelines](https://www.r-bloggers.com/🖊-r-coding-style-guide/). 
+It can help to use packages such as `lintr`, `goodpractice` and `formatR` 
+to ensure these are followed.
+
+## Documentation
+
+A final way of contributing to the package is in developing the 
+vignettes/articles that illustrate the value added in the package. 
+Please contact me with any proposals here.
+
+Please note that the `messydates` project is released with a 
+[Contributor Code of Conduct](CODE_OF_CONDUCT.md). 
+By contributing to this project, you agree to abide by its terms.
 
 ## Package architecture
 
@@ -62,6 +94,13 @@ and only resolve to a single precise date/time when the user explicitly asks for
 (via `min`/`max`/`mean`/`median`/`random` resolution).
 New functionality should preserve that principle rather than resolving imprecision early
 or discarding annotations.
+
+### Consistency
+
+We are aiming for pleasant predictability in terms of user experience.
+To that end, we have a regular syntax that users can rely on producing expected effects.
+Functions in the same family (`as_*()`, `year()`/`month()`/`day()`, `expand()`/`contract()`, etc.)
+should share argument order and naming, so that behaviour is guessable across the family.
 
 ### Common commands
 
@@ -149,12 +188,34 @@ Every user-facing change (new feature, behaviour change, bug fix) gets an entry 
   `Expand/Contract`.
   Reuse an existing subsection heading if one already fits
   rather than inventing a new one, and use each heading at most once per version.
-- One bullet per change, written as what changed (not what the code does internally);
-  use nested sub-bullets for multi-part changes
-  (e.g. several parsing conventions added under one feature).
-- Reference closed GitHub issues inline where relevant, e.g. `(closed #52)`.
-- Update `NEWS.md` in the same commit/PR as the code change it documents,
-  not as an afterthought — don't batch it up separately.
+- Every bullet sits under one of those `##` subsections; never leave a bullet directly
+  under the version heading.
+- One bullet per change, written as what changed (not what the code does internally).
+
+Start each bullet with a verb matching the change type:
+
+- `- Added ...` — new functionality
+- `- Improved ...` — functional updates to existing behaviour
+- `- Renamed ... to ...` — function or argument name migrations
+- `- Fixed ...` — bug fixes
+
+Suffix any bullet that resolves an open issue with the issue number in parentheses,
+e.g. `(closed #123)`.
+Where a user reported the bug or proposed the fix or change, thank them by `@`-tag in the
+same parentheses, e.g. `(closed #123, thanks @anon_user)`.
+
+Where several changes are related — several fixes to the same function, or the sub-parts
+of one feature — a lead bullet naming the function with indented sub-bullets under it
+often reads better than a flat list:
+
+```md
+- Improved `as_messydate()`
+  - dates with impossible components are now rejected
+  - month and day are only swapped where the swap yields a date that could exist
+```
+
+Update `NEWS.md` in the same commit/PR as the code change it documents,
+not as an afterthought — don't batch it up separately.
 
 ### Branching and CI
 
@@ -176,77 +237,3 @@ The package is versioned according to
 i.e. Major.Minor.Patch.
 Every PR into `main` must bump the `Version` field in `DESCRIPTION` by the appropriate
 increment, and say the new version number in the PR title; CI checks both.
-
-## Fork
-
-### Cloning
-Once you have downloaded Fork, the first thing you have to do is to 
-clone the remote repository on your computer. 
-Before cloning, you will be able to choose on which `branch` you want to work: 
-develop or main. 
-
-### Pull 
-This command allows you to `pull` changes from the remote repository to your local repository.
-Make sure you do that before starting working on your files so you have the newest versions. 
-When pulling, make sure you choose main or develop, 
-depending on the branch you decided to work with. 
-Once you pulled, you have now all the new commits and files and 
-you can start working on your assigned tasks.
-Note that you can access and open the files either from the Finder or from Fork. 
-
-### Commit and Push
-
-Once you have made modifications on a file and saved them, it will appear in your `commit` window. 
-Here you can control one last time your file, write the commit message with the 
-issue reference (see below) and commit. 
-Once your commit is ready, you can `push` them to the origin/main repository.
-Note that you can click the "push immediately" box in the commit window 
-if you don't want to do it in two steps. 
-If you are working on a separate branch, 
-it is important to select this branch when pushing to origin/main.
-
-## Issues and tests
-
-Please use the issues tracker on GitHub to identify any function-related issues.
-You can use these issues to track progress on the issue and 
-to comment or continue a conversation on that issue.
-
-The most useful issues are ones that precisely identify an error,
-or propose a test that should pass but instead fails.
-This package uses the `testthat` package for testing functions.
-Please see the [testthat website](https://testthat.r-lib.org) for more details.
-
-## Bug fixing or adding new code
-
-Independent or assigned code contributions are most welcome.
-When writing new code, please follow 
-[standard R guidelines](https://www.r-bloggers.com/🖊-r-coding-style-guide/). 
-It can help to use packages such as `lintr`, `goodpractice` and `formatR` 
-to ensure these are followed.
-
-Currently, commits can only be pushed to GitHub where they reference an existing issue.
-If no issue exists for the code you have developed, please add an issue first before pushing.
-Once the issue exists, you will need to mention the issue number (preceded by a hash symbol: #)
-in the commit description:
-
-` Resolved #31 by adding a new function that does things, also updated documentation `
-
-Where the issue hash (i.e. #31) is preceded by
-`resolve`, `resolves`, `resolved`, `close`, `closes`, `closed`, `fix`, `fixes`, or `fixed`
-(capitalised or not),
-Github will automatically updated the status of the issue(s) mentioned.
-
-Our current syntactical standard is to mention the issue first and then 
-provide a short description of what the committed changes do 
-in relation to that issue.
-Any ancillary changes can be mentioned after a comma.
-
-## Documentation
-
-A final way of contributing to the package is in developing the 
-vignettes/articles that illustrate the value added in the package. 
-Please contact me with any proposals here.
-
-Please note that the `messydates` project is released with a 
-[Contributor Code of Conduct](CODE_OF_CONDUCT.md). 
-By contributing to this project, you agree to abide by its terms.

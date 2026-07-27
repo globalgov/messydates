@@ -1,11 +1,22 @@
 # messydates 1.1.0
 
+## Package
+
+- Improved package architecture documentation in `.github/CONTRIBUTING.md` so 
+  that human contributors and coding agents read the same notes
+- Added a PR metadata job to the PR checks workflow, which verifies that the
+  `DESCRIPTION` version is bumped, that the PR title names the new version, and
+  that the PR description itemizes changes under subsection titles; these items
+  are consequently dropped from the pull request template
+- Fixed the website deploy job installing `Config/Needs/check` packages instead
+  of `Config/Needs/website`
+
 ## Class
 
-- `validate_messydate()` now reports which elements failed and what they
-  contained, instead of naming only the rule that was broken, and no longer
-  passes a vector of empty strings as valid because a single element somewhere
-  in it happened to contain a digit
+- Improved `validate_messydate()` to report which elements failed and what they
+  contained, instead of naming only the rule that was broken
+  - No longer passes a vector of empty strings as valid because a single element 
+    somewhere in it happened to contain a digit
 - Assigning an unparseable value into an `mdate` with `[<-` or `[[<-` now
   reports what could not be parsed, rather than silently blanking the element
 
@@ -27,19 +38,19 @@
 
 ## Expand/Contract
 
-- `expand()` now handles an unspecified year. Previously `"192X"` raised
-  `'from' must be a finite number` and `"18XX"` silently returned a single
-  date, even though these are exactly what the prose parser produces for
-  decades and centuries:
-  - a bare unspecified year expands to the whole span (`"192X"` gives every
-    day of the 1920s), while an attached month or day picks out that month or
-    day in each candidate year (`"192X-05-04"` gives ten dates, not nine years
-    of them)
-  - BCE years are bounded the other way round, `-1999` being earlier
+- Fixed how `expand()` handles unspecified years
+  - Previously `"192X"` raised `'from' must be a finite number` and 
+    `"18XX"` silently returned a single date, 
+    even though these are what the prose parser produces for decades and centuries
+  - Now a bare unspecified year expands to the whole span (`"192X"` gives every
+    day of the 1920s)
+  - Now an attached month or day picks out that month or day in each candidate 
+    year (`"192X-05-04"` gives ten dates, not nine years of them)
+  - Now BCE years are bounded the other way round, `-1999` being earlier
     than `-1900`
-  - a year too vague to enumerate, such as `"XXXX"`, is refused with a message
-    suggesting `vmin()`/`vmax()` rather than attempted
-- `expand()` now applies unspecified-component rules to each member of a set
+  - Now a year too vague to enumerate, such as `"XXXX"`, refused with a message
+    suggesting `vmin()`/`vmax()`
+- Fixed how `expand()` applies unspecified-component rules to each member of a set
   separately, fixing over-expansion of sets whose members had an unspecified
   month: `"{2008-XX-31,2009-XX-31}"` gave 671 dates and now gives 24
 

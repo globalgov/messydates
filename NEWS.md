@@ -15,6 +15,9 @@
   (proleptic Gregorian, in which a year zero exists and equals 1 BCE), fixing an
   off-by-one error (closed #94, thanks @njbart):
   - a historical `N BCE` maps to the astronomical year `-(N-1)`, so `"44 BC"`
+- Fixed how `[]` sets ("one member of") silently rewrote as `{}` sets ("all members of"). 
+  - Note that the two still expand and resolve alike; giving
+    `[]` its own meaning in the resolution functions remains outstanding
     becomes `-0043` and `"1 BC"` becomes `0000` (year zero); a signed ISO year
     such as `"-0044"` is already astronomical and is left unchanged
   - year zero is preserved on input (previously `0000` was misread as an

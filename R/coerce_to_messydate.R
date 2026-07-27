@@ -198,6 +198,10 @@ as_messydate.character <- function(x, resequence = NULL) {
   # them. Times are standardised separately and reattached at the end.
   prot <- protect_times(d)
   d <- prot$skeleton
+  # Note which values were written as '[]' ("one member of") before the braces
+  # are stripped, so they are not restored as '{}' ("all members of").
+  onesie <- stringi::stri_detect_regex(d, "^\\s*\\[.*\\]\\s*$")
+  onesie[is.na(onesie)] <- FALSE
   d <- standardise_date_separators(d)
   if (!is.null(resequence)) {
     if (resequence == "dmy") {
@@ -219,6 +223,8 @@ as_messydate.character <- function(x, resequence = NULL) {
   d <- standardise_date_input(d)
   d <- standardise_widths(d)
   d <- restore_times(d, prot$times)
+  if (any(onesie))
+    d[onesie] <- stringi::stri_replace_all_regex(d[onesie], "^\\{(.*)\\}$", "[$1]")
   new_messydate(d)
 }
 

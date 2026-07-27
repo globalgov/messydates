@@ -22,19 +22,57 @@
 
 ## Coercion
 
-- BCE/CE prose is now converted to ISO 8601-2 astronomical year numbering
-  (proleptic Gregorian, in which a year zero exists and equals 1 BCE), fixing an
-  off-by-one error (closed #94, thanks @njbart):
-  - a historical `N BCE` maps to the astronomical year `-(N-1)`, so `"44 BC"`
+- Improved `as_messydate()` to validate its input rather than carrying values it
+  cannot interpret:
+  - dates with impossible components are rejected, so `"2019-02-30"`,
+    `"2019-06-31"` and `"2019-01-01 25:00"` now error instead of being accepted
+    as written; relatedly, `"2019-13-45"` is no longer silently reordered into
+    `"2019-45-13"`, since month and day are only swapped where the swap yields
+    a date that could exist
+  - ISO 8601-2 notations that `{messydates}` does not represent (week dates,
+    ordinal dates, season codes, significant digits, extended years, the
+    `P`-style duration notation, and repeating intervals) now error naming the
+    format, instead of passing through as strings that nothing downstream could
+    expand, resolve or compare. Durations themselves are unaffected: they are
+    written as date ranges and handled by `mduration`, and the error for
+    `"P1Y2M"` points there
+  - text naming no date at all still becomes `NA`, but now warns, listing what
+    could not be read
+- Added `md_problems()`, which reports one row per unparseable element of a
+  vector, with the reason for each, for checking a column of dates before
+  coercing it
+- Added `as_messydate()` methods for factors (coerced via their labels, the
+  common case when a column was read in with `stringsAsFactors = TRUE`) and a
+  default method that names the offending class rather than failing with R's
+  `UseMethod` message
+- Improved parsing consistency across scalars and vectors
+  - a month-first date such as `"July 4 1976"` previously lost its day whenever 
+    another value shared the vector with it
 - Fixed how `[]` sets ("one member of") silently rewrote as `{}` sets ("all members of"). 
   - Note that the two still expand and resolve alike; giving
     `[]` its own meaning in the resolution functions remains outstanding
+- Fixed BCE/CE prose off-by-one error (closed #94, thanks @njbart) 
+  to convert to ISO 8601-2 astronomical year numbering 
+  (proleptic Gregorian, in which a year zero exists and equals 1 BCE):
+  - A historical `N BCE` maps to the astronomical year `-(N-1)`, so `"44 BC"`
     becomes `-0043` and `"1 BC"` becomes `0000` (year zero); a signed ISO year
     such as `"-0044"` is already astronomical and is left unchanged
-  - year zero is preserved on input (previously `0000` was misread as an
+  - Year zero is preserved on input (previously `0000` was misread as an
     unspecified year) and is traversed by `seq()` and `expand()`, so a sequence
     spanning the BCE/CE boundary now passes through the whole of year `0000`
     rather than jumping from `-0001` straight to `0001`
+  - Era markers *on input* are now resolved for each year in an expression
+    separately, rather than by counting how many markers a string contains
+    (they are, as before, always removed in the parsed `mdate`, which records
+    the era in the sign of the year alone). So an input marker written once at
+    the end of a range or set applies to every bound of it: `"..200 BC"`,
+    `"200..100 BC"` and `"44, 33 BC"` now give `..-199`, `-0199..-0099` and
+    `{-0043,-0032}`, where previously the non-leading bounds silently stayed
+    CE; an input marker written before a date still governs that date, so
+    `"{BC2010-10-10,BC2010-10-11}"` gives `{-2009-10-10,-2009-10-11}`; and
+    `"200 BC..100 AD"` spans the two eras, giving `-0199..0100`
+  - Fixed how era markers could be dropped from approximate or uncertain dates
+    given in prose, so `"circa 200 BC"` is now `~-199` rather than `0200~`
 
 ## Expand/Contract
 

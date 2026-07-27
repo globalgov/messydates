@@ -77,11 +77,21 @@ you explicitly ask.
 | Written/prose dates (e.g. "First of February…") |  |  |  |  | ✓ |
 | Expand to (and contract from) all compatible dates |  |  |  |  | ✓ |
 | Transparent resolution (min/max/mean/median/random) |  |  |  |  | ✓ |
-| Full ISO 8601-2 (EDTF) support |  |  |  |  | ✓ |
+| ISO 8601-2 (EDTF) support |  |  |  |  | ~ |
 
 (✓ = supported, ~ = partially supported. `{clock}` excels at
 high-precision arithmetic on _valid, complete_ dates, which complements rather
 than overlaps `{messydates}`.)
+
+`{messydates}` covers the parts of ISO 8601-2 that carry imprecision:
+unspecified components, approximate and uncertain annotations, ranges, open
+ranges, sets, and times of day. Durations are covered too, by the `mduration`
+class, which expresses them as a range of possible dates so that uncertainty
+at either end is preserved. Not implemented are week dates (`2019-W12`),
+ordinal dates (`2019-123`), season codes (`2019-21`), significant digits
+(`1234S3`), extended years (`Y17E7`), the `P`-style duration notation
+(`P1Y2M`), and repeating intervals; these are rejected on coercion rather than
+silently passed through.
 
 ```{r setup, echo=FALSE, include=FALSE, warning=FALSE}
 library(lubridate)

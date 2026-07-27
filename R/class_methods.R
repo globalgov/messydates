@@ -30,9 +30,22 @@ NULL
 #' @rdname class_methods
 #' @export
 `[<-.mdate` <- function(x, i, ..., value) {
-  value <- as_messydate(value)
-  validate_messydate(value)
+  value <- coerce_replacement(value)
   as_messydate(NextMethod("[<-", unclass(x)))
+}
+
+# Coerces a replacement value, treating text that names no date as an error
+# rather than the silent NA that as_messydate() would return: an assignment
+# that cannot be honoured should not quietly blank out an element.
+coerce_replacement <- function(value) {
+  out <- suppressWarnings(as_messydate(value))
+  bad <- which(is.na(out) & !is.na(value))
+  if (length(bad) > 0) {
+    stop("Replacement value", if (length(bad) > 1) "s" else "",
+         " could not be parsed as a date:\n",
+         report_elements(bad, as.character(value)[bad]), call. = FALSE)
+  }
+  validate_messydate(out)
 }
 
 #' @rdname class_methods
@@ -44,8 +57,7 @@ NULL
 #' @rdname class_methods
 #' @export
 `[[<-.mdate` <- function(x, i, ..., value) {
-  value <- as_messydate(value)
-  validate_messydate(value)
+  value <- coerce_replacement(value)
   as_messydate(NextMethod("[[<-", unclass(x)))
 }
 

@@ -6,6 +6,9 @@
   contained, instead of naming only the rule that was broken, and no longer
   passes a vector of empty strings as valid because a single element somewhere
   in it happened to contain a digit
+- Assigning an unparseable value into an `mdate` with `[<-` or `[[<-` now
+  reports what could not be parsed, rather than silently blanking the element
+
 ## Coercion
 
 - BCE/CE prose is now converted to ISO 8601-2 astronomical year numbering

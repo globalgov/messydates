@@ -19,6 +19,11 @@
     somewhere in it happened to contain a digit
 - Assigning an unparseable value into an `mdate` with `[<-` or `[[<-` now
   reports what could not be parsed, rather than silently blanking the element
+- Added `unique()` and `duplicated()` methods for `mdate` objects (closes #106)
+  - Previously `unique()` fell through to the character method and dropped the
+    class, so a deduplicated column silently stopped being an `mdate`
+  - Both compare the annotated strings rather than the dates they expand to,
+    so `"2012-01"` and `"2012-01-01..2012-01-31"` remain distinct
 
 ## Coercion
 

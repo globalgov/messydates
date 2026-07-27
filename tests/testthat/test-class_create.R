@@ -112,3 +112,16 @@ test_that("works with data.frames", {
   df_call <- data.frame(x)
   expect_equal(df_coerce, df_call)
 })
+
+test_that("unique and duplicated methods work", {
+  x <- as_messydate(c("2019-01-01", "2019-01-01", "2019-02-02"))
+  expect_s3_class(unique(x), "mdate")
+  expect_identical(unique(x), as_messydate(c("2019-01-01", "2019-02-02")))
+  expect_identical(duplicated(x), c(FALSE, TRUE, FALSE))
+  # annotations are compared as written, not as the dates they expand to
+  y <- as_messydate(c("2012-01", "2012-01-01..2012-01-31"))
+  expect_length(unique(y), 2)
+  # set notation is retained through deduplication
+  z <- as_messydate(c("[2019-01-01,2019-02-02]", "[2019-01-01,2019-02-02]"))
+  expect_identical(unique(z), as_messydate("[2019-01-01,2019-02-02]"))
+})

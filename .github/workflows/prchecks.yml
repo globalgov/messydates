@@ -88,3 +88,49 @@ jobs:
         run: spelling::spell_check_package()
         if: runner.os == 'macOS'
         shell: Rscript {0}
+
+  pr-metadata:
+    name: PR metadata checks
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check DESCRIPTION version is bumped
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          BASE_VERSION=$(git show "$BASE_SHA:DESCRIPTION" | grep -m1 '^Version:' | sed 's/Version: *//')
+          HEAD_VERSION=$(grep -m1 '^Version:' DESCRIPTION | sed 's/Version: *//')
+          echo "Base version: $BASE_VERSION"
+          echo "Head version: $HEAD_VERSION"
+          if [ "$BASE_VERSION" = "$HEAD_VERSION" ]; then
+            echo "::error::DESCRIPTION Version has not been bumped from $BASE_VERSION"
+            exit 1
+          fi
+          HIGHEST=$(printf '%s\n%s\n' "$BASE_VERSION" "$HEAD_VERSION" | sort -V | tail -n1)
+          if [ "$HIGHEST" != "$HEAD_VERSION" ]; then
+            echo "::error::DESCRIPTION Version $HEAD_VERSION is not greater than base version $BASE_VERSION"
+            exit 1
+          fi
+
+      - name: Check PR title mentions the new version number
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          HEAD_VERSION=$(grep -m1 '^Version:' DESCRIPTION | sed 's/Version: *//')
+          if [[ "$PR_TITLE" != *"$HEAD_VERSION"* ]]; then
+            echo "::error::PR title does not mention the new version number ($HEAD_VERSION): \"$PR_TITLE\""
+            exit 1
+          fi
+
+      - name: Check PR description itemizes changes under subsection titles
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if ! grep -qE '^##[[:space:]]' <<< "$PR_BODY"; then
+            echo "::error::PR description does not itemize changes under subsection titles (e.g. \"## Coercion\")"
+            exit 1
+          fi

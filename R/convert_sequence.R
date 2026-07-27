@@ -9,8 +9,10 @@
 #'   generated at the requested sub-day granularity (e.g. `by = "hour"`)
 #'   via `POSIXct`, and each element of the result keeps a time of day.
 #'   Otherwise, dates are sequenced by calendar day (or another day-based
-#'   `by`, e.g. `"week"` or `"month"`), including across the boundary
-#'   between BCE and CE dates.
+#'   `by`, e.g. `"week"` or `"month"`). Because years are numbered
+#'   astronomically (proleptic Gregorian, with a year zero), a sequence that
+#'   spans the BCE/CE boundary passes through the astronomical year zero
+#'   (= 1 BCE) rather than jumping straight from `-0001` to `0001`.
 #' @name convert_sequence
 #' @param from A messydate or range.
 #'   If 'from' is a range and 'to' is not specified,
@@ -46,43 +48,16 @@ seq.mdate <- function(from, to, by = "days", ...) {
     return(format(seq(s, e, by = by), paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S")))
   }
 
-  # straight forward sequence
+  # straight forward sequence (all common-era dates): return Date objects
   if(!any(is_bce(c(from, to)))){
     seq(as.Date(from), as.Date(to), by = by)
   } else {
-
-    fromp <- as.Date(stringi::stri_replace_first_regex(from, "^-", ""))
-    # sequence before common era
-    if(is_bce(to)){
-      top <- as.Date(stringi::stri_replace_first_regex(to, "^-", ""))
-      .neg_seqs(fromp, top, by = by)
-    } else {
-      # sequence between eras
-      zero_padding(c(.neg_seqs(fromp, as.Date("0001-12-31"), by = by),
-                     as.character(seq(as.Date("0001-01-01"), as.Date(to), by = by))))
-      # zero_padding(c(rev(paste0("-", seq(as.Date("0001-01-01"), fromp, by = by))),
-      #   as.character(seq(as.Date("0001-01-01"), as.Date(to), by = by))))
-    }
-  }
-}
-
-.neg_seqs <- function(fromp, top, by = "days"){
-  if(year(fromp) == year(top)){
-    zero_padding(paste0("-", seq(min(c(fromp, top)),
-                                 max(c(fromp,top)), by = by)))
-  } else {
-    strt <- max(c(fromp, top))
-    ends <- min(c(fromp, top))
-    strt_yr <- year(strt)
-    strt_sq <- seq(as.Date(strt), as.Date(paste0(strt_yr,"-12-31")), by = by)
-    ends_yr <- year(ends)
-    ends_sq <- seq(as.Date(paste0(ends_yr, "-01-01")), as.Date(ends), by = by)
-    if(strt_yr - ends_yr > 1){
-      mids_sq <- seq(as.Date(paste0(ends_yr+1, "-01-01")),
-                     as.Date(paste0(strt_yr-1,"-12-31")), by = by)
-      if(length(unique(year(mids_sq)))>1)
-        mids_sq <- mids_sq[order(year(mids_sq), decreasing = TRUE)]
-      zero_padding(paste0("-", c(strt_sq, mids_sq, ends_sq)))
-    } else zero_padding(paste0("-", c(strt_sq, ends_sq)))
+    # Any endpoint before the common era. `as.Date.mdate()` maps mdate strings
+    # to R's `Date`, which uses the proleptic Gregorian calendar with
+    # astronomical year numbering (a year zero exists), so a single `seq.Date()`
+    # walks the whole continuum uniformly -- through the 366-day year zero and
+    # across the BCE/CE boundary -- with no era special-casing. `zero_padding()`
+    # re-pads the years that R formats as e.g. "-001" back to "-0001".
+    zero_padding(format(seq(as.Date(from), as.Date(to), by = by), "%Y-%m-%d"))
   }
 }

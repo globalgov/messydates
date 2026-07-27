@@ -30,6 +30,14 @@ Because \code{expand()} drops the time of day from ranges (see \code{?expand}),
 contracting a date-time range and then re-expanding it will not restore
 the original times; \code{contract()} is intended for date-level ranges,
 sets, and unspecified components.
+
+Sets are returned in the notation they were given in: a \verb{[]} ("one member
+of") set contracts back to \verb{[]} rather than \code{{}}. This is only possible
+when \code{contract()} is passed an \code{mdate} (or something coercible to one),
+since \code{expand()} returns the member dates without recording which kind of
+set they came from. A list of dates therefore always contracts to \code{{}}.
+Note that a set whose members happen to be consecutive days contracts to a
+range, \code{..}, whichever notation it was given in.
 }
 \examples{
 d <- as_messydate(c("2001-01-01", "2001-01", "2001",
@@ -41,4 +49,6 @@ data.frame(d, contracted = contract(d))
 contract(as_messydate("2012-06-01..2012-06-30"))
 # ...unless collapse = FALSE keeps it as an explicit start..end range
 contract(as_messydate("2012-06-01..2012-06-30"), collapse = FALSE)
+# a '[]' set stays a '[]' set
+contract(as_messydate("[2001-01-01,2001-02-02]"))
 }

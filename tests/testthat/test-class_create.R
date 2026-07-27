@@ -36,8 +36,11 @@ test_that("ranges work", {
 })
 
 test_that("negative works", {
-  expect_equal(unclass(as_messydate("28 BC")), "-0028")
-  expect_equal(unclass(as_messydate("200 BC:100 BC")), "-0200..-0100")
+  # "BC" prose is historical and converts to astronomical years (28 BCE is
+  # astronomical year -0027); a signed ISO year like "-200" is already
+  # astronomical and is left unchanged.
+  expect_equal(unclass(as_messydate("28 BC")), "-0027")
+  expect_equal(unclass(as_messydate("200 BC:100 BC")), "-0199..-0099")
   expect_equal(unclass(as_messydate("{-200, -100}")), "{-0200,-0100}")
 })
 
@@ -55,7 +58,7 @@ test_that("validate_messydate rejects '+' outside a timezone offset", {
 })
 
 test_that("print method works", {
-  expect_output(print(as_messydate("28 BC")), "-0028")
+  expect_output(print(as_messydate("28 BC")), "-0027")
 })
 
 test_that("c method works", {
@@ -108,4 +111,17 @@ test_that("works with data.frames", {
   expect_equal(dim(df_coerce), c(4, 1))
   df_call <- data.frame(x)
   expect_equal(df_coerce, df_call)
+})
+
+test_that("unique and duplicated methods work", {
+  x <- as_messydate(c("2019-01-01", "2019-01-01", "2019-02-02"))
+  expect_s3_class(unique(x), "mdate")
+  expect_identical(unique(x), as_messydate(c("2019-01-01", "2019-02-02")))
+  expect_identical(duplicated(x), c(FALSE, TRUE, FALSE))
+  # annotations are compared as written, not as the dates they expand to
+  y <- as_messydate(c("2012-01", "2012-01-01..2012-01-31"))
+  expect_length(unique(y), 2)
+  # set notation is retained through deduplication
+  z <- as_messydate(c("[2019-01-01,2019-02-02]", "[2019-01-01,2019-02-02]"))
+  expect_identical(unique(z), as_messydate("[2019-01-01,2019-02-02]"))
 })

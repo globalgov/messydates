@@ -43,6 +43,7 @@ reference:
     desc: "These functions coerce dates from other classes to the `mdate` class:"
     contents:
       - coerce_to
+      - md_problems
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:

@@ -7,6 +7,13 @@
 #'   functions instead report *what proportion* of the dates implied by
 #'   `e1` satisfy the comparison against `e2`, by expanding both to their
 #'   full sets of possible dates first.
+#' @details
+#'   Both kinds of set are expanded to their members, so `{}` ("all members
+#'   of") and `[]` ("one member of") sets give the same proportion. For a `[]`
+#'   set that proportion reads as a probability that the comparison holds,
+#'   under the assumption that each candidate is equally likely, in the same
+#'   way as for a range or an unspecified component. For a `{}` set it instead
+#'   reads as the share of the recorded occurrences that satisfy it.
 #' @name operate_proportional
 #' @param e1,e2 `mdate` or other class objects; must be of equal length.
 #' @return A numeric vector, the same length as `e1` and `e2`, of

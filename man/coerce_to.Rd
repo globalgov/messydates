@@ -7,6 +7,7 @@
 \alias{as_messydate.POSIXct}
 \alias{as_messydate.POSIXlt}
 \alias{as_messydate.character}
+\alias{as_messydate.factor}
 \alias{as_messydate.numeric}
 \alias{as_messydate.list}
 \alias{mdate}
@@ -21,6 +22,8 @@ as_messydate(x, resequence = FALSE)
 \method{as_messydate}{POSIXlt}(x, resequence = FALSE)
 
 \method{as_messydate}{character}(x, resequence = NULL)
+
+\method{as_messydate}{factor}(x, resequence = NULL)
 
 \method{as_messydate}{numeric}(x, resequence = NULL)
 
@@ -82,6 +85,10 @@ so that timezone-naive dates round-trip unchanged.
 
 \item \code{as_messydate(character)}: Coerce character date objects to \code{mdate} class
 
+\item \code{as_messydate(factor)}: Coerce factors to \code{mdate} class, via their labels.
+This is the common case when a date column has been read in with
+\code{stringsAsFactors = TRUE}.
+
 \item \code{as_messydate(numeric)}: Coerce numeric objects to \code{mdate} class
 
 \item \code{as_messydate(list)}: Coerce list date objects to the most concise
@@ -96,7 +103,7 @@ their ISO 8601-2 equivalent before the usual parsing takes place:
 \itemize{
 \item{Roman numerals for a bare year, e.g. \code{"MDCCLXXVI"} becomes \code{1776}.}
 \item{Roman calendar references, i.e. the Kalends, Nones, and Ides of a
-named month, e.g. \code{"the Ides of March, 44 BC"} becomes \code{"-0044-03-15"}.
+named month, e.g. \code{"the Ides of March, 44 BC"} becomes \code{"-0043-03-15"}.
 The Nones and Ides fall later (the 7th and 15th) in March, May, July,
 and October, and earlier (the 5th and 13th) in other months.}
 \item{Approximate qualifiers ("around", "circa", "about", "roughly", ...)
@@ -118,6 +125,29 @@ century" becomes \code{"18XX"}).}
 (here, three): a fragment that is only a year is treated as completing
 the date before it.}
 }
+}
+
+\section{Eras and year numbering}{
+
+\code{{messydates}} stores years in the ISO 8601-2 (proleptic Gregorian)
+astronomical numbering, in which a year zero exists and equals 1 BCE, \code{-0001}
+equals 2 BCE, and so on. Historical "BC"/"BCE" prose uses the older
+convention that has no year zero, so it is converted on input: a historical
+year \verb{N BCE} becomes the astronomical year \code{-(N-1)}, e.g. \code{"1 BCE"} becomes
+\code{"0000"}, \code{"2 BCE"} becomes \code{"-0001"}, and \code{"44 BCE"} becomes \code{"-0043"}.
+A year written directly in signed ISO form (e.g. \code{"-0044"}) is already
+astronomical and is left unchanged, so \code{as_messydate("-0044")} (astronomical
+year -44, i.e. 45 BCE) and \code{as_messydate("44 BCE")} (\code{"-0043"}) intentionally
+differ. "AD"/"CE" prose is simply dropped, the year being unchanged.
+
+Era prose is a matter of input only: it is always removed on parsing, the
+era of a date in an \code{mdate} being carried by the sign of its year alone.
+Where it appears in the input, it is resolved for each year separately. A
+marker written before a date governs that date (\code{"{BC1044-03-15,BC1033}"});
+otherwise a year takes the era of the first marker written after it, so a
+marker given once at the end still applies to every bound of a range or set:
+\code{"200..100 BC"}, \code{"..200 BC"} and \code{"200 BC.."} are all wholly BCE, whereas
+\code{"200 BC..100 AD"} spans the two eras and gives \code{"-0199..0100"}.
 }
 
 \examples{

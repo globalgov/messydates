@@ -1,3 +1,115 @@
+# messydates 1.1.0
+
+## Package
+
+- Improved package architecture documentation in `.github/CONTRIBUTING.md` so 
+  that human contributors and coding agents read the same notes
+- Added a PR metadata job to the PR checks workflow, which verifies that the
+  `DESCRIPTION` version is bumped, that the PR title names the new version, and
+  that the PR description itemizes changes under subsection titles; these items
+  are consequently dropped from the pull request template
+- Fixed the website deploy job installing `Config/Needs/check` packages instead
+  of `Config/Needs/website`
+
+## Class
+
+- Improved `validate_messydate()` to report which elements failed and what they
+  contained, instead of naming only the rule that was broken
+  - No longer passes a vector of empty strings as valid because a single element 
+    somewhere in it happened to contain a digit
+- Assigning an unparseable value into an `mdate` with `[<-` or `[[<-` now
+  reports what could not be parsed, rather than silently blanking the element
+- Added `unique()` and `duplicated()` methods for `mdate` objects (closes #106)
+  - Previously `unique()` fell through to the character method and dropped the
+    class, so a deduplicated column silently stopped being an `mdate`
+  - Both compare the annotated strings rather than the dates they expand to,
+    so `"2012-01"` and `"2012-01-01..2012-01-31"` remain distinct
+
+## Coercion
+
+- Improved `as_messydate()` to validate its input rather than carrying values it
+  cannot interpret:
+  - dates with impossible components are rejected, so `"2019-02-30"`,
+    `"2019-06-31"` and `"2019-01-01 25:00"` now error instead of being accepted
+    as written; relatedly, `"2019-13-45"` is no longer silently reordered into
+    `"2019-45-13"`, since month and day are only swapped where the swap yields
+    a date that could exist
+  - ISO 8601-2 notations that `{messydates}` does not represent (week dates,
+    ordinal dates, season codes, significant digits, extended years, the
+    `P`-style duration notation, and repeating intervals) now error naming the
+    format, instead of passing through as strings that nothing downstream could
+    expand, resolve or compare. Durations themselves are unaffected: they are
+    written as date ranges and handled by `mduration`, and the error for
+    `"P1Y2M"` points there
+  - text naming no date at all still becomes `NA`, but now warns, listing what
+    could not be read
+- Added `md_problems()`, which reports one row per unparseable element of a
+  vector, with the reason for each, for checking a column of dates before
+  coercing it
+- Added `as_messydate()` methods for factors (coerced via their labels, the
+  common case when a column was read in with `stringsAsFactors = TRUE`) and a
+  default method that names the offending class rather than failing with R's
+  `UseMethod` message
+- Improved parsing consistency across scalars and vectors
+  - a month-first date such as `"July 4 1976"` previously lost its day whenever 
+    another value shared the vector with it
+- Fixed how `[]` sets ("one member of") silently rewrote as `{}` sets ("all members of"). 
+  - Note that the two still expand and resolve alike; giving
+    `[]` its own meaning in the resolution functions remains outstanding
+- Fixed BCE/CE prose off-by-one error (closed #94, thanks @njbart) 
+  to convert to ISO 8601-2 astronomical year numbering 
+  (proleptic Gregorian, in which a year zero exists and equals 1 BCE):
+  - A historical `N BCE` maps to the astronomical year `-(N-1)`, so `"44 BC"`
+    becomes `-0043` and `"1 BC"` becomes `0000` (year zero); a signed ISO year
+    such as `"-0044"` is already astronomical and is left unchanged
+  - Year zero is preserved on input (previously `0000` was misread as an
+    unspecified year) and is traversed by `seq()` and `expand()`, so a sequence
+    spanning the BCE/CE boundary now passes through the whole of year `0000`
+    rather than jumping from `-0001` straight to `0001`
+  - Era markers *on input* are now resolved for each year in an expression
+    separately, rather than by counting how many markers a string contains
+    (they are, as before, always removed in the parsed `mdate`, which records
+    the era in the sign of the year alone). So an input marker written once at
+    the end of a range or set applies to every bound of it: `"..200 BC"`,
+    `"200..100 BC"` and `"44, 33 BC"` now give `..-199`, `-0199..-0099` and
+    `{-0043,-0032}`, where previously the non-leading bounds silently stayed
+    CE; an input marker written before a date still governs that date, so
+    `"{BC2010-10-10,BC2010-10-11}"` gives `{-2009-10-10,-2009-10-11}`; and
+    `"200 BC..100 AD"` spans the two eras, giving `-0199..0100`
+  - Fixed how era markers could be dropped from approximate or uncertain dates
+    given in prose, so `"circa 200 BC"` is now `~-199` rather than `0200~`
+
+## Expand/Contract
+
+- Fixed how `expand()` handles unspecified years
+  - Previously `"192X"` raised `'from' must be a finite number` and 
+    `"18XX"` silently returned a single date, 
+    even though these are what the prose parser produces for decades and centuries
+  - Now a bare unspecified year expands to the whole span (`"192X"` gives every
+    day of the 1920s)
+  - Now an attached month or day picks out that month or day in each candidate 
+    year (`"192X-05-04"` gives ten dates, not nine years of them)
+  - Now BCE years are bounded the other way round, `-1999` being earlier
+    than `-1900`
+  - Now a year too vague to enumerate, such as `"XXXX"`, refused with a message
+    suggesting `vmin()`/`vmax()`
+- Fixed how `expand()` applies unspecified-component rules to each member of a set
+  separately, fixing over-expansion of sets whose members had an unspecified
+  month: `"{2008-XX-31,2009-XX-31}"` gave 671 dates and now gives 24
+- Fixed `contract()` returning every set in `{}` notation, so that a `[]` set
+  no longer became a `{}` set on a round-trip through `expand()`/`contract()`
+  (closes #99)
+  - Only applies where `contract()` is given an `mdate`, since a list of dates
+    does not record which kind of set its members came from
+  - Documented what the two set types mean once resolved or operated on, having
+    established that both should continue to expand to the same members (closes #99):
+    - `?resolve_tendency` now distinguishes a central tendency that describes
+      where several recorded occurrences sit (`{}`) from one that is a point
+      estimate of a single unknown date (`[]`), as for a range
+    - `?operate_set` and `?operate_proportional` now note that a result for a
+      `[]` set reads as the candidates that remain possible, or the probability
+      that a comparison holds, rather than a share of recorded occurrences
+
 # messydates 1.0.0
 
 ## Package

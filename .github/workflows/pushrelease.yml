@@ -159,7 +159,7 @@ jobs:
             any::rcmdcheck
             any::pkgdown
             any::rsconnect
-          needs: check
+          needs: website
 
       - name: Install package
         run: R CMD INSTALL .

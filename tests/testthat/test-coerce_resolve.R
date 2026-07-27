@@ -1,3 +1,6 @@
+# "1004-02 BC" is historical Feb of 1004 BCE, i.e. astronomical -1003-02
+# (year zero exists in ISO 8601-2). Astronomical year -1003 is not a leap
+# year, so its February has 28 days.
 test_dates <- c(range = as_messydate("2014-01-01..2014-01-05"),
                 unspec = as_messydate("1999"),
                 neg = as_messydate("1004-02 BC"))
@@ -5,17 +8,17 @@ test_dates <- c(range = as_messydate("2014-01-01..2014-01-05"),
 
 test_that("Min resolving works properly", {
   expect_equal(as.character(vmin(test_dates)),
-               c("2014-01-01","1999-01-01","-1004-02-01"))
+               c("2014-01-01","1999-01-01","-1003-02-01"))
 })
 
 test_that("Max resolving works properly", {
   expect_equal(as.character(vmax(test_dates)),
-               c("2014-01-05","1999-12-31","-1004-02-29"))
+               c("2014-01-05","1999-12-31","-1003-02-28"))
 })
 
 test_that("Vectorised median resolving works properly", {
   expect_equal(vmedian(test_dates),
-               c("2014-01-03","1999-07-02","-1004-02-15"))
+               c("2014-01-03","1999-07-02","-1003-02-15"))
 })
 
 test_that("Vectorised mean resolving works properly for CE dates", {
@@ -26,7 +29,7 @@ test_that("Vectorised mean resolving works properly for CE dates", {
 
 test_that("Vectorised modal resolving works properly", {
   expect_equal(vmodal(test_dates),
-               c("2014-01-01","1999-01-01","-1004-02-01"))
+               c("2014-01-01","1999-01-01","-1003-02-01"))
 })
 
 test_that("median() and mean() summarise a whole mdate vector to one value", {
@@ -97,4 +100,14 @@ test_that("as_mdate adds zero padding when appropriate", {
   #                           as_messydate("-0029-12-31"))
   expect_equal(as_messydate(c("-29-12-31", "193-02-02", "2010-10-10")),
                as_messydate(c("-0029-12-31", "0193-02-02", "2010-10-10")))
+})
+
+test_that("'[]' and '{}' sets resolve alike", {
+  onesie <- as_messydate("[2001-01-01,2001-02-02]")
+  allof <- as_messydate("{2001-01-01,2001-02-02}")
+  expect_equal(vmin(onesie), vmin(allof))
+  expect_equal(vmax(onesie), vmax(allof))
+  expect_equal(vmean(onesie), vmean(allof))
+  expect_equal(vmedian(onesie), vmedian(allof))
+  expect_true(vrandom(onesie) %in% c("2001-01-01", "2001-02-02"))
 })

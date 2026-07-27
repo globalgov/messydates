@@ -51,7 +51,9 @@ expand <- function(x, approx_range = 0, by = "day") {
   # Remove braces and uncertainty. A canonical mdate string is only ever
   # squished/trimmed of incidental whitespace during parsing, so any space
   # remaining here is the date-time separator, not stripped alongside braces.
-  x <- stringi::stri_replace_all_regex(x, "\\{|\\}|\\%|\\?", "")
+  # '[]' members are enumerated just as '{}' members are; the two differ in
+  # what the set *means*, not in which dates it contains.
+  x <- stringi::stri_replace_all_regex(x, "\\{|\\}|\\[|\\]|\\%|\\?", "")
   if (approx_range == 0) {
     # if no approx_range, then can just ignore these annotations
     x <- stringi::stri_replace_all_regex(x, "\\~|^\\.\\.|\\.\\.$", "")
@@ -241,12 +243,94 @@ expand_unspecified <- function(dates) {
   # Assumes no century for ambiguous dates not specified previously when dates were coerced
   # dates <- zero_padding(dates)
   dates <- add_zero_padding(dates)
+  # Years carrying 'X' must be resolved before the rules below, all of which
+  # expect four literal digits in the year position.
+  dates <- expand_unspecified_years(dates)
   # Separate ranges and sets of dates
   dates <- stringi::stri_replace_all_fixed(dates, ",", ",,")
   dates <- stringi::stri_replace_all_regex(dates, "(^|,)(-?[:digit:]{4})($|,)",
                                     "$1$2-01-01..$2-12-31$3")
   dates <- unspecified_months(dates)
   dates <- stringi::stri_replace_all_fixed(dates, ",,", ",")
+  dates
+}
+
+# The most years an 'X'-bearing year may enumerate before expansion is refused.
+# A century ("18XX") is the widest form the prose parser produces, so this is
+# generous; "XXXX" (10,000 years, ~3.65 million dates) is not.
+.max_unspecified_years <- 1000
+
+# Matches the sign and year of a value, whether or not the year holds 'X'.
+.year_rx <- "^(-?)([0-9X]{4})(.*)$"
+
+# Number of days in a month, without going via Date (which cannot represent
+# the negative years this package supports).
+days_in <- function(year, month) {
+  len <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)[month]
+  leap <- year %% 4 == 0 & (year %% 100 != 0 | year %% 400 == 0)
+  ifelse(month == 2 & leap, 29, len)
+}
+
+# Resolves one value whose year contains 'X' to its earliest ("min") or latest
+# ("max") possible date, filling in any absent month and day.
+resolve_x_year <- function(v, bound) {
+  m <- stringi::stri_match_first_regex(v, .year_rx)
+  sign <- m[, 2]
+  yr <- m[, 3]
+  rest <- m[, 4]
+  # For a negative (BCE) year a larger magnitude is the *earlier* date, so the
+  # digit that bounds the year swaps over.
+  digit <- if ((bound == "min") == (sign == "")) "0" else "9"
+  yr <- stringi::stri_replace_all_fixed(yr, "X", digit)
+  if (rest == "") {
+    rest <- if (bound == "min") "-01-01" else "-12-31"
+  } else if (stringi::stri_detect_regex(rest, "^-[0-9]{2}$")) {
+    mth <- as.integer(substr(rest, 2, 3))
+    rest <- if (bound == "min") paste0(rest, "-01") else
+      paste0(rest, "-", days_in(as.integer(yr), mth))
+  }
+  paste0(sign, yr, rest)
+}
+
+# Rewrites years containing 'X' into forms the month/day rules can handle:
+# a bounded range where the rest of the value is specified ("192X" becomes
+# "1920-01-01..1929-12-31"), or a set with one member per possible year where
+# the month or day is also unspecified ("192X-XX-03").
+expand_unspecified_years <- function(dates) {
+  hasx <- stringi::stri_detect_regex(dates, "^-?[0-9]*X")
+  hasx[is.na(hasx)] <- FALSE
+  if (!any(hasx)) return(dates)
+  dates[hasx] <- vapply(dates[hasx], function(d) {
+    members <- stringi::stri_split_fixed(d, ",")[[1]]
+    members <- vapply(members, function(v) {
+      ends <- stringi::stri_split_fixed(v, "..")[[1]]
+      if (length(ends) == 2) {
+        # In a range, each endpoint is bounded outwards.
+        lo <- if (grepl("X", ends[1])) resolve_x_year(ends[1], "min") else ends[1]
+        hi <- if (grepl("X", ends[2])) resolve_x_year(ends[2], "max") else ends[2]
+        return(paste0(lo, "..", hi))
+      }
+      m <- stringi::stri_match_first_regex(v, .year_rx)
+      if (is.na(m[, 3]) || !grepl("X", m[, 3])) return(v)
+      nyears <- 10^stringi::stri_count_fixed(m[, 3], "X")
+      if (nyears > .max_unspecified_years) {
+        stop("Cannot expand '", v, "': it spans ", format(nyears, big.mark = ","),
+             " years. Use a more specified year, expand(x, by = \"year\"), ",
+             "or resolve it with vmin()/vmax() instead.", call. = FALSE)
+      }
+      if (m[, 4] != "") {
+        # A month or day is attached, so the value picks out that month or day
+        # in each candidate year rather than a contiguous stretch of time.
+        # Enumerate the years, leaving any remaining 'X' to the rules below.
+        lo <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "0"))
+        hi <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "9"))
+        return(paste(paste0(m[, 2], formatC(seq(lo, hi), width = 4, flag = "0"),
+                            m[, 4]), collapse = ","))
+      }
+      paste0(resolve_x_year(v, "min"), "..", resolve_x_year(v, "max"))
+    }, character(1), USE.NAMES = FALSE)
+    paste(members, collapse = ",")
+  }, character(1), USE.NAMES = FALSE)
   dates
 }
 
@@ -331,6 +415,14 @@ expand_negative <- function(dates) {
 ## expand sets ####
 
 expand_sets <- function(dates) {
+  # Each member of a set is expanded on its own: the rules below are anchored,
+  # so applying them to a whole comma-joined set would match nothing.
+  lapply(stringi::stri_split_regex(dates, "\\,"),
+         function(members) unlist(expand_set_members(members),
+                                  use.names = FALSE))
+}
+
+expand_set_members <- function(dates) {
   # Sets of months
   dates <- ifelse(stringi::stri_detect_regex(dates, "^[:digit:]{4}-XX-31$|^[:digit:]{4}-XX-30$"),
                   paste(gsub("XX-31|XX-30", "01-31", dates),

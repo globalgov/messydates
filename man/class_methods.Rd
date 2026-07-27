@@ -8,6 +8,8 @@
 \alias{[[<-.mdate}
 \alias{c.mdate}
 \alias{rep.mdate}
+\alias{unique.mdate}
+\alias{duplicated.mdate}
 \title{Basic vector methods for \code{mdate} objects}
 \usage{
 \method{[}{mdate}(x, ..., drop = TRUE)
@@ -21,6 +23,10 @@
 \method{c}{mdate}(...)
 
 \method{rep}{mdate}(x, ...)
+
+\method{unique}{mdate}(x, incomparables = FALSE, ...)
+
+\method{duplicated}{mdate}(x, incomparables = FALSE, ...)
 }
 \arguments{
 \item{x}{An \code{mdate} object.}
@@ -33,15 +39,26 @@ one or more objects to concatenate (coerced to \code{mdate} first).}
 
 \item{value}{A replacement value, coerced to \code{mdate} and validated
 before assignment.}
+
+\item{incomparables}{Values that cannot be compared, as for the default
+methods; \code{FALSE} by default.}
 }
 \value{
-An \code{mdate} object, except for \code{c()}, which returns the (unclassed)
-result when called on a single object.
+An \code{mdate} object, except for \code{duplicated()}, which returns a
+logical vector, and \code{c()}, which returns the (unclassed) result when
+called on a single object.
 }
 \description{
 These methods let \code{mdate} vectors behave like ordinary character vectors
-for subsetting, replacement, concatenation, and repetition,
+for subsetting, replacement, concatenation, repetition, and
+deduplication,
 while ensuring the result remains a validated \code{mdate} object.
+}
+\details{
+\code{unique()} and \code{duplicated()} compare the annotated strings, not the
+sets of dates they expand to, so two values that could refer to the same
+date but are written differently (e.g. \code{"2012-01"} and
+\code{"2012-01-01..2012-01-31"}) are treated as distinct.
 }
 \examples{
 d <- as_messydate(c("2012-01-01", "2012-02-01", "2012-03-01"))
@@ -49,4 +66,5 @@ d[2]
 d[2] <- "2012-02-02"
 c(d, as_messydate("2012-04-01"))
 rep(d, 2)
+unique(as_messydate(c("2012-01-01", "2012-01-01", "2012-02-01")))
 }

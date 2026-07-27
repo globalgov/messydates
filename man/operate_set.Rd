@@ -33,6 +33,14 @@ For a union that instead returns an \code{mdate} object in its most
 succinct (contracted) notation, e.g. a range rather than a list of
 every day within it, use \code{+} (see \code{?operate_arithmetic}) instead.
 }
+\details{
+Both kinds of set expand to the same members, so these operators return
+the same dates for \code{{}} ("all members of") and \verb{[]} ("one member of")
+alike. What differs is the reading: for a \code{{}} set the result lists dates
+that are shared with (or covered by) the other operand, whereas for a
+\verb{[]} set it lists the \emph{candidates} that remain possible, so an empty
+intersection rules the other operand out rather than showing no overlap.
+}
 \section{Functions}{
 \itemize{
 \item \code{ \%intersect\% }: Find intersection of sets of messy dates

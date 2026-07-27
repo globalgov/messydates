@@ -71,7 +71,7 @@ min.mdate <- function(..., na.rm = FALSE){
 }
 
 .remove_post <- function(dates){
-  dates <- stringi::stri_replace_all_regex(dates, "\\.\\.$|,.*$|\\{", "")
+  dates <- stringi::stri_replace_all_regex(dates, "\\.\\.$|,.*$|\\{|\\[", "")
   dates <- stringi::stri_replace_all_regex(dates, "^(.+)\\.\\..*$", "$1")
   dates <- stringi::stri_replace_all_regex(dates, "\\.\\.", "")
   dates
@@ -128,7 +128,7 @@ max.mdate <- function(..., na.rm = FALSE) {
 }
 
 .remove_pre <- function(dates){
-  dates <- stringi::stri_replace_all_regex(dates, "^\\.\\.|^.*,|\\}", "")
+  dates <- stringi::stri_replace_all_regex(dates, "^\\.\\.|^.*,|\\}|\\]", "")
   dates <- stringi::stri_replace_all_regex(dates, "^.*\\.\\.(.+)$", "$1")
   dates <- stringi::stri_replace_all_regex(dates, "\\.\\.", "")
   dates

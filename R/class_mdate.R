@@ -99,24 +99,24 @@ new_messydate <- function(x = character()) {
 #' @export
 validate_messydate <- function(x) {
   values <- unclass(x)
+  known <- !is.na(values) & !grepl("^NA$", values)
+  fail <- function(test, msg) {
+    bad <- which(known & test)
+    if (length(bad) == 0) return(invisible(NULL))
+    stop(msg, "\nin:\n", report_elements(bad, values[bad]), call. = FALSE)
+  }
   # 'X' marks unspecified components; 'T' is the ISO date-time separator and
   # 'Z' the UTC designator. All other letters are disallowed.
-  if (any(grepl("[A-SU-WYa-wyz]", values) & !grepl("^NA$", values))) {
-    stop("The only alpha characters allowed in messy dates are 'X' for
-      unspecified components, and 'T'/'Z' for times", call. = FALSE)
-  }
-  if (!any(grepl("[0-9]", values))) {
-    stop("mdate object requires at least one specified date component.",
-         call. = FALSE)
-    }
-  if (any(grepl("!|\\(|\\)|\\=|;|>|<|_|\\^|'|&|\\$|#", values))) {
-    stop("mdate object can only consist of numbers and
-      some special symbols: []{}..X%?~ and, for times, T:+Z.", call. = FALSE)
-  }
-  if (any(grepl("\\+", gsub("\\+[0-9]{2}:[0-9]{2}", "", values)))) {
-    stop("'+' can only appear as part of a timezone offset (+HH:MM).",
-         call. = FALSE)
-  }
+  fail(grepl("[A-SU-WYa-wyz]", values),
+       "The only alpha characters allowed in messy dates are 'X' for
+      unspecified components, and 'T'/'Z' for times")
+  fail(!grepl("[0-9]", values),
+       "mdate object requires at least one specified date component.")
+  fail(grepl("!|\\(|\\)|\\=|;|>|<|_|\\^|'|&|\\$|#", values),
+       "mdate object can only consist of numbers and
+      some special symbols: []{}..X%?~ and, for times, T:+Z.")
+  fail(grepl("\\+", gsub("\\+[0-9]{2}:[0-9]{2}", "", values)),
+       "'+' can only appear as part of a timezone offset (+HH:MM).")
   x
 }
 

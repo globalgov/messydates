@@ -1,5 +1,11 @@
 # messydates 1.1.0
 
+## Class
+
+- `validate_messydate()` now reports which elements failed and what they
+  contained, instead of naming only the rule that was broken, and no longer
+  passes a vector of empty strings as valid because a single element somewhere
+  in it happened to contain a digit
 ## Coercion
 
 - BCE/CE prose is now converted to ISO 8601-2 astronomical year numbering

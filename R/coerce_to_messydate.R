@@ -70,6 +70,15 @@
 #' astronomical and is left unchanged, so `as_messydate("-0044")` (astronomical
 #' year -44, i.e. 45 BCE) and `as_messydate("44 BCE")` (`"-0043"`) intentionally
 #' differ. "AD"/"CE" prose is simply dropped, the year being unchanged.
+#'
+#' Era prose is a matter of input only: it is always removed on parsing, the
+#' era of a date in an `mdate` being carried by the sign of its year alone.
+#' Where it appears in the input, it is resolved for each year separately. A
+#' marker written before a date governs that date (`"{BC1044-03-15,BC1033}"`);
+#' otherwise a year takes the era of the first marker written after it, so a
+#' marker given once at the end still applies to every bound of a range or set:
+#' `"200..100 BC"`, `"..200 BC"` and `"200 BC.."` are all wholly BCE, whereas
+#' `"200 BC..100 AD"` spans the two eras and gives `"-0199..0100"`.
 #' @name coerce_to
 NULL
 
@@ -188,6 +197,9 @@ as_messydate.mdate <- function(x, resequence = FALSE) {
 #' @export
 as_messydate.character <- function(x, resequence = NULL) {
   if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
+  # Refuse ISO 8601-2 forms this package cannot represent, rather than carrying
+  # them along as strings nothing downstream can interpret.
+  reject_unsupported(x)
   # Interpret historical prose cues (Roman calendar, qualifiers, connectives)
   # before the usual text extraction. This may lengthen the vector, e.g. when a
   # sentence lists several dates joined by "and".
@@ -225,7 +237,35 @@ as_messydate.character <- function(x, resequence = NULL) {
   d <- restore_times(d, prot$times)
   if (any(onesie))
     d[onesie] <- stringi::stri_replace_all_regex(d[onesie], "^\\{(.*)\\}$", "[$1]")
+  check_components(d, source = x)
+  warn_unparsed(x, d)
   new_messydate(d)
+}
+
+# Text that named no date at all comes back as NA. Say so, once, rather than
+# letting an empty column look like missing data.
+warn_unparsed <- function(x, d) {
+  failed <- which(is.na(d) & !is.na(x) & nzchar(stringi::stri_trim_both(x)))
+  if (length(failed) == 0) return(invisible(TRUE))
+  warning(length(failed), " value", if (length(failed) > 1) "s" else "",
+          " could not be parsed as a date and became NA:\n",
+          report_elements(failed, x[failed]),
+          "\nCall md_problems() to see all parsing problems.", call. = FALSE)
+}
+
+#' @describeIn coerce_to Coerce factors to `mdate` class, via their labels.
+#'   This is the common case when a date column has been read in with
+#'   `stringsAsFactors = TRUE`.
+#' @export
+as_messydate.factor <- function(x, resequence = NULL) {
+  as_messydate(as.character(x), resequence)
+}
+
+#' @export
+as_messydate.default <- function(x, resequence = NULL) {
+  stop("Objects of class '", paste(class(x), collapse = "/"),
+       "' cannot be coerced to 'mdate'. Convert to character, Date, or ",
+       "POSIXct first.", call. = FALSE)
 }
 
 #' @describeIn coerce_to Coerce numeric objects to `mdate` class
@@ -367,8 +407,12 @@ standardise_date_order <- function(dates) {
   dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{6})$"),
                   paste0(substr(dates, 1, 2), "-", substr(dates, 3, 4), "-",
                          substr(dates, 5, 6)), dates)
+  # A month above 12 means the components are the other way round -- but only
+  # if the day could itself be a month. "2019-13-45" is not a reordering
+  # problem, and is left for check_components() to reject.
   dates <- ifelse(stringi::stri_detect_regex(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)") &
-                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) > 12,
+                    as.numeric(gsub("-", "", stringi::stri_extract_first_regex(dates, "-[:digit:]{2}-"))) > 12 &
+                    as.numeric(stringi::stri_extract_last_regex(dates, "[:digit:]{2}$")) <= 12,
                   stringi::stri_replace_all_regex(dates, "^([:digit:]{4})-([:digit:]{2})-([:digit:]{2}$)",
                                            "$1-$3-$2"), dates)
   # detects and reorders inconsistencies
@@ -596,21 +640,64 @@ pad_time_component <- function(p) {
 
 # BC/AD ####
 
+.bc_rx <- "BCE|Bce|bce|bc|BC|Bc|bC"
+.ce_rx <- "ad|AD|Ad|aD|CE|Ce|ce|AC|ac|Ac|aC"
+# An era marker together with any whitespace in front of it, so removing it
+# closes the gap it leaves ("200 BC..100 BC" -> "200..100"). 'BCE' must be
+# offered before 'CE' for the leftmost-first alternation to read it as BC.
+.era_rx <- paste0("[[:space:]]*(", .bc_rx, "|", .ce_rx, ")")
+# The year of a date token: the first run of digits (with any leading
+# annotation) that is not itself a continuation of a number. Excluding a
+# preceding digit, '-' or time sentinel means month and day components
+# ("-03-15"), already-astronomical years ("-199") and the index inside a
+# protected time are all passed over.
+.year_head_rx <- paste0("(?<![0-9\\-", .time_open, "])[~?%]*[0-9]+")
+
 standardise_date_input <- function(dates) {
-  dates <- ifelse(stringi::stri_detect_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)"),
-                  as_bc_dates(dates), dates)
-  dates <- stringi::stri_replace_all_regex(dates, "(ad|AD|Ad|aD|CE|Ce|ce|AC|ac|Ac|aC)", "")
+  dates <- vapply(dates, apply_era_markers, character(1), USE.NAMES = FALSE)
   dates <- stringi::stri_trim_both(dates)
   dates
 }
 
-as_bc_dates <- function(dates) {
-  dates <- ifelse(stringi::stri_count_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 2,
-                  st_negative_range(dates), dates)
-  dates <- ifelse(stringi::stri_count_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") > 2,
-                  st_negative_sets(dates), dates)
-  dates <- ifelse(stringi::stri_count_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)") == 1,
-                  st_negative(dates), dates)
+# Applies (and removes) BC/BCE and AD/CE markers, deciding the era of each
+# year in the expression separately. A marker written immediately before a
+# date governs that date ("{BC2010-10-10,BC2010-10-11}"); otherwise a year
+# takes the era of the first marker that follows it, so a marker written once
+# at the end still governs every bound of a range or set ("200..100 BC" and
+# "..200 BC" are wholly BCE), while "200 BC..100 AD" gives each bound its own
+# era. Years with no marker after them, and strings with no marker at all,
+# are read as CE and left unchanged.
+apply_era_markers <- function(x) {
+  if (is.na(x)) return(NA_character_)
+  em <- gregexpr(.era_rx, x, perl = TRUE)[[1]]
+  if (em[1] == -1L) return(x)
+  estart <- as.integer(em)
+  eend <- estart + attr(em, "match.length") # first character after the marker
+  ebc <- grepl(paste0("^(", .bc_rx, ")$"),
+               stringi::stri_trim_both(substring(x, estart, eend - 1L)))
+  ym <- gregexpr(.year_head_rx, x, perl = TRUE)[[1]]
+  if (ym[1] != -1L) {
+    ystart <- as.integer(ym)
+    yend <- ystart + attr(ym, "match.length")
+    # Rewrite from the right, so the positions of the years still to be
+    # considered (all of them to the left) stay valid.
+    for (i in rev(seq_along(ystart))) {
+      prev <- which(eend <= ystart[i])
+      # A marker counts as attached to this year only if nothing but
+      # whitespace separates them.
+      attached <- length(prev) > 0L &&
+        grepl("^[[:space:]]*$", substr(x, eend[max(prev)], ystart[i] - 1L))
+      j <- if (attached) max(prev) else {
+        nxt <- which(estart >= yend[i])
+        if (length(nxt) > 0L) min(nxt) else NA_integer_
+      }
+      if (!is.na(j) && ebc[j])
+        x <- paste0(substr(x, 1L, ystart[i] - 1L),
+                    .hist_to_astro(substr(x, ystart[i], yend[i] - 1L)),
+                    substring(x, yend[i]))
+    }
+  }
+  stringi::stri_replace_all_regex(x, .era_rx, "")
 }
 
 # Converts BC-stripped, trimmed tokens (e.g. "44", "44-03-15", "1004-02",
@@ -630,27 +717,6 @@ as_bc_dates <- function(dates) {
   v <- 1L - yr
   yout <- ifelse(v == 0L, "0", paste0("-", -v))
   ifelse(is.na(yr), x, paste0(pre, yout, rest))
-}
-
-st_negative_range <- function(dates) {
-  dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
-  dates <- gsub(" ", "", dates)
-  ends <- strsplit(dates, "\\.\\.")[[1]]
-  paste0(.hist_to_astro(ends[1]), "..", .hist_to_astro(ends[2]))
-}
-
-st_negative_sets <- function(dates) {
-  dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
-  dates <- gsub(" ", "", dates)
-  dates <- unlist(strsplit(dates, "\\,"))
-  dates <- vapply(dates, .hist_to_astro, character(1), USE.NAMES = FALSE)
-  paste(dates, collapse = ", ")
-}
-
-st_negative <- function(dates) {
-  dates <- stringi::stri_replace_all_regex(dates, "(BCE|Bce|bce|bc|BC|Bc|bC)", "")
-  dates <- stringi::stri_trim_both(dates)
-  .hist_to_astro(dates)
 }
 
 # Widths ####
@@ -947,21 +1013,27 @@ interpret_one <- function(s) {
     # A qualified bare time ("around 2pm"): carry the qualifier as a whole-time
     # annotation and let the time pipeline standardise it (-> "14:00~").
     if (grepl(.bare_time_rx, bare, perl = TRUE)) return(paste0(bare, qual))
+    # The returns below rebuild the date from its components, so any era
+    # marker has to be carried over explicitly; standardise_date_input()
+    # applies it later ("circa 200 BC" -> "~200 BC" -> "~-199").
+    era <- stringi::stri_extract_first_regex(s, paste0("(", .bc_rx, "|", .ce_rx, ")"))
+    era <- if (is.na(era)) "" else paste0(" ", era)
     yr <- nl_year(bare)
     mnb <- nl_month_num(bare)
     # An explicit ordinal day keeps the qualifier on that day component
     # (e.g. "around the 13th of Feb 1977" -> "1977-02-~13").
     day <- stringi::stri_extract_first_regex(bare, "[0-9]{1,2}(?=st|nd|rd|th)")
     if (!is.na(mnb) && !is.na(day) && !identical(day, yr))
-      return(sprintf("%s-%02d-%s%02d", yr, mnb, qual, as.integer(day)))
+      return(paste0(sprintf("%s-%02d-%s%02d", yr, mnb, qual, as.integer(day)),
+                    era))
     # A fully specified date (numeric ISO or written month) keeps its month and
     # day; the qualifier applies to the whole date, as a suffix
     # (e.g. "approximately 2024-01-22" -> "2024-01-22~").
     iso <- inner_date(bare)
     if (!is.na(iso) && iso != "NA" && grepl("-", sub("^-", "", iso)))
-      return(paste0(iso, qual))
+      return(paste0(iso, qual, era))
     # Otherwise only a year is known: prefix it (e.g. "circa 2012" -> "~2012").
-    if (!is.na(yr)) return(paste0(qual, yr))
+    if (!is.na(yr)) return(paste0(qual, yr, era))
   }
 
   s
@@ -977,13 +1049,16 @@ extract_from_text <- function(v) {
                                   | day|year|month", " "))
   # Reorder month-first American dates ("July 4 1976" -> "4 July 1976"); a
   # day-first phrase ("Fourth of July") already leads with the day.
-  first_tok <- stringi::stri_split_fixed(stri_squish(out), " ")[[1]][1]
-  if (length(out) == 1 &&
-      grepl("^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)", first_tok,
-            ignore.case = TRUE) &&
-      length(stringi::stri_split_fixed(out, " ")[[1]]) >= 3) {
-    out <- paste(stringi::stri_split_fixed(out, " ")[[1]][c(2, 1, 3)],
-             collapse = " ")
+  first_tok <- stringi::stri_extract_first_regex(out, "^\\S+")
+  reorder <- !is.na(first_tok) &
+    grepl("^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)", first_tok,
+          ignore.case = TRUE) &
+    stringi::stri_count_regex(out, "\\S+") >= 3
+  reorder[is.na(reorder)] <- FALSE
+  if (any(reorder)) {
+    out[reorder] <- vapply(stringi::stri_split_fixed(out[reorder], " "),
+                           function(tok) paste(tok[c(2, 1, 3)], collapse = " "),
+                           character(1))
   }
 
   for (k in seq_len(nrow(text_to_number))) {

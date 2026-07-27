@@ -22,6 +22,24 @@
     spanning the BCE/CE boundary now passes through the whole of year `0000`
     rather than jumping from `-0001` straight to `0001`
 
+## Expand/Contract
+
+- `expand()` now handles an unspecified year. Previously `"192X"` raised
+  `'from' must be a finite number` and `"18XX"` silently returned a single
+  date, even though these are exactly what the prose parser produces for
+  decades and centuries:
+  - a bare unspecified year expands to the whole span (`"192X"` gives every
+    day of the 1920s), while an attached month or day picks out that month or
+    day in each candidate year (`"192X-05-04"` gives ten dates, not nine years
+    of them)
+  - BCE years are bounded the other way round, `-1999` being earlier
+    than `-1900`
+  - a year too vague to enumerate, such as `"XXXX"`, is refused with a message
+    suggesting `vmin()`/`vmax()` rather than attempted
+- `expand()` now applies unspecified-component rules to each member of a set
+  separately, fixing over-expansion of sets whose members had an unspecified
+  month: `"{2008-XX-31,2009-XX-31}"` gave 671 dates and now gives 24
+
 # messydates 1.0.0
 
 ## Package

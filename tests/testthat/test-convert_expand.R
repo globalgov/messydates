@@ -67,3 +67,31 @@ test_that("Expand does not crash for reduced-precision dates with approx_range",
                as.character(seq(as.Date("2001-01-01"), as.Date("2001-01-31"),
                                 by = "day")))
 })
+
+test_that("Expand handles unspecified years", {
+  # Regression test: an 'X' in the year position used to reach seq.Date as a
+  # non-finite value ("192X" errored, "18XX" silently returned one date),
+  # even though the prose parser produces exactly these values for decades
+  # and centuries.
+  expect_equal(lengths(expand(as_messydate("192X"))), 3653)
+  expect_equal(lengths(expand(as_messydate("18XX"))), 36524)
+  expect_equal(expand(as_messydate("the 1920s")),
+               expand(as_messydate("192X")))
+  # A month or day attached to an unspecified year picks out that month or
+  # day in each candidate year, not a continuous stretch of time.
+  expect_equal(lengths(expand(as_messydate("192X-05"))), 310)
+  expect_equal(expand(as_messydate("192X-05-04"))[[1]],
+               paste0(1920:1929, "-05-04"))
+  expect_equal(lengths(expand(as_messydate("192X-XX-03"))), 120)
+  # BCE years are bounded the other way round: -1999 is earlier than -1900.
+  expect_equal(expand(as_messydate("-19XX"))[[1]][1], "-1999-01-01")
+  # A year too vague to enumerate is refused rather than attempted.
+  expect_error(expand(as_messydate("XXXX")), "spans 10,000 years")
+})
+
+test_that("Expand applies unspecified components per set member", {
+  # Regression test: the set rules are anchored, so applying them to a whole
+  # comma-joined set matched nothing and over-expanded.
+  expect_equal(lengths(expand(as_messydate("{2008-XX-31,2009-XX-31}"))), 24)
+  expect_equal(lengths(expand(as_messydate("{2008-XX-05,2009-03-03}"))), 13)
+})

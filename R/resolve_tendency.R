@@ -14,6 +14,16 @@
 #'   `POSIXct` when a time of day is present, or `Date` otherwise); an odd
 #'   number simply returns the middle value.
 #'
+#'   Both kinds of set are expanded to their members and summarised the same
+#'   way, but the result means different things for each. For a `{}` ("all
+#'   members of") set, which records that something happened on several
+#'   dates, the central tendency describes where those occurrences sit. For a
+#'   `[]` ("one member of") set, which records that something happened on
+#'   exactly one of those dates but not which, the central tendency is a point
+#'   estimate of that single unknown date, as it is for a range or an
+#'   unspecified component. `vrandom()` draws a member uniformly in either
+#'   case, which for a `[]` set is a draw from the candidates themselves.
+#'
 #'   Averaging across the BCE/CE boundary, or between two BCE dates, is not
 #'   currently supported: `median()` falls back to the earlier of the two
 #'   middle values in that case, and `mean()`/`vmean()` may be unreliable for

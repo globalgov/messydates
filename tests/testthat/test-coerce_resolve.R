@@ -101,3 +101,13 @@ test_that("as_mdate adds zero padding when appropriate", {
   expect_equal(as_messydate(c("-29-12-31", "193-02-02", "2010-10-10")),
                as_messydate(c("-0029-12-31", "0193-02-02", "2010-10-10")))
 })
+
+test_that("'[]' and '{}' sets resolve alike", {
+  onesie <- as_messydate("[2001-01-01,2001-02-02]")
+  allof <- as_messydate("{2001-01-01,2001-02-02}")
+  expect_equal(vmin(onesie), vmin(allof))
+  expect_equal(vmax(onesie), vmax(allof))
+  expect_equal(vmean(onesie), vmean(allof))
+  expect_equal(vmedian(onesie), vmedian(allof))
+  expect_true(vrandom(onesie) %in% c("2001-01-01", "2001-02-02"))
+})

@@ -96,6 +96,19 @@
 - Fixed how `expand()` applies unspecified-component rules to each member of a set
   separately, fixing over-expansion of sets whose members had an unspecified
   month: `"{2008-XX-31,2009-XX-31}"` gave 671 dates and now gives 24
+- Fixed `contract()` returning every set in `{}` notation, so that a `[]` set
+  no longer became a `{}` set on a round-trip through `expand()`/`contract()`
+  (closes #99)
+  - Only applies where `contract()` is given an `mdate`, since a list of dates
+    does not record which kind of set its members came from
+  - Documented what the two set types mean once resolved or operated on, having
+    established that both should continue to expand to the same members (closes #99):
+    - `?resolve_tendency` now distinguishes a central tendency that describes
+      where several recorded occurrences sit (`{}`) from one that is a point
+      estimate of a single unknown date (`[]`), as for a range
+    - `?operate_set` and `?operate_proportional` now note that a result for a
+      `[]` set reads as the candidates that remain possible, or the probability
+      that a comparison holds, rather than a share of recorded occurrences
 
 # messydates 1.0.0
 

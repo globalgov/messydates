@@ -56,6 +56,14 @@ functions instead report \emph{what proportion} of the dates implied by
 \code{e1} satisfy the comparison against \code{e2}, by expanding both to their
 full sets of possible dates first.
 }
+\details{
+Both kinds of set are expanded to their members, so \code{{}} ("all members
+of") and \verb{[]} ("one member of") sets give the same proportion. For a \verb{[]}
+set that proportion reads as a probability that the comparison holds,
+under the assumption that each candidate is equally likely, in the same
+way as for a range or an unspecified component. For a \code{{}} set it instead
+reads as the share of the recorded occurrences that satisfy it.
+}
 \section{Functions}{
 \itemize{
 \item \code{ \%l\% }: Tests proportion of dates in the first vector

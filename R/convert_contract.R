@@ -11,6 +11,14 @@
 #' contracting a date-time range and then re-expanding it will not restore
 #' the original times; `contract()` is intended for date-level ranges,
 #' sets, and unspecified components.
+#'
+#' Sets are returned in the notation they were given in: a `[]` ("one member
+#' of") set contracts back to `[]` rather than `{}`. This is only possible
+#' when `contract()` is passed an `mdate` (or something coercible to one),
+#' since `expand()` returns the member dates without recording which kind of
+#' set they came from. A list of dates therefore always contracts to `{}`.
+#' Note that a set whose members happen to be consecutive days contracts to a
+#' range, `..`, whichever notation it was given in.
 #' @param x A list of dates
 #' @param collapse Do you want ranges to be collapsed?
 #'   TRUE by default.
@@ -27,9 +35,14 @@
 #' contract(as_messydate("2012-06-01..2012-06-30"))
 #' # ...unless collapse = FALSE keeps it as an explicit start..end range
 #' contract(as_messydate("2012-06-01..2012-06-30"), collapse = FALSE)
+#' # a '[]' set stays a '[]' set
+#' contract(as_messydate("[2001-01-01,2001-02-02]"))
 #' @export
 contract <- function(x, collapse = TRUE) {
+  onesie <- rep(FALSE, length(x))
   if (!inherits(x, 'list')) {
+    onesie <- stringi::stri_detect_regex(as.character(x), "^\\[.*\\]$")
+    onesie[is.na(onesie)] <- FALSE
     x <- expand(x)
   }
   x <- compact_negative_dates(x)
@@ -40,7 +53,19 @@ contract <- function(x, collapse = TRUE) {
   } else {
     x <- unlist(x)
   }
+  x <- restore_onesies(x, onesie)
   as_messydate(x)
+}
+
+# Re-emits the '[]' notation for those elements that were given as "one member
+# of" sets, since `collapse_sets()` can only know that the members belong
+# together, not which kind of set they formed.
+restore_onesies <- function(x, onesie) {
+  if (!any(onesie)) return(x)
+  wrapped <- onesie & stringi::stri_detect_regex(x, "^\\{.*\\}$")
+  x[wrapped] <- stringi::stri_replace_all_regex(x[wrapped],
+                                                "^\\{(.*)\\}$", "[$1]")
+  x
 }
 
 compact_negative_dates <- function(x) {

@@ -32,8 +32,7 @@ A data frame with one row per problematic element and the columns
 md_problems(c("2019-01-01", "2019-02-30", "2019-W12", "not a date"))
 #>   index      input                                                     reason
 #> 1     2 2019-02-30 '2019-02-30' has day '30', but that month has only 28 days
-#> 2     3   2019-W12             week dates (e.g. '2019-W12') are not supported
-#> 3     4 not a date                              could not be parsed as a date
+#> 2     4 not a date                              could not be parsed as a date
 # a clean vector returns no rows
 md_problems(c("2019-01-01", "2019-01"))
 #> [1] index  input  reason

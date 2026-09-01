@@ -53,6 +53,7 @@ about** — and only resolved to a precise date when you explicitly ask.
 | Ranges, sets, and on-or-before/after dates |  |  |  |  | ✓ |
 | Times with uncertainty/approximation |  |  |  |  | ✓ |
 | Written/prose dates (e.g. “First of February…”) |  |  |  |  | ✓ |
+| Days, weeks, and seasons of a year in prose |  |  |  |  | ✓ |
 | Expand to (and contract from) all compatible dates |  |  |  |  | ✓ |
 | Transparent resolution (min/max/mean/median/random) |  |  |  |  | ✓ |
 | ISO 8601-2 (EDTF) support |  |  |  |  | ~ |
@@ -67,11 +68,14 @@ of ISO 8601-2 that carry imprecision: unspecified components,
 approximate and uncertain annotations, ranges, open ranges, sets, and
 times of day. Durations are covered too, by the `mduration` class, which
 expresses them as a range of possible dates so that uncertainty at
-either end is preserved. Not implemented are week dates (`2019-W12`),
-ordinal dates (`2019-123`), season codes (`2019-21`), significant digits
+either end is preserved. Week dates (`2019-W12`) are read and converted
+to the range of days they name. Not implemented are significant digits
 (`1234S3`), extended years (`Y17E7`), the `P`-style duration notation
 (`P1Y2M`), and repeating intervals; these are rejected on coercion
-rather than silently passed through.
+rather than silently passed through. Ordinal dates (`2019-123`) and
+season codes (`2019-21`) are rejected too, being too easily read as a
+mistake for `2019-12-03` or `2019-02-01`, but both are parsed when they
+are written out: “the 123rd day of 2019” and “spring 2019”.
 
 ## A quick overview
 

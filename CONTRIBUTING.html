@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,26 +153,73 @@
 <div class="section level3">
 <h3 id="newsmd-conventions">
 <code>NEWS.md</code> conventions<a class="anchor" aria-label="anchor" href="#newsmd-conventions"></a></h3>
-<p>Every user-facing change (new feature, behaviour change, bug fix) gets an entry under the <em>current unreleased</em> version at the top of <code>NEWS.md</code>:</p>
-<ul><li>A version gets a top-level heading, <code># messydates X.Y.Z</code>; entries for a not-yet-released version accumulate under the existing top heading rather than each getting their own.</li>
-<li>Within a version, group entries under <code>##</code> subsections named after the area of the package they touch, not the R file — e.g. <code>Package</code> (dependencies, build, branding), <code>Class</code>, <code>Coercion</code>, <code>Annotation</code>, <code>Resolution</code>, <code>Operations</code>, <code>Extraction</code>, <code>Expand/Contract</code>. Reuse an existing subsection heading if one already fits rather than inventing a new one, and use each heading at most once per version.</li>
-<li>Every bullet sits under one of those <code>##</code> subsections; never leave a bullet directly under the version heading.</li>
-<li>One bullet per change, written as what changed (not what the code does internally).</li>
-</ul><p>Start each bullet with a verb matching the change type:</p>
+<p><code>NEWS.md</code> groups each version’s changes under <code>##</code> headings so that a reader finds a change where they find the function. Lead with <code>## Package</code> (dependencies, build, branding, website, infrastructure), then the function families in overview order: <code>## Class</code>, <code>## Coercion</code>, <code>## Resolution</code>, <code>## Annotation</code>, <code>## Extraction</code>, <code>## Expand/Contract</code>, <code>## Operations</code>. Some of these name the family rather than the website title, because the site splits or spells a few of them differently: <code>## Coercion</code> and <code>## Resolution</code> stand for “Coerce to” and “Coerce from”, <code>## Annotation</code> and <code>## Extraction</code> for “Components”, and <code>## Expand/Contract</code> for “Manipulation”. Put <code>## Tests</code>, <code>## Vignettes</code> and <code>## Data</code> near the end. Each heading appears at most once per version. Reuse a heading that already fits rather than inventing a new one, and never leave a bullet directly under the version heading.</p>
+<p>A version takes a top-level heading, <code># messydates X.Y.Z</code>. Entries for a version that is not yet released accumulate under the existing top heading, rather than each opening a heading of its own. Update <code>NEWS.md</code> in the same commit or PR as the change it documents.</p>
+<p>Start each bullet with a verb matching the change type:</p>
 <ul><li>
-<code>- Added ...</code> — new functionality</li>
+<code>Added ...</code> — new functionality</li>
 <li>
-<code>- Improved ...</code> — functional updates to existing behaviour</li>
+<code>Fixed ...</code> — bug fixes; if it relates to a GitHub issue, suffix with <code>(closes #123)</code>
+</li>
 <li>
-<code>- Renamed ... to ...</code> — function or argument name migrations</li>
+<code>Renamed ... to ...</code> — function or argument name migrations</li>
 <li>
-<code>- Fixed ...</code> — bug fixes</li>
-</ul><p>Suffix any bullet that resolves an open issue with the issue number in parentheses, e.g. <code>(closed #123)</code>. Where a user reported the bug or proposed the fix or change, thank them by <code>@</code>-tag in the same parentheses, e.g. <code>(closed #123, thanks @anon_user)</code>.</p>
-<p>Where several changes are related — several fixes to the same function, or the sub-parts of one feature — a lead bullet naming the function with indented sub-bullets under it often reads better than a flat list:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ss">- </span>Improved <span class="in">`as_messydate()`</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ss">  - </span>dates with impossible components are now rejected</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="ss">  - </span>month and day are only swapped where the swap yields a date that could exist</span></code></pre></div>
-<p>Update <code>NEWS.md</code> in the same commit/PR as the code change it documents, not as an afterthought — don’t batch it up separately.</p>
+<code>Improved ...</code> — functional updates to existing behaviour</li>
+<li>
+<code>Updated ...</code> — documentation changes</li>
+<li>
+<code>Removed ...</code> / <code>Dropped ...</code> — functionality or dependencies taken out</li>
+<li>
+<code>Moved ...</code> / <code>Migrated ...</code> — functionality relocated to another package or file</li>
+<li>
+<code>Split ...</code> — one function or file divided into several</li>
+</ul><p>Any of these verbs can also lead a sub-bullet.</p>
+<p>Name a function by the generic, e.g. <code><a href="reference/coerce_to.html">as_messydate()</a></code>, where the change reaches every class it dispatches on. Where it reaches only one method, spell that method out in full, e.g. <code><a href="reference/coerce_to.html">as_messydate.character()</a></code>, so that a reader knows which classes the change applies to.</p>
+<p>Spell the issue suffix <code>closes</code>, not <code>closed</code> or <code>closing</code>. If a cited GitHub issue was <strong>not</strong> authored by @jhollway, thank the author with an <code>@</code>-tag in the same parentheses, e.g. <code>(closes #94, thanks @njbart)</code>.</p>
+<div class="section level4">
+<h4 id="grouping">Grouping<a class="anchor" aria-label="anchor" href="#grouping"></a></h4>
+<p>Group first, and only then write the bullets. The more entries a version holds, the more this matters.</p>
+<ul><li>Cluster related changes as indented sub-bullets under a lead bullet.</li>
+<li>Where several changes concern one function, lead with an <code>Improved ...</code> bullet naming the function, and put the individual <code>Fixed ...</code>/<code>Added ...</code> points beneath it, so the cluster groups by function rather than by change type.</li>
+<li>Under such a lead bullet, do not name the function again in the sub-bullets, since the lead bullet already carries it.</li>
+<li>Where one decision runs across many functions, lead with the decision rather than with each function.</li>
+<li>Sub-bullets indent by two spaces, and nest at most one level further (four spaces).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="writing-the-bullets">Writing the bullets<a class="anchor" aria-label="anchor" href="#writing-the-bullets"></a></h4>
+<p><code>NEWS.md</code> is read by users scanning for what changed, not by reviewers reading prose, so each bullet is a headline rather than a sentence. Avoid over-punctuation and over-explanation. Details belong in the function documentation, if anywhere.</p>
+<ul><li>No full stop at the end of a bullet</li>
+<li>Keep every bullet to one line of fewer than 81 characters ideally (a few more or less is fine)
+<ul><li>If a bullet wraps, it holds too much: shorten it, or split it into a lead bullet and sub-bullets</li>
+</ul></li>
+<li>One clause where possible, and at most one comma
+<ul><li>Use a semicolon for a short second clause, e.g. “the old spelling still warns”</li>
+<li>Use a sub-bullet where the second clause needs more room than that</li>
+</ul></li>
+<li>Name the function or object in backticks and say what changed to it, dropping scaffolding like “This change …”, “In order to …”, or “as part of”</li>
+<li>Keep the <em>what</em>, and add the <em>why</em> only where the behaviour would otherwise look arbitrary</li>
+<li>No trailing rationale, no restating the same change twice in different words, and no marketing adjectives such as “comprehensive” or “robust”</li>
+<li>A sub-bullet does not need a verb: it can state the consequence, the previous behaviour, or an example call</li>
+<li>Cut a sub-bullet that only restates what the lead bullet already implies</li>
+<li>Where several bullets describe parallel changes, reuse the sentence structure, so that a reader sees the parallelism at a glance</li>
+<li>Use one word for one thing throughout a version’s entries, rather than varying the wording for effect</li>
+</ul><p>For example, instead of:</p>
+<blockquote>
+<p>Fixed how <code><a href="reference/convert_expand.html">expand()</a></code> applies unspecified-component rules to each member of a set separately, fixing over-expansion of sets whose members had an unspecified month: <code>"{2008-XX-31,2009-XX-31}"</code> gave 671 dates and now gives 24.</p>
+</blockquote>
+<p>write:</p>
+<blockquote>
+<p>Fixed <code><a href="reference/convert_expand.html">expand()</a></code> applying unspecified-component rules to a whole set - <code>"{2008-XX-31,2009-XX-31}"</code> gave 671 dates and now gives 24</p>
+</blockquote>
+<p>and instead of:</p>
+<blockquote>
+<p>Added <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> and <code><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated()</a></code> methods for <code>mdate</code> objects, which are useful because previously <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> fell through to the character method and silently dropped the class.</p>
+</blockquote>
+<p>write:</p>
+<blockquote>
+<p>Added <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> and <code><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">duplicated()</a></code> methods for <code>mdate</code> (closes #106) - <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> fell through to the character method and dropped the class</p>
+</blockquote>
+</div>
 </div>
 <div class="section level3">
 <h3 id="branching-and-ci">Branching and CI<a class="anchor" aria-label="anchor" href="#branching-and-ci"></a></h3>

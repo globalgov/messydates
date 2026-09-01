@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,41 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0" id="messydates-110">messydates 1.1.0<a class="anchor" aria-label="anchor" href="#messydates-110"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.1" id="messydates-111">messydates 1.1.1<a class="anchor" aria-label="anchor" href="#messydates-111"></a></h2>
+<div class="section level3">
+<h3 id="package-1-1-1">Package<a class="anchor" aria-label="anchor" href="#package-1-1-1"></a></h3>
+<ul><li>Added a reverse dependency job to the PR checks workflow</li>
+</ul></div>
+<div class="section level3">
+<h3 id="coercion-1-1-1">Coercion<a class="anchor" aria-label="anchor" href="#coercion-1-1-1"></a></h3>
+<ul><li>Added parsing of a day of the year, e.g. “the 103rd day of 2026” (closes <a href="https://github.com/globalgov/messydates/issues/97" class="external-link">#97</a>)
+<ul><li>Gives <code>"2026-04-13"</code>; <code>"2026-103"</code> notation is still rejected as ambiguous</li>
+</ul></li>
+<li>Added parsing of a week of the year, e.g. “the 5th week of 2026” (closes <a href="https://github.com/globalgov/messydates/issues/96" class="external-link">#96</a>)
+<ul><li>Gives the range <code>"2026-01-26..2026-02-01"</code>
+</li>
+<li>Weeks follow ISO 8601, so week 1 can start in December of the year before</li>
+<li>
+<code>"2026-W05"</code> and <code>"2026-W05-3"</code> are read too, but recorded as dates/ranges</li>
+</ul></li>
+<li>Updated the documentation of seasons in prose, e.g. “summer 2026” (closes <a href="https://github.com/globalgov/messydates/issues/98" class="external-link">#98</a>)
+<ul><li>Gives the northern-hemisphere month range <code>"2026-06..2026-08"</code>
+</li>
+<li>
+<code>"2026-22"</code> season codes are still rejected as ambiguous</li>
+</ul></li>
+<li>Improved the errors for ordinal dates and season codes to name the prose form</li>
+<li>Fixed “before” and “after” keeping both bounds of a range that followed
+<ul><li>“before summer 2026” gave <code>"..2026-06..2026-08"</code> and now gives <code>"..2026-06"</code>
+</li>
+</ul></li>
+<li>Fixed prose naming an impossible date becoming <code>NA</code> without a warning
+<ul><li>“the 53rd week of 2025” now warns, as other unparseable text does</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="messydates-110">messydates 1.1.0<a class="anchor" aria-label="anchor" href="#messydates-110"></a></h2><p class="text-muted">CRAN release: 2026-07-27</p>
 <div class="section level3">
 <h3 id="package-1-1-0">Package<a class="anchor" aria-label="anchor" href="#package-1-1-0"></a></h3>
 <ul><li>Improved package architecture documentation in <code>.github/CONTRIBUTING.md</code> so that human contributors and coding agents read the same notes</li>

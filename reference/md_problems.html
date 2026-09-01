@@ -15,7 +15,7 @@ dates before coercing it."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,8 +75,7 @@ dates before coercing it.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">md_problems</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-01-01"</span>, <span class="st">"2019-02-30"</span>, <span class="st">"2019-W12"</span>, <span class="st">"not a date"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   index      input                                                     reason</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     2 2019-02-30 '2019-02-30' has day '30', but that month has only 28 days</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     3   2019-W12             week dates (e.g. '2019-W12') are not supported</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     4 not a date                              could not be parsed as a date</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     4 not a date                              could not be parsed as a date</span>
 <span class="r-in"><span><span class="co"># a clean vector returns no rows</span></span></span>
 <span class="r-in"><span><span class="fu">md_problems</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2019-01-01"</span>, <span class="st">"2019-01"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] index  input  reason</span>

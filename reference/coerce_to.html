@@ -19,7 +19,7 @@ though this is a work-in-progress and currently only works in English."></head><
 
     <a class="navbar-brand me-2" href="../index.html">messydates</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -166,6 +166,21 @@ earlier than" become an open range, e.g. <code>"before 1910"</code> becomes
 understands, including a decade or century.</p></li>
 <li><p>Decades ("the 1920s" becomes <code>"192X"</code>) and centuries ("the 19th
 century" becomes <code>"18XX"</code>).</p></li>
+<li><p>A day of the year, e.g. <code>"the 103rd day of 2026"</code> becomes
+<code>"2026-04-13"</code>. The ISO 8601-2 notation for this (<code>"2026-103"</code>) is
+rejected instead of read, since it is easily read as a mistake for
+<code>"2026-10-03"</code>.</p></li>
+<li><p>A week of the year, e.g. <code>"the 5th week of 2026"</code> becomes the range
+<code>"2026-01-26..2026-02-01"</code>. Weeks follow the ISO 8601 rule: a week starts
+on a Monday, and week 1 is the week holding the first Thursday of the year,
+so week 1 can start in December of the previous year. The ISO 8601-2 week
+date is read too, as <code>"2026-W05"</code> or, for one day within the week,
+<code>"2026-W05-3"</code>, but it is never written back in that notation.</p></li>
+<li><p>Seasons, e.g. <code>"summer 2026"</code> becomes the month range
+<code>"2026-06..2026-08"</code>. These are the northern-hemisphere meteorological
+seasons, spring running from March to May and winter from December into
+February of the following year. The EDTF season codes (<code>"2026-22"</code>) are
+rejected instead of read, being easily read as a mistake for a date.</p></li>
 <li><p>A comma-separated list of dates in prose, e.g.
 <code>"13th Feb, 1977, Feb 15 1977, 1910"</code>, is split into separate dates
 (here, three): a fragment that is only a year is treated as completing
@@ -255,6 +270,14 @@ marker given once at the end still applies to every bound of a range or set:
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "192X"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"the 19th century"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "18XX"</span>
+<span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"the 103rd day of 2026"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "2026-04-13"</span>
+<span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"the 5th week of 2026"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "2026-01-26..2026-02-01"</span>
+<span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"2026-W05"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "2026-01-26..2026-02-01"</span>
+<span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"summer 2026"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "2026-06..2026-08"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"before 1910"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  'mdate' chr "..1910"</span>
 <span class="r-in"><span><span class="fu">as_messydate</span><span class="op">(</span><span class="st">"between the 13th and 15th of Feb, 1977"</span><span class="op">)</span></span></span>

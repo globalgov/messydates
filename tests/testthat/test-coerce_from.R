@@ -75,9 +75,11 @@ test_that("Roman date parsing works correctly", {
   expect_identical(as_messydate("the Ides of March, 44 BC"), as_messydate("-0043-03-15"))
 })
 
-# Seasons and relative parts of a year are interpreted as month ranges. This
-# behaviour is intentionally undocumented (not part of the advertised API), as
-# the conventions vary; the tests pin the current behaviour.
+# Seasons and relative parts of a year are interpreted as month ranges, never
+# as the EDTF season codes ('1918-21'), which are rejected on input. The
+# seasons are the northern-hemisphere meteorological ones and are documented in
+# the "Parsing prose" section of as_messydate(); the thirds of a year given by
+# "early"/"mid"/"late" remain undocumented, the conventions varying.
 test_that("seasons and relative periods parse to month ranges", {
   expect_identical(as_messydate("Spring 1918"), as_messydate("1918-03..1918-05"))
   expect_identical(as_messydate("Summer 1918"), as_messydate("1918-06..1918-08"))

@@ -134,3 +134,94 @@ jobs:
             echo "::error::PR description does not itemize changes under subsection titles (e.g. \"## Coercion\")"
             exit 1
           fi
+
+  revdep:
+    name: Reverse dependencies
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 2
+          needs: check
+
+      - name: Install the development version of messydates
+        run: R CMD INSTALL .
+
+      - name: Check reverse dependencies still find every messydates object they use
+        # Uses only base R and plain `R CMD check`, so no extra packages are
+        # installed just to run this. It does not run each revdep's full test
+        # suite (some carry unrelated, pre-existing failures); it reproduces the
+        # `checking dependencies in R code` step of R CMD check on each downstream
+        # package with THIS branch's messydates installed, which is what catches a
+        # downstream package referring to a messydates object that a PR has
+        # renamed or removed.
+        run: |
+          Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = "false")
+          rbin <- file.path(R.home("bin"), "R")
+          revdeps <- tools::package_dependencies(
+            "messydates", reverse = TRUE, which = "all",
+            db = available.packages()
+          )[["messydates"]]
+          if (length(revdeps) == 0) {
+            message("No reverse dependencies found on CRAN; nothing to check.")
+            quit(save = "no", status = 0)
+          }
+          message("Reverse dependencies: ", paste(revdeps, collapse = ", "))
+          patt <- paste0("Missing or unexported object[^;]*messydates|",
+                         "messydates[^;]*not exported|not exported by[^;]*messydates")
+          broken <- character(0)
+          for (pkg in revdeps) {
+            message("\n== ", pkg, " ==")
+            # Install the revdep's dependencies. An already-installed dependency
+            # that satisfies the version requirement is not reinstalled, so THIS
+            # branch's messydates stays in place rather than the CRAN version.
+            tryCatch(
+              utils::install.packages(pkg, quiet = TRUE),
+              error = function(e) message("  dependency install issue: ",
+                                          conditionMessage(e))
+            )
+            dl <- tryCatch(
+              utils::download.packages(pkg, destdir = tempdir(), type = "source"),
+              error = function(e) {
+                message("  could not download ", pkg, ": ", conditionMessage(e))
+                NULL
+              }
+            )
+            if (is.null(dl) || nrow(dl) == 0) next
+            out <- system2(
+              rbin,
+              c("CMD", "check", "--no-manual", "--no-build-vignettes",
+                "--no-vignettes", "--no-tests", "--no-examples",
+                shQuote(dl[1, 2])),
+              stdout = TRUE, stderr = TRUE
+            )
+            # Flatten the check output so the pattern can span its wrapped lines.
+            log <- gsub("[[:space:]]+", " ", paste(out, collapse = " "))
+            if (length(grep(patt, log, ignore.case = TRUE))) {
+              broken <- c(broken, pkg)
+              message("  BROKEN by this branch: references a renamed or removed ",
+                      "messydates object.")
+            } else {
+              message("  OK: all messydates objects resolve.")
+            }
+          }
+          if (length(broken)) {
+            stop("This branch breaks reverse dependencies: ",
+                 paste(unique(broken), collapse = ", "),
+                 ". A messydates object they use has been renamed or removed; ",
+                 "keep an alias or update the downstream package.")
+          }
+          message("\nAll reverse dependencies resolve every messydates object they use.")
+        shell: Rscript {0}

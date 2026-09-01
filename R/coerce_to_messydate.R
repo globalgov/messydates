@@ -54,6 +54,21 @@
 #'  understands, including a decade or century.}
 #'  \item{Decades ("the 1920s" becomes `"192X"`) and centuries ("the 19th
 #'  century" becomes `"18XX"`).}
+#'  \item{A day of the year, e.g. `"the 103rd day of 2026"` becomes
+#'  `"2026-04-13"`. The ISO 8601-2 notation for this (`"2026-103"`) is
+#'  rejected instead of read, since it is easily read as a mistake for
+#'  `"2026-10-03"`.}
+#'  \item{A week of the year, e.g. `"the 5th week of 2026"` becomes the range
+#'  `"2026-01-26..2026-02-01"`. Weeks follow the ISO 8601 rule: a week starts
+#'  on a Monday, and week 1 is the week holding the first Thursday of the year,
+#'  so week 1 can start in December of the previous year. The ISO 8601-2 week
+#'  date is read too, as `"2026-W05"` or, for one day within the week,
+#'  `"2026-W05-3"`, but it is never written back in that notation.}
+#'  \item{Seasons, e.g. `"summer 2026"` becomes the month range
+#'  `"2026-06..2026-08"`. These are the northern-hemisphere meteorological
+#'  seasons, spring running from March to May and winter from December into
+#'  February of the following year. The EDTF season codes (`"2026-22"`) are
+#'  rejected instead of read, being easily read as a mistake for a date.}
 #'  \item{A comma-separated list of dates in prose, e.g.
 #'  `"13th Feb, 1977, Feb 15 1977, 1910"`, is split into separate dates
 #'  (here, three): a fragment that is only a year is treated as completing
@@ -113,6 +128,10 @@ NULL
 #' as_messydate("possibly about 1910")
 #' as_messydate("the 1920s")
 #' as_messydate("the 19th century")
+#' as_messydate("the 103rd day of 2026")
+#' as_messydate("the 5th week of 2026")
+#' as_messydate("2026-W05")
+#' as_messydate("summer 2026")
 #' as_messydate("before 1910")
 #' as_messydate("between the 13th and 15th of Feb, 1977")
 #' @export
@@ -203,7 +222,12 @@ as_messydate.character <- function(x, resequence = NULL) {
   # Interpret historical prose cues (Roman calendar, qualifiers, connectives)
   # before the usual text extraction. This may lengthen the vector, e.g. when a
   # sentence lists several dates joined by "and".
+  # The prose layer may return NA where it read the shape of a date but not a
+  # possible one ("the 53rd week of 2026"), and may return more elements than
+  # it was given, so the input is kept for reporting where it still lines up.
+  orig <- x
   x <- interpret_prose(x)
+  if (length(orig) != length(x)) orig <- x
   d <- standardise_text(x)
   # Protect any time-of-day substrings so the date pipeline (which repurposes
   # ':' as a range separator and '.' as a component separator) cannot mangle
@@ -238,7 +262,7 @@ as_messydate.character <- function(x, resequence = NULL) {
   if (any(onesie))
     d[onesie] <- stringi::stri_replace_all_regex(d[onesie], "^\\{(.*)\\}$", "[$1]")
   check_components(d, source = x)
-  warn_unparsed(x, d)
+  warn_unparsed(orig, d)
   new_messydate(d)
 }
 
@@ -869,6 +893,17 @@ inner_date <- function(s) {
   as.character(suppressWarnings(as_messydate(s)))
 }
 
+# One end of a bound that is itself a range, so that an open range keeps a
+# single bound: "before the 5th week of 2026" is "..2026-01-26", not
+# "..2026-01-26..2026-02-01".
+range_bound <- function(d, bound) {
+  if (is.na(d) || !grepl("..", d, fixed = TRUE)) return(d)
+  parts <- strsplit(d, "..", fixed = TRUE)[[1]]
+  parts <- parts[nzchar(parts)]
+  if (length(parts) == 0) return(d)
+  if (bound == "min") parts[1] else parts[length(parts)]
+}
+
 # Regroups comma-separated fragments into whole dates: a fragment that is only
 # a year is attached to the preceding fragment when that one lacks a year, so
 # "13th Feb", "1977", "Feb 15 1977", "1910" becomes three dates.
@@ -902,6 +937,105 @@ season_range <- function(season, yr) {
          winter = sprintf("%s-12..%04d-02", yr, as.integer(yr) + 1L))
 }
 
+# Number of days in a year, following the leap rule used by days_in().
+days_in_year <- function(y) {
+  365L + as.integer(y %% 4 == 0 & (y %% 100 != 0 | y %% 400 == 0))
+}
+
+# Calendar date of the nth day of a year, e.g. (2026, 103) gives "2026-04-13".
+# A number outside the year rolls into the neighbouring one, so that the week
+# helpers below can share this. Built on days_in() rather than as.Date(), so
+# that it holds for any year the package accepts, including a negative one.
+ordinal_to_date <- function(y, n) {
+  while (n < 1) {
+    y <- y - 1L
+    n <- n + days_in_year(y)
+  }
+  while (n > days_in_year(y)) {
+    n <- n - days_in_year(y)
+    y <- y + 1L
+  }
+  cum <- cumsum(days_in(y, 1:12))
+  mn <- which(n <= cum)[1]
+  dy <- n - c(0, cum)[mn]
+  sprintf("%s%04d-%02d-%02d", if (y < 0) "-" else "", abs(y), mn, dy)
+}
+
+# Day number of a proleptic Gregorian date, counted from 1970-01-01. This is
+# the era algorithm, which stays correct for negative years, where as.Date()
+# and so lubridate::isoweek() do not reach.
+days_from_civil <- function(y, m, d) {
+  y <- y - (m <= 2)
+  era <- y %/% 400 # R's %/% floors, which is what the algorithm needs here
+  yoe <- y - era * 400
+  doy <- (153 * (m + ifelse(m > 2, -3, 9)) + 2) %/% 5 + d - 1
+  doe <- yoe * 365 + yoe %/% 4 - yoe %/% 100 + doy
+  era * 146097 + doe - 719468
+}
+
+# Day of the week, 1 for Monday to 7 for Sunday. 1970-01-01 was a Thursday.
+iso_weekday <- function(y, m, d) ((days_from_civil(y, m, d) + 3) %% 7) + 1
+
+# An ISO year has 53 weeks when it starts on a Thursday, or when it is a leap
+# year starting on a Wednesday. Otherwise it has 52.
+weeks_in_isoyear <- function(y) {
+  jan1 <- iso_weekday(y, 1, 1)
+  if (jan1 == 4 || (jan1 == 3 && days_in_year(y) == 366)) 53L else 52L
+}
+
+# Day number of the Monday that opens ISO week w of year y, or NA where the
+# year has no such week. The 4th of January always falls in week 1.
+iso_week_start <- function(y, w) {
+  if (is.na(y) || is.na(w) || w < 1 || w > weeks_in_isoyear(y))
+    return(NA_integer_)
+  days_from_civil(y, 1, 4) - (iso_weekday(y, 1, 4) - 1) + 7 * (w - 1)
+}
+
+# An ISO week as the range of its seven days. Week 1 can start in December of
+# the previous year, which ordinal_to_date() resolves.
+iso_week_range <- function(y, w) {
+  z <- iso_week_start(y, w)
+  if (is.na(z)) return(NA_character_)
+  jan1 <- days_from_civil(y, 1, 1)
+  paste0(ordinal_to_date(y, z - jan1 + 1), "..",
+         ordinal_to_date(y, z - jan1 + 7))
+}
+
+# One weekday within an ISO week, wd running from 1 (Monday) to 7 (Sunday).
+iso_week_date <- function(y, w, wd) {
+  z <- iso_week_start(y, w)
+  if (is.na(z)) return(NA_character_)
+  ordinal_to_date(y, z - days_from_civil(y, 1, 1) + wd)
+}
+
+# The number and the year in "the 5th week of 2026" or "week 5 of 2026",
+# returned as c(year, number), or NULL where the phrase has neither shape.
+# The word "of" or "in" is required, so that a duration such as "5 weeks" or
+# "3 days later" is left to the rest of the parser.
+year_part_number <- function(low, unit) {
+  m <- stringi::stri_match_first_regex(
+    low, paste0("\\b([0-9]{1,3})(?:st|nd|rd|th)?\\s+", unit,
+                "s?\\b\\s+(?:of|in)\\s+(?:the\\s+year\\s+)?([0-9]{3,4})\\b"))
+  if (is.na(m[1, 1]))
+    m <- stringi::stri_match_first_regex(
+      low, paste0("\\b", unit, "\\s+([0-9]{1,3})\\s+(?:of|in)\\s+",
+                  "(?:the\\s+year\\s+)?([0-9]{3,4})\\b"))
+  if (is.na(m[1, 1])) return(NULL)
+  c(as.integer(m[1, 3]), as.integer(m[1, 2]))
+}
+
+# Carries any approximate or uncertain qualifier in the phrase onto each bound
+# of an already resolved date or range ("around the 5th week of 2026").
+qualify_bounds <- function(d, low) {
+  if (is.na(d)) return(NA_character_)
+  approx <- grepl(paste0("\\b(", .approx_words_rx, ")\\b"), low)
+  uncert <- grepl(paste0("\\b(", .uncert_words_rx, ")\\b"), low)
+  qual <- if (approx && uncert) "%" else if (approx) "~" else
+    if (uncert) "?" else ""
+  if (!nzchar(qual)) return(d)
+  paste0(strsplit(d, "..", fixed = TRUE)[[1]], qual, collapse = "..")
+}
+
 # Prose qualifier words (approximate and/or uncertain), shared between the
 # qualifier-detection branch of interpret_one() and its leading-"at" stripper.
 .approx_words_rx <- "around|circa|approx|approximately|about|roughly|estimated"
@@ -928,12 +1062,16 @@ interpret_one <- function(s) {
 
   # Open ranges (checked first, so the bound may itself be a decade/century):
   # "before 1910" -> "..1910"; "after the 1920s" -> "192X..".
-  if (grepl("\\b(before|prior to|no later than)\\b", low))
-    return(paste0("..", inner_date(sub(
-      ".*\\b(?:before|prior to|no later than)\\b", "", low, perl = TRUE))))
-  if (grepl("\\b(after|since|no earlier than)\\b", low))
-    return(paste0(inner_date(sub(
-      ".*\\b(?:after|since|no earlier than)\\b", "", low, perl = TRUE)), ".."))
+  if (grepl("\\b(before|prior to|no later than)\\b", low)) {
+    d <- inner_date(sub(".*\\b(?:before|prior to|no later than)\\b", "", low,
+                        perl = TRUE))
+    return(paste0("..", range_bound(d, "min")))
+  }
+  if (grepl("\\b(after|since|no earlier than)\\b", low)) {
+    d <- inner_date(sub(".*\\b(?:after|since|no earlier than)\\b", "", low,
+                        perl = TRUE))
+    return(paste0(range_bound(d, "max"), ".."))
+  }
 
   # Century, e.g. "19th century" -> "18XX" (the 19th century is 1800-1899).
   cen <- stringi::stri_match_first_regex(low, "([0-9]+)(?:st|nd|rd|th)?\\s+centur")
@@ -943,6 +1081,29 @@ interpret_one <- function(s) {
   # Decade, e.g. "1910s" -> "191X".
   dec <- stringi::stri_match_first_regex(low, "\\b([0-9]{3})0s\\b")
   if (!is.na(dec[1, 1])) return(paste0(dec[1, 2], "X"))
+
+  # A day of the year, e.g. "the 103rd day of 2026" gives "2026-04-13", and an
+  # ISO week, e.g. "the 5th week of 2026" gives "2026-01-26..2026-02-01". The
+  # ISO 8601-2 week date "2026-W05", with or without a weekday ("2026-W05-3"),
+  # is read the same way, but is never written back in that notation. Only a
+  # plain 3- or 4-digit year is read from prose, as for the seasons below, so
+  # era prose such as "the 103rd day of 44 BC" is not covered.
+  wk <- stringi::stri_match_first_regex(
+    s, "^\\s*(-?[0-9]{4})-[Ww]([0-9]{1,2})(?:-([1-7]))?\\s*$")
+  if (!is.na(wk[1, 1])) {
+    y <- as.integer(wk[1, 2])
+    w <- as.integer(wk[1, 3])
+    if (is.na(wk[1, 4])) return(iso_week_range(y, w))
+    return(iso_week_date(y, w, as.integer(wk[1, 4])))
+  }
+  prt <- year_part_number(low, "week")
+  if (!is.null(prt)) return(qualify_bounds(iso_week_range(prt[1], prt[2]), low))
+  prt <- year_part_number(low, "day")
+  if (!is.null(prt)) {
+    ok <- prt[2] >= 1 && prt[2] <= days_in_year(prt[1])
+    d <- if (ok) ordinal_to_date(prt[1], prt[2]) else NA_character_
+    return(qualify_bounds(d, low))
+  }
 
   # Seasons and relative parts of a year, expressed as month ranges rather than
   # EDTF season codes (deliberately undocumented; only applied to a plain year,

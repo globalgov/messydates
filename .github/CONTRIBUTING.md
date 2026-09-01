@@ -283,7 +283,7 @@ and instead of:
 
 write:
 
-> Added `unique()` and `duplicated()` methods for `mdate` (closed #106)
+> Added `unique()` and `duplicated()` methods for `mdate` (closes #106)
 >   - `unique()` fell through to the character method and dropped the class
 
 ### Branching and CI

@@ -4,6 +4,23 @@
 
 - Added a reverse dependency job to the PR checks workflow
 
+## Coercion
+
+- Added parsing of a day of the year, e.g. "the 103rd day of 2026" (closes #97)
+  - Gives `"2026-04-13"`; `"2026-103"` notation is still rejected as ambiguous
+- Added parsing of a week of the year, e.g. "the 5th week of 2026" (closes #96)
+  - Gives the range `"2026-01-26..2026-02-01"`
+  - Weeks follow ISO 8601, so week 1 can start in December of the year before
+  - `"2026-W05"` and `"2026-W05-3"` are read too, but recorded as dates/ranges
+- Updated the documentation of seasons in prose, e.g. "summer 2026" (closes #98)
+  - Gives the northern-hemisphere month range `"2026-06..2026-08"`
+  - `"2026-22"` season codes are still rejected as ambiguous
+- Improved the errors for ordinal dates and season codes to name the prose form
+- Fixed "before" and "after" keeping both bounds of a range that followed
+  - "before summer 2026" gave `"..2026-06..2026-08"` and now gives `"..2026-06"`
+- Fixed prose naming an impossible date becoming `NA` without a warning
+  - "the 53rd week of 2025" now warns, as other unparseable text does
+
 # messydates 1.1.0
 
 ## Package

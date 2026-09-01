@@ -127,9 +127,12 @@ test_that("factors and unsupported classes are handled", {
 })
 
 test_that("unrepresentable ISO 8601-2 formats are rejected", {
-  expect_error(as_messydate("2019-W12"), "week dates")
+  # Week dates are read (see the week tests below); ordinal dates and season
+  # codes are not, being too easily read as a mistake for an ordinary date.
   expect_error(as_messydate("2019-123"), "ordinal dates")
+  expect_error(as_messydate("2019-123"), "123rd day of 2019")
   expect_error(as_messydate("2019-21"), "season codes")
+  expect_error(as_messydate("2019-21"), "spring 2019")
   expect_error(as_messydate("1234S3"), "significant digits")
   expect_error(as_messydate("Y17E7"), "extended years")
   # Durations themselves are supported, as date ranges; only the notation is not.
@@ -160,12 +163,80 @@ test_that("unparseable text warns rather than failing silently", {
 })
 
 test_that("md_problems() reports why elements fail", {
-  p <- md_problems(c("2019-01-01", "2019-02-30", "2019-W12", "not a date"))
+  p <- md_problems(c("2019-01-01", "2019-02-30", "2019-123", "not a date"))
   expect_equal(p$index, c(2L, 3L, 4L))
   expect_match(p$reason[1], "only 28 days")
-  expect_match(p$reason[2], "week dates")
+  expect_match(p$reason[2], "ordinal dates")
   expect_match(p$reason[3], "could not be parsed")
   # A clean vector produces no rows.
   expect_equal(nrow(md_problems(c("2019-01-01", "2019-01"))), 0L)
   expect_equal(nrow(md_problems(character(0))), 0L)
+})
+
+test_that("a day of the year is converted to its calendar date", {
+  expect_identical(as_messydate("103rd day of 2026"),
+                   as_messydate("2026-04-13"))
+  expect_identical(as_messydate("day 103 of 2026"),
+                   as_messydate("2026-04-13"))
+  # A leap year shifts every day after the 59th.
+  expect_identical(as_messydate("60th day of 2024"),
+                   as_messydate("2024-02-29"))
+  expect_identical(as_messydate("60th day of 2026"),
+                   as_messydate("2026-03-01"))
+  # The ends of the year.
+  expect_identical(as_messydate("day 1 of 2026"), as_messydate("2026-01-01"))
+  expect_identical(as_messydate("365th day of 2026"),
+                   as_messydate("2026-12-31"))
+  expect_identical(as_messydate("366th day of 2024"),
+                   as_messydate("2024-12-31"))
+  # A day the year does not have cannot be parsed.
+  expect_warning(as_messydate("400th day of 2026"), "could not be parsed")
+  expect_warning(as_messydate("366th day of 2026"), "could not be parsed")
+})
+
+test_that("a week of the year is converted to a range of seven days", {
+  expect_identical(as_messydate("5th week of 2026"),
+                   as_messydate("2026-01-26..2026-02-01"))
+  expect_identical(as_messydate("week 5 of 2026"),
+                   as_messydate("2026-01-26..2026-02-01"))
+  # ISO weeks belong to the year holding their Thursday, so week 1 of 2026
+  # starts in December 2025.
+  expect_identical(as_messydate("1st week of 2026"),
+                   as_messydate("2025-12-29..2026-01-04"))
+  # A year has 53 ISO weeks when it starts on a Thursday, or when it is a leap
+  # year starting on a Wednesday. 2020 and 2026 do, 2025 does not.
+  expect_identical(as_messydate("53rd week of 2020"),
+                   as_messydate("2020-12-28..2021-01-03"))
+  expect_identical(as_messydate("53rd week of 2026"),
+                   as_messydate("2026-12-28..2027-01-03"))
+  expect_warning(as_messydate("53rd week of 2025"), "could not be parsed")
+  expect_warning(as_messydate("0th week of 2026"), "could not be parsed")
+})
+
+test_that("ISO week dates are read but never written", {
+  expect_identical(as_messydate("2026-W05"), as_messydate("5th week of 2026"))
+  expect_identical(as_messydate("2019-W12"),
+                   as_messydate("2019-03-18..2019-03-24"))
+  # A weekday within the week, 1 being Monday.
+  expect_identical(as_messydate("2026-W05-3"), as_messydate("2026-01-28"))
+  expect_identical(as_messydate("2026-W05-7"), as_messydate("2026-02-01"))
+})
+
+test_that("weeks and days of the year combine with other prose", {
+  expect_equal(unclass(as_messydate("before the 5th week of 2026")),
+               "..2026-01-26")
+  expect_equal(unclass(as_messydate("after the 5th week of 2026")),
+               "2026-02-01..")
+  expect_equal(unclass(as_messydate("around the 5th week of 2026")),
+               "2026-01-26~..2026-02-01~")
+  expect_equal(unclass(as_messydate("possibly the 103rd day of 2026")),
+               "2026-04-13?")
+})
+
+test_that("ordinary dates and durations are not read as weeks or days", {
+  expect_equal(unclass(as_messydate("2026-01-05")), "2026-01-05")
+  expect_equal(unclass(as_messydate("5 January 2026")), "2026-01-05")
+  # The year has to be introduced by "of" or "in", so a duration is left alone.
+  expect_warning(as_messydate("5 weeks"), "could not be parsed")
+  expect_warning(as_messydate("103 days"), "could not be parsed")
 })

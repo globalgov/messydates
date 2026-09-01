@@ -3,18 +3,22 @@
 # ISO 8601-2 forms that this package does not (yet) represent. They are
 # rejected at coercion rather than passed through, since an mdate holding one
 # of these strings cannot be expanded, resolved, or compared.
+# Ordinal dates and season codes are read in prose instead ("123rd day of
+# 2019", "spring 2019"), the notations themselves being too easily confused
+# with a plain date; see interpret_one() in R/coerce_to_messydate.R.
 # Note that this concerns notation only. Durations, for instance, are very
 # much part of the package: they are written as date ranges and handled by the
 # 'mduration' class, which is what allows either end of one to be imprecise.
 # It is the 'P1Y2M' way of writing them that is not read here.
 .unsupported_forms <- list(
-  list(pattern = "^-?[0-9]{4}-W[0-9]{1,2}",
-       reason = "week dates (e.g. '2019-W12') are not supported"),
   list(pattern = "^-?[0-9]{4}-[0-9]{3}$",
-       reason = "ordinal dates (e.g. '2019-123') are not supported"),
+       reason = paste("ordinal dates (e.g. '2019-123') are not supported,",
+                      "as they are easily read as a mistake for '2019-12-03';",
+                      "write '123rd day of 2019' instead")),
   list(pattern = "^-?[0-9]{4}-(2[1-9]|3[0-9]|4[01])$",
-       reason = paste("season codes (e.g. '2019-21') are not supported;",
-                      "use a month range")),
+       reason = paste("season codes (e.g. '2019-21') are not supported,",
+                      "as they are easily read as a mistake for '2019-02-01';",
+                      "write 'spring 2019', or a month range, instead")),
   list(pattern = "^Y?-?[0-9]+S[0-9]+$",
        reason = "significant digits (e.g. '1234S3') are not supported"),
   list(pattern = "^Y-?[0-9]+E[0-9]+$",

@@ -120,6 +120,21 @@ earlier than" become an open range, e.g. \code{"before 1910"} becomes
 understands, including a decade or century.}
 \item{Decades ("the 1920s" becomes \code{"192X"}) and centuries ("the 19th
 century" becomes \code{"18XX"}).}
+\item{A day of the year, e.g. \code{"the 103rd day of 2026"} becomes
+\code{"2026-04-13"}. The ISO 8601-2 notation for this (\code{"2026-103"}) is
+rejected instead of read, since it is easily read as a mistake for
+\code{"2026-10-03"}.}
+\item{A week of the year, e.g. \code{"the 5th week of 2026"} becomes the range
+\code{"2026-01-26..2026-02-01"}. Weeks follow the ISO 8601 rule: a week starts
+on a Monday, and week 1 is the week holding the first Thursday of the year,
+so week 1 can start in December of the previous year. The ISO 8601-2 week
+date is read too, as \code{"2026-W05"} or, for one day within the week,
+\code{"2026-W05-3"}, but it is never written back in that notation.}
+\item{Seasons, e.g. \code{"summer 2026"} becomes the month range
+\code{"2026-06..2026-08"}. These are the northern-hemisphere meteorological
+seasons, spring running from March to May and winter from December into
+February of the following year. The EDTF season codes (\code{"2026-22"}) are
+rejected instead of read, being easily read as a mistake for a date.}
 \item{A comma-separated list of dates in prose, e.g.
 \code{"13th Feb, 1977, Feb 15 1977, 1910"}, is split into separate dates
 (here, three): a fragment that is only a year is treated as completing
@@ -180,6 +195,10 @@ as_messydate("the Ides of March, 44 BC")
 as_messydate("possibly about 1910")
 as_messydate("the 1920s")
 as_messydate("the 19th century")
+as_messydate("the 103rd day of 2026")
+as_messydate("the 5th week of 2026")
+as_messydate("2026-W05")
+as_messydate("summer 2026")
 as_messydate("before 1910")
 as_messydate("between the 13th and 15th of Feb, 1977")
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))

@@ -1,3 +1,9 @@
+# messydates 1.1.1
+
+## Package
+
+- Added a reverse dependency job to the PR checks workflow
+
 # messydates 1.1.0
 
 ## Package

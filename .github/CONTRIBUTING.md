@@ -176,46 +176,115 @@ the corresponding `test-*.R` file is almost always the right place to add covera
 
 ### `NEWS.md` conventions
 
-Every user-facing change (new feature, behaviour change, bug fix) gets an entry under the
-*current unreleased* version at the top of `NEWS.md`:
+`NEWS.md` groups each version's changes under `##` headings
+so that a reader finds a change where they find the function.
+Lead with `## Package` (dependencies, build, branding, website, infrastructure),
+then the function families in overview order:
+`## Class`, `## Coercion`, `## Resolution`, `## Annotation`, `## Extraction`,
+`## Expand/Contract`, `## Operations`.
+Some of these name the family rather than the website title, because the site
+splits or spells a few of them differently:
+`## Coercion` and `## Resolution` stand for "Coerce to" and "Coerce from",
+`## Annotation` and `## Extraction` for "Components",
+and `## Expand/Contract` for "Manipulation".
+Put `## Tests`, `## Vignettes` and `## Data` near the end.
+Each heading appears at most once per version.
+Reuse a heading that already fits rather than inventing a new one,
+and never leave a bullet directly under the version heading.
 
-- A version gets a top-level heading, `# messydates X.Y.Z`;
-  entries for a not-yet-released version accumulate under the existing top heading
-  rather than each getting their own.
-- Within a version, group entries under `##` subsections named after the area of the
-  package they touch, not the R file — e.g. `Package` (dependencies, build, branding),
-  `Class`, `Coercion`, `Annotation`, `Resolution`, `Operations`, `Extraction`,
-  `Expand/Contract`.
-  Reuse an existing subsection heading if one already fits
-  rather than inventing a new one, and use each heading at most once per version.
-- Every bullet sits under one of those `##` subsections; never leave a bullet directly
-  under the version heading.
-- One bullet per change, written as what changed (not what the code does internally).
+A version takes a top-level heading, `# messydates X.Y.Z`.
+Entries for a version that is not yet released accumulate under the existing top
+heading, rather than each opening a heading of its own.
+Update `NEWS.md` in the same commit or PR as the change it documents.
 
 Start each bullet with a verb matching the change type:
 
-- `- Added ...` — new functionality
-- `- Improved ...` — functional updates to existing behaviour
-- `- Renamed ... to ...` — function or argument name migrations
-- `- Fixed ...` — bug fixes
+- `Added ...` — new functionality
+- `Fixed ...` — bug fixes; if it relates to a GitHub issue, suffix with `(closes #123)`
+- `Renamed ... to ...` — function or argument name migrations
+- `Improved ...` — functional updates to existing behaviour
+- `Updated ...` — documentation changes
+- `Removed ...` / `Dropped ...` — functionality or dependencies taken out
+- `Moved ...` / `Migrated ...` — functionality relocated to another package or file
+- `Split ...` — one function or file divided into several
 
-Suffix any bullet that resolves an open issue with the issue number in parentheses,
-e.g. `(closed #123)`.
-Where a user reported the bug or proposed the fix or change, thank them by `@`-tag in the
-same parentheses, e.g. `(closed #123, thanks @anon_user)`.
+Any of these verbs can also lead a sub-bullet.
 
-Where several changes are related — several fixes to the same function, or the sub-parts
-of one feature — a lead bullet naming the function with indented sub-bullets under it
-often reads better than a flat list:
+Name a function by the generic, e.g. `as_messydate()`, where the change reaches
+every class it dispatches on.
+Where it reaches only one method, spell that method out in full,
+e.g. `as_messydate.character()`,
+so that a reader knows which classes the change applies to.
 
-```md
-- Improved `as_messydate()`
-  - dates with impossible components are now rejected
-  - month and day are only swapped where the swap yields a date that could exist
-```
+Spell the issue suffix `closes`, not `closed` or `closing`.
+If a cited GitHub issue was **not** authored by @jhollway, thank the author with an
+`@`-tag in the same parentheses, e.g. `(closed #94, thanks @njbart)`.
 
-Update `NEWS.md` in the same commit/PR as the code change it documents,
-not as an afterthought — don't batch it up separately.
+#### Grouping
+
+Group first, and only then write the bullets.
+The more entries a version holds, the more this matters.
+
+- Cluster related changes as indented sub-bullets under a lead bullet.
+- Where several changes concern one function, lead with an `Improved ...` bullet naming
+  the function, and put the individual `Fixed ...`/`Added ...` points beneath it,
+  so the cluster groups by function rather than by change type.
+- Under such a lead bullet, do not name the function again in the sub-bullets,
+  since the lead bullet already carries it.
+- Where one decision runs across many functions, lead with the decision rather than
+  with each function.
+- Sub-bullets indent by two spaces, and nest at most one level further (four spaces).
+
+#### Writing the bullets
+
+`NEWS.md` is read by users scanning for what changed, not by reviewers reading prose,
+so each bullet is a headline rather than a sentence.
+Avoid over-punctuation and over-explanation.
+Details belong in the function documentation, if anywhere.
+
+- No full stop at the end of a bullet
+- Keep every bullet to one line of fewer than 81 characters ideally
+  (a few more or less is fine)
+  - If a bullet wraps, it holds too much: shorten it,
+    or split it into a lead bullet and sub-bullets
+- One clause where possible, and at most one comma
+  - Use a semicolon for a short second clause, e.g. "the old spelling still warns"
+  - Use a sub-bullet where the second clause needs more room than that
+- Name the function or object in backticks and say what changed to it,
+  dropping scaffolding like "This change ...", "In order to ...", or "as part of"
+- Keep the *what*, and add the *why* only where the behaviour would otherwise look
+  arbitrary
+- No trailing rationale, no restating the same change twice in different words,
+  and no marketing adjectives such as "comprehensive" or "robust"
+- A sub-bullet does not need a verb: it can state the consequence,
+  the previous behaviour, or an example call
+- Cut a sub-bullet that only restates what the lead bullet already implies
+- Where several bullets describe parallel changes, reuse the sentence structure,
+  so that a reader sees the parallelism at a glance
+- Use one word for one thing throughout a version's entries,
+  rather than varying the wording for effect
+
+For example, instead of:
+
+> Fixed how `expand()` applies unspecified-component rules to each member of a set
+> separately, fixing over-expansion of sets whose members had an unspecified month:
+> `"{2008-XX-31,2009-XX-31}"` gave 671 dates and now gives 24.
+
+write:
+
+> Fixed `expand()` applying unspecified-component rules to a whole set
+>   - `"{2008-XX-31,2009-XX-31}"` gave 671 dates and now gives 24
+
+and instead of:
+
+> Added `unique()` and `duplicated()` methods for `mdate` objects, which are useful
+> because previously `unique()` fell through to the character method and silently
+> dropped the class.
+
+write:
+
+> Added `unique()` and `duplicated()` methods for `mdate` (closed #106)
+>   - `unique()` fell through to the character method and dropped the class
 
 ### Branching and CI
 

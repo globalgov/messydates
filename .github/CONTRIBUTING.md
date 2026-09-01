@@ -218,7 +218,7 @@ so that a reader knows which classes the change applies to.
 
 Spell the issue suffix `closes`, not `closed` or `closing`.
 If a cited GitHub issue was **not** authored by @jhollway, thank the author with an
-`@`-tag in the same parentheses, e.g. `(closed #94, thanks @njbart)`.
+`@`-tag in the same parentheses, e.g. `(closes #94, thanks @njbart)`.
 
 #### Grouping
 

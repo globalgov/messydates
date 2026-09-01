@@ -120,24 +120,30 @@ export(vmodal)
 export(vrandom)
 export(year)
 exportMethods(as_datetime)
-importFrom(lubridate,NA_Date_)
-importFrom(lubridate,as_date)
-importFrom(lubridate,as_datetime)
-importFrom(lubridate,day)
-importFrom(lubridate,hour)
-importFrom(lubridate,mday)
-importFrom(lubridate,minute)
-importFrom(lubridate,month)
-importFrom(lubridate,second)
-importFrom(lubridate,tz)
-importFrom(lubridate,year)
-importFrom(lubridate,years)
-importFrom(lubridate,ymd)
-importFrom(methods,setMethod)
-importFrom(methods,setOldClass)
+importFrom(lubridate,
+  NA_Date_,
+  as_date,
+  as_datetime,
+  day,
+  hour,
+  mday,
+  minute,
+  month,
+  second,
+  tz,
+  year,
+  years,
+  ymd
+)
+importFrom(methods,
+  setMethod,
+  setOldClass
+)
 importFrom(stats,median)
-importFrom(stringi,stri_detect_regex)
-importFrom(stringi,stri_extract_all_regex)
-importFrom(stringi,stri_replace_all_fixed)
-importFrom(stringi,stri_replace_all_regex)
+importFrom(stringi,
+  stri_detect_regex,
+  stri_extract_all_regex,
+  stri_replace_all_fixed,
+  stri_replace_all_regex
+)
 importFrom(utils,str)

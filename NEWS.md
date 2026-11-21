@@ -5,6 +5,10 @@
 - Updated `pushrelease.yml` workflow to carry the version number from `DESCRIPTION`
 - Added `data-raw/benchmark.R` so that speed changes can be measured
 
+## Resolution
+
+- Accelerated `as.list.mdate()`, which wrapped each element by parsing it again
+
 # messydates 1.1.1
 
 ## Package

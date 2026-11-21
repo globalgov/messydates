@@ -1,3 +1,10 @@
+# messydates 1.2.0
+
+## Package
+
+- Updated `pushrelease.yml` workflow to carry the version number from `DESCRIPTION`
+- Added `data-raw/benchmark.R` so that speed changes can be measured
+
 # messydates 1.1.1
 
 ## Package

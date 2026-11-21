@@ -5,6 +5,18 @@
 - Updated `pushrelease.yml` workflow to carry the version number from `DESCRIPTION`
 - Added `data-raw/benchmark.R` so that speed changes can be measured
 
+## Coercion
+
+- Accelerated `as_messydate()` (closes #105)
+  - Prose and time-of-day steps now run only on elements that can contain prose or a time
+  - Prose that occurs more than once in a vector is interpreted once
+  - Zero padding of range and set members is now done on all members together
+  - 6,000 plain ISO dates now take about 0.15 s instead of 1.4 s
+  - 6,000 mixed values (ISO, prose and ranges) about 0.2 s instead of 9 s
+- Improved prose parser (#102)
+  - Now uses one table of English month names
+  - Fixed lower-casing text by the rules of the session locale
+
 ## Resolution
 
 - Accelerated `as.list.mdate()`, which wrapped each element by parsing it again

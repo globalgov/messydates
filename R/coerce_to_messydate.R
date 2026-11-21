@@ -328,7 +328,7 @@ standardise_text <- function(v) {
   dates <- ifelse(stringi::stri_detect_regex(v, "([:alpha:]{4})") &
                     !grepl("bce$|^XXXX|XXXX$", v, ignore.case = TRUE),
                   extract_from_text(v), v)
-  dates <- ifelse(grepl("Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec",
+  dates <- ifelse(grepl(paste(.month_abbr, collapse = "|"),
                         dates, ignore.case = TRUE),
                   written_month(dates), dates)
   dates
@@ -530,13 +530,12 @@ standardise_unspecifieds <- function(dates) {
 # skeleton that contains no time characters.
 protect_times <- function(v) {
   skeleton <- v
-  times <- vector("list", length(v))
-  for (i in seq_along(v)) {
+  times <- rep(list(character(0)), length(v))
+  # Every time this function finds is marked by a 'T', a ':' or an am/pm, so
+  # elements with none of these are left as they are without the loop below.
+  maybe <- !is.na(v) & grepl("[T:]|[apAP][mM]", v)
+  for (i in which(maybe)) {
     s <- v[i]
-    if (is.na(s)) {
-      times[[i]] <- character(0)
-      next
-    }
     # Treat a space before a clock time ("2019-03-01 14:30") as the ISO 'T',
     # so the detection below (which requires a literal 'T') finds it. Either
     # the hour or the minute may carry an annotation (e.g.
@@ -632,7 +631,7 @@ standardise_time <- function(tok) {
     offset <- if (oh == "00" && om == "00") "Z" else paste0(sign, oh, ":", om)
   }
   # am/pm
-  ap <- tolower(regmatches(t, regexpr("[apAP][mM]$", t)))
+  ap <- .lower(regmatches(t, regexpr("[apAP][mM]$", t)))
   t <- sub("[[:space:]]?[apAP][mM]$", "", t)
   # Split into hour[:minute[:second]] (keeping any component annotations/X)
   parts <- strsplit(t, ":", fixed = TRUE)[[1]]
@@ -788,63 +787,70 @@ add_zero_padding <- function(dates) {
 }
 
 add_zero_range <- function(dates) {
-  dates <- strsplit(dates, "\\.\\.")
-  dates <- lapply(dates, function(x) {
-    x <- gsub(" ", "", x)
-    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{1})$", "-000$1")
-    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{2})$", "-00$1")
-    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{3})$", "-0$1")
-    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{1})$", "000$1~")
-    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{2})$", "00$1~")
-    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{3})$", "0$1~")
-    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{1})$", "000$1?")
-    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{2})$", "00$1?")
-    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{3})$", "0$1?")
-    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{1})$", "000$1")
-    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{2})$", "00$1")
-    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{3})$", "0$1")
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
-                paste0("000", x), x)
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
-                paste0("00", x), x)
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
-                paste0("0", x), x)
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
-                paste0("000", x), x)
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
-                paste0("00", x), x)
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
-                paste0("0", x), x)
-  })
-  dates <- vapply(dates, paste, character(1), collapse = "..", USE.NAMES = FALSE)
-  dates
+  # Each step acts on one piece at a time, so all pieces are padded together
+  # and then joined again into their own elements.
+  parts <- strsplit(dates, "\\.\\.")
+  x <- unlist(parts, use.names = FALSE)
+  x <- gsub(" ", "", x)
+  x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{1})$", "-000$1")
+  x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{2})$", "-00$1")
+  x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{3})$", "-0$1")
+  x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{1})$", "000$1~")
+  x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{2})$", "00$1~")
+  x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{3})$", "0$1~")
+  x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{1})$", "000$1?")
+  x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{2})$", "00$1?")
+  x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{3})$", "0$1?")
+  x <- stringi::stri_replace_all_regex(x, "^([:digit:]{1})$", "000$1")
+  x <- stringi::stri_replace_all_regex(x, "^([:digit:]{2})$", "00$1")
+  x <- stringi::stri_replace_all_regex(x, "^([:digit:]{3})$", "0$1")
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+              paste0("000", x), x)
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+              paste0("00", x), x)
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$"),
+              paste0("0", x), x)
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+              paste0("000", x), x)
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+              paste0("00", x), x)
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
+              paste0("0", x), x)
+  join_pieces(x, lengths(parts), "..")
+}
+
+# Joins `x`, split earlier into groups of sizes `n`, back into one string per
+# group. A group with no pieces gives "", as paste() of nothing does.
+join_pieces <- function(x, n, sep) {
+  g <- factor(rep(seq_along(n), n), levels = seq_along(n))
+  vapply(split(x, g), paste, character(1), collapse = sep, USE.NAMES = FALSE)
 }
 
 add_zero_set <- function(dates) {
-  dates <- strsplit(dates, "\\,")
-  dates <- lapply(dates, function(x) {
-    x <- gsub(" ", "", x)
-    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{1})$", "-000$1")
-    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{2})$", "-00$1")
-    x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{3})$", "-0$1")
-    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{1})$", "000$1~")
-    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{2})$", "00$1~")
-    x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{3})$", "0$1~")
-    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{1})$", "000$1?")
-    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{2})$", "00$1?")
-    x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{3})$", "0$1?")
-    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{1})$", "000$1")
-    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{2})$", "00$1")
-    x <- stringi::stri_replace_all_regex(x, "^([:digit:]{3})$", "0$1")
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
-                paste0("000", x), x)
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
-                paste0("00", x), x)
-    x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
-                paste0("0", x), x)
-  })
-  dates <- vapply(dates, paste, character(1), collapse = ",", USE.NAMES = FALSE)
-  dates
+  # Each step acts on one piece at a time, so all pieces are padded together
+  # and then joined again into their own elements.
+  parts <- strsplit(dates, "\\,")
+  x <- unlist(parts, use.names = FALSE)
+  x <- gsub(" ", "", x)
+  x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{1})$", "-000$1")
+  x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{2})$", "-00$1")
+  x <- stringi::stri_replace_all_regex(x, "^-([:digit:]{3})$", "-0$1")
+  x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{1})$", "000$1~")
+  x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{2})$", "00$1~")
+  x <- stringi::stri_replace_all_regex(x, "^~([:digit:]{3})$", "0$1~")
+  x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{1})$", "000$1?")
+  x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{2})$", "00$1?")
+  x <- stringi::stri_replace_all_regex(x, "^\\?([:digit:]{3})$", "0$1?")
+  x <- stringi::stri_replace_all_regex(x, "^([:digit:]{1})$", "000$1")
+  x <- stringi::stri_replace_all_regex(x, "^([:digit:]{2})$", "00$1")
+  x <- stringi::stri_replace_all_regex(x, "^([:digit:]{3})$", "0$1")
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{1})~$|^([:digit:]{1})\\?$"),
+              paste0("000", x), x)
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{2})~$|^([:digit:]{2})\\?$"),
+              paste0("00", x), x)
+  x <- ifelse(stringi::stri_detect_regex(x, "^([:digit:]{3})~$|^([:digit:]{3})\\?$|^([:digit:]{3})-([:digit:]{2}$)"),
+              paste0("0", x), x)
+  join_pieces(x, lengths(parts), ",")
 }
 
 # Natural-language interpretation of historical date prose. Recognises Roman
@@ -853,18 +859,44 @@ add_zero_set <- function(dates) {
 # ("between .. and .."), a set (".. or .."), or several dates (".. and ..").
 # Strings without such cues are returned unchanged for the normal text parser.
 interpret_prose <- function(x) {
-  unlist(lapply(x, interpret_one), use.names = FALSE)
+  # Every cue interpret_one() reads is a word, so elements with no letter
+  # (most ISO input) are returned as they are without the scalar parser.
+  # interpret_one() gives the same result for the same string, so each
+  # different string is interpreted once and the result is used again for
+  # the repeats, which are common in a data column.
+  prose <- stringi::stri_detect_regex(x, "\\p{L}")
+  prose[is.na(prose)] <- FALSE
+  out <- as.list(x)
+  if (any(prose)) {
+    u <- unique(x[prose])
+    out[prose] <- lapply(u, interpret_one)[match(x[prose], u)]
+  }
+  unlist(out, use.names = FALSE)
 }
 
-.nl_months <- c(january = 1, february = 2, march = 3, april = 4, may = 5,
-                june = 6, july = 7, august = 8, september = 9, october = 10,
-                november = 11, december = 12, jan = 1, feb = 2, mar = 3,
-                apr = 4, jun = 6, jul = 7, aug = 8, sept = 9, sep = 9,
-                oct = 10, nov = 11, dec = 12)
+# The English month names, in month order. Every month lookup in the parser
+# is made from this one table.
+.month_names <- c("january", "february", "march", "april", "may", "june",
+                  "july", "august", "september", "october", "november",
+                  "december")
+.month_abbr <- substr(.month_names, 1, 3)
+
+# Full names first, then the abbreviations ("sept" before "sep", and no "may",
+# which is already a full name), so a regex alternation of these names finds
+# the longest form.
+.nl_months <- c(stats::setNames(1:12, .month_names),
+                stats::setNames(c(1:4, 6:8, 9, 9:12),
+                                c(.month_abbr[1:4], .month_abbr[6:8], "sept",
+                                  .month_abbr[9:12])))
+storage.mode(.nl_months) <- "double"
+
+# Lower case by English rules, whatever the session locale. Under a Turkish
+# locale base tolower() maps "I" to a dotless i, so "APRIL" would not match.
+.lower <- function(x) stringi::stri_trans_tolower(x, locale = "en")
 
 nl_month_num <- function(s) {
   m <- stringi::stri_extract_first_regex(
-    tolower(s), paste(names(.nl_months), collapse = "|"))
+    .lower(s), paste(names(.nl_months), collapse = "|"))
   if (is.na(m)) NA_integer_ else unname(.nl_months[m])
 }
 
@@ -1043,7 +1075,7 @@ qualify_bounds <- function(d, low) {
 
 interpret_one <- function(s) {
   if (is.na(s) || !is.character(s)) return(s)
-  low <- tolower(s)
+  low <- .lower(s)
 
   # "at 2:30pm" / "at around 2pm": "at" is just a preposition introducing a
   # time, but it defeats the anchored bare-time match (.bare_time_rx) below.
@@ -1212,7 +1244,7 @@ extract_from_text <- function(v) {
   # day-first phrase ("Fourth of July") already leads with the day.
   first_tok <- stringi::stri_extract_first_regex(out, "^\\S+")
   reorder <- !is.na(first_tok) &
-    grepl("^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)", first_tok,
+    grepl(paste0("^(", paste(.month_abbr, collapse = "|"), ")"), first_tok,
           ignore.case = TRUE) &
     stringi::stri_count_regex(out, "\\S+") >= 3
   reorder[is.na(reorder)] <- FALSE
@@ -1229,17 +1261,9 @@ extract_from_text <- function(v) {
                 perl = T)
   }
   # get the months into date form
-  months <- data.frame(months = c("january", "february", "march", "april",
-                                  "may", "june", "july", "august", "september",
-                                  "october", "november", "december"),
-                       numeric = c("-01-", "-02-", "-03-", "-04-", "-05-",
-                                   "-06-", "-07-", "-08-", "-09-", "-10-",
-                                   "-11-", "-12-"))
-  for (k in seq_len(nrow(months))) {
-    out <- gsub(paste0(months$months[k]),
-                paste0(months$numeric[k]),
-                out, ignore.case = TRUE,
-                perl = T)
+  for (k in seq_along(.month_names)) {
+    out <- gsub(.month_names[k], sprintf("-%02d-", k),
+                out, ignore.case = TRUE, perl = TRUE)
   }
   # correct double white space left and standardize separators
   out <- stri_squish(stringi::stri_replace_all_regex(out, "- -| -|- |/", "-"))
@@ -1274,13 +1298,13 @@ extract_from_text <- function(v) {
 # same string (e.g. "Last day of July" -> "31 day of July"). For February the
 # year, if present, decides between 28 and 29.
 replace_last_day <- function(v) {
-  mon_last <- c(jan = 31, feb = 28, mar = 31, apr = 30, may = 31, jun = 30,
-                jul = 31, aug = 31, sep = 30, oct = 31, nov = 30, dec = 31)
+  mon_last <- stats::setNames(c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
+                              .month_abbr)
   vapply(v, function(s) {
     if (is.na(s) || !grepl("\\blast\\b", s, ignore.case = TRUE, perl = TRUE))
       return(s)
-    m3 <- tolower(substr(stringi::stri_extract_first_regex(
-      s, "(?i)jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec"), 1, 3))
+    m3 <- .lower(substr(stringi::stri_extract_first_regex(
+      s, paste0("(?i)", paste(.month_abbr, collapse = "|"))), 1, 3))
     if (is.na(m3) || !m3 %in% names(mon_last)) return(s)
     last <- mon_last[[m3]]
     if (m3 == "feb") {
@@ -1294,7 +1318,7 @@ replace_last_day <- function(v) {
 }
 
 written_month <- function(dates) {
-  dates <- stri_squish(stringi::stri_replace_all_regex(tolower(dates),
+  dates <- stri_squish(stringi::stri_replace_all_regex(.lower(dates),
                                                         ",|-", " "))
   dates <- stringi::stri_replace_all_regex(dates,
                                     "([:alpha:]{3}) ([:digit:]{1,2}) ([:digit:]{4})",
@@ -1302,34 +1326,18 @@ written_month <- function(dates) {
   dates <- stringi::stri_replace_all_regex(dates,
                                     "([:digit:]{4}) ([:digit:]{1,2}) ([:alpha:]{3})",
                                     "$1 $3 $2")
-  dates <- stringi::stri_replace_all_regex(dates, " jan ", "-01-")
-  dates <- stringi::stri_replace_all_regex(dates, " feb ", "-02-")
-  dates <- stringi::stri_replace_all_regex(dates, " mar ", "-03-")
-  dates <- stringi::stri_replace_all_regex(dates, " apr ", "-04-")
-  dates <- stringi::stri_replace_all_regex(dates, " may ", "-05-")
-  dates <- stringi::stri_replace_all_regex(dates, " jun ", "-06-")
-  dates <- stringi::stri_replace_all_regex(dates, " jul ", "-07-")
-  dates <- stringi::stri_replace_all_regex(dates, " aug ", "-08-")
-  dates <- stringi::stri_replace_all_regex(dates, " sep ", "-09-")
-  dates <- stringi::stri_replace_all_regex(dates, " oct ", "-10-")
-  dates <- stringi::stri_replace_all_regex(dates, " nov ", "-11-")
-  dates <- stringi::stri_replace_all_regex(dates, " dec ", "-12-")
+  for (k in seq_along(.month_abbr)) {
+    dates <- stringi::stri_replace_all_regex(dates, paste0(" ", .month_abbr[k], " "),
+                                             sprintf("-%02d-", k))
+  }
   # 6 digit my or ym dates
   dates <- stringi::stri_replace_all_regex(dates,
                                     "([:alpha:]{3}) ([:digit:]{4})",
                                     "$2 $1")
-  dates <- stringi::stri_replace_all_regex(dates, " jan$", "-01")
-  dates <- stringi::stri_replace_all_regex(dates, " feb$", "-02")
-  dates <- stringi::stri_replace_all_regex(dates, " mar$", "-03")
-  dates <- stringi::stri_replace_all_regex(dates, " apr$", "-04")
-  dates <- stringi::stri_replace_all_regex(dates, " may$", "-05")
-  dates <- stringi::stri_replace_all_regex(dates, " jun$", "-06")
-  dates <- stringi::stri_replace_all_regex(dates, " jul$", "-07")
-  dates <- stringi::stri_replace_all_regex(dates, " aug$", "-08")
-  dates <- stringi::stri_replace_all_regex(dates, " sep$", "-09")
-  dates <- stringi::stri_replace_all_regex(dates, " oct$", "-10")
-  dates <- stringi::stri_replace_all_regex(dates, " nov$", "-11")
-  dates <- stringi::stri_replace_all_regex(dates, " dec$", "-12")
+  for (k in seq_along(.month_abbr)) {
+    dates <- stringi::stri_replace_all_regex(dates, paste0(" ", .month_abbr[k], "$"),
+                                             sprintf("-%02d", k))
+  }
   dates
 }
 

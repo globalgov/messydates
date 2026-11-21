@@ -111,3 +111,41 @@ test_that("'[]' and '{}' sets resolve alike", {
   expect_equal(vmedian(onesie), vmedian(allof))
   expect_true(vrandom(onesie) %in% c("2001-01-01", "2001-02-02"))
 })
+
+test_that("vrandom() fast paths draw uniformly within full-date ranges", {
+  x <- as_messydate(c("2001-01-10..2001-01-20", "2001-03-05",
+                      "2001-02", "{2001-01-01,2001-02-02}",
+                      "2001-12-30..2002-01-02"))
+  set.seed(1)
+  draws <- replicate(200, vrandom(x))
+  # the precise date resolves to itself
+  expect_true(all(draws[2, ] == "2001-03-05"))
+  # every draw lies inside its value's compatible dates, and order is kept
+  expect_true(all(as.Date(draws[1, ]) >= as.Date("2001-01-10") &
+                    as.Date(draws[1, ]) <= as.Date("2001-01-20")))
+  expect_true(all(substr(draws[3, ], 1, 7) == "2001-02"))
+  expect_true(all(draws[4, ] %in% c("2001-01-01", "2001-02-02")))
+  expect_true(all(draws[5, ] %in% c("2001-12-30", "2001-12-31",
+                                    "2002-01-01", "2002-01-02")))
+  # both ends of a range can be drawn
+  expect_true(all(c("2001-01-10", "2001-01-20") %in% draws[1, ]))
+  # the draws are uniform over the eleven days of the range
+  big <- vrandom(as_messydate(rep("2001-01-10..2001-01-20", 11000)))
+  expect_gt(stats::chisq.test(table(big))$p.value, 0.001)
+  # missing values stay missing
+  expect_true(is.na(vrandom(as_messydate(c("2001-01-01", NA)))[2]))
+})
+
+test_that("vmean() and vmedian() fast paths match the expanded computation", {
+  set.seed(7)
+  lo <- as.Date("1995-01-01") + sample(0:9000, 150, TRUE)
+  hi <- lo + sample(0:399, 150, TRUE)
+  x <- as_messydate(c(paste0(lo, "..", hi), "2001-02", "2004-02",
+                      "{2001-01-01,2001-02-02}", "2012-06-02",
+                      "2000-12-30..2001-01-02"))
+  expanded_mean <- vapply(expand(x), messydates:::.mean_value, character(1))
+  expanded_median <- vapply(expand(x), function(y)
+    messydates:::.median_value(messydates:::.order_messy(y)), character(1))
+  expect_identical(vmean(x), expanded_mean)
+  expect_identical(vmedian(x), expanded_median)
+})

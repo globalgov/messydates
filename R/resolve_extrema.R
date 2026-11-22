@@ -22,6 +22,15 @@
 #'   further role in choosing the minimum or maximum.
 #' @param ... a mdate object
 #' @param na.rm Should NAs be removed? FALSE by default.
+#'   As in base R, with `na.rm = FALSE` one `NA` makes the result of
+#'   `min()` or `max()` `NA`.
+#' @param uncertain What to do with uncertain values (`?` or `%`), which the
+#'   source itself doubts.
+#'   `"keep"` (the default) resolves them as other values.
+#'   `"drop"` gives `NA` for them in the element-wise `v*()` functions,
+#'   and leaves them out of the functions that resolve the whole vector,
+#'   such as `min()`.
+#'   For random draws, see `uncertain_p` in `vrandom()`.
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
 #' @return A single scalar or vector of dates
 #' @examples
@@ -42,8 +51,10 @@ vmin <- function(..., na.rm = FALSE) UseMethod("vmin")
 #' @examples
 #' vmin(d)
 #' @export
-vmin.mdate <- function(..., na.rm = FALSE){
+vmin.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- list(...)[[1]]
+  d <- .empty_to_na(d)
+  d <- .handle_uncertain(d, uncertain, elementwise = TRUE)
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
   dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
@@ -56,16 +67,18 @@ vmin.mdate <- function(..., na.rm = FALSE){
 #' @examples
 #' min(d)
 #' @export
-min.mdate <- function(..., na.rm = FALSE){
+min.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- list(...)[[1]]
-  dates <- d
-  if(na.rm) dates <- stats::na.omit(d)
+  d <- .drop_empty(d)
+  d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
+  dates <- .na_for_reducer(d, na.rm)
+  if (is.null(dates)) return(new_messydate(NA_character_))
   dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
   dates <- .remove_post(dates)
   dates <- .replace_earliest(dates)
   dates <- mdate(dates)
-  if(any(is_bce(dates)))
-    dates[is_bce(dates)][order(as.character(dates[is_bce(dates)]),
+  if(any(date_is_bce(dates)))
+    dates[date_is_bce(dates)][order(as.character(dates[date_is_bce(dates)]),
                                decreasing = TRUE)][1] else
                                  dates[order(as.character(dates))==1]
 }
@@ -108,8 +121,10 @@ vmax <- function(..., na.rm = FALSE) UseMethod("vmax")
 #' @examples
 #' vmax(d)
 #' @export
-vmax.mdate <- function(..., na.rm = FALSE){
+vmax.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- list(...)[[1]]
+  d <- .empty_to_na(d)
+  d <- .handle_uncertain(d, uncertain, elementwise = TRUE)
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
   dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
@@ -123,17 +138,20 @@ vmax.mdate <- function(..., na.rm = FALSE){
 #' @examples
 #' max(d)
 #' @export
-max.mdate <- function(..., na.rm = FALSE) {
-
+max.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- list(...)[[1]]
-  dates <- stringi::stri_replace_all_regex(d, "~|\\?", "")
+  d <- .drop_empty(d)
+  d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
+  dates <- .na_for_reducer(d, na.rm)
+  if (is.null(dates)) return(new_messydate(NA_character_))
+  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
   dates <- unspecified_months(dates)
   dates <- .remove_pre(dates)
   dates <- .replace_latest(dates)
   dates <- mdate(dates)
-  if(all(is_bce(dates), na.rm = TRUE))
+  if(all(date_is_bce(dates), na.rm = TRUE))
     dates[order(dates, decreasing = TRUE)][1] else
-      dates[!is_bce(dates)][order(as.character(dates[!is_bce(dates)]),
+      dates[!date_is_bce(dates)][order(as.character(dates[!date_is_bce(dates)]),
                                   decreasing = TRUE)][1]
 
 }
@@ -154,3 +172,34 @@ max.mdate <- function(..., na.rm = FALSE) {
   dates
 }
 
+
+# Applies the base R rule for NA to a reducer such as min() or max().
+# With na.rm = FALSE, one NA makes the result NA.
+# With na.rm = TRUE, the NA values are left out.
+# NULL means that the result is NA.
+.na_for_reducer <- function(x, na.rm) {
+  miss <- is.na(x)
+  if (any(miss) && !na.rm) return(NULL)
+  x <- x[!miss]
+  if (length(x) == 0) return(NULL)
+  x
+}
+
+# The empty set, '{}', names no dates. An element-wise resolver gives NA for
+# it, as there is no date to resolve to.
+.empty_to_na <- function(x) {
+  empty <- is_empty_notation(x)
+  if (any(empty)) x[empty] <- NA
+  x
+}
+
+# A resolver over the whole vector resolves the union of its elements, and
+# the empty set adds nothing to a union, so it is left out.
+# If no element remains, the result is NA.
+.drop_empty <- function(x) {
+  empty <- is_empty_notation(x)
+  if (!any(empty)) return(x)
+  x <- x[!empty]
+  if (length(x) == 0) x <- new_messydate(NA_character_)
+  x
+}

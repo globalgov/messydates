@@ -65,6 +65,27 @@
 
 ## Resolution
 
+- Added `approx_range` to `random()` and `vrandom()` for `~` and `%` values
+  - Draws use trapezoidal weights, as in the egg-yolk model (Cohn and Gotts 1996)
+  - The weight falls linearly to 0 over the dates `approx_range` adds
+  - Ranges widen at each end by the marks of that end, also in `expand()`
+    - `"1990-03-~01..1990-04-~15", approx_range = 3` gives 1990-02-26 to 1990-04-18
+  - Open-ended ranges, sets, `X` digits, BCE dates, and date-times are not widened yet
+- Added `uncertain_p` to `random()` and `vrandom()` for `?` and `%` values
+  - Otherwise `vrandom()` gives `NA` and `random()` leaves the value out
+  - One number, or one for each value, e.g. the reliability of each source
+- Added `uncertain` to `min()`, `max()`, `mean()`, `median()`, and `modal()`
+  - Also to `vmin()`, `vmax()`, `vmean()`, `vmedian()`, and `vmodal()`
+  - `uncertain = "drop"` gives `NA` in `v*()` and leaves values out of the others
+- Accelerated `mean()`, `median()`, `modal()`, `random()`, and their `v*()` forms (#105)
+  - ~15x faster for `mean()` on 1,000 months and ranges
+- Accelerated `vrandom()`, `vmean()`, and `vmedian()` on full dates and ranges
+  - ~900x faster for `vrandom()` on 63,606 event dates, a quarter of them ranges
+  - ~290x faster for `vmean()` on the same dates
+- Fixed missing values in the `v*()` functions, which now give `NA`
+- Fixed `min()` and `max()` on missing values, which now follow base R
+  - With `na.rm = FALSE`, one `NA` makes the result `NA`
+  - With `na.rm = TRUE`, `NA`'s are skipped
 - Fixed `vmin()` and `vmax()` on years with unspecified digits
   - `vmin("19XX")` gave `"1901-01-01"` and now gives `"1900-01-01"`
   - `vmax("199X")` gave the value unresolved and now gives `"1999-12-31"`
@@ -74,9 +95,23 @@
 
 - Accelerated `expand()` on ranges of two full dates (#105)
   - ~20x faster for 1,000 months and ranges
+- Improved `expand()` with `approx_range`
+  - Fixed widening an approximate year from 1 January only
+  - Fixed ranges with `~` that were not widened
+  - Fixed open-ended ranges with `~`, which now give their known end
+    - `"..2001-01-~05"` with `approx_range = 3` gave 1998-01-06 to 2001-01-05
+    - `"~2012"` with `approx_range = 1` ended on 2013-01-01, now 2013-12-31
+    - Widening starts from the first and the last date that the value names
+  - Each component that the mark covers now widens, as ISO 8601-2 says
+    - A mark after a component covers it and the components to its left
+    - A mark before a component covers only that component
+    - `"2019-01-01~"` widens by a year, a month, and a day on each side
+    - `"~2019-01-01"` widens by a year
+  - Fixed `%` being ignored; it marks a value as approximate and uncertain
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
 - Fixed `expand()` reading a year with leading `X` digits as one range
-  - `"XX29-01-01"` gave 9,901 dates and now gives the 100 that it can be
+- Fixed `seq()` and `expand()` on an invalid element, e.g. `""`
+- Fixed missing values in `expand()` and `contract()` to give `NA`
 
 ## Annotation
 

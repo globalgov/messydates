@@ -95,3 +95,38 @@ test_that("Expand applies unspecified components per set member", {
   expect_equal(lengths(expand(as_messydate("{2008-XX-31,2009-XX-31}"))), 24)
   expect_equal(lengths(expand(as_messydate("{2008-XX-05,2009-03-03}"))), 13)
 })
+
+test_that("Expand widens approximate dates on both sides of the dates they name", {
+  ends <- function(v, r = 1) {
+    e <- expand(as_messydate(v), approx_range = r)[[1]]
+    c(as.character(e[1]), as.character(e[length(e)]))
+  }
+  # a year mark widens from all of the year, not from 1 January
+  expect_equal(ends("~2012"), c("2011-01-01", "2013-12-31"))
+  expect_equal(ends("2012%"), c("2011-01-01", "2013-12-31"))
+  # a mark before a component covers only that component
+  expect_equal(ends("2012-~06-15"), c("2012-05-15", "2012-07-15"))
+  expect_equal(ends("2012-06-~15"), c("2012-06-14", "2012-06-16"))
+  # a mark after a component covers it and all components to its left
+  expect_equal(ends("2012-06~"), c("2011-05-01", "2013-07-31"))
+  expect_equal(ends("2012-06-15~"), c("2011-05-14", "2013-07-16"))
+  # a shift to a day that does not exist rolls back to the end of the month
+  expect_equal(ends("2012-03-31~"), c("2011-02-27", "2013-05-01"))
+})
+
+test_that("Expand widens each end of an approximate range by its own marks", {
+  ends <- function(v, r = 3) {
+    e <- expand(as_messydate(v), approx_range = r)[[1]]
+    c(as.character(e[1]), as.character(e[length(e)]))
+  }
+  expect_equal(ends("1990-03-~01..1990-04-~15"), c("1990-02-26", "1990-04-18"))
+  expect_equal(ends("1990-03-~01..1990-04-15"), c("1990-02-26", "1990-04-15"))
+  expect_equal(ends("1990-03-01..1990-04-~15"), c("1990-03-01", "1990-04-18"))
+  # a year mark on the start widens only the start, by years
+  expect_equal(ends("~2001..2003", 1), c("2000-01-01", "2003-12-31"))
+  # the default does not widen
+  expect_equal(ends("1990-03-~01..1990-04-~15", 0), c("1990-03-01", "1990-04-15"))
+  # an open-ended range gives its known end
+  expect_equal(expand(as_messydate("..2001-01-~05"), approx_range = 3)[[1]],
+               "2001-01-05")
+})

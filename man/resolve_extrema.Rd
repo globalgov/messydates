@@ -12,20 +12,30 @@
 \usage{
 vmin(..., na.rm = FALSE)
 
-\method{vmin}{mdate}(..., na.rm = FALSE)
+\method{vmin}{mdate}(..., na.rm = FALSE, uncertain = "keep")
 
-\method{min}{mdate}(..., na.rm = FALSE)
+\method{min}{mdate}(..., na.rm = FALSE, uncertain = "keep")
 
 vmax(..., na.rm = FALSE)
 
-\method{vmax}{mdate}(..., na.rm = FALSE)
+\method{vmax}{mdate}(..., na.rm = FALSE, uncertain = "keep")
 
-\method{max}{mdate}(..., na.rm = FALSE)
+\method{max}{mdate}(..., na.rm = FALSE, uncertain = "keep")
 }
 \arguments{
 \item{...}{a mdate object}
 
-\item{na.rm}{Should NAs be removed? FALSE by default.}
+\item{na.rm}{Should NAs be removed? FALSE by default.
+As in base R, with \code{na.rm = FALSE} one \code{NA} makes the result of
+\code{min()} or \code{max()} \code{NA}.}
+
+\item{uncertain}{What to do with uncertain values (\verb{?} or \verb{\%}), which the
+source itself doubts.
+\code{"keep"} (the default) resolves them as other values.
+\code{"drop"} gives \code{NA} for them in the element-wise \verb{v*()} functions,
+and leaves them out of the functions that resolve the whole vector,
+such as \code{min()}.
+For random draws, see \code{uncertain_p} in \code{vrandom()}.}
 }
 \value{
 A single scalar or vector of dates

@@ -12,14 +12,25 @@ expand(x, approx_range = 0, by = "day")
 If not an 'mdate' object, conversion is handled first with ´as_messydate()´.}
 
 \item{approx_range}{Range to expand approximate dates,
-or date components, annotated with '~', by default 0.
+or date components, annotated with '~' or '\%', by default 0.
 That is, removes signs for approximate dates and
 treats these dates as precise dates.
-If 3, for example, adds 3 days for day approximation,
-3 months for month approximation,
-3 years for year/whole date approximation,
-3 years and 3 months for year-month approximation,
-and 3 months and 3 days for month-day approximation.}
+With a positive value, the dates widen on each side by \code{approx_range}
+units of each component that the mark covers.
+As in ISO 8601-2:2019, a mark after a component covers that component
+and all components to its left, and a mark before a component covers
+only that component.
+If 3, for example, \code{"~2001"} and \code{"~2001-06-15"} widen by 3 years,
+\code{"2001-~06-15"} by 3 months, \code{"2001-06-~15"} by 3 days,
+\code{"2001-06~"} by 3 years and 3 months,
+and \code{"2001-06-15~"} by 3 years, 3 months and 3 days.
+The widening starts from the first and the last date that the value
+names, so that \code{"~2001"} with 1 gives all of 2000 to 2002.
+A range widens at each end by the marks of that end,
+so that \code{"2001-03-~01..2001-04-15"} with 3 starts on 26 February
+and still ends on 15 April.
+Sets, values with unspecified digits,
+and open-ended ranges with a mark are not widened.}
 
 \item{by}{Granularity of enumeration, "day" by default.
 To avoid combinatorial explosion, ranges are enumerated at day
@@ -49,6 +60,8 @@ d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 expand(d)
 # widen an approximate day (the '~' before the day) by 3 days either side
 expand(as_messydate("2001-01-~15"), approx_range = 3)
+# widen only the approximate start of a range
+expand(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
 # a precise date-time is returned unchanged, keeping its time
 expand(as_messydate("2012-01-01 14:30:00"))
 # a date-time range drops its time by default (day granularity)...

@@ -18,42 +18,69 @@
 \alias{vrandom.mdate}
 \title{Resolves messy dates into a central tendency}
 \usage{
-\method{median}{mdate}(..., na.rm = TRUE)
+\method{median}{mdate}(..., na.rm = TRUE, uncertain = "keep")
 
 vmedian(..., na.rm = TRUE)
 
-\method{vmedian}{mdate}(..., na.rm = TRUE)
+\method{vmedian}{mdate}(..., na.rm = TRUE, uncertain = "keep")
 
-\method{mean}{mdate}(..., trim = 0, na.rm = TRUE)
+\method{mean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep")
 
 vmean(..., na.rm = TRUE)
 
-\method{vmean}{mdate}(..., trim = 0, na.rm = TRUE)
+\method{vmean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep")
 
 modal(..., na.rm = TRUE)
 
-\method{modal}{mdate}(..., na.rm = TRUE)
+\method{modal}{mdate}(..., na.rm = TRUE, uncertain = "keep")
 
 vmodal(..., na.rm = TRUE)
 
-\method{vmodal}{mdate}(..., na.rm = TRUE)
+\method{vmodal}{mdate}(..., na.rm = TRUE, uncertain = "keep")
 
 random(..., na.rm = TRUE)
 
-\method{random}{mdate}(..., na.rm = TRUE)
+\method{random}{mdate}(..., na.rm = TRUE, approx_range = 0, uncertain_p = 1)
 
 vrandom(..., na.rm = TRUE)
 
-\method{vrandom}{mdate}(..., na.rm = TRUE)
+\method{vrandom}{mdate}(..., na.rm = TRUE, approx_range = 0, uncertain_p = 1)
 }
 \arguments{
 \item{...}{a mdate object}
 
-\item{na.rm}{Should NAs be removed? FALSE by default.}
+\item{na.rm}{Should NAs be removed? FALSE by default.
+As in base R, with \code{na.rm = FALSE} one \code{NA} makes the result of
+\code{min()} or \code{max()} \code{NA}.}
+
+\item{uncertain}{What to do with uncertain values (\verb{?} or \verb{\%}), which the
+source itself doubts.
+\code{"keep"} (the default) resolves them as other values.
+\code{"drop"} gives \code{NA} for them in the element-wise \verb{v*()} functions,
+and leaves them out of the functions that resolve the whole vector,
+such as \code{min()}.
+For random draws, see \code{uncertain_p} in \code{vrandom()}.}
 
 \item{trim}{the fraction (0 to 0.5) of observations to be trimmed
 from each end of x before the mean is computed.
 Values of trim outside that range are taken as the nearest endpoint.}
+
+\item{approx_range}{For \code{random()} and \code{vrandom()}, the range by which
+to widen approximate values (\code{~} or \verb{\%}).
+The range is in units of each component that the mark covers,
+as in \code{expand()}.
+With the default of \code{0}, approximate values are not widened.
+With a positive value, the draw uses trapezoidal weights,
+see the section "Approximate and uncertain values".}
+
+\item{uncertain_p}{For \code{random()} and \code{vrandom()}, the probability that an
+uncertain value (\verb{?} or \verb{\%}) is correct.
+Give one number for all values, or one number for each value,
+for example a column that holds the reliability of each source.
+With probability \code{1 - uncertain_p}, \code{vrandom()} gives \code{NA} for an
+uncertain value, and \code{random()} leaves it out of the draw.
+The default of \code{1} treats uncertain values as correct.
+\code{uncertain_p = 0} is the same as \code{uncertain = "drop"}.}
 }
 \description{
 These functions resolve messydates by their central tendency.
@@ -87,6 +114,27 @@ middle values in that case, and \code{mean()}/\code{vmean()} may be unreliable f
 solely negative-year inputs (a documented limitation, not a supported
 feature).
 }
+\section{Approximate and uncertain values}{
+
+The two annotations have different effects on a random draw.
+
+An approximate value (\code{~}) can be outside the dates that it names.
+With a positive \code{approx_range}, the dates it names (the core) have a
+weight of 1, and the dates that \code{approx_range} adds on each side
+have a weight that falls linearly to 0.
+A range widens at each end by the marks of that end, so the weight is
+1 across the range and falls to 0 beyond an approximate end.
+The core and the full range are the "yolk" and the "egg" of the egg-yolk
+model of regions with indeterminate boundaries (Cohn and Gotts 1996).
+The linear fall between them is an assumption of this package.
+
+An uncertain value (\verb{?}) is a record that the source itself doubts.
+The doubt is about whether the record is correct at all,
+so it does not change the dates that the value can be.
+Instead, \code{uncertain_p} gives the probability that the record is correct.
+Repeated draws then show how much a result depends on doubtful records.
+}
+
 \examples{
 d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
@@ -104,4 +152,11 @@ modal(d)
 vmodal(d)
 random(d)
 vrandom(d)
+}
+\references{
+Cohn, A. G. and Gotts, N. M. (1996).
+"The 'egg-yolk' representation of regions with indeterminate boundaries".
+In P. A. Burrough and A. U. Frank (eds.),
+\emph{Geographic Objects with Indeterminate Boundaries}, GISDATA 2,
+pp. 171-187. London: Taylor & Francis.
 }

@@ -35,3 +35,8 @@ test_that("contract retains the set type", {
   expect_equal(contract(list(c("2001-01-01", "2001-02-02"))),
                as_messydate("{2001-01-01,2001-02-02}"))
 })
+
+test_that("Contract keeps NA as NA", {
+  x <- as_messydate(c("2012-01-01..2012-01-31", NA))
+  expect_equal(as.character(contract(x)), c("2012-01", NA))
+})

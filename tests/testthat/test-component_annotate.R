@@ -45,7 +45,7 @@ test_that("Annotate functions work properly", {
                                    data$Beg)),
                c("1816-01-01", "1916-01?-01", "2016-01-01"))
   d <- on_or_before(data$Beg)
-  expect_equal(as.character(class(d)), "mdate")
+  expect_s3_class(d, "mdate")
 })
 
 test_that("approximate/uncertain error for an unrecognised component", {
@@ -56,4 +56,10 @@ test_that("approximate/uncertain error for an unrecognised component", {
 test_that("approximate/uncertain combine", {
   expect_identical(uncertain(approximate("2019-03-01")), mdate("2019-03-01%"))
   expect_identical(approximate(uncertain("2019-03-01")), mdate("2019-03-01%"))
+})
+
+test_that("Annotation keeps NA as NA", {
+  x <- as_messydate(c("2012-01-01", NA))
+  expect_equal(as.character(approximate(x)), c("2012-01-01~", NA))
+  expect_equal(as.character(uncertain(x, "day")), c("2012-01-?01", NA))
 })

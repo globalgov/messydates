@@ -171,7 +171,10 @@ precision <- function(x) UseMethod("precision")
 #' @export
 precision.mdate <- function(x) {
   out <- expand(x)
-  (1 / lengths(out)) * subday_factor(x)
+  out <- (1 / lengths(out)) * subday_factor(x)
+  # Neither a missing date nor the empty set has a precision.
+  out[is.na(x) | is_empty_notation(x)] <- NA
+  out
 }
 
 # Multiplier extending the 1/days precision scale below the day: 24 for hour,

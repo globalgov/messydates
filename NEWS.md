@@ -63,6 +63,14 @@
 
 - Accelerated `as.list.mdate()`, which wrapped each element by parsing it again
 
+## Annotation
+
+- Fixed missing values in `approximate()` and `uncertain()` to give `NA`
+
+## Extraction
+
+- Fixed missing values in `precision()` to give `NA`
+
 ## Operations
 
 - Renamed the `is_*()` predicates to `date_is_*()`

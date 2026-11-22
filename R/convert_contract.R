@@ -39,6 +39,8 @@
 #' contract(as_messydate("[2001-01-01,2001-02-02]"))
 #' @export
 contract <- function(x, collapse = TRUE) {
+  if (!inherits(x, 'list') && .has_missing(x))
+    return(.with_missing(x, contract, collapse = collapse))
   onesie <- rep(FALSE, length(x))
   if (!inherits(x, 'list')) {
     onesie <- stringi::stri_detect_regex(as.character(x), "^\\[.*\\]$")

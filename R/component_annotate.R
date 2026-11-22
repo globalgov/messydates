@@ -79,6 +79,11 @@ uncertain <- function(x, component = NULL) {
 # Inserts an annotation marker (~ or ?) on a named component of a date or
 # date-time. With no component the whole value is marked.
 annotate_component <- function(x, component, mark) {
+  # The empty set holds no date and NA is not known,
+  # so there is nothing to annotate.
+  if (.has_missing(x))
+    return(.with_missing(x, annotate_component, component = component,
+                       mark = mark))
   x <- as.character(x)
   if (is.null(component)) {
     # A whole-date marker may already be present; adding the other kind of

@@ -71,7 +71,7 @@ expand <- function(x, approx_range = 0, by = "day") {
   bare[is.na(bare)] <- FALSE
   # Day granularity: keep the time on precise date-times, but drop it from
   # ranges and imprecise values so the date-level logic below applies.
-  keep <- is_precise(x) & grepl("[T ]", x)
+  keep <- date_is_precise(x) & grepl("[T ]", x)
   strip <- !keep & !bare
   if (any(strip)) x[strip] <- strip_times(x[strip])
   out <- as.list(x)
@@ -460,8 +460,8 @@ expand_ranges <- function(dates) {
         as.character(seq(mdate(y)))))
   )
 
-  # unlist(purrr::map(x[[7]], function(y) if(is_precise(y)) as.character(y) else as.character(seq(mdate(y)))))
-  # lapply(x, function(y) if(any(is_precise(y))) else y)
+  # unlist(purrr::map(x[[7]], function(y) if(date_is_precise(y)) as.character(y) else as.character(seq(mdate(y)))))
+  # lapply(x, function(y) if(any(date_is_precise(y))) else y)
 
 
   # dates <- dplyr::case_when(
@@ -482,7 +482,7 @@ expand_ranges <- function(dates) {
 
   # dates <- suppressWarnings(lapply(dates, function(x) {
   #   x <- stringi::stri_split_regex(x, "\\.\\.")
-  #   if(any(is_bce(x))){
+  #   if(any(date_is_bce(x))){
   #     x <- ifelse(stringi::stri_detect_regex(x, "\\%"),
   #                 expand_negative_dates(x), x)
   #   } else {

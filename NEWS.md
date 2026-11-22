@@ -78,6 +78,10 @@
   - `is_messydate()`, `is_intersecting()`, and `is_subset()` keep their names
 - Fixed missing values in `+` and `-`, which now give `NA`
 
+## Tests
+
+- Added equivalence test against saved reference to compare parsing, expansion, and resolution
+
 # messydates 1.1.1
 
 ## Package

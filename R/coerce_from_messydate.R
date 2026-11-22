@@ -173,7 +173,7 @@ as.list.mdate <- function(x, ...) {
 #' as.double(as_messydate("2012-01-01"))
 #' @export
 as.double.mdate <- function(x, ...) {
-  if(any(is_bce(x))) x[is_bce(x)] <- negative_dates(x)[is_bce(x)]
+  if(any(date_is_bce(x))) x[date_is_bce(x)] <- negative_dates(x)[date_is_bce(x)]
   as.double(lubridate::as_date(x))
 }
 

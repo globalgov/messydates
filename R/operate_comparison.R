@@ -68,7 +68,7 @@ numeric_time_ranges <- function(e1, e2) {
 # make `if (bce)` in .time_bounds() error instead of just treating it as CE.
 .involves_bce <- function(x) {
   if (!is_messydate(x)) return(FALSE)
-  any(is_bce(c(as.character(vmin(x)), as.character(vmax(x)))), na.rm = TRUE)
+  any(date_is_bce(c(as.character(vmin(x)), as.character(vmax(x)))), na.rm = TRUE)
 }
 
 # The numeric minimum and maximum instant implied by one side of a

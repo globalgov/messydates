@@ -46,10 +46,10 @@ is_subset <- function(x, y) {
 #' @describeIn operate_statements tests whether two dates contain similar components.
 #'   This can be useful for identifying dates that may be typos of one another.
 #' @examples
-#' is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
-#' is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
+#' date_is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
+#' date_is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 #' @export
-is_similar <- function(x, y) {
+date_is_similar <- function(x, y) {
   # Coerce to mdate so the component accessors dispatch to their `.mdate`
   # methods (rather than {lubridate}'s) even when passed bare strings.
   if (!is_messydate(x)) x <- as_messydate(x)
@@ -64,10 +64,10 @@ is_similar <- function(x, y) {
 #'   ?), are incomplete (e.g. year or year-month only, or a date with an
 #'   unspecified `X` component), or are date ranges and sets.
 #' @examples
-#' is_precise(as_messydate(c("2012-06-02", "2012-06")))
-#' is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
+#' date_is_precise(as_messydate(c("2012-06-02", "2012-06")))
+#' date_is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
 #' @export
-is_precise <- function(x) {
+date_is_precise <- function(x) {
   stringi::stri_detect_regex(
     x,
     paste0("^-?[0-9]{4}-[0-9]{2}-[0-9]{2}",
@@ -77,17 +77,17 @@ is_precise <- function(x) {
 
 #' @describeIn operate_statements tests whether a date is uncertain (i.e. contains ?).
 #' @examples
-#' is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
+#' date_is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 #' @export
-is_uncertain <- function(x) {
+date_is_uncertain <- function(x) {
   stringi::stri_detect_regex(x, "\\?|\\%")
 }
 
 #' @describeIn operate_statements tests whether a date is approximate (i.e. contains ~).
 #' @examples
-#' is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+#' date_is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
 #' @export
-is_approximate <- function(x) {
+date_is_approximate <- function(x) {
   stringi::stri_detect_regex(x, "\\~|\\%")
 }
 
@@ -98,9 +98,53 @@ is_approximate <- function(x) {
 #'   non-negative year throughout, which R's proleptic Gregorian `Date`
 #'   supports directly.
 #' @examples
-#' is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
+#' date_is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
 #' @export
-is_bce <- function(x) {
+date_is_bce <- function(x) {
   stringi::stri_detect_regex(x, "^-")
 }
 
+
+#' @describeIn operate_statements tests whether a messy date is the empty set,
+#'   written `{}`.
+#'   The empty set names no dates. It is the result, for example, of an
+#'   intersection of two dates that do not overlap.
+#'   ISO 8601-2:2019 requires a set to have at least one member,
+#'   so `{}` is a messydates extension to the standard.
+#'   A missing value (`NA`) is not the empty set: `NA` is a date that is not
+#'   known, and `{}` is known to contain no date.
+#' @examples
+#' date_is_empty(as_messydate(c("{}", "2012-06-02", NA)))
+#' @export
+date_is_empty <- function(x) {
+  out <- is_empty_notation(x)
+  out[is.na(x)] <- NA
+  out
+}
+
+# TRUE for each element written as the empty set, '{}'; FALSE for NA.
+is_empty_notation <- function(x) {
+  out <- stringi::stri_detect_regex(as.character(x), "^\\s*\\{\\s*\\}\\s*$")
+  out[is.na(out)] <- FALSE
+  out
+}
+
+# TRUE when any element of `x` is the empty set, '{}', or missing (NA).
+.has_missing <- function(x) {
+  any(is_empty_notation(x) | is.na(x))
+}
+
+# Applies an element-wise function `f` to `x` and gives '{}' or NA again where
+# `x` was the empty set or missing. A stand-in date takes the place of each
+# such element while `f` runs, so that `f` sees only dates and the recycling
+# of other arguments does not change.
+.with_missing <- function(x, f, ...) {
+  empty <- is_empty_notation(x)
+  miss <- is.na(x)
+  y <- x
+  y[empty | miss] <- "2000-01-01"
+  out <- f(y, ...)
+  out[empty] <- "{}"
+  out[miss] <- NA
+  out
+}

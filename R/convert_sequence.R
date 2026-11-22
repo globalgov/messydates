@@ -31,7 +31,10 @@
 #' @export
 seq.mdate <- function(from, to, by = "days", ...) {
 
-  if(missing(to) & !is_precise(from)){
+  # Subsetting does not validate again, so an invalid element (e.g. "") must
+  # fail here with a clear message, not deep inside seq.Date().
+  validate_messydate(from)
+  if(missing(to) & !date_is_precise(from)){
     to <- max(from)
     from <- min(from)
   }
@@ -49,7 +52,7 @@ seq.mdate <- function(from, to, by = "days", ...) {
   }
 
   # straight forward sequence (all common-era dates): return Date objects
-  if(!any(is_bce(c(from, to)))){
+  if(!any(date_is_bce(c(from, to)))){
     seq(as.Date(from), as.Date(to), by = by)
   } else {
     # Any endpoint before the common era. `as.Date.mdate()` maps mdate strings

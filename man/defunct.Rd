@@ -9,6 +9,11 @@
 \alias{messyduration}
 \alias{as_approximate}
 \alias{as_uncertain}
+\alias{is_precise}
+\alias{is_uncertain}
+\alias{is_approximate}
+\alias{is_bce}
+\alias{is_similar}
 \title{Functions that have been renamed, superseded, or are no longer working}
 \usage{
 is_element(.data)
@@ -24,6 +29,19 @@ messyduration(.data)
 as_approximate(x, component = NULL)
 
 as_uncertain(x, component = NULL)
+
+is_precise(x)
+
+is_uncertain(x)
+
+is_approximate(x)
+
+is_bce(x)
+
+is_similar(x, y)
+}
+\arguments{
+\item{x, y}{\code{mdate} objects.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -49,6 +67,21 @@ wherever possible and update your scripts accordingly.
 \item \code{as_approximate()}: Deprecated on 2026-07-09.
 
 \item \code{as_uncertain()}: Deprecated on 2026-07-09.
+
+\item \code{is_precise()}: Deprecated in messydates 1.2.0.
+Use \code{date_is_precise()}.
+
+\item \code{is_uncertain()}: Deprecated in messydates 1.2.0.
+Use \code{date_is_uncertain()}.
+
+\item \code{is_approximate()}: Deprecated in messydates 1.2.0.
+Use \code{date_is_approximate()}.
+
+\item \code{is_bce()}: Deprecated in messydates 1.2.0.
+Use \code{date_is_bce()}.
+
+\item \code{is_similar()}: Deprecated in messydates 1.2.0.
+Use \code{date_is_similar()}.
 
 }}
 \keyword{internal}

@@ -59,3 +59,56 @@ as_uncertain <- function(x, component = NULL) {
   .Deprecated(new = "messydates::uncertain()",
               package = "messydates")
 }
+
+# Soft deprecation: the old name still works and gives a message once in
+# each session. The old names go in a later minor release.
+.deprecated_env <- new.env(parent = emptyenv())
+.soft_deprecate <- function(old, new) {
+  if (isTRUE(.deprecated_env[[old]])) return(invisible())
+  .deprecated_env[[old]] <- TRUE
+  message("`", old, "` is deprecated as of messydates 1.2.0. ",
+          "Use `", new, "` instead.\n",
+          "This message is shown once in each session.")
+  invisible()
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0.
+#'   Use `date_is_precise()`.
+#' @param x,y `mdate` objects.
+#' @export
+is_precise <- function(x) {
+  .soft_deprecate("is_precise()", "date_is_precise()")
+  date_is_precise(x)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0.
+#'   Use `date_is_uncertain()`.
+#' @export
+is_uncertain <- function(x) {
+  .soft_deprecate("is_uncertain()", "date_is_uncertain()")
+  date_is_uncertain(x)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0.
+#'   Use `date_is_approximate()`.
+#' @export
+is_approximate <- function(x) {
+  .soft_deprecate("is_approximate()", "date_is_approximate()")
+  date_is_approximate(x)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0.
+#'   Use `date_is_bce()`.
+#' @export
+is_bce <- function(x) {
+  .soft_deprecate("is_bce()", "date_is_bce()")
+  date_is_bce(x)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0.
+#'   Use `date_is_similar()`.
+#' @export
+is_similar <- function(x, y) {
+  .soft_deprecate("is_similar()", "date_is_similar()")
+  date_is_similar(x, y)
+}

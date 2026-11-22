@@ -5,11 +5,12 @@
 \alias{is_messydate}
 \alias{is_intersecting}
 \alias{is_subset}
-\alias{is_similar}
-\alias{is_precise}
-\alias{is_uncertain}
-\alias{is_approximate}
-\alias{is_bce}
+\alias{date_is_similar}
+\alias{date_is_precise}
+\alias{date_is_uncertain}
+\alias{date_is_approximate}
+\alias{date_is_bce}
+\alias{date_is_empty}
 \title{Logical statements on messy dates}
 \usage{
 is_messydate(x)
@@ -18,15 +19,17 @@ is_intersecting(x, y)
 
 is_subset(x, y)
 
-is_similar(x, y)
+date_is_similar(x, y)
 
-is_precise(x)
+date_is_precise(x)
 
-is_uncertain(x)
+date_is_uncertain(x)
 
-is_approximate(x)
+date_is_approximate(x)
 
-is_bce(x)
+date_is_bce(x)
+
+date_is_empty(x)
 }
 \arguments{
 \item{x, y}{\code{mdate} or other class objects}
@@ -48,26 +51,35 @@ two messy dates, leveraging \code{intersect()}.
 \item \code{is_subset()}: tests whether one or more messy date can be found
 within a messy date range or set.
 
-\item \code{is_similar()}: tests whether two dates contain similar components.
+\item \code{date_is_similar()}: tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.
 
-\item \code{is_precise()}: tests whether a date (or date-time) is
+\item \code{date_is_precise()}: tests whether a date (or date-time) is
 precise, i.e. a full "yyyy-mm-dd", optionally with a time of day (down
 to the hour, minute, or second) and time zone. Non-precise dates
 contain markers that they are approximate (i.e. ~), unreliable (i.e.
 ?), are incomplete (e.g. year or year-month only, or a date with an
 unspecified \code{X} component), or are date ranges and sets.
 
-\item \code{is_uncertain()}: tests whether a date is uncertain (i.e. contains ?).
+\item \code{date_is_uncertain()}: tests whether a date is uncertain (i.e. contains ?).
 
-\item \code{is_approximate()}: tests whether a date is approximate (i.e. contains ~).
+\item \code{date_is_approximate()}: tests whether a date is approximate (i.e. contains ~).
 
-\item \code{is_bce()}: tests whether one or more messy dates are found
+\item \code{date_is_bce()}: tests whether one or more messy dates are found
 before the common era, i.e. carry a negative (astronomical) year.
 Note that astronomical year zero (\code{"0000"}, historically 1 BCE) is not
 sign-negative and so returns \code{FALSE}; it is handled natively as a
 non-negative year throughout, which R's proleptic Gregorian \code{Date}
 supports directly.
+
+\item \code{date_is_empty()}: tests whether a messy date is the empty set,
+written \code{{}}.
+The empty set names no dates. It is the result, for example, of an
+intersection of two dates that do not overlap.
+ISO 8601-2:2019 requires a set to have at least one member,
+so \code{{}} is a messydates extension to the standard.
+A missing value (\code{NA}) is not the empty set: \code{NA} is a date that is not
+known, and \code{{}} is known to contain no date.
 
 }}
 \examples{
@@ -80,11 +92,12 @@ as_messydate("2012-02-01..2012-02-22"))
 is_subset(as_messydate("2012-01-01"), as_messydate("2012-01"))
 is_subset(as_messydate("2012-01-01..2012-01-03"), as_messydate("2012-01"))
 is_subset(as_messydate("2012-01-01"), as_messydate("2012-02"))
-is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
-is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
-is_precise(as_messydate(c("2012-06-02", "2012-06")))
-is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
-is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
-is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
-is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
+date_is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
+date_is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
+date_is_precise(as_messydate(c("2012-06-02", "2012-06")))
+date_is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
+date_is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
+date_is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+date_is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
+date_is_empty(as_messydate(c("{}", "2012-06-02", NA)))
 }

@@ -37,12 +37,13 @@ test_that("Coercion of unespecified date components are properly handled", {
 })
 
 test_that("resequence argument works properly", {
-  expect_equal(as_messydate(c("121008", "20121008"), resequence = "ymd"),
-               as_messydate(c("12-10-08", "2012-10-08")))
-  expect_equal(as_messydate(c("081012", "08102012", "08-10-12"), resequence = "dmy"),
-               as_messydate(c("12-10-08", "2012-10-08", "12-10-08")))
-  expect_equal(as_messydate(c("03312022", "043097"), resequence = "mdy"),
-               as_messydate(c("2022-03-31", "97-04-30")))
+  # A two-digit year leaves the century unspecified (see `pivot`).
+  expect_equal(as.character(as_messydate(c("121008", "20121008"), resequence = "ymd")),
+               c("XX12-10-08", "2012-10-08"))
+  expect_equal(as.character(as_messydate(c("081012", "08102012", "08-10-12"), resequence = "dmy")),
+               c("XX12-10-08", "2012-10-08", "XX12-10-08"))
+  expect_equal(as.character(as_messydate(c("03312022", "043097"), resequence = "mdy")),
+               c("2022-03-31", "XX97-04-30"))
   expect_equal(as_messydate("201212", resequence = "ym"),
                as_messydate("2012-12"))
   # "201212" read as month-year gives month 20, which does not exist

@@ -28,6 +28,31 @@
 #'   component order of ambiguous dates,
 #'   based on which the date is reordered into YYYY-MM-DD format
 #'   and further completed to YYYY-MM-DD format if they choose to do so.
+#'   A two-digit year, in any of these orders, does not say which century
+#'   it belongs to; see `pivot`.
+#' @param pivot For character input, how to read two-digit years, such as
+#'   the "29" in "1/1/29" or the "97" in "May-97".
+#'   By default (`NULL`) the century is left unspecified,
+#'   so "1/1/29" becomes `"XX29-01-01"`, and no century is invented.
+#'   Alternatively, a four-digit year that starts a 100-year window:
+#'   two-digit years are placed in that window.
+#'   For example, `pivot = 1930` reads "29" as 2029 and "30" as 1930,
+#'   which is what Excel for Windows does by default,
+#'   and `pivot = 1969` reproduces R's own `%y` convention.
+#' @param origin For numeric input, the origin of a serial day count.
+#'   Spreadsheets store dates as a count of days from an origin,
+#'   and a file that loses its date formatting carries only these counts.
+#'   Use `"excel"` for Excel's default (Windows) date system, which counts
+#'   serial 1 as 1900-01-01 and, for compatibility with Lotus 1-2-3, also
+#'   counts the non-existent 29 February 1900 as serial 60;
+#'   use `"excel1904"` for the 1904 date system of older Excel for Mac;
+#'   or give any date, such as `"1970-01-01"`, as the day that counts as zero.
+#'   A fractional part is read as a time of day.
+#'   By default (`NULL`), whole numbers from -9999 to 9999 are read as years,
+#'   eight-digit numbers that form a valid date are read as YYYYMMDD,
+#'   and any other number becomes `NA` with a warning,
+#'   since without an origin it cannot be told apart from a serial count.
+#' @param ... Arguments passed to methods.
 #' @return A `mdate` class object
 #' @family coerce
 #' @section Parsing prose:
@@ -113,6 +138,13 @@ NULL
 #' as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
 #' as_messydate(c("210201", "20210201"), resequence = "ymd")
 #' as_messydate(c("010221", "01022021"), resequence = "dmy")
+#' # two-digit years leave the century unspecified, unless a pivot is given
+#' as_messydate(c("1/1/29", "May-97"))
+#' as_messydate(c("1/1/29", "May-97"), pivot = 1930)
+#' # serial day counts from spreadsheets need their origin
+#' as_messydate(c(36892, 45000.5), origin = "excel")
+#' as_messydate(c(35430, 1462), origin = "excel1904")
+#' as_messydate(c(2021, 20210201))
 #' # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 #' # resequence = "interactive")
 #' # ISO 8601-2 times, with the same annotations available on time components
@@ -135,12 +167,12 @@ NULL
 #' as_messydate("before 1910")
 #' as_messydate("between the 13th and 15th of Feb, 1977")
 #' @export
-as_messydate <- function(x, resequence = FALSE)
+as_messydate <- function(x, resequence = FALSE, ...)
   UseMethod("as_messydate")
 
 #' @describeIn coerce_to Coerce from `Date` to `mdate` class
 #' @export
-as_messydate.Date <- function(x, resequence = FALSE) {
+as_messydate.Date <- function(x, resequence = FALSE, ...) {
   # zero_padding() makes the year width canonical (four digits): R's
   # as.character.Date() does not always pad years below 1000 (and pads
   # negative, i.e. BCE, years to only three digits), which varies by platform.
@@ -159,13 +191,13 @@ as_messydate.Date <- function(x, resequence = FALSE) {
 #'   Times of exactly midnight (`00:00:00`) are treated as date-only,
 #'   so that timezone-naive dates round-trip unchanged.
 #' @export
-as_messydate.POSIXct <- function(x, resequence = FALSE) {
+as_messydate.POSIXct <- function(x, resequence = FALSE, ...) {
   new_messydate(posix_to_iso(x))
 }
 
 #' @describeIn coerce_to Coerce from `POSIXlt` to `mdate` class
 #' @export
-as_messydate.POSIXlt <- function(x, resequence = FALSE) {
+as_messydate.POSIXlt <- function(x, resequence = FALSE, ...) {
   new_messydate(posix_to_iso(as.POSIXct(x)))
 }
 
@@ -207,14 +239,14 @@ normalise_offset <- function(z) {
 }
 
 #' @export
-as_messydate.mdate <- function(x, resequence = FALSE) {
+as_messydate.mdate <- function(x, resequence = FALSE, ...) {
   x <- as.character(x) # For updating 'mdate' variables
   new_messydate(x)
 }
 
 #' @describeIn coerce_to Coerce character date objects to `mdate` class
 #' @export
-as_messydate.character <- function(x, resequence = NULL) {
+as_messydate.character <- function(x, resequence = NULL, pivot = NULL, ...) {
   if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
   # Refuse ISO 8601-2 forms this package cannot represent, rather than carrying
   # them along as strings nothing downstream can interpret.
@@ -225,9 +257,17 @@ as_messydate.character <- function(x, resequence = NULL) {
   # The prose layer may return NA where it read the shape of a date but not a
   # possible one ("the 53rd week of 2026"), and may return more elements than
   # it was given, so the input is kept for reporting where it still lines up.
+  check_pivot(pivot)
   orig <- x
+  # A month name with a two-digit year ("May-97", Excel's display of a month)
+  # is read before the time parser can mistake the year for an hour.
+  x <- month_two_digit_year(x, pivot)
   x <- interpret_prose(x)
   if (length(orig) != length(x)) orig <- x
+  # '{}' is the empty set, a messydates extension to ISO 8601-2 (which
+  # requires a set to have at least one member). It names no date components,
+  # so it is set aside here and restored after the date pipeline.
+  empty <- is_empty_notation(x)
   d <- standardise_text(x)
   # Protect any time-of-day substrings so the date pipeline (which repurposes
   # ':' as a range separator and '.' as a component separator) cannot mangle
@@ -238,6 +278,15 @@ as_messydate.character <- function(x, resequence = NULL) {
   # are stripped, so they are not restored as '{}' ("all members of").
   onesie <- stringi::stri_detect_regex(d, "^\\s*\\[.*\\]\\s*$")
   onesie[is.na(onesie)] <- FALSE
+  # A year written first ("39-01-01") is kept as written, as historical
+  # dates may be; a two-digit year the parser had to move to the front was
+  # written last, and its century is not known (see two_digit_years()).
+  pre <- standardise_date_separators(d)
+  slashed <- rep(FALSE, length(d))
+  if (is.null(resequence)) {
+    sl <- slash_two_digit_year(d)
+    d <- sl$dates; slashed <- sl$hit
+  }
   d <- standardise_date_separators(d)
   if (!is.null(resequence)) {
     if (resequence == "dmy") {
@@ -255,12 +304,14 @@ as_messydate.character <- function(x, resequence = NULL) {
     }
   }
   d <- standardise_date_order(d)
+  d <- two_digit_years(d, pivot, keep = !slashed & !is.na(d) & d == pre)
   d <- standardise_unspecifieds(d)
   d <- standardise_date_input(d)
   d <- standardise_widths(d)
   d <- restore_times(d, prot$times)
   if (any(onesie))
     d[onesie] <- stringi::stri_replace_all_regex(d[onesie], "^\\{(.*)\\}$", "[$1]")
+  d[empty] <- "{}"
   check_components(d, source = x)
   warn_unparsed(orig, d)
   new_messydate(d)
@@ -281,12 +332,12 @@ warn_unparsed <- function(x, d) {
 #'   This is the common case when a date column has been read in with
 #'   `stringsAsFactors = TRUE`.
 #' @export
-as_messydate.factor <- function(x, resequence = NULL) {
-  as_messydate(as.character(x), resequence)
+as_messydate.factor <- function(x, resequence = NULL, ...) {
+  as_messydate(as.character(x), resequence, ...)
 }
 
 #' @export
-as_messydate.default <- function(x, resequence = NULL) {
+as_messydate.default <- function(x, resequence = NULL, ...) {
   stop("Objects of class '", paste(class(x), collapse = "/"),
        "' cannot be coerced to 'mdate'. Convert to character, Date, or ",
        "POSIXct first.", call. = FALSE)
@@ -294,10 +345,139 @@ as_messydate.default <- function(x, resequence = NULL) {
 
 #' @describeIn coerce_to Coerce numeric objects to `mdate` class
 #' @export
-as_messydate.numeric <- function(x, resequence = NULL) {
-  if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
-  d <- as.character(x)
-  new_messydate(d)
+as_messydate.numeric <- function(x, resequence = NULL, origin = NULL, ...) {
+  inf <- is.infinite(x)
+  out <- rep(NA_character_, length(x))
+  out[inf] <- ifelse(x[inf] > 0, "9999-12-31", "-9999-01-01")
+  ok <- !is.na(x) & !inf
+  if (!is.null(origin)) {
+    out[ok] <- serial_to_iso(x[ok], origin)
+    return(new_messydate(out))
+  }
+  whole <- ok & x == round(x)
+  year <- whole & abs(x) <= 9999
+  out[year] <- as.character(x[year])
+  ymd <- whole & x >= 10000101 & x <= 99991231
+  if (any(ymd)) {
+    v <- sprintf("%08.0f", x[ymd])
+    iso <- paste0(substr(v, 1, 4), "-", substr(v, 5, 6), "-", substr(v, 7, 8))
+    valid <- !is.na(as.Date(iso, optional = TRUE))
+    out[which(ymd)[valid]] <- iso[valid]
+  }
+  bad <- ok & is.na(out)
+  if (any(bad))
+    warning(sum(bad), " number", if (sum(bad) > 1) "s" else "",
+            " could not be read as a year or as YYYYMMDD and became NA:\n",
+            report_elements(which(bad), x[bad]),
+            "\nIf these are serial day counts, such as dates from a spreadsheet, ",
+            "give their origin, e.g. `origin = \"excel\"`.", call. = FALSE)
+  new_messydate(out)
+}
+
+# Converts serial day counts to ISO 8601 dates (with a time of day where the
+# count has a fractional part), given the origin of the count.
+serial_to_iso <- function(x, origin) {
+  if (!is.character(origin) && !inherits(origin, "Date"))
+    stop("`origin` must be \"excel\", \"excel1904\", or a date.", call. = FALSE)
+  day <- floor(x)
+  frac <- x - day
+  if (identical(origin, "excel")) {
+    # Excel's default date system counts serial 1 as 1900-01-01 and treats
+    # 1900 as a leap year, so serial 60 is a day that never existed and
+    # serials from 61 on are one day ahead of a plain count.
+    fake <- day == 60
+    if (any(fake))
+      warning(sum(fake), " serial", if (sum(fake) > 1) "s" else "",
+              " equal to 60 became NA: in Excel's 1900 date system this is ",
+              "29 February 1900, a day that never existed.", call. = FALSE)
+    early <- day < 1
+    if (any(early))
+      warning(sum(early), " serial", if (sum(early) > 1) "s" else "",
+              " below 1 became NA: Excel's 1900 date system starts at 1.",
+              call. = FALSE)
+    d <- as.Date(ifelse(day < 60, day - 1, day - 2), origin = "1900-01-01")
+    d[fake | early] <- NA
+  } else if (identical(origin, "excel1904")) {
+    d <- as.Date(day, origin = "1904-01-01")
+  } else {
+    d <- as.Date(day, origin = as.Date(origin))
+  }
+  out <- format(d, "%Y-%m-%d")
+  secs <- round(frac * 86400)
+  timed <- !is.na(d) & secs > 0
+  if (any(timed)) {
+    secs[timed & secs >= 86400] <- 86399
+    out[timed] <- paste0(out[timed], " ",
+                         sprintf("%02d:%02d:%02d", secs[timed] %/% 3600,
+                                 (secs[timed] %% 3600) %/% 60, secs[timed] %% 60))
+  }
+  out
+}
+
+check_pivot <- function(pivot) {
+  if (is.null(pivot)) return(invisible(TRUE))
+  if (!is.numeric(pivot) || length(pivot) != 1 || is.na(pivot) ||
+      pivot != round(pivot) || pivot < 100 || pivot > 9899)
+    stop("`pivot` must be NULL or a single four-digit year, e.g. 1930.",
+         call. = FALSE)
+  invisible(TRUE)
+}
+
+# A two-digit year names a year within some century, but not which one.
+# Without a pivot the century is left unspecified ("XX29"); with one, the
+# year is placed in the 100-year window that starts at the pivot.
+expand_two_digit_year <- function(yy, pivot) {
+  if (is.null(pivot)) return(paste0("XX", yy))
+  y <- (pivot %/% 100) * 100 + as.integer(yy)
+  y <- ifelse(y < pivot, y + 100, y)
+  sprintf("%04d", as.integer(y))
+}
+
+# After standardise_date_order(), a date whose year has only two digits
+# has the form "yy-mm-dd". Those marked `keep` were written that way.
+two_digit_years <- function(dates, pivot, keep = FALSE) {
+  rx <- "^([0-9]{2})-([0-9]{2})-([0-9]{2})$"
+  hit <- !is.na(dates) & stringi::stri_detect_regex(dates, rx) & !keep
+  if (any(hit)) {
+    m <- stringi::stri_match_first_regex(dates[hit], rx)
+    dates[hit] <- paste0(expand_two_digit_year(m[, 2], pivot), "-",
+                         m[, 3], "-", m[, 4])
+  }
+  dates
+}
+
+# With slashes and a two-digit last component ("1/1/29", "12/31/99"), the
+# year is almost always last. Read it so, as day-month-year unless the
+# middle component cannot be a month, and return "yy-mm-dd" for
+# two_digit_years() to complete.
+slash_two_digit_year <- function(dates) {
+  rx <- "^\\s*([0-9]{1,2})/([0-9]{1,2})/([0-9]{2})\\s*$"
+  hit <- !is.na(dates) & stringi::stri_detect_regex(dates, rx)
+  if (!any(hit)) return(list(dates = dates, hit = hit))
+  m <- stringi::stri_match_first_regex(dates[hit], rx)
+  a <- as.integer(m[, 2]); b <- as.integer(m[, 3])
+  mdy <- b > 12 & a <= 12
+  day <- ifelse(mdy, b, a); mon <- ifelse(mdy, a, b)
+  dates[hit] <- sprintf("%s-%02d-%02d", m[, 4], mon, day)
+  list(dates = dates, hit = hit)
+}
+
+# A month name followed by a two-digit year, e.g. "May-97" or "Mar 97".
+# With a space, a number up to 31 could be a day ("Mar 15"), so only a
+# hyphen, an apostrophe, or a number above 31 marks it as a year.
+month_two_digit_year <- function(x, pivot) {
+  rx <- "^\\s*([A-Za-z]{3,9})\\.?(\\s*-\\s*|\\s+'?|')([0-9]{2})\\s*$"
+  hit <- !is.na(x) & stringi::stri_detect_regex(x, rx)
+  if (!any(hit)) return(x)
+  m <- stringi::stri_match_first_regex(x[hit], rx)
+  mn <- match(tolower(substr(m[, 2], 1, 3)), tolower(month.abb))
+  full <- tolower(m[, 2]) %in% c(tolower(month.abb), tolower(month.name), "sept")
+  yearish <- grepl("-|'", m[, 3]) | as.integer(m[, 4]) > 31
+  ok <- !is.na(mn) & full & yearish
+  idx <- which(hit)[ok]
+  x[idx] <- paste0(expand_two_digit_year(m[ok, 4], pivot), "-",
+                   sprintf("%02d", mn[ok]))
+  x
 }
 
 #' @describeIn coerce_to Coerce list date objects to the most concise
@@ -307,7 +487,7 @@ as_messydate.numeric <- function(x, resequence = NULL) {
 #' as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 #' "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 #' @export
-as_messydate.list <- function(x, resequence = FALSE) {
+as_messydate.list <- function(x, resequence = FALSE, ...) {
   lapply(x, function (y) {
     suppressMessages(contract(paste(new_messydate(as.character(y)),
                                     collapse = ",")))

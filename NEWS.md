@@ -38,6 +38,26 @@
   - Range and set members are padded together
   - ~9x faster for 6,000 plain ISO dates
   - ~45x faster for 6,000 mixed ISO, prose, and range values
+- Improved `as_messydate()` on numbers from spreadsheets
+  - Added `origin` to read serial day counts
+    - `origin = "excel"` reads the 1900 date system of Excel
+    - `origin = "excel1904"` reads the 1904 system of older Excel for Mac
+    - Any other date is the day that counts as zero
+    - A fractional part becomes a time of day
+    - Serial 60, the 29 February 1900 of Excel, becomes `NA` with a warning
+  - Fixed serial numbers kept as text: `as_messydate(36892)` gave `"36892"`
+    - Without `origin`, whole numbers up to 9999 are still years
+    - Valid eight-digit numbers are read as YYYYMMDD
+    - Other numbers become `NA` with a warning that names `origin`
+- Improved `as_messydate()` on two-digit years
+  - Fixed two-digit years placed in the first century
+    - `"1/1/29"` gave `"0001-01-29"` and now gives `"XX29-01-01"`
+    - `"010221"` with `resequence = "dmy"` gave `"0021-02-01"`
+  - Added `pivot` to place two-digit years in a 100-year window, e.g. `1930`
+  - Fixed a month name with a two-digit year, as Excel shows a month
+    - `"May-97"` gave an error and now gives `"XX97-05"`
+  - Dates with slashes and a two-digit last component are read year last
+  - A two-digit year written first (`"39-01-01"`) is still read as written
 
 ## Resolution
 

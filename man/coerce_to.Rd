@@ -13,23 +13,23 @@
 \alias{mdate}
 \title{Coercion from common date classes to \code{mdate}}
 \usage{
-as_messydate(x, resequence = FALSE)
+as_messydate(x, resequence = FALSE, ...)
 
-\method{as_messydate}{Date}(x, resequence = FALSE)
+\method{as_messydate}{Date}(x, resequence = FALSE, ...)
 
-\method{as_messydate}{POSIXct}(x, resequence = FALSE)
+\method{as_messydate}{POSIXct}(x, resequence = FALSE, ...)
 
-\method{as_messydate}{POSIXlt}(x, resequence = FALSE)
+\method{as_messydate}{POSIXlt}(x, resequence = FALSE, ...)
 
-\method{as_messydate}{character}(x, resequence = NULL)
+\method{as_messydate}{character}(x, resequence = NULL, pivot = NULL, ...)
 
-\method{as_messydate}{factor}(x, resequence = NULL)
+\method{as_messydate}{factor}(x, resequence = NULL, ...)
 
-\method{as_messydate}{numeric}(x, resequence = NULL)
+\method{as_messydate}{numeric}(x, resequence = NULL, origin = NULL, ...)
 
-\method{as_messydate}{list}(x, resequence = FALSE)
+\method{as_messydate}{list}(x, resequence = FALSE, ...)
 
-mdate(x, resequence = FALSE)
+mdate(x, resequence = FALSE, ...)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into \code{mdate},
@@ -53,7 +53,35 @@ If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
 If 'interactive', it prompts users to select the existing
 component order of ambiguous dates,
 based on which the date is reordered into YYYY-MM-DD format
-and further completed to YYYY-MM-DD format if they choose to do so.}
+and further completed to YYYY-MM-DD format if they choose to do so.
+A two-digit year, in any of these orders, does not say which century
+it belongs to; see \code{pivot}.}
+
+\item{...}{Arguments passed to methods.}
+
+\item{pivot}{For character input, how to read two-digit years, such as
+the "29" in "1/1/29" or the "97" in "May-97".
+By default (\code{NULL}) the century is left unspecified,
+so "1/1/29" becomes \code{"XX29-01-01"}, and no century is invented.
+Alternatively, a four-digit year that starts a 100-year window:
+two-digit years are placed in that window.
+For example, \code{pivot = 1930} reads "29" as 2029 and "30" as 1930,
+which is what Excel for Windows does by default,
+and \code{pivot = 1969} reproduces R's own \verb{\%y} convention.}
+
+\item{origin}{For numeric input, the origin of a serial day count.
+Spreadsheets store dates as a count of days from an origin,
+and a file that loses its date formatting carries only these counts.
+Use \code{"excel"} for Excel's default (Windows) date system, which counts
+serial 1 as 1900-01-01 and, for compatibility with Lotus 1-2-3, also
+counts the non-existent 29 February 1900 as serial 60;
+use \code{"excel1904"} for the 1904 date system of older Excel for Mac;
+or give any date, such as \code{"1970-01-01"}, as the day that counts as zero.
+A fractional part is read as a time of day.
+By default (\code{NULL}), whole numbers from -9999 to 9999 are read as years,
+eight-digit numbers that form a valid date are read as YYYYMMDD,
+and any other number becomes \code{NA} with a warning,
+since without an origin it cannot be told apart from a serial count.}
 }
 \value{
 A \code{mdate} class object
@@ -180,6 +208,13 @@ as_messydate("{2021-02-01,2021-02-28}")
 as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
 as_messydate(c("210201", "20210201"), resequence = "ymd")
 as_messydate(c("010221", "01022021"), resequence = "dmy")
+# two-digit years leave the century unspecified, unless a pivot is given
+as_messydate(c("1/1/29", "May-97"))
+as_messydate(c("1/1/29", "May-97"), pivot = 1930)
+# serial day counts from spreadsheets need their origin
+as_messydate(c(36892, 45000.5), origin = "excel")
+as_messydate(c(35430, 1462), origin = "excel1904")
+as_messydate(c(2021, 20210201))
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 # resequence = "interactive")
 # ISO 8601-2 times, with the same annotations available on time components

@@ -92,7 +92,7 @@ NULL
 #' @export
 new_messydate <- function(x = character()) {
   stopifnot(is.character(x))
-  structure(x, class = "mdate")
+  vctrs::new_vctr(unclass(x), class = "mdate", inherit_base_type = FALSE)
 }
 
 #' @rdname class_mdate
@@ -155,7 +155,11 @@ make_messydate <- function(..., resequence = FALSE) {
 #' @importFrom utils str
 #' @export
 print.mdate <- function(x, ...) {
-  str(x)
+  # The plain str() display of earlier versions, without the vctrs class.
+  y <- unclass_vctr(x)
+  class(y) <- "mdate"
+  str(y, ...)
+  invisible(x)
 }
 
 #' @rdname class_mdate

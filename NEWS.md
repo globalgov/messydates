@@ -2,22 +2,29 @@
 
 ## Package
 
-- Updated `pushrelease.yml` workflow to carry the version number from `DESCRIPTION`
-- Added `data-raw/benchmark.R` so that speed changes can be measured
-- Added naming rules for new functions and operators to `CONTRIBUTING.md`
+- Added `vctrs` to Imports and `tibble` to Suggests
+- Added `data-raw/benchmark.R` to time parsing and resolution
+- Improved `pushrelease.yml` to take the version number from `DESCRIPTION`
+- Updated `CONTRIBUTING.md` with naming rules
 
+## Class
+
+- Improved `mdate` and `mduration` to be built on `vctrs`
+  - `class(x)` is now `c("mdate", "vctrs_vctr")`
+  - Columns keep their class in data frames, tibbles, `dplyr`, and `tidyr`
+  - Tibbles show the column type as `<mdate>` or `<mdur>`
+  - `c()` combines `mdate` with character, `Date`, and `POSIXct` values
+  - `c(x)` on a single `mdate` keeps its class
+  - Text that names no date is still an error in `c()` and `[<-`
 
 ## Coercion
 
 - Accelerated `as_messydate()` (closes #105)
-  - Prose and time-of-day steps now run only on elements that can contain prose or a time
+  - Prose and time steps run only on elements that can hold prose or a time
   - Prose that occurs more than once in a vector is interpreted once
-  - Zero padding of range and set members is now done on all members together
-  - 6,000 plain ISO dates now take about 0.15 s instead of 1.4 s
-  - 6,000 mixed values (ISO, prose and ranges) about 0.2 s instead of 9 s
-- Improved prose parser (#102)
-  - Now uses one table of English month names
-  - Fixed lower-casing text by the rules of the session locale
+  - Range and set members are padded together
+  - ~9x faster for 6,000 plain ISO dates
+  - ~45x faster for 6,000 mixed ISO, prose, and range values
 
 ## Resolution
 

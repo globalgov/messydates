@@ -30,7 +30,7 @@ NULL
 #' @export
 new_messyduration <- function(x = character()) {
   stopifnot(is.character(x))
-  structure(x, class = "mduration")
+  vctrs::new_vctr(unclass(x), class = "mduration", inherit_base_type = FALSE)
 }
 
 #' @rdname class_mduration
@@ -86,5 +86,9 @@ messy_range <- function(x, approx_range) {
 #' @param ... Additional arguments passed to `str()`.
 #' @export
 print.mduration <- function(x, ...) {
-  str(x, ...)
+  # The plain str() display of earlier versions, without the vctrs class.
+  y <- unclass_vctr(x)
+  class(y) <- "mduration"
+  str(y, ...)
+  invisible(x)
 }

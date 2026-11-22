@@ -476,13 +476,29 @@ expand_set_members <- function(dates) {
 
 ## expand ranges ####
 
+# A range of two full common-era dates, which `seq.Date()` can enumerate
+# directly. Other forms take the slower path through `seq.mdate()`.
+.plain_range <- "^[0-9]{4}-[0-9]{2}-[0-9]{2}\\.\\.[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+
 expand_ranges <- function(dates) {
 
-  lapply(dates, function(x)
-    unlist(lapply(x, function(y)
-      if(is_precise(y)) as.character(y) else
-        as.character(seq(mdate(y)))))
-  )
+  lapply(dates, function(x) {
+    precise <- date_is_precise(x)
+    plain <- stringi::stri_detect_regex(x, .plain_range)
+    unlist(lapply(seq_along(x), function(i) {
+      y <- x[i]
+      if (precise[i]) return(as.character(y))
+      # Same result as `seq(mdate(y))`, without parsing each end again.
+      # A reversed range is left to `seq.mdate()`, which orders the ends.
+      if (isTRUE(plain[i])) {
+        from <- substr(y, 1, 10)
+        to <- substr(y, 13, 22)
+        if (from <= to)
+          return(as.character(seq(as.Date(from), as.Date(to), by = "days")))
+      }
+      as.character(seq(mdate(y)))
+    }))
+  })
 
   # unlist(purrr::map(x[[7]], function(y) if(date_is_precise(y)) as.character(y) else as.character(seq(mdate(y)))))
   # lapply(x, function(y) if(any(date_is_precise(y))) else y)

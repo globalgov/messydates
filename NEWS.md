@@ -68,6 +68,8 @@
 
 ## Expand/Contract
 
+- Accelerated `expand()` on ranges of two full dates (#105)
+  - ~20x faster for 1,000 months and ranges
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
 
 ## Annotation

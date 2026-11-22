@@ -39,6 +39,9 @@
   - Range and set members are padded together
   - ~9x faster for 6,000 plain ISO dates
   - ~45x faster for 6,000 mixed ISO, prose, and range values
+- Improved the prose parser of `as_messydate()` (#102)
+  - Uses one table of English month names
+  - Fixed lower-casing by the session locale, e.g. `"APRIL"` under Turkish
 - Improved `as_messydate()` on numbers from spreadsheets
   - Added `origin` to read serial day counts
     - `origin = "excel"` reads the 1900 date system of Excel

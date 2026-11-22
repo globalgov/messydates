@@ -145,7 +145,7 @@ Messydates parser converts prose into annotated \code|mdate|:
 \end{tabular}
 \end{center}
 
-See also \code|is_bce()|.
+See also \code|date_is_bce()|.
 \code|contract(md)| finds most concise messy form:\\[-12pt]
 \begin{center}
 \code|"2021-04-01..2021-04-30"| \arrow \code|"2021-04"|
@@ -175,7 +175,7 @@ Finding multisets/ranges (with \code|=|, \code|-|, \code|%intersect%|, \code|%un
 & \code|"2012-01" %intersect% "2012-01-31"| \arrow \code|"2012-01-31"|\\[2pt]
 \end{tabular}
 
-See also \code|is_intersecting(x,y)|, \code|is_subset(x,y)|, \code|is_similar(x,y)|.
+See also \code|is_intersecting(x,y)|, \code|is_subset(x,y)|, \code|date_is_similar(x,y)|.
 \end{mdbox}
 
 % ------------- MDURATION -------------
@@ -215,7 +215,7 @@ Precision of date-times in parts per day:
 \code|precision("2012-01-01")| = \code|1|\\
 \code|precision("2012-01-01 14:30")| = \code|1440|
 \end{quote}
-See also \code|is_precise| \code|is_uncertain| \code|is_approximate|
+See also \code|date_is_precise| \code|date_is_uncertain| \code|date_is_approximate|
 \end{mdbox}
 
 \end{minipage}\hfill
@@ -279,7 +279,7 @@ Since resolution is an explicit step, varying it opens up opportunities to:
 
 \begin{itemize}
   \item describe according to \code|vmean|/\code|vmodal| most likely dates
-  \item drop uncertain dates using \code|!is_uncertain|
+  \item drop uncertain dates using \code|!date_is_uncertain|
   \item treat \code|vrandom| draws as multiple imputation for dates
   \item weight observations by \code|precision|
   \item bound result under \code|vmin| and \code|vmax|

@@ -7,9 +7,9 @@ test_that("approximate values get trapezoidal weights", {
   expect_identical(range(y$dates), c("2011-01-01", "2013-12-31"))
   expect_true(all(y$w[substr(y$dates, 1, 4) == "2012"] == 1))
   expect_true(all(y$w[substr(y$dates, 1, 4) != "2012"] < 1))
-  # a mark after the month covers the year and the month
+  # a mark after the month widens by months only
   expect_identical(range(messydates:::.weighted_members("2012-06~", 1)$dates),
-                   c("2011-05-01", "2013-07-31"))
+                   c("2012-05-01", "2012-07-31"))
   expect_identical(range(messydates:::.weighted_members("2012-~06-15", 1)$dates),
                    c("2012-05-15", "2012-07-15"))
   expect_identical(range(messydates:::.weighted_members("~2012-06-15", 1)$dates),

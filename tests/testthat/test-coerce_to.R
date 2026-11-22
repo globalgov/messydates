@@ -241,3 +241,22 @@ test_that("ordinary dates and durations are not read as weeks or days", {
   expect_warning(as_messydate("5 weeks"), "could not be parsed")
   expect_warning(as_messydate("103 days"), "could not be parsed")
 })
+
+test_that("a qualifier on a prose range marks both ends", {
+  expect_equal(as.character(as_messydate("approximately 2019-01-01..2019-01-05")),
+               "2019-01-01~..2019-01-05~")
+  expect_equal(as.character(as_messydate("possibly 2019-01..2019-03")),
+               "2019-01?..2019-03?")
+  expect_equal(as.character(as_messydate("circa 1990..1995")), "~1990..~1995")
+  # an open end stays open
+  expect_equal(as.character(as_messydate("approximately ..2019-01-05")),
+               "..2019-01-05~")
+  # a qualifier before two days marks both days
+  expect_equal(as.character(as_messydate("approximately between 1 and 5 January 2019")),
+               "2019-01-~01..2019-01-~05")
+  expect_equal(as.character(as_messydate("around the 13th or 15th of Feb 1977")),
+               "{1977-02-~13,1977-02-~15}")
+  # without a qualifier, nothing changes
+  expect_equal(as.character(as_messydate("between the 13th and 15th of February 1977")),
+               "1977-02-13..1977-02-15")
+})

@@ -1253,6 +1253,15 @@ qualify_bounds <- function(d, low) {
 .approx_words_rx <- "around|circa|approx|approximately|about|roughly|estimated"
 .uncert_words_rx <- "possibly|perhaps|maybe|uncertain|reportedly|allegedly"
 
+# The annotation that the qualifier words in lower-case prose give:
+# "~" for approximate ("around"), "?" for uncertain ("possibly"), "%" for
+# both, or NA for none.
+prose_qualifier <- function(low) {
+  approx <- grepl(paste0("\\b(", .approx_words_rx, ")\\b"), low)
+  uncert <- grepl(paste0("\\b(", .uncert_words_rx, ")\\b"), low)
+  if (approx && uncert) "%" else if (approx) "~" else if (uncert) "?" else NA_character_
+}
+
 interpret_one <- function(s) {
   if (is.na(s) || !is.character(s)) return(s)
   low <- .lower(s)
@@ -1363,8 +1372,12 @@ interpret_one <- function(s) {
     conn <- dl[1, 3]
     between <- grepl("\\bbetween\\b", low)
     yr <- nl_year(s)
-    d1 <- sprintf("%s-%02d-%02d", yr, mn, as.integer(dl[1, 2]))
-    d2 <- sprintf("%s-%02d-%02d", yr, mn, as.integer(dl[1, 4]))
+    # A qualifier applies to both days, on the day component, as for a
+    # single day ("around the 13th and 15th of Feb" marks both days).
+    q <- prose_qualifier(low)
+    q <- if (is.na(q)) "" else q
+    d1 <- sprintf("%s-%02d-%s%02d", yr, mn, q, as.integer(dl[1, 2]))
+    d2 <- sprintf("%s-%02d-%s%02d", yr, mn, q, as.integer(dl[1, 4]))
     if (between || conn == "to") return(paste0(d1, "..", d2))
     if (conn == "or") return(paste0("{", d1, ",", d2, "}"))
     return(c(d1, d2)) # a plain "and" lists several separate dates
@@ -1374,9 +1387,7 @@ interpret_one <- function(s) {
   # (both together give the EDTF "%" marker).
   approx_words <- .approx_words_rx
   uncert_words <- .uncert_words_rx
-  approx <- grepl(paste0("\\b(", approx_words, ")\\b"), low)
-  uncert <- grepl(paste0("\\b(", uncert_words, ")\\b"), low)
-  qual <- if (approx && uncert) "%" else if (approx) "~" else if (uncert) "?" else NA_character_
+  qual <- prose_qualifier(low)
   if (!is.na(qual)) {
     # Strip the qualifier words before reading the date, so a qualifier that
     # embeds a month name (the "may" inside "maybe") cannot be mistaken for a
@@ -1403,6 +1414,20 @@ interpret_one <- function(s) {
     # day; the qualifier applies to the whole date, as a suffix
     # (e.g. "approximately 2024-01-22" -> "2024-01-22~").
     iso <- inner_date(bare)
+    # A range: the qualifier applies to the whole range, so it marks each
+    # end, as a suffix on a date and as a prefix on a year
+    # ("approximately 2019-01-01..2019-01-05" -> "2019-01-01~..2019-01-05~",
+    # "circa 1990..1995" -> "~1990..~1995"). An open end stays open.
+    if (!is.na(iso) && grepl("..", iso, fixed = TRUE) &&
+        !grepl("[{}\\[\\],]", iso)) {
+      ends <- stringi::stri_split_fixed(iso, "..")[[1]]
+      ends <- vapply(ends, function(e) {
+        if (!nzchar(e)) e
+        else if (grepl("-", sub("^-", "", e))) paste0(e, qual)
+        else paste0(qual, e)
+      }, character(1), USE.NAMES = FALSE)
+      return(paste0(paste(ends, collapse = ".."), era))
+    }
     if (!is.na(iso) && iso != "NA" && grepl("-", sub("^-", "", iso)))
       return(paste0(iso, qual, era))
     # Otherwise only a year is known: prefix it (e.g. "circa 2012" -> "~2012").

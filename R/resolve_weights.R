@@ -13,10 +13,10 @@
 
 # Returns the dates that one value can be, and the weight of each.
 # Values that are not approximate, or approx_range = 0, give weight 1.
-# The support widens the core on each side by approx_range units of each
-# component that the marks cover: a year for "~2012" or "~2012-06-15",
-# a month for "2012-~06-15", a day for "2012-06-~15", a year and a month
-# for "2012-06~", and a year, a month and a day for "2012-06-15~".
+# The support widens the core on each side by approx_range units of the
+# finest component that each mark covers (see .approx_units()): a year for
+# "~2012" or "~2012-06-15", a month for "2012-~06-15" or "2012-06~", and a
+# day for "2012-06-~15" or "2012-06-15~".
 # A range widens at each end by the marks of that end.
 # Sets, open-ended ranges, values with unspecified digits, BCE dates, and
 # date-times keep a flat weight for now.
@@ -57,8 +57,8 @@
 }
 
 # The support of one approximate value: its core, from `lo` to `hi`,
-# widened on each side by approx_range units of each component that the
-# marks cover (see .approx_cover()).
+# widened on each side by approx_range units of the finest component that
+# each mark covers (see .approx_units()).
 # `core` holds the dates of the value without its annotations.
 # For a range, the marks of the first end widen the start and the marks of
 # the second end widen the end: "2012-03-~01..2012-04-15" widens only the
@@ -76,28 +76,31 @@
   list(lo = lo, hi = hi, from = from, to = to)
 }
 
-# Shifts a date by k units of each component that the marks of `y` cover.
+# Shifts a date by k units of each component that .approx_units() gives.
 # A shift to a day that does not exist (31 February) rolls back to the
 # last day of the month.
 .approx_shift <- function(d, y, k) {
-  for (u in c("year", "month", "day")[.approx_cover(y)])
+  for (u in c("year", "month", "day")[.approx_units(y)])
     d <- lubridate::add_with_rollback(d, lubridate::period(k, u))
   d
 }
 
-# The components (year, month, day) that the '~' and '%' marks in a value
-# cover, by the rule of ISO 8601-2:2019:
-# a mark after a component covers that component and all components to its
-# left ("2004-06~" covers year and month), and a mark before a component
-# covers only that component ("2004-~06" covers the month).
-.approx_cover <- function(y) {
+# The components (year, month, day) by which the '~' and '%' marks in a
+# value widen it: the finest component that each mark covers.
+# By ISO 8601-2:2019, a mark after a component covers that component and all
+# components to its left ("2004-06~" covers year and month), and a mark
+# before a component covers only that component ("2004-~06" covers the
+# month). A mark after the whole date says that the date, as written, is
+# approximate, so it widens at the precision of the date ("2004-06-11~" by
+# days, "2004-06~" by months), not by each component at once.
+# Each mark gives the component next to it, so the finest component that a
+# mark covers is the component that it is written on.
+.approx_units <- function(y) {
   parts <- strsplit(y, "-", fixed = TRUE)[[1]]
-  cover <- rep(FALSE, 3)
-  for (i in seq_len(min(length(parts), 3))) {
-    if (grepl("^[~%]", parts[i])) cover[i] <- TRUE
-    if (grepl("[~%]$", parts[i])) cover[seq_len(i)] <- TRUE
-  }
-  cover
+  units <- rep(FALSE, 3)
+  for (i in seq_len(min(length(parts), 3)))
+    if (grepl("^[~%]|[~%]$", parts[i])) units[i] <- TRUE
+  units
 }
 
 # Draws one date from the weighted members of one value.

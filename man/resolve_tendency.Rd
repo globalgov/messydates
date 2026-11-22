@@ -67,7 +67,7 @@ Values of trim outside that range are taken as the nearest endpoint.}
 
 \item{approx_range}{For \code{random()} and \code{vrandom()}, the range by which
 to widen approximate values (\code{~} or \verb{\%}).
-The range is in units of each component that the mark covers,
+The range is in units of the component that each mark is written on,
 as in \code{expand()}.
 With the default of \code{0}, approximate values are not widened.
 With a positive value, the draw uses trapezoidal weights,

@@ -16,14 +16,14 @@
 #'   That is, removes signs for approximate dates and
 #'   treats these dates as precise dates.
 #'   With a positive value, the dates widen on each side by `approx_range`
-#'   units of each component that the mark covers.
-#'   As in ISO 8601-2:2019, a mark after a component covers that component
-#'   and all components to its left, and a mark before a component covers
-#'   only that component.
+#'   units of the component that each mark is written on.
+#'   A mark after the whole date says that the date is approximate
+#'   at the precision written, so it widens by the finest component.
 #'   If 3, for example, `"~2001"` and `"~2001-06-15"` widen by 3 years,
-#'   `"2001-~06-15"` by 3 months, `"2001-06-~15"` by 3 days,
-#'   `"2001-06~"` by 3 years and 3 months,
-#'   and `"2001-06-15~"` by 3 years, 3 months and 3 days.
+#'   `"2001-~06-15"` and `"2001-06~"` by 3 months,
+#'   and `"2001-06-~15"` and `"2001-06-15~"` by 3 days.
+#'   Marks on more than one component widen by each of them,
+#'   so `"2001-~06-~15"` widens by 3 months and 3 days.
 #'   The widening starts from the first and the last date that the value
 #'   names, so that `"~2001"` with 1 gives all of 2000 to 2002.
 #'   A range widens at each end by the marks of that end,

@@ -62,12 +62,18 @@
     - `"May-97"` gave an error and now gives `"XX97-05"`
   - Dates with slashes and a two-digit last component are read year last
   - A two-digit year written first (`"39-01-01"`) is still read as written
+- Fixed a qualifier on a prose range marking only the last end
+  - `"approximately 2019-01-01..2019-01-05"` gave `"2019-01-01..2019-01-05~"`
+  - `"circa 1990..1995"` gave `"~1995"` and now gives `"~1990..~1995"`
+  - A qualifier before two days now marks both days
+    - `"approximately between 1 and 5 January 2019"` lost its qualifier
 
 ## Resolution
 
 - Added `approx_range` to `random()` and `vrandom()` for `~` and `%` values
   - Draws use trapezoidal weights, as in the egg-yolk model (Cohn and Gotts 1996)
   - The weight falls linearly to 0 over the dates `approx_range` adds
+  - Widens by the component that each mark is written on, as in `expand()`
   - Ranges widen at each end by the marks of that end, also in `expand()`
     - `"1990-03-~01..1990-04-~15", approx_range = 3` gives 1990-02-26 to 1990-04-18
   - Open-ended ranges, sets, `X` digits, BCE dates, and date-times are not widened yet
@@ -97,16 +103,15 @@
   - ~20x faster for 1,000 months and ranges
 - Improved `expand()` with `approx_range`
   - Fixed widening an approximate year from 1 January only
+    - `"~2012"` with `approx_range = 1` ended on 2013-01-01, now 2013-12-31
+    - Widening starts from the first and the last date that the value names
   - Fixed ranges with `~` that were not widened
   - Fixed open-ended ranges with `~`, which now give their known end
     - `"..2001-01-~05"` with `approx_range = 3` gave 1998-01-06 to 2001-01-05
-    - `"~2012"` with `approx_range = 1` ended on 2013-01-01, now 2013-12-31
-    - Widening starts from the first and the last date that the value names
-  - Each component that the mark covers now widens, as ISO 8601-2 says
-    - A mark after a component covers it and the components to its left
-    - A mark before a component covers only that component
-    - `"2019-01-01~"` widens by a year, a month, and a day on each side
-    - `"~2019-01-01"` widens by a year
+  - Each mark widens by the component that it is written on
+    - `"2019-01-01~"` widens by days and `"2019-01~"` by months
+    - `"~2019-01-01"` and `"~2019"` widen by years
+    - `"2019-~01-~01"` widens by months and days
   - Fixed `%` being ignored; it marks a value as approximate and uncertain
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
 - Fixed `expand()` reading a year with leading `X` digits as one range

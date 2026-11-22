@@ -121,7 +121,7 @@ vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
 #' @rdname resolve_tendency
 #' @param approx_range For `random()` and `vrandom()`, the range by which
 #'   to widen approximate values (`~` or `%`).
-#'   The range is in units of each component that the mark covers,
+#'   The range is in units of the component that each mark is written on,
 #'   as in `expand()`.
 #'   With the default of `0`, approximate values are not widened.
 #'   With a positive value, the draw uses trapezoidal weights,

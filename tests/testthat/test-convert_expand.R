@@ -37,7 +37,7 @@ test_that("Expand dates works properly for date ranges and unspecified dates", {
   expect_equal(as.character(expand(range)[[1]]),
                c("2014-01-01", "2014-01-02", "2014-01-03"))
   expect_equal(as.character(expand(approximate)[[1]][1]), "1999-01-01")
-  expect_equal(as.character(expand(approximate, approx_range = 3)[[2]][1]), "1996-07-01")
+  expect_equal(as.character(expand(approximate, approx_range = 3)[[2]][1]), "1999-07-01")
   expect_equal(as.character(expand(approximate, approx_range = 3)[[3]][1]), "1999-10-08")
   expect_equal(as.character(expand(unspecified)[[1]][1]), "2008-01-03")
   expect_equal(as.character(expand(set)[[1]][1]), "2012-01-01")
@@ -107,11 +107,14 @@ test_that("Expand widens approximate dates on both sides of the dates they name"
   # a mark before a component covers only that component
   expect_equal(ends("2012-~06-15"), c("2012-05-15", "2012-07-15"))
   expect_equal(ends("2012-06-~15"), c("2012-06-14", "2012-06-16"))
-  # a mark after a component covers it and all components to its left
-  expect_equal(ends("2012-06~"), c("2011-05-01", "2013-07-31"))
-  expect_equal(ends("2012-06-15~"), c("2011-05-14", "2013-07-16"))
+  # a mark after the whole date widens by its finest component only
+  expect_equal(ends("2012-06~"), c("2012-05-01", "2012-07-31"))
+  expect_equal(ends("2012-06-15~"), c("2012-06-14", "2012-06-16"))
+  expect_equal(ends("2019-01-01~..2019-01-05"), c("2018-12-31", "2019-01-05"))
+  # marks on two components widen by both
+  expect_equal(ends("2001-~06-~15", 3), c("2001-03-12", "2001-09-18"))
   # a shift to a day that does not exist rolls back to the end of the month
-  expect_equal(ends("2012-03-31~"), c("2011-02-27", "2013-05-01"))
+  expect_equal(ends("~2012-02-29"), c("2011-02-28", "2013-02-28"))
 })
 
 test_that("Expand widens each end of an approximate range by its own marks", {

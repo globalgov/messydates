@@ -110,7 +110,7 @@ validate_messydate <- function(x) {
   fail(grepl("[A-SU-WYa-wyz]", values),
        "The only alpha characters allowed in messy dates are 'X' for
       unspecified components, and 'T'/'Z' for times")
-  fail(!grepl("[0-9]", values),
+  fail(!grepl("[0-9]", values) & !is_empty_notation(values),
        "mdate object requires at least one specified date component.")
   fail(grepl("!|\\(|\\)|\\=|;|>|<|_|\\^|'|&|\\$|#", values),
        "mdate object can only consist of numbers and

@@ -16,6 +16,19 @@
   - `c()` combines `mdate` with character, `Date`, and `POSIXct` values
   - `c(x)` on a single `mdate` keeps its class
   - Text that names no date is still an error in `c()` and `[<-`
+- Accelerated `[`, `[[`, `[<-`, `[[<-`, `c()`, `rep()`, and `unique()`
+  - The `vctrs` methods replace hand-written ones that parsed each value again
+  - `duplicated()` also comes from `vctrs` now
+  - >1000x faster for `c(x, x)` and `rep(x, 3)` on 10,000 values
+  - ~175x faster for `x[1:100] <- y` on 10,000 values
+  - >3x faster for `x[i]` and `unique(x)` on 10,000 values
+- Added `{}` as the empty set, a value that is known to contain no date
+  - ISO 8601-2 requires a set to have a member; `{}` extends the standard
+  - Added `date_is_empty()` to test for it; `NA` is not the empty set
+  - `expand()` gives no dates for it
+  - `vmin()`, the other `v*()` functions, and `precision()` give `NA`
+  - `min()`, `max()`, `mean()`, `median()`, `modal()`, and `random()` leave it out
+  - `approximate()`, `uncertain()`, `contract()`, `+`, and `-` give `{}` again
 
 ## Coercion
 

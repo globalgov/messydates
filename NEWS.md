@@ -4,6 +4,8 @@
 
 - Updated `pushrelease.yml` workflow to carry the version number from `DESCRIPTION`
 - Added `data-raw/benchmark.R` so that speed changes can be measured
+- Added naming rules for new functions and operators to `CONTRIBUTING.md`
+
 
 ## Coercion
 

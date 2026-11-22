@@ -102,6 +102,121 @@ To that end, we have a regular syntax that users can rely on producing expected 
 Functions in the same family (`as_*()`, `year()`/`month()`/`day()`, `expand()`/`contract()`, etc.)
 should share argument order and naming, so that behaviour is guessable across the family.
 
+### Naming
+
+Use these rules to name a new exported function or operator.
+The rules apply to new names.
+Existing names that do not obey them stay as they are until a deprecation cycle renames them
+(see `R/messydates-defunct.R`), and each rename gets a NEWS entry.
+
+1. **Use an existing generic** (from base R, `stats`, or `lubridate`)
+   only when the meaning and the return type agree with that generic.
+   For example, `min()` reduces a vector to one value, `<` returns a logical vector,
+   and `year()` returns a number for each element.
+   Do not write a method that gives a familiar generic a different meaning.
+2. **Use `v` + the generic name** (`vmin()`, `vmax()`, `vmean()`, `vmedian()`, `vmodal()`, `vrandom()`)
+   only for the element-wise form of a generic that reduces a vector to one value.
+   The result has the same length as the input.
+   Do not use the `v` prefix for any other purpose.
+3. **Use `%word%`** (`%union%`, `%intersect%`) for a binary set operation.
+   **Use `%letters%`** (`%l%`, `%g%`, `%le%`, `%ge%`, `%><%`, `%>=<%`) only for an operator that returns a proportion.
+   Do not add new letter operators.
+4. **Use `date_is_` + adjective** for a new predicate, for example `date_is_empty()`.
+   A predicate is element-wise and returns a logical vector of the same length as its input.
+   A missing input gives `NA`.
+   The `date_` stem keeps the name clear of common predicates in other packages
+   (for example `rlang::is_empty()` and `purrr::is_empty()`).
+   In 1.2.0, `is_precise()`, `is_uncertain()`, `is_approximate()`, `is_bce()` and `is_similar()`
+   became `date_is_precise()`, `date_is_uncertain()`, `date_is_approximate()`, `date_is_bce()` and `date_is_similar()`.
+   The old names are soft-deprecated aliases in `R/messydates-defunct.R`.
+   Inside the package, use only the new names.
+   `is_messydate()` is a class test (see rule 6), and it keeps its name.
+   `is_intersecting()` and `is_subset()` are not element-wise yet.
+   They keep their names until the set operations become element-wise.
+5. **Use `md_` + verb** for a new exported function that has no generic,
+   for example `md_problems()`.
+   Use this prefix in particular when the bare word is a common English word
+   or when another common package exports it (`expand()` is an example, as `tidyr` exports it too).
+6. **Use the `messydate` or `messyduration` stem** only for class infrastructure:
+   `new_messydate()`, `validate_messydate()`, `make_messydate()`, `as_messydate()`, and `is_messydate()`.
+   Do not use this stem for an operation on a messy date.
+7. **Use the verb form** for a function that adds an annotation, for example `approximate()` and `uncertain()`.
+   The function returns an `mdate` of the same length.
+8. **Check each new name** against `base`, `stats`, `lubridate`, the tidyverse, and `rlang`
+   before you export it.
+   If one of these packages exports the name, use the `md_` prefix (rule 5) or choose a different name.
+
+### Vocabulary
+
+Use these terms with these meanings in documentation, vignettes, NEWS, and the paper.
+Use one term for one idea, and do not swap in a synonym for variety.
+
+**The record**
+
+- **True date**: when the event happened. Usually unknown.
+- **Record**: what the source says about the date.
+- **Compatible set**: every date consistent with the record.
+  `expand()` returns it; `vmin()` and `vmax()` return its ends.
+- **Messy date**: a record whose compatible set holds more than one date.
+  Messiness is a property of the record alone.
+- **Imprecision**: the general phenomenon, in prose only.
+  In the paper, the statistical name is *coarsened data* (Heitjan and Rubin 1991).
+- **Precision**: the finest component a record specifies (day, month, year), as `precision()` reports it.
+
+**Annotations** (use the ISO 8601-2 names)
+
+- **Unspecified** (`X`): a component that the record does not give, such as the century in `XX29`.
+- **Approximate** (`~`): the source gives the value as an estimate.
+- **Uncertain** (`?`): the source itself is in doubt.
+  Reserve "uncertain" for this annotation, and use "uncertainty" only for the uncertainty of an estimate.
+- **Range** (`..`), **open-ended range** (`..2019` or `2019..`), and **set** (`{}` for all of, `[]` for one of).
+- **Empty set** (`{}`): a record that is known to contain no date,
+  for example the intersection of two dates that do not overlap.
+  It is not a missing value: `NA` is a date that is not known.
+  ISO 8601-2 requires a set to have at least one member,
+  so the empty set is a messydates extension to the standard.
+  The element-wise resolution functions (`vmin()` and the others) give `NA` for it,
+  because it holds no date to resolve to.
+  Other element-wise functions, such as `approximate()`, `contract()`, and `+`, give `{}` again.
+  Functions that reduce a vector to one value (`min()` and the others) leave it out,
+  because it adds no date to the union.
+
+**Two different operations on precision**
+
+These two are opposites, and they must not be confused.
+
+- **False precision**: a record shown at a finer precision than the evidence supports,
+  so that the compatible set is replaced by one date and then discarded.
+  For example, `2020` becomes `2020-01-01`.
+  We call the step that does this **flattening**, and it is what the package exists to prevent.
+- **Temporal aggregation**: precise dates grouped into coarser units for an analysis.
+  For example, `2020-01-01` becomes `2020`.
+  This loses information too, but on purpose, and the analyst knows it.
+  It is the subject of an older literature (Freeman 1989; Shellman 2004).
+
+**The analysis**
+
+- **Level of aggregation**: the unit of time an analysis uses (day, week, month, year).
+  Always write "level of aggregation" (or "aggregation level") in full,
+  because a bare "level" is ambiguous with precision and with factor levels in R.
+- **Cell**: one unit at that level, such as May 1997 in a monthly analysis.
+- **Resolution**: choosing one date from the compatible set at analysis time.
+  Never use "resolution" to mean the level of aggregation.
+- **Rule**: the way resolution chooses a date: earliest (`vmin()`), latest (`vmax()`),
+  midpoint (`vmean()`), median (`vmedian()`), or random (`vrandom()`).
+- **Corner cases**: the estimates under the earliest and latest rules.
+  These are not bounds on the estimate.
+- **Labile**: a messy date is labile for an analysis when its compatible set spans more than one cell,
+  or more than one outcome of a comparison.
+  Lability is a property of the record *and* the analysis:
+  `1997-05` is labile at the week level but not at the year level.
+  In the language of rough sets (Pawlak 1982), a labile date lies in the boundary region of the partition.
+- **Exposure**: the share of labile dates in an analysis, optionally weighted by their influence on the estimate.
+- **Coarsening mechanism**: how the compatible set relates to the true date.
+  It is *at random* when the true date is equally likely anywhere in the set,
+  and *informative* otherwise, as under a reporting lag.
+- **Dating effect**: the difference in an estimate across rules.
+
 ### Common commands
 
 This is a standard R package developed with `devtools`/`roxygen2`.

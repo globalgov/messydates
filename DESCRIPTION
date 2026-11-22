@@ -38,11 +38,13 @@ Depends:
 Imports:
     methods,
     lubridate,
-    stringi
+    stringi,
+    vctrs (>= 0.6.0)
 Suggests:
     testthat (>= 3.0.0),
     rmarkdown,
     anytime,
+    tibble,
     clock
 URL: https://globalgov.github.io/messydates/
 BugReports: https://github.com/globalgov/messydates/issues
@@ -57,4 +59,4 @@ Config/Needs/website:
     pkgdown
 Config/testthat/edition: 3
 Config/testthat/parallel: true
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

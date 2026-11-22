@@ -68,6 +68,7 @@
 - Renamed the `is_*()` predicates to `date_is_*()`
   - `is_precise()`, `is_uncertain()`, `is_approximate()`, `is_bce()`, `is_similar()`
   - `is_messydate()`, `is_intersecting()`, and `is_subset()` keep their names
+- Fixed missing values in `+` and `-`, which now give `NA`
 
 # messydates 1.1.1
 

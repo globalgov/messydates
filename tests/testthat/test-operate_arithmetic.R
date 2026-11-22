@@ -55,3 +55,9 @@ test_that("time arithmetic works on a closed date-time range", {
     as.character(as_messydate("2012-01-31T09:00..2012-02-01T09:00") + "1 month"),
     "2012-02-29 09:00..2012-03-01 09:00")
 })
+
+test_that("Arithmetic keeps NA and the empty set", {
+  x <- as_messydate(c("2012-01-01", NA, "{}"))
+  expect_equal(as.character(x + 1), c("2012-01-02", NA, "{}"))
+  expect_equal(as.character(x - 1), c("2011-12-31", NA, "{}"))
+})

@@ -49,6 +49,8 @@ NULL
 #' @rdname operate_arithmetic
 #' @export
 `+.mdate` <- function(e1, e2) {
+  # Shifting the empty set gives the empty set, and shifting NA gives NA.
+  if (.has_missing(e1)) return(.with_missing(e1, `+.mdate`, e2))
   if (is_time_arithmetic(e1, e2)) return(shift_time(e1, e2, 1))
   e2 <- parse_date_strings(e2)
   add(e1, e2)
@@ -57,6 +59,8 @@ NULL
 #' @rdname operate_arithmetic
 #' @export
 `-.mdate` <- function(e1, e2) {
+  if (!missing(e2) && .has_missing(e1))
+    return(.with_missing(e1, `-.mdate`, e2))
   if (is_time_arithmetic(e1, e2)) return(shift_time(e1, e2, -1))
   e2 <- parse_date_strings(e2)
   subtract(e1, e2)

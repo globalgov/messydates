@@ -77,7 +77,18 @@ min.mdate <- function(..., na.rm = FALSE){
   dates
 }
 
+# Resolves a year that holds 'X' ("XX29", "192X") to its earliest or latest
+# possible date, leaving other values alone.
+.resolve_x_years <- function(dates, bound) {
+  hasx <- !is.na(dates) & stringi::stri_detect_regex(dates, "^-?[0-9]*X[0-9X]*(-|$)")
+  if (any(hasx))
+    dates[hasx] <- vapply(dates[hasx], resolve_x_year, character(1),
+                          bound = bound, USE.NAMES = FALSE)
+  dates
+}
+
 .replace_earliest <- function(dates){
+  dates <- .resolve_x_years(dates, "min")
   dates <- stringi::stri_replace_last_regex(dates,
                                             "XX", "01")
   dates <- stringi::stri_replace_last_regex(dates,
@@ -135,6 +146,7 @@ max.mdate <- function(..., na.rm = FALSE) {
 }
 
 .replace_latest <- function(dates){
+  dates <- .resolve_x_years(dates, "max")
   dates <- stringi::stri_replace_last_regex(dates,
                                             "^(.*[:digit:]{4})$", "$1-12-31")
   dates <- stringi::stri_replace_last_regex(dates,

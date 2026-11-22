@@ -342,15 +342,22 @@ expand_unspecified_years <- function(dates) {
              " years. Use a more specified year, expand(x, by = \"year\"), ",
              "or resolve it with vmin()/vmax() instead.", call. = FALSE)
       }
+      # Only trailing 'X's ("192X") make the candidate years contiguous.
+      # Leading or inner ones ("XX29", a two-digit year with an unknown
+      # century) pick out every hundredth or tenth year instead.
+      lo <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "0"))
+      hi <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "9"))
+      years <- formatC(seq(lo, hi), width = 4, flag = "0")
+      years <- years[grepl(paste0("^", gsub("X", "[0-9]", m[, 3]), "$"), years)]
       if (m[, 4] != "") {
         # A month or day is attached, so the value picks out that month or day
         # in each candidate year rather than a contiguous stretch of time.
         # Enumerate the years, leaving any remaining 'X' to the rules below.
-        lo <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "0"))
-        hi <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "9"))
-        return(paste(paste0(m[, 2], formatC(seq(lo, hi), width = 4, flag = "0"),
-                            m[, 4]), collapse = ","))
+        return(paste(paste0(m[, 2], years, m[, 4]), collapse = ","))
       }
+      if (!grepl("^[0-9]*X+$", m[, 3]))
+        return(paste(paste0(m[, 2], years, "-01-01..", m[, 2], years, "-12-31"),
+                     collapse = ","))
       paste0(resolve_x_year(v, "min"), "..", resolve_x_year(v, "max"))
     }, character(1), USE.NAMES = FALSE)
     paste(members, collapse = ",")

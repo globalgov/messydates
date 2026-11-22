@@ -65,12 +65,18 @@
 
 ## Resolution
 
+- Fixed `vmin()` and `vmax()` on years with unspecified digits
+  - `vmin("19XX")` gave `"1901-01-01"` and now gives `"1900-01-01"`
+  - `vmax("199X")` gave the value unresolved and now gives `"1999-12-31"`
+  - `vmin("XX29-01-01")` gave `"0129-01-01"` and now gives `"0029-01-01"`
 
 ## Expand/Contract
 
 - Accelerated `expand()` on ranges of two full dates (#105)
   - ~20x faster for 1,000 months and ranges
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
+- Fixed `expand()` reading a year with leading `X` digits as one range
+  - `"XX29-01-01"` gave 9,901 dates and now gives the 100 that it can be
 
 ## Annotation
 

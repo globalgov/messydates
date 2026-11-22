@@ -38,3 +38,18 @@ test_that("date-only expansion is unaffected by the new time handling", {
                as.character(seq(as.Date("2012-02-01"), as.Date("2012-02-29"),
                                 by = "day")))
 })
+
+test_that("expand by hour keeps the UTC offset of a date-time range", {
+  expect_equal(expand(as_messydate("2019-03-01 09:00+02:00..2019-03-01 11:00+02:00"),
+                      by = "hour")[[1]],
+               c("2019-03-01 09:00:00+02:00", "2019-03-01 10:00:00+02:00",
+                 "2019-03-01 11:00:00+02:00"))
+  expect_equal(expand(as_messydate("2019-03-01 09:00Z..2019-03-01 10:00Z"),
+                      by = "hour")[[1]],
+               c("2019-03-01 09:00:00Z", "2019-03-01 10:00:00Z"))
+  # ends with different offsets are sequenced as instants, in the first offset
+  expect_equal(expand(as_messydate("2019-03-01 09:00+02:00..2019-03-01 09:00Z"),
+                      by = "hour")[[1]],
+               c("2019-03-01 09:00:00+02:00", "2019-03-01 10:00:00+02:00",
+                 "2019-03-01 11:00:00+02:00"))
+})

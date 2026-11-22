@@ -91,16 +91,40 @@ expand <- function(x, approx_range = 0, by = "day") {
 expand_datetime <- function(x, by) {
   unit <- c(hour = "hour", min = "min", sec = "sec")[
     sub("s$", "", sub("^(hour|min|sec).*", "\\1", by))]
+  fmt <- paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S")
   lapply(x, function(y) {
     if (grepl("\\.\\.", y) && grepl("[T ]", y)) {
       ends <- strsplit(y, "\\.\\.")[[1]]
-      s <- as.POSIXct(sub("T", " ", ends[1], fixed = TRUE), tz = "UTC")
-      e <- as.POSIXct(sub("T", " ", ends[2], fixed = TRUE), tz = "UTC")
-      format(seq(s, e, by = unit), paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S"))
+      off <- stringi::stri_extract_first_regex(ends, .offset_rx)
+      if (all(is.na(off))) {
+        s <- as.POSIXct(sub("T", " ", ends[1], fixed = TRUE), tz = "UTC")
+        e <- as.POSIXct(sub("T", " ", ends[2], fixed = TRUE), tz = "UTC")
+        return(format(seq(s, e, by = unit), fmt))
+      }
+      # Keep the offset on each time. The ends are read as instants, so ends
+      # with different offsets are still sequenced correctly, and every time
+      # is then written in the offset of the first end that has one. An end
+      # with no offset is taken to have that same offset.
+      o <- off[!is.na(off)][1]
+      ends[is.na(off)] <- paste0(ends[is.na(off)], o)
+      inst <- mdate_to_posixct(ends)
+      wall <- seq(inst[1], inst[2], by = unit) + .offset_seconds(o)
+      paste0(format(wall, fmt, tz = "UTC"), o)
     } else {
       unlist(expand(as_messydate(y)))
     }
   })
+}
+
+# A UTC offset at the end of a canonical date-time, as `as_messydate()`
+# writes it ("Z" or "+hh:mm").
+.offset_rx <- "(Z|[+-][0-9]{2}:[0-9]{2})$"
+
+# The number of seconds that an offset such as "+02:00" adds to UTC.
+.offset_seconds <- function(o) {
+  if (o == "Z") return(0)
+  sgn <- if (substr(o, 1, 1) == "-") -1 else 1
+  sgn * (as.numeric(substr(o, 2, 3)) * 3600 + as.numeric(substr(o, 5, 6)) * 60)
 }
 
 ## expand approx ####

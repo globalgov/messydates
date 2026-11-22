@@ -66,6 +66,10 @@
 ## Resolution
 
 
+## Expand/Contract
+
+- Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
+
 ## Annotation
 
 - Fixed missing values in `approximate()` and `uncertain()` to give `NA`

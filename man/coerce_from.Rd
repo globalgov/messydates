@@ -6,7 +6,6 @@
 \alias{as.POSIXct.mdate}
 \alias{as.POSIXlt.mdate}
 \alias{as.data.frame.mdate}
-\alias{as.list.mdate}
 \alias{as.double.mdate}
 \alias{as_datetime,mdate-method}
 \title{Coercion from \code{mdate} to common date classes}
@@ -18,8 +17,6 @@
 \method{as.POSIXlt}{mdate}(x, tz = "UTC", FUN = vmin, ...)
 
 \method{as.data.frame}{mdate}(x, ...)
-
-\method{as.list}{mdate}(x, ...)
 
 \method{as.double}{mdate}(x, ...)
 
@@ -75,9 +72,6 @@ for those.
 \code{as.data.frame()} places the (unresolved) \code{mdate} vector in a
 single-column data frame, as for any other vector.
 
-\code{as.list()} splits \code{x} into a list of length-one \code{mdate} objects,
-one per element, without resolving any of them.
-
 \code{as.double()} converts \code{x} to the number of days since 1970-01-01 (as
 for \code{as.double(as.Date(x))}), without resolving ranges, sets, or
 unspecified components first; it is mostly useful for already-precise
@@ -105,7 +99,6 @@ as.POSIXct(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
 as.POSIXct(as_messydate("2012-01-01 14:30:00+02:00"), FUN = vmin)
 as.POSIXlt(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
 as.data.frame(as_messydate(c("2012-01-01", "2012-02")))
-as.list(as_messydate(c("2012-01-01", "2012-02")))
 as.double(as_messydate("2012-01-01"))
 }
 \seealso{

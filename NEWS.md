@@ -6,6 +6,7 @@
 - Added `data-raw/benchmark.R` to time parsing and resolution
 - Improved `pushrelease.yml` to take the version number from `DESCRIPTION`
 - Updated `CONTRIBUTING.md` with naming rules
+- Added equivalence test to compare parsing, expansion, and resolution with reference
 
 ## Class
 
@@ -18,10 +19,10 @@
   - Text that names no date is still an error in `c()` and `[<-`
 - Accelerated `[`, `[[`, `[<-`, `[[<-`, `c()`, `rep()`, and `unique()`
   - The `vctrs` methods replace hand-written ones that parsed each value again
-  - `duplicated()` also comes from `vctrs` now
-  - >1000x faster for `c(x, x)` and `rep(x, 3)` on 10,000 values
+  - `as.list()` and `duplicated()` also come from `vctrs` now
+  - More than 1000x faster for `c(x, x)` and `rep(x, 3)` on 10,000 values
   - ~175x faster for `x[1:100] <- y` on 10,000 values
-  - >3x faster for `x[i]` and `unique(x)` on 10,000 values
+  - More than 3x faster for `x[i]` and `unique(x)` on 10,000 values
 - Added `{}` as the empty set, a value that is known to contain no date
   - ISO 8601-2 requires a set to have a member; `{}` extends the standard
   - Added `date_is_empty()` to test for it; `NA` is not the empty set
@@ -61,7 +62,6 @@
 
 ## Resolution
 
-- Accelerated `as.list.mdate()`, which wrapped each element by parsing it again
 
 ## Annotation
 
@@ -77,10 +77,6 @@
   - `is_precise()`, `is_uncertain()`, `is_approximate()`, `is_bce()`, `is_similar()`
   - `is_messydate()`, `is_intersecting()`, and `is_subset()` keep their names
 - Fixed missing values in `+` and `-`, which now give `NA`
-
-## Tests
-
-- Added equivalence test against saved reference to compare parsing, expansion, and resolution
 
 # messydates 1.1.1
 

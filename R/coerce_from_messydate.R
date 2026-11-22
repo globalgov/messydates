@@ -152,19 +152,6 @@ as.data.frame.mdate <- function(x, ...) {
 
 #' @rdname coerce_from
 #' @details
-#'   `as.list()` splits `x` into a list of length-one `mdate` objects,
-#'   one per element, without resolving any of them.
-#' @examples
-#' as.list(as_messydate(c("2012-01-01", "2012-02")))
-#' @export
-as.list.mdate <- function(x, ...) {
-  # The elements are already valid mdate strings, so they are wrapped
-  # rather than parsed again one at a time.
-  lapply(unclass(x), new_messydate)
-}
-
-#' @rdname coerce_from
-#' @details
 #'   `as.double()` converts `x` to the number of days since 1970-01-01 (as
 #'   for `as.double(as.Date(x))`), without resolving ranges, sets, or
 #'   unspecified components first; it is mostly useful for already-precise

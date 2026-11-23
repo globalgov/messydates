@@ -87,7 +87,7 @@ test_that("functions accept the empty set", {
   expect_identical(as.character(x + 1), c("{}", "2012-01-06"))
   expect_identical(as.character(x - 1), c("{}", "2012-01-04"))
   expect_identical(as.character(tag_approximate(x)), c("{}", "2012-01-~05"))
-  expect_identical(as.character(contract(x)), c("{}", "2012-01-05"))
+  expect_identical(as.character(as_messydate(possible_dates(x))), c("{}", "2012-01-05"))
 })
 
 test_that("The old is_*() names give a message once and the same result", {
@@ -108,4 +108,12 @@ test_that("date_is_open finds open ranges", {
   expect_equal(date_is_open(as_messydate(c("..2012", "2012..", "2010..2012",
                                            "2012", "{..2010,2012}", NA))),
                c(TRUE, TRUE, FALSE, FALSE, TRUE, NA))
+})
+
+test_that("intersection and subset tests widen approximate dates by approx_range", {
+  x <- as_messydate(c("2001-05-16~", "2001-05-16"))
+  y <- as_messydate("2001-05-18")
+  expect_equal(date_is_intersecting(x, y), c(FALSE, FALSE))
+  expect_equal(date_is_intersecting(x, y, approx_range = 3), c(TRUE, FALSE))
+  expect_equal(date_is_subset(y, x, approx_range = 3), c(TRUE, FALSE))
 })

@@ -16,3 +16,9 @@ test_that("precision function works properly", {
   expect_equal(precision(as_messydate("2012")), 0.00273224,
                tolerance = 0.001)
 })
+
+test_that("precision counts the days that approx_range adds", {
+  x <- as_messydate(c("2001-05-16~", "2001-05-16"))
+  expect_equal(precision(x), c(1, 1))
+  expect_equal(precision(x, approx_range = 3), c(1 / 7, 1))
+})

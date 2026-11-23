@@ -27,15 +27,18 @@
 
 \method{tz}{mdate}(x, ...)
 
-precision(x)
+precision(x, ...)
 
-\method{precision}{mdate}(x)
+\method{precision}{mdate}(x, approx_range = 0, ...)
 }
 \arguments{
 \item{x}{A \code{mdate} object}
 
-\item{...}{Additional arguments passed to or from other methods
-(accepted for compatibility with the \code{{lubridate}} generics; unused).}
+\item{...}{Not used. Any further argument is an error.}
+
+\item{approx_range}{For \code{precision()}, the range to widen approximate
+values (\code{~} or \verb{\%}) by, as in \code{possible_dates()}.
+0 (the default) ignores the marks.}
 }
 \value{
 \code{year()}, \code{month()}, \code{day()}, \code{hour()}, \code{minute()}, and \code{second()}
@@ -75,6 +78,8 @@ between \eqn{1/28} and \eqn{1/31}, and annual measures will have
 a precision of between \eqn{1/365} and \eqn{1/366}.
 Times of day extend the same scale below the day: a date-time measured
 to the hour returns 24, to the minute 1440, and to the second 86400.
+With \code{approx_range} above 0, an approximate value counts the dates
+that the widening adds, as in \code{possible_dates()}.
 }
 
 \examples{
@@ -86,5 +91,6 @@ minute(as_messydate("2012-02-03 14:30:00"))
 second(as_messydate("2012-02-03 14:30:05"))
 tz(as_messydate("2012-02-03 14:30:00+02:00"))
 precision(as_messydate(c("2012-02-03","2012","2012-02")))
+precision(as_messydate("2012-02-03~"), approx_range = 3)
 precision(as_messydate("2012-02-03 14:30"))
 }

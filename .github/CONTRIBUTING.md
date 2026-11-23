@@ -341,6 +341,11 @@ Each shim's `@describeIn` line names the release that removes it.
 For example, the names that 1.2.0 deprecates give a warning in 1.3.0 and go in 1.4.0.
 A shim needs no tests beyond one that the old name gives the message and still works.
 
+A change of default behaviour follows the same three steps.
+For example, in 1.2.0, `as.Date()`, `as.POSIXct()`, `as.POSIXlt()` and `as.double()` without `FUN`
+state the rule that they use for an imprecise value (`vmin()`) once in each session.
+In 1.3.0, they give a warning each time, and in 1.4.0, they give an error.
+
 ## Documenting
 
 ### README, vignettes, and website
@@ -390,6 +395,7 @@ Start each bullet with a verb matching the change type:
 - `Fixed ...`: bug fixes
 - `Renamed ... to ...`: function or argument name migrations
 - `Improved ...`: functional updates to existing behaviour
+- `Changed ...`: a change of behaviour that can break existing code
 - `Accelerated ...`: the same behaviour, made faster;
   give the speed-up in a sub-bullet (see below)
 - `Updated ...`: documentation changes, including this file

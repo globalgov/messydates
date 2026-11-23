@@ -53,7 +53,7 @@ seq.mdate <- function(from, to, by = "days", ...) {
 
   # straight forward sequence (all common-era dates): return Date objects
   if(!any(date_is_bce(c(from, to)))){
-    seq(as.Date(from), as.Date(to), by = by)
+    seq(as.Date(from, FUN = vmin), as.Date(to, FUN = vmin), by = by)
   } else {
     # Any endpoint before the common era. `as.Date.mdate()` maps mdate strings
     # to R's `Date`, which uses the proleptic Gregorian calendar with
@@ -61,6 +61,7 @@ seq.mdate <- function(from, to, by = "days", ...) {
     # walks the whole continuum uniformly -- through the 366-day year zero and
     # across the BCE/CE boundary -- with no era special-casing. `zero_padding()`
     # re-pads the years that R formats as e.g. "-001" back to "-0001".
-    zero_padding(format(seq(as.Date(from), as.Date(to), by = by), "%Y-%m-%d"))
+    zero_padding(format(seq(as.Date(from, FUN = vmin), as.Date(to, FUN = vmin),
+                            by = by), "%Y-%m-%d"))
   }
 }

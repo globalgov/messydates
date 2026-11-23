@@ -103,3 +103,31 @@ test_that("as.double.mdate converts to days since 1970-01-01, including BCE", {
                as.double(lubridate::as_date(lubridate::ymd("0000-01-01") -
                                               lubridate::years(1000))))
 })
+
+test_that("a conversion without FUN states the rule for imprecise values once", {
+  rm(list = grep("^resolve:", ls(.deprecated_env), value = TRUE),
+     envir = .deprecated_env)
+  x <- as_messydate(c("2012-06-15", "2012-06", "~2012", NA, "{}"))
+  expect_message(d <- as.Date(x), "resolved 2 imprecise values with `vmin\\(\\)`")
+  expect_equal(d, as.Date(x, FUN = vmin))
+  expect_silent(as.Date(x))
+  expect_message(as.POSIXct(x), "as.POSIXct\\(x, FUN = vmax\\)")
+  expect_message(as.POSIXlt(x), "as.POSIXlt")
+  expect_message(as.double(x), "as.double")
+})
+
+test_that("a conversion is silent for precise values or with FUN", {
+  rm(list = grep("^resolve:", ls(.deprecated_env), value = TRUE),
+     envir = .deprecated_env)
+  expect_silent(as.Date(as_messydate(c("2012-06-15", NA, "{}"))))
+  expect_silent(as.POSIXct(as_messydate("2012-06-15 14:30")))
+  expect_silent(as.Date(as_messydate("2012-06"), FUN = vmax))
+  expect_silent(as.Date(as_messydate("2012-06"), vmax))
+  expect_silent(seq(as_messydate("2012-06-01"), as_messydate("2012-06")))
+})
+
+test_that("as.double() resolves with FUN and keeps NA", {
+  x <- as_messydate(c("2012-06", NA))
+  expect_equal(as.double(x, FUN = vmax),
+               c(as.double(as.Date("2012-06-30")), NA))
+})

@@ -5,6 +5,9 @@
 #'   These functions provide various logical statements about messy date objects.
 #' @name operate_statements
 #' @param x,y `mdate` or other class objects
+#' @param approx_range Range to widen approximate values (`~` or `%`) by
+#'   before the test, as in `possible_dates()`. 0 (the default) ignores
+#'   the marks.
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
 
@@ -26,8 +29,8 @@ is_messydate <- function(x) {
 #' date_is_intersecting(as_messydate(c("2012-01", "2012-01")),
 #'   as_messydate(c("2012-01-01..2012-02-22", "2012-02-01..2012-02-22")))
 #' @export
-date_is_intersecting <- function(x, y) {
-  .pairwise_dates(x, y, function(a, b) length(intersect(a, b)) > 0)
+date_is_intersecting <- function(x, y, approx_range = 0) {
+  .pairwise_dates(x, y, function(a, b) length(intersect(a, b)) > 0, approx_range)
 }
 
 #' @describeIn operate_statements tests whether all the dates of each value
@@ -38,13 +41,14 @@ date_is_intersecting <- function(x, y) {
 #' date_is_subset(as_messydate(c("2012-01-01", "2012-01-01..2012-01-03",
 #'   "2012-01-01")), as_messydate(c("2012-01", "2012-01", "2012-02")))
 #' @export
-date_is_subset <- function(x, y) {
-  .pairwise_dates(x, y, function(a, b) all(a %in% b))
+date_is_subset <- function(x, y, approx_range = 0) {
+  .pairwise_dates(x, y, function(a, b) all(a %in% b), approx_range)
 }
 
 # Applies `test` to the expanded dates of each pair x[i], y[i].
 # Missing values give NA. Each distinct value is expanded once.
-.pairwise_dates <- function(x, y, test) {
+.pairwise_dates <- function(x, y, test, approx_range = 0) {
+  .check_approx_range(approx_range)
   x <- as.character(as_messydate(x))
   y <- as.character(as_messydate(y))
   common <- vctrs::vec_recycle_common(x = x, y = y)
@@ -54,7 +58,7 @@ date_is_subset <- function(x, y) {
   ok <- !is.na(x) & !is.na(y)
   if (!any(ok)) return(out)
   vals <- unique(c(x[ok], y[ok]))
-  days <- possible_dates(as_messydate(vals))
+  days <- possible_dates(as_messydate(vals), approx_range = approx_range)
   names(days) <- vals
   out[ok] <- mapply(function(a, b) test(days[[a]], days[[b]]),
                     x[ok], y[ok], USE.NAMES = FALSE)

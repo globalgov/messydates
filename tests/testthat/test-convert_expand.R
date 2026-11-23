@@ -133,3 +133,24 @@ test_that("Expand widens each end of an approximate range by its own marks", {
   expect_equal(possible_dates(as_messydate("..2001-01-~05"), approx_range = 3)[[1]],
                "2001-01-05")
 })
+
+test_that("plain ranges and sets give their days in order", {
+  x <- as_messydate(c("2012-02-28..2012-03-01", "{2012-06-01,2012-06-03..2012-06-04}",
+                      "2012-06-15", NA))
+  expect_identical(possible_dates(x),
+                   list(c("2012-02-28", "2012-02-29", "2012-03-01"),
+                        c("2012-06-01", "2012-06-03", "2012-06-04"),
+                        "2012-06-15", NA_character_))
+})
+
+test_that("a month or day with one unspecified digit gives its valid days", {
+  f <- function(x) possible_dates(as_messydate(x))[[1]]
+  expect_length(f("2012-1X"), 92)
+  expect_equal(range(f("2012-1X")), c("2012-10-01", "2012-12-31"))
+  expect_equal(f("2012-06-1X"), sprintf("2012-06-%02d", 10:19))
+  expect_equal(f("2012-1X-31"), c("2012-10-31", "2012-12-31"))
+  expect_identical(f("2012-02-3X"), character(0))
+  expect_equal(as.character(vmin(as_messydate("2012-1X"))), "2012-10-01")
+  expect_equal(as.character(vmax(as_messydate("2012-1X"))), "2012-12-31")
+  expect_true(is.na(vmin(as_messydate("2012-02-3X"))))
+})

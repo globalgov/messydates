@@ -10,15 +10,15 @@
 \alias{as_datetime,mdate-method}
 \title{Coercion from \code{mdate} to common date classes}
 \usage{
-\method{as.Date}{mdate}(x, FUN = vmin, ...)
+\method{as.Date}{mdate}(x, FUN, ...)
 
-\method{as.POSIXct}{mdate}(x, tz = "UTC", FUN = vmin, ...)
+\method{as.POSIXct}{mdate}(x, tz = "UTC", FUN, ...)
 
-\method{as.POSIXlt}{mdate}(x, tz = "UTC", FUN = vmin, ...)
+\method{as.POSIXlt}{mdate}(x, tz = "UTC", FUN, ...)
 
 \method{as.data.frame}{mdate}(x, ...)
 
-\method{as.double}{mdate}(x, ...)
+\method{as.double}{mdate}(x, FUN, ...)
 
 \S4method{as_datetime}{mdate}(x, ...)
 }
@@ -30,7 +30,15 @@ into a single date.
 For example, \code{min()}, \code{max()}, \code{mean()}, \code{median()},
 \code{modal()}, and \code{random()}. \code{vmin()}, \code{vmax()}, \code{vmean()}, \code{vmedian()},
 \code{vmodal()}, and \code{vrandom()} are the vectorised equivalents, resolving
-each element separately rather than summarising the whole vector.}
+each element separately rather than summarising the whole vector.
+
+A precise value needs no \code{FUN}.
+If \code{x} holds an imprecise value and you do not give \code{FUN},
+the function uses \code{vmin()}, the earliest possible date,
+and states this rule in a message once in each session.
+In messydates 1.3.0, the message becomes a warning.
+In messydates 1.4.0, it becomes an error:
+then you must give \code{FUN} to convert an imprecise value.}
 
 \item{...}{Arguments passed on to the S3 generics.}
 
@@ -72,10 +80,9 @@ for those.
 \code{as.data.frame()} places the (unresolved) \code{mdate} vector in a
 single-column data frame, as for any other vector.
 
-\code{as.double()} converts \code{x} to the number of days since 1970-01-01 (as
-for \code{as.double(as.Date(x))}), without resolving ranges, sets, or
-unspecified components first; it is mostly useful for already-precise
-dates.
+\code{as.double()} converts \code{x} to the number of days since 1970-01-01,
+as \code{as.double(as.Date(x, FUN))} does.
+An imprecise value is first resolved with \code{FUN}, as for \code{as.Date()}.
 
 \code{{lubridate}}'s \code{as_date()} and \code{as_datetime()} also accept an \code{mdate}
 (delegating to \code{as.Date()}/\code{as.POSIXct()} above, so the \code{FUN} resolver
@@ -100,6 +107,7 @@ as.POSIXct(as_messydate("2012-01-01 14:30:00+02:00"), FUN = vmin)
 as.POSIXlt(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
 as.data.frame(as_messydate(c("2012-01-01", "2012-02")))
 as.double(as_messydate("2012-01-01"))
+as.double(as_messydate("2012-01"), FUN = vmax)
 }
 \seealso{
 \code{\link[=resolve_extrema]{resolve_extrema()}}, \code{\link[=resolve_tendency]{resolve_tendency()}}, \code{\link[=resolve_probabilistically]{resolve_probabilistically()}}

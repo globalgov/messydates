@@ -154,7 +154,7 @@ tz.mdate <- function(x, ...) {
 
 #' @rdname component_extract
 #' @export
-precision <- function(x) UseMethod("precision")
+precision <- function(x, ...) UseMethod("precision")
 
 #' @rdname component_extract
 #' @section Precision:
@@ -165,12 +165,22 @@ precision <- function(x) UseMethod("precision")
 #'   a precision of between \eqn{1/365} and \eqn{1/366}.
 #'   Times of day extend the same scale below the day: a date-time measured
 #'   to the hour returns 24, to the minute 1440, and to the second 86400.
+#'   With `approx_range` above 0, an approximate value counts the dates
+#'   that the widening adds, as in `possible_dates()`.
+#' @param approx_range For `precision()`, the range to widen approximate
+#'   values (`~` or `%`) by, as in `possible_dates()`.
+#'   0 (the default) ignores the marks.
+#' @param ... Not used. Any further argument is an error.
 #' @examples
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
+#' precision(as_messydate("2012-02-03~"), approx_range = 3)
 #' precision(as_messydate("2012-02-03 14:30"))
 #' @export
-precision.mdate <- function(x) {
-  out <- possible_dates(x)
+precision.mdate <- function(x, approx_range = 0, ...) {
+  if (...length()) stop("Unused argument: ", paste(names(list(...)), collapse = ", "),
+                        call. = FALSE)
+  .check_approx_range(approx_range)
+  out <- possible_dates(x, approx_range = approx_range)
   out <- (1 / lengths(out)) * subday_factor(x)
   # Neither a missing date nor the empty set has a precision.
   out[is.na(x) | is_empty_notation(x)] <- NA

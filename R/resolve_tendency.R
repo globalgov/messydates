@@ -28,6 +28,16 @@
 #'   middle values in that case, and `mean()`/`vmean()` may be unreliable for
 #'   solely negative-year inputs (a documented limitation, not a supported
 #'   feature).
+#' @section Approximate values:
+#'   With `approx_range` above 0, an approximate value (`~` or `%`) widens
+#'   by `approx_range` as in `possible_dates()`, and its dates get the
+#'   trapezoidal weights that `vrandom()` draws from: a weight of 1 across
+#'   the dates that the value names, falling linearly to 0 over the
+#'   widening. `mean()`, `vmean()`, `median()` and `vmedian()` then give the
+#'   weighted mean and median.
+#'   The dates with the highest weight are always those that the value
+#'   names, so `modal()` and `vmodal()` give the same result with any
+#'   `approx_range`.
 #' @name resolve_tendency
 #' @inheritParams resolve_extrema
 #' @examples
@@ -46,13 +56,18 @@ NULL
 #' @examples
 #' median(d)
 #' @export
-median.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
+median.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0){
 
   x <- list(...)[[1]]
 
   x <- .drop_empty(x)
 
   x <- .handle_uncertain(x, uncertain, elementwise = FALSE)
+  .check_approx_range(approx_range)
+  if (approx_range > 0 && any(.weights_apply(x))) {
+    m <- .vector_weights(x, approx_range)
+    return(.weighted_median(m$dates, m$w))
+  }
   y <- unlist(possible_dates(x))
   y <- .order_messy(y)
   .median_value(y, na.rm = na.rm)
@@ -100,8 +115,9 @@ vmedian <- function(..., na.rm = TRUE) UseMethod("vmedian")
 #' @examples
 #' vmedian(d)
 #' @export
-vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
+vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0){
 
+  .check_dots(...)
   x <- list(...)[[1]]
 
   x <- .empty_to_na(x)
@@ -114,6 +130,14 @@ vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
     if (is.na(y)) return(NA_character_)
     .median_value(.order_messy(unlist(possible_dates(y))), na.rm = na.rm)
   }, FUN.VALUE = character(1))
+  .check_approx_range(approx_range)
+  if (approx_range > 0) {
+    apx <- which(.weights_apply(x))
+    out[apx] <- vapply(as.character(x[apx]), function(y) {
+      m <- .weighted_members(y, approx_range)
+      .weighted_median(m$dates, m$w)
+    }, character(1), USE.NAMES = FALSE)
+  }
   out
 }
 
@@ -125,13 +149,18 @@ vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
 #' @examples
 #' mean(d)
 #' @export
-mean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep"){
+mean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_range = 0){
 
   x <- list(...)[[1]]
 
   x <- .drop_empty(x)
 
   x <- .handle_uncertain(x, uncertain, elementwise = FALSE)
+  .check_approx_range(approx_range)
+  if (approx_range > 0 && any(.weights_apply(x))) {
+    m <- .vector_weights(x, approx_range)
+    return(.weighted_mean(m$dates, m$w))
+  }
   y <- unlist(possible_dates(x))
   .mean_value(y)
 }
@@ -154,7 +183,8 @@ vmean <- function(..., na.rm = TRUE) UseMethod("vmean")
 #' @examples
 #' vmean(d)
 #' @export
-vmean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep"){
+vmean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_range = 0){
+  .check_dots(...)
   x <- list(...)[[1]]
   x <- .empty_to_na(x)
   x <- .handle_uncertain(x, uncertain, elementwise = TRUE)
@@ -164,6 +194,14 @@ vmean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep"){
   if (length(f$rest))
     out[f$rest] <- vapply(possible_dates(x[f$rest]), .mean_value,
                           FUN.VALUE = character(1))
+  .check_approx_range(approx_range)
+  if (approx_range > 0) {
+    apx <- which(.weights_apply(x))
+    out[apx] <- vapply(as.character(x[apx]), function(y) {
+      m <- .weighted_members(y, approx_range)
+      .weighted_mean(m$dates, m$w)
+    }, character(1), USE.NAMES = FALSE)
+  }
   out
 }
 
@@ -199,7 +237,8 @@ modal <- function(..., na.rm = TRUE) UseMethod("modal")
 #' @examples
 #' modal(d)
 #' @export
-modal.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
+modal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0){
+  .check_approx_range(approx_range)
   d <- list(...)[[1]]
   d <- .drop_empty(d)
   d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
@@ -219,8 +258,10 @@ vmodal <- function(..., na.rm = TRUE) UseMethod("vmodal")
 #' @examples
 #' vmodal(d)
 #' @export
-vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
+vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0){
 
+  .check_dots(...)
+  .check_approx_range(approx_range)
   d <- list(...)[[1]]
 
   d <- .empty_to_na(d)
@@ -228,4 +269,54 @@ vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
   d <- .handle_uncertain(d, uncertain, elementwise = TRUE)
   d <- vapply(possible_dates(d), function(y) .getmode(y), character(1))
   d
+}
+
+# Weighted central tendency for approximate values -------------------------
+
+# TRUE for the values that get trapezoidal weights: approximate values
+# (with '~' or '%') that are not missing and carry no time of day.
+.weights_apply <- function(x) {
+  v <- as.character(x)
+  !is.na(v) & stringi::stri_detect_regex(v, "[~%]") &
+    !stringi::stri_detect_regex(v, "[T ][0-9X]{2}")
+}
+
+# The dates of all values of `x`, with their weights: trapezoidal weights
+# for approximate values, and a weight of 1 for the rest.
+.vector_weights <- function(x, approx_range) {
+  m <- lapply(as.character(x), function(y) {
+    if (is.na(y)) return(list(dates = character(0), w = numeric(0)))
+    if (isTRUE(.weights_apply(y))) return(.weighted_members(y, approx_range))
+    d <- possible_dates(new_messydate(y))[[1]]
+    list(dates = d, w = rep(1, length(d)))
+  })
+  list(dates = unlist(lapply(m, `[[`, "dates")), w = unlist(lapply(m, `[[`, "w")))
+}
+
+# The weighted mean of dates. With equal weights it is .mean_value().
+.weighted_mean <- function(d, w) {
+  keep <- !is.na(d) & w > 0
+  d <- d[keep]; w <- w[keep]
+  if (length(d) == 0) return(NA_character_)
+  if (all(w == w[1]) || any(date_is_bce(d))) return(.mean_value(d))
+  n <- as.double(lubridate::as_date(d))
+  as.character(lubridate::as_date(sum(n * w) / sum(w)))
+}
+
+# The weighted median of dates: the first date at which the cumulative
+# weight reaches half of the total. Where it reaches exactly half, the
+# median is the mean of that date and the next, as for an even number of
+# equally weighted dates. With equal weights it is .median_value().
+.weighted_median <- function(d, w) {
+  keep <- !is.na(d) & w > 0
+  d <- d[keep]; w <- w[keep]
+  if (length(d) == 0) return(NA_character_)
+  o <- order(as.Date(d))
+  d <- d[o]; w <- w[o]
+  if (all(w == w[1]) || any(date_is_bce(d))) return(.median_value(.order_messy(d)))
+  cw <- cumsum(w) / sum(w)
+  i <- which(cw >= 0.5 - 1e-12)[1]
+  if (abs(cw[i] - 0.5) < 1e-12 && i < length(d))
+    return(as.character(mean(as.Date(d[c(i, i + 1)]))))
+  d[i]
 }

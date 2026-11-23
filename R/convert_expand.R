@@ -60,15 +60,19 @@ possible_dates <- function(x, approx_range = 0) {
   .possible(x, approx_range, by = "day")
 }
 
-# Does the work of possible_dates(). The deprecated possible_dates() also calls it,
-# with a sub-day `by`, until possible_dates() is removed in 1.4.0.
+# Does the work of possible_dates(). The deprecated expand() also calls it,
+# with a sub-day `by`, until expand() is removed in 1.4.0.
 .possible <- function(x, approx_range = 0, by = "day") {
   if (!is_messydate(x)) {
     message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
   }
-  # The empty set, '{}', expands to no dates.
+  # The empty set, '{}', expands to no dates, and so does a value with an
+  # unspecified digit that leaves no valid day, such as "2012-02-3X".
   empty <- is_empty_notation(x)
+  px <- which(.has_partial_x(as.character(x)))
+  if (length(px))
+    empty[px] <- lengths(lapply(as.character(x)[px], .partial_x_days)) == 0
   if (any(empty)) {
     out <- vector("list", length(x))
     out[empty] <- list(character(0))
@@ -138,8 +142,8 @@ possible_dates <- function(x, approx_range = 0) {
 
 # Enumerates precise date-time ranges at sub-day granularity using POSIXct.
 # Non-range and imprecise values fall back to day-level expansion.
-# Only the deprecated possible_dates() uses this, with a sub-day `by`.
-# Remove it with possible_dates() in 1.4.0.
+# Only the deprecated expand() uses this, with a sub-day `by`.
+# Remove it with expand() in 1.4.0.
 expand_datetime <- function(x, by) {
   unit <- c(hour = "hour", min = "min", sec = "sec")[
     sub("s$", "", sub("^(hour|min|sec).*", "\\1", by))]
@@ -322,12 +326,66 @@ expand_unspecified <- function(dates) {
   # Years carrying 'X' must be resolved before the rules below, all of which
   # expect four literal digits in the year position.
   dates <- expand_unspecified_years(dates)
+  # A month or a day with one unspecified digit ("2012-1X", "2012-06-1X")
+  # names only some months or days, so each such member is written out.
+  dates <- .expand_partial_x(dates)
   # Separate ranges and sets of dates
   dates <- stringi::stri_replace_all_fixed(dates, ",", ",,")
   dates <- stringi::stri_replace_all_regex(dates, "(^|,)(-?[:digit:]{4})($|,)",
                                     "$1$2-01-01..$2-12-31$3")
   dates <- unspecified_months(dates)
   dates <- stringi::stri_replace_all_fixed(dates, ",,", ",")
+  dates
+}
+
+# Partly unspecified months and days ------------------------------------------
+# A value whose month or day has one unspecified digit, such as "2012-1X"
+# (October to December) or "2012-06-1X" (10 to 19 June).
+.partial_x_rx <- paste0("^-?[0-9]{4}-([0-9]X|X[0-9])(-[0-9X]{2})?$|",
+                        "^-?[0-9]{4}-[0-9X]{2}-([0-9]X|X[0-9])$")
+
+.has_partial_x <- function(v) {
+  out <- !is.na(v) & stringi::stri_detect_regex(v, .partial_x_rx)
+  out[is.na(out)] <- FALSE
+  out
+}
+
+# The valid days that one such value can be, in order.
+.partial_x_days <- function(v) {
+  m <- stringi::stri_match_first_regex(v, "^(-?[0-9]{4})-([0-9X]{2})(?:-([0-9X]{2}))?$")
+  yr <- as.integer(m[, 2])
+  fits <- function(cands, pattern)
+    cands[grepl(paste0("^", gsub("X", "[0-9]", pattern), "$"), cands)]
+  months <- fits(sprintf("%02d", 1:12), m[, 3])
+  out <- character(0)
+  for (mo in months) {
+    days <- sprintf("%02d", seq_len(days_in(yr, as.integer(mo))))
+    if (!is.na(m[, 4])) days <- fits(days, m[, 4])
+    if (length(days)) out <- c(out, paste(m[, 2], mo, days, sep = "-"))
+  }
+  out
+}
+
+# Writes each such member of a value as its runs of consecutive days:
+# "2012-1X" becomes "2012-10-01..2012-12-31", and "2012-0X-15" becomes the
+# set of the 15th of January to September.
+.expand_partial_x <- function(dates) {
+  hit <- !is.na(dates) & stringi::stri_detect_regex(dates, "[0-9]X|X[0-9]")
+  if (!any(hit)) return(dates)
+  dates[hit] <- vapply(dates[hit], function(d) {
+    members <- stringi::stri_split_fixed(d, ",")[[1]]
+    members <- vapply(members, function(v) {
+      if (!.has_partial_x(v)) return(v)
+      days <- .partial_x_days(v)
+      if (!length(days)) return(NA_character_)
+      num <- as.numeric(as.Date(new_messydate(days), FUN = identity))
+      run <- cumsum(c(1, diff(num) != 1))
+      paste(vapply(split(days, run), function(r)
+        if (length(r) > 1) paste0(r[1], "..", r[length(r)]) else r,
+        character(1)), collapse = ",")
+    }, character(1), USE.NAMES = FALSE)
+    paste(members, collapse = ",")
+  }, character(1), USE.NAMES = FALSE)
   dates
 }
 
@@ -502,9 +560,14 @@ expand_negative <- function(dates) {
 expand_sets <- function(dates) {
   # Each member of a set is expanded on its own: the rules below are anchored,
   # so applying them to a whole comma-joined set would match nothing.
-  lapply(stringi::stri_split_regex(dates, "\\,"),
-         function(members) unlist(expand_set_members(members),
-                                  use.names = FALSE))
+  # All the members of all the values are expanded in one call, and then
+  # put back together by the value that they came from.
+  parts <- stringi::stri_split_regex(dates, "\\,")
+  id <- rep(seq_along(parts), lengths(parts))
+  members <- expand_set_members(unlist(parts, use.names = FALSE))
+  grp <- rep(id, lengths(members))
+  unname(split(unlist(members, use.names = FALSE),
+               factor(grp, levels = seq_along(parts))))
 }
 
 expand_set_members <- function(dates) {
@@ -542,6 +605,35 @@ expand_set_members <- function(dates) {
 .plain_range <- "^[0-9]{4}-[0-9]{2}-[0-9]{2}\\.\\.[0-9]{4}-[0-9]{2}-[0-9]{2}$"
 
 expand_ranges <- function(dates) {
+  out <- vector("list", length(dates))
+  # A value that is one plain range of two full common-era dates, in order,
+  # gives its days in one vectorised step for all such values.
+  single <- lengths(dates) == 1L
+  s <- rep(NA_character_, length(dates))
+  s[single] <- vapply(dates[single], function(d) as.character(d[1]),
+                      character(1), USE.NAMES = FALSE)
+  plain <- !is.na(s) & stringi::stri_detect_regex(s, .plain_range)
+  fast <- integer(0)
+  if (any(plain)) {
+    from <- suppressWarnings(as.Date(substr(s[plain], 1, 10), optional = TRUE))
+    to <- suppressWarnings(as.Date(substr(s[plain], 13, 22), optional = TRUE))
+    fwd <- !is.na(from) & !is.na(to) & from <= to
+    fast <- which(plain)[fwd]
+    if (length(fast)) {
+      lens <- as.integer(to[fwd] - from[fwd]) + 1L
+      days <- rep(as.numeric(from[fwd]), lens) + sequence(lens) - 1
+      days <- as.character(structure(days, class = "Date"))
+      out[fast] <- unname(split(days, factor(rep(seq_along(fast), lens),
+                                             levels = seq_along(fast))))
+    }
+  }
+  rest <- setdiff(seq_along(dates), fast)
+  if (length(rest)) out[rest] <- .expand_ranges_each(dates[rest])
+  out
+}
+
+# Expands each value on its own, for the values that are not one plain range.
+.expand_ranges_each <- function(dates) {
 
   lapply(dates, function(x) {
     precise <- date_is_precise(x)

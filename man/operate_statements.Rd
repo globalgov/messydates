@@ -16,9 +16,9 @@
 \usage{
 is_messydate(x)
 
-date_is_intersecting(x, y)
+date_is_intersecting(x, y, approx_range = 0)
 
-date_is_subset(x, y)
+date_is_subset(x, y, approx_range = 0)
 
 date_is_similar(x, y)
 
@@ -36,6 +36,10 @@ date_is_empty(x)
 }
 \arguments{
 \item{x, y}{\code{mdate} or other class objects}
+
+\item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by
+before the test, as in \code{possible_dates()}. 0 (the default) ignores
+the marks.}
 }
 \value{
 A logical vector the same length as the \code{mdate} passed.

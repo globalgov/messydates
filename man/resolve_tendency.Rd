@@ -14,25 +14,25 @@
 \alias{vmodal.mdate}
 \title{Resolves messy dates into a central tendency}
 \usage{
-\method{median}{mdate}(..., na.rm = TRUE, uncertain = "keep")
+\method{median}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 vmedian(..., na.rm = TRUE)
 
-\method{vmedian}{mdate}(..., na.rm = TRUE, uncertain = "keep")
+\method{vmedian}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
-\method{mean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep")
+\method{mean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 vmean(..., na.rm = TRUE)
 
-\method{vmean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep")
+\method{vmean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 modal(..., na.rm = TRUE)
 
-\method{modal}{mdate}(..., na.rm = TRUE, uncertain = "keep")
+\method{modal}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 vmodal(..., na.rm = TRUE)
 
-\method{vmodal}{mdate}(..., na.rm = TRUE, uncertain = "keep")
+\method{vmodal}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 }
 \arguments{
 \item{...}{a mdate object}
@@ -48,6 +48,13 @@ source itself doubts.
 and leaves them out of the functions that resolve the whole vector,
 such as \code{min()}.
 For random draws, see \code{uncertain_p} in \code{vrandom()}.}
+
+\item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by,
+in units of the component that each mark covers, as in
+\code{possible_dates()}. 0 (the default) ignores the marks.
+With a positive value, \code{vmin()} and \code{vmax()} give the first and last
+dates of the widened support, the same dates that \code{possible_dates()}
+gives with the same \code{approx_range}, and that \code{vrandom()} can draw.}
 
 \item{trim}{the fraction (0 to 0.5) of observations to be trimmed
 from each end of x before the mean is computed.
@@ -84,6 +91,19 @@ middle values in that case, and \code{mean()}/\code{vmean()} may be unreliable f
 solely negative-year inputs (a documented limitation, not a supported
 feature).
 }
+\section{Approximate values}{
+
+With \code{approx_range} above 0, an approximate value (\code{~} or \verb{\%}) widens
+by \code{approx_range} as in \code{possible_dates()}, and its dates get the
+trapezoidal weights that \code{vrandom()} draws from: a weight of 1 across
+the dates that the value names, falling linearly to 0 over the
+widening. \code{mean()}, \code{vmean()}, \code{median()} and \code{vmedian()} then give the
+weighted mean and median.
+The dates with the highest weight are always those that the value
+names, so \code{modal()} and \code{vmodal()} give the same result with any
+\code{approx_range}.
+}
+
 \examples{
 d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",

@@ -12,15 +12,15 @@
 \usage{
 vmin(..., na.rm = FALSE)
 
-\method{vmin}{mdate}(..., na.rm = FALSE, uncertain = "keep")
+\method{vmin}{mdate}(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
 
-\method{min}{mdate}(..., na.rm = FALSE, uncertain = "keep")
+\method{min}{mdate}(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
 
 vmax(..., na.rm = FALSE)
 
-\method{vmax}{mdate}(..., na.rm = FALSE, uncertain = "keep")
+\method{vmax}{mdate}(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
 
-\method{max}{mdate}(..., na.rm = FALSE, uncertain = "keep")
+\method{max}{mdate}(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
 }
 \arguments{
 \item{...}{a mdate object}
@@ -36,6 +36,13 @@ source itself doubts.
 and leaves them out of the functions that resolve the whole vector,
 such as \code{min()}.
 For random draws, see \code{uncertain_p} in \code{vrandom()}.}
+
+\item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by,
+in units of the component that each mark covers, as in
+\code{possible_dates()}. 0 (the default) ignores the marks.
+With a positive value, \code{vmin()} and \code{vmax()} give the first and last
+dates of the widened support, the same dates that \code{possible_dates()}
+gives with the same \code{approx_range}, and that \code{vrandom()} can draw.}
 }
 \value{
 A single scalar or vector of dates
@@ -70,6 +77,8 @@ d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
 d
 # a precise date-time is returned unchanged
 vmin(as_messydate("2012-01-01 14:30:00"))
+# an approximate date widens by approx_range
+vmin(as_messydate("2001-05-16~"), approx_range = 3)
 vmin(d)
 min(d)
 vmax(d)

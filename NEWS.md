@@ -100,6 +100,14 @@
 
 ## Resolution
 
+- Improved `as.Date()`, `as.POSIXct()`, `as.POSIXlt()`, and `as.double()`
+  - Changed them to state the rule for imprecise values when `FUN` is not given
+    - They resolve with `vmin()` as before, and say so once in each session
+    - In 1.3.0 this becomes a warning, and in 1.4.0 an error
+    - Precise values need no `FUN`
+  - Fixed them dropping further arguments to `FUN`
+    - `as.Date(x, FUN = vmin, approx_range = 3)` now widens approximate values
+  - Added `FUN` to `as.double()`, and fixed it giving an error for `NA`
 - Improved `random()` and `vrandom()` for approximate and uncertain values
   - Added `approx_range` to widen `~` and `%` values with trapezoidal weights
     - The weight falls linearly to 0 over the dates that `approx_range` adds
@@ -110,10 +118,18 @@
   - Added `uncertain_p`, the probability that a `?` or `%` value is correct
     - One number, or one for each value, e.g. the reliability of each source
     - Otherwise `vrandom()` gives `NA` and `random()` leaves the value out
+  - Updated their documentation to a help page of its own
+- Added `approx_range` to the other resolution functions
+  - `vmin()`, `vmax()`, `min()`, and `max()` give the ends of the widened support
+    - `vmin("2001-05-16~", approx_range = 3)` gives `"2001-05-13"`
+  - `mean()`, `median()`, `vmean()`, and `vmedian()` use the weights of `vrandom()`
+  - `modal()` and `vmodal()` give the same result, as the core has the most weight
 - Added `uncertain` to the other resolution functions
   - `min()`, `max()`, `mean()`, `median()`, `modal()`, and their `v*()` forms
   - `uncertain = "drop"` gives `NA` in `v*()` and leaves values out of the others
 - Fixed `min()`, `max()`, `vmin()`, and `vmax()`
+  - A set resolves to the first or last day of any member, in any order
+    - `vmax("{2013-01,2012-06}")` gave `"2012-06"` and now gives `"2013-01-31"`
   - `min()` gave the wrong value when the first element was not the earliest
   - `%` stayed in the result
   - Years with unspecified digits resolved to the wrong year
@@ -124,6 +140,12 @@
 - Fixed missing values in the resolution functions
   - The `v*()` functions give `NA`
   - `min()` and `max()` follow base R: with `na.rm = FALSE`, one `NA` gives `NA`
+- Fixed the `v*()` functions ignoring an argument that they do not know
+  - `vmin(x, approx_range = 3)` gave the date without widening, and no warning
+  - A misspelled argument, e.g. `aprox_range`, is now an error
+- Accelerated `vmin()`, `vmax()`, `min()`, and `max()`
+  - A resolved plain date does not go through the parser again
+  - ~6x faster for `vmin()` on 60,000 ranges
 - Accelerated `mean()`, `median()`, `modal()`, `random()`, and their `v*()` forms (#105)
   - A range expands without being parsed again
   - ~15x faster for `mean()` on 1,000 months and ranges
@@ -144,7 +166,9 @@
   - Fixed the shortest form of a set of dates before the common era
     - `{-0050-01-01,-0050-03-01}` was written as `-0050-01-01..-0050-03-01`
 - Accelerated `possible_dates()` on ranges of two full dates (#105)
+  - Plain ranges and set members are expanded in one step
   - ~20x faster for 1,000 months and ranges
+  - ~8x faster for 60,000 ranges
 - Improved `possible_dates()` with `approx_range`
   - Fixed widening an approximate year from 1 January only
     - `"~2012"` with `approx_range = 1` ended on 2013-01-01, now 2013-12-31
@@ -158,6 +182,9 @@
     - `"2019-~01-~01"` widens by months and days
   - Fixed `%` being ignored; it marks a value as approximate and uncertain
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
+- Fixed `possible_dates()`, `vmin()`, and `vmax()` on a month or day with one unspecified digit
+  - `"2012-1X"` stopped with an error, and now gives October to December 2012
+  - A value with no valid day, e.g. `"2012-02-3X"`, gives no dates
 - Fixed `possible_dates()` reading a year with leading `X` digits as one range
 - Fixed `seq()` and `possible_dates()` on an invalid element, e.g. `""`
 - Fixed missing values in `possible_dates()` to give `NA`
@@ -165,6 +192,7 @@
 ## Extraction
 
 - Fixed missing values in `precision()` to give `NA`
+- Added `approx_range` to `precision()` to count the widened days
 
 ## Operations
 
@@ -177,6 +205,8 @@
 - Fixed `is_subset()` to test that all dates of `x` are in `y`, not only one date
 - Fixed `is_subset()` using only the first element of `x` and `y`
 - Added `date_is_open()` to test for an open range, e.g. `..2012`
+- Added `approx_range` to `date_is_intersecting()` and `date_is_subset()`
+  - `date_is_intersecting("2001-05-16~", "2001-05-18", approx_range = 3)` gives `TRUE`
 - Fixed missing values in `+` and `-`, which now give `NA`
 
 # messydates 1.1.1

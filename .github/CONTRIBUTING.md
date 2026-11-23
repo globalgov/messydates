@@ -104,25 +104,22 @@ Existing names that do not obey them stay as they are until a deprecation cycle 
    became `date_is_precise()`, `date_is_uncertain()`, `date_is_approximate()`, `date_is_bce()` and `date_is_similar()`.
    The old names are soft-deprecated aliases in `R/messydates-defunct.R`.
    Inside the package, use only the new names.
-   `is_messydate()` is a class test (see rule 6), and it keeps its name.
+   `is_messydate()` is a class test (see rule 5), and it keeps its name.
    Also in 1.2.0, `is_intersecting()` and `is_subset()` became the element-wise
    `date_is_intersecting()` and `date_is_subset()`.
-5. **Use `md_` + verb** for a new exported function that has no generic,
-   for example `md_problems()`.
-   Use this prefix in particular when the bare word is a common English word
-   or when another common package exports it (`expand()` is an example, as `tidyr` exports it too).
-6. **Use the `messydate` or `messyduration` stem** only for class infrastructure:
+5. **Use the `messydate` or `messyduration` stem** only for class infrastructure:
    `new_messydate()`, `validate_messydate()`, `make_messydate()`, `as_messydate()`, and `is_messydate()`.
    Do not use this stem for an operation on a messy date.
-7. **Use `tag_` + adjective** for a function that adds ISO 8601-2 notation to a value,
+6. **Use `tag_` + adjective** for a function that adds ISO 8601-2 notation to a value,
    for example `tag_approximate()`, `tag_uncertain()`, `tag_unspecified()`, `tag_before()` and `tag_after()`.
    The function returns an `mdate` of the same length as its input.
    Give each `tag_` function a matching `date_is_` predicate (rule 4),
    and make sure that `untag()` can remove the notation where the notation does not discard information.
    In 1.2.0, `approximate()`, `uncertain()`, `on_or_before()` and `on_or_after()` became `tag_` functions.
-8. **Check each new name** against `base`, `stats`, `lubridate`, the tidyverse, and `rlang`
+7. **Check each new name** against `base`, `stats`, `lubridate`, the tidyverse, and `rlang`
    before you export it.
-   If one of these packages exports the name, use the `md_` prefix (rule 5) or choose a different name.
+   If one of these packages exports the name, choose a different name.
+   For example, `possible_dates()` replaced `expand()` in 1.2.0, because `tidyr` exports `expand()` with a different meaning.
 
 ### Vocabulary
 
@@ -134,7 +131,7 @@ Use one term for one idea, and do not swap in a synonym for variety.
 - **True date**: when the event happened. Usually unknown.
 - **Record**: what the source says about the date.
 - **Compatible set**: every date consistent with the record.
-  `expand()` returns it; `vmin()` and `vmax()` return its ends.
+  `possible_dates()` returns it; `vmin()` and `vmax()` return its ends.
 - **Messy date**: a record whose compatible set holds more than one date.
   Messiness is a property of the record alone.
 - **Imprecision**: the general phenomenon, in prose only.
@@ -449,7 +446,7 @@ The more entries a version holds, the more this matters.
 - Under such a lead bullet, do not name the function again in the sub-bullets,
   since the lead bullet already carries it.
 - Where one decision runs across many functions in one family, lead with the decision
-  rather than with each function, e.g. "Fixed missing values in `expand()` and `contract()`".
+  rather than with each function, e.g. "Fixed missing values in `possible_dates()` and `seq()`".
   Where it runs across families, give each heading its own bullet with the same wording.
 - Sub-bullets indent by two spaces, and nest at most one level further (four spaces).
 

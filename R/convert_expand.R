@@ -1,14 +1,16 @@
-#' Expand messy dates to lists of dates
+#' The possible dates of messy dates
 #' @description
-#'   These functions expand on date ranges, sets of dates, and unspecified or
-#'   approximate dates (annotated with '..', '{}', 'XX' or '~').
-#'   As these messydates may refer to several possible dates,
-#'   the function "opens" these values to reveal a vector of all the possible
-#'   dates implied.
-#'   Imprecise dates (dates only containing information on year and/or month)
-#'   are also expanded to include possible dates within that year and/or month.
-#'   The function removes the annotation from dates with unreliable sources ('?'),
-#'   before being expanded normally as though they were incomplete.
+#'   `possible_dates()` gives all the dates that each messy date can be.
+#'   A range (`..`) gives each day from its start to its end.
+#'   A set (`{}` or `[]`) gives each of its members.
+#'   A value with unspecified or absent components (`X`, or a year or a
+#'   year and month only) gives each day that it can be.
+#'   An uncertain value (`?`) gives the same dates as the value
+#'   without the mark.
+#'   The function gives days.
+#'   A precise date-time keeps its time.
+#'   A range of date-times gives the days of the range.
+#'   To make a sequence of times, use `seq()`.
 #' @param x A `mdate` object.
 #'   If not an 'mdate' object, conversion is handled first with ´as_messydate()´.
 #' @param approx_range Range to expand approximate dates,
@@ -31,32 +33,31 @@
 #'   and still ends on 15 April.
 #'   Sets, values with unspecified digits,
 #'   and open-ended ranges with a mark are not widened.
-#' @param by Granularity of enumeration, "day" by default.
-#'   To avoid combinatorial explosion, ranges are enumerated at day
-#'   granularity and any time-of-day components on ranges are dropped.
-#'   Precise date-times (i.e. non-ranges) keep their time.
-#'   Set `by` to a sub-day unit ("hour", "min", or "sec") to opt in to finer
-#'   enumeration of precise date-time ranges.
-#' @return A list of dates, including all dates in each range or set.
+#' @return A list with one character vector for each element of `x`.
+#'   Each vector holds the possible dates of that element.
 #' @importFrom lubridate as_date ymd years
 #' @name convert_expand
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-#' expand(d)
+#' possible_dates(d)
 #' # widen an approximate day (the '~' before the day) by 3 days either side
-#' expand(as_messydate("2001-01-~15"), approx_range = 3)
+#' possible_dates(as_messydate("2001-01-~15"), approx_range = 3)
 #' # widen only the approximate start of a range
-#' expand(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
+#' possible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
 #' # a precise date-time is returned unchanged, keeping its time
-#' expand(as_messydate("2012-01-01 14:30:00"))
-#' # a date-time range drops its time by default (day granularity)...
-#' expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"))
-#' # ...unless a sub-day 'by' is requested
-#' expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"), by = "hour")
+#' possible_dates(as_messydate("2012-01-01 14:30:00"))
+#' # a date-time range gives its days
+#' possible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
 #' @export
-expand <- function(x, approx_range = 0, by = "day") {
+possible_dates <- function(x, approx_range = 0) {
+  .possible(x, approx_range, by = "day")
+}
+
+# Does the work of possible_dates(). The deprecated possible_dates() also calls it,
+# with a sub-day `by`, until possible_dates() is removed in 1.4.0.
+.possible <- function(x, approx_range = 0, by = "day") {
   if (!is_messydate(x)) {
     message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
@@ -66,7 +67,7 @@ expand <- function(x, approx_range = 0, by = "day") {
   if (any(empty)) {
     out <- vector("list", length(x))
     out[empty] <- list(character(0))
-    if (any(!empty)) out[!empty] <- expand(x[!empty], approx_range, by)
+    if (any(!empty)) out[!empty] <- .possible(x[!empty], approx_range, by)
     names(out) <- names(x)
     return(out)
   }
@@ -98,7 +99,7 @@ expand <- function(x, approx_range = 0, by = "day") {
     simple <- .approx_widens(x)
     if (any(simple)) {
       x[simple] <- vapply(x[simple], function(y) {
-        core <- expand(new_messydate(y))[[1]]
+        core <- possible_dates(new_messydate(y))[[1]]
         sup <- .approx_support(core, y, approx_range)
         paste0(sup$from, "..", sup$to)
       }, character(1), USE.NAMES = FALSE)
@@ -132,6 +133,8 @@ expand <- function(x, approx_range = 0, by = "day") {
 
 # Enumerates precise date-time ranges at sub-day granularity using POSIXct.
 # Non-range and imprecise values fall back to day-level expansion.
+# Only the deprecated possible_dates() uses this, with a sub-day `by`.
+# Remove it with possible_dates() in 1.4.0.
 expand_datetime <- function(x, by) {
   unit <- c(hour = "hour", min = "min", sec = "sec")[
     sub("s$", "", sub("^(hour|min|sec).*", "\\1", by))]
@@ -155,7 +158,7 @@ expand_datetime <- function(x, by) {
       wall <- seq(inst[1], inst[2], by = unit) + .offset_seconds(o)
       paste0(format(wall, fmt, tz = "UTC"), o)
     } else {
-      unlist(expand(as_messydate(y)))
+      unlist(possible_dates(as_messydate(y)))
     }
   })
 }
@@ -385,7 +388,7 @@ expand_unspecified_years <- function(dates) {
       nyears <- 10^stringi::stri_count_fixed(m[, 3], "X")
       if (nyears > .max_unspecified_years) {
         stop("Cannot expand '", v, "': it spans ", format(nyears, big.mark = ","),
-             " years. Use a more specified year, expand(x, by = \"year\"), ",
+             " years. Use a more specified year, ",
              "or resolve it with vmin()/vmax() instead.", call. = FALSE)
       }
       # Only trailing 'X's ("192X") make the candidate years contiguous.

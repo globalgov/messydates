@@ -59,9 +59,9 @@ equivalence_outputs <- function(inputs = equivalence_inputs()) {
     d <- parsed$value
     res <- list(parsed = parsed)
     if (inherits(d, "mdate")) {
-      res$expand     <- capture(function() expand(d))
-      res$expand_a1  <- capture(function() expand(d, approx_range = 1))
-      res$expand_hr  <- capture(function() expand(d, by = "hour"))
+      res$expand     <- capture(function() possible_dates(d))
+      res$expand_a1  <- capture(function() possible_dates(d, approx_range = 1))
+      res$expand_hr  <- capture(function() .possible(d, by = "hour"))
       res$vmin       <- capture(function() vmin(d))
       res$vmax       <- capture(function() vmax(d))
       res$vmean      <- capture(function() vmean(d))
@@ -78,7 +78,7 @@ equivalence_outputs <- function(inputs = equivalence_inputs()) {
   whole <- list(parsed = vec)
   if (inherits(vec$value, "mdate")) {
     v <- vec$value
-    whole$expand <- capture(function() expand(v))
+    whole$expand <- capture(function() possible_dates(v))
     whole$min    <- capture(function() min(v))
     whole$max    <- capture(function() max(v))
     whole$mean   <- capture(function() mean(v))

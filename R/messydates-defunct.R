@@ -126,3 +126,15 @@ is_subset <- function(x, y) {
   .soft_deprecate("is_subset()", "date_is_subset()")
   date_is_subset(x, y)
 }
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `possible_dates()`.
+#'   The argument `by` is not in `possible_dates()`.
+#'   To make a sequence of times, use `seq()`.
+#' @param approx_range See [convert_expand].
+#' @param by Granularity of enumeration, "day" by default.
+#' @export
+expand <- function(x, approx_range = 0, by = "day") {
+  .soft_deprecate("expand()", "possible_dates()")
+  .possible(x, approx_range, by)
+}

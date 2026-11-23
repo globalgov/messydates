@@ -27,7 +27,7 @@
 - Added `{}` as the empty set, a value that is known to contain no date
   - ISO 8601-2 requires a set to have a member; `{}` extends the standard
   - Added `date_is_empty()` to test for it; `NA` is not the empty set
-  - `expand()` gives no dates for it
+  - `possible_dates()` gives no dates for it
   - `vmin()`, the other `v*()` functions, and `precision()` give `NA`
   - `min()`, `max()`, `mean()`, `median()`, `modal()`, and `random()` leave it out
   - `tag_approximate()`, `tag_uncertain()`, `contract()`, `+`, and `-` give `{}` again
@@ -125,15 +125,24 @@
   - A range expands without being parsed again
   - ~15x faster for `mean()` on 1,000 months and ranges
 - Accelerated `vrandom()`, `vmean()`, and `vmedian()` on full dates and ranges
-  - Full dates and ranges resolve directly, without `expand()`
+  - Full dates and ranges resolve directly, without `possible_dates()`
   - ~900x faster for `vrandom()` on 63,606 event dates, a quarter of them ranges
   - ~290x faster for `vmean()` on the same dates
 
 ## Expand/Contract
 
-- Accelerated `expand()` on ranges of two full dates (#105)
+- Renamed `expand()` to `possible_dates()`, gives days only
+  - Use `seq()` for a sequence of times
+- Removed `contract()`; use `as_messydate()` to give the shortest form of `x`
+  - Fixed the shortest form of a range that does not cover whole months or years
+    - `"2012-02-01..2013-01-31"` was written as `"2012-02"`
+    - `"2012-01-01..2013-12-31"` was written as `"2012"`
+    - `"2012-02-01..2012-02-28"` was written as `"2012-02"`; February 2012 has 29 days
+  - Fixed the shortest form of a set of dates before the common era
+    - `{-0050-01-01,-0050-03-01}` was written as `-0050-01-01..-0050-03-01`
+- Accelerated `possible_dates()` on ranges of two full dates (#105)
   - ~20x faster for 1,000 months and ranges
-- Improved `expand()` with `approx_range`
+- Improved `possible_dates()` with `approx_range`
   - Fixed widening an approximate year from 1 January only
     - `"~2012"` with `approx_range = 1` ended on 2013-01-01, now 2013-12-31
     - Widening starts from the first and the last date that the value names
@@ -146,9 +155,9 @@
     - `"2019-~01-~01"` widens by months and days
   - Fixed `%` being ignored; it marks a value as approximate and uncertain
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
-- Fixed `expand()` reading a year with leading `X` digits as one range
-- Fixed `seq()` and `expand()` on an invalid element, e.g. `""`
-- Fixed missing values in `expand()` and `contract()` to give `NA`
+- Fixed `possible_dates()` reading a year with leading `X` digits as one range
+- Fixed `seq()` and `possible_dates()` on an invalid element, e.g. `""`
+- Fixed missing values in `possible_dates()` and `contract()` to give `NA`
 
 ## Extraction
 

@@ -1,13 +1,13 @@
 #' Contract lists of dates into messy dates
 #' @description
-#'   This function operates as the opposite of `expand()`.
+#'   This function operates as the opposite of `possible_dates()`.
 #'   It contracts a list of dates into the abbreviated annotation
 #'   of messy dates.
 #' @name convert_contract
-#' @details The ´contract()´ function first `expand()` 'mdate' objects
+#' @details The ´contract()´ function first `possible_dates()` 'mdate' objects
 #' to then display their most succinct representation.
 #'
-#' Because `expand()` drops the time of day from ranges (see `?expand`),
+#' Because `possible_dates()` drops the time of day from ranges (see `?expand`),
 #' contracting a date-time range and then re-expanding it will not restore
 #' the original times; `contract()` is intended for date-level ranges,
 #' sets, and unspecified components.
@@ -15,7 +15,7 @@
 #' Sets are returned in the notation they were given in: a `[]` ("one member
 #' of") set contracts back to `[]` rather than `{}`. This is only possible
 #' when `contract()` is passed an `mdate` (or something coercible to one),
-#' since `expand()` returns the member dates without recording which kind of
+#' since `possible_dates()` returns the member dates without recording which kind of
 #' set they came from. A list of dates therefore always contracts to `{}`.
 #' Note that a set whose members happen to be consecutive days contracts to a
 #' range, `..`, whichever notation it was given in.
@@ -45,7 +45,7 @@ contract <- function(x, collapse = TRUE) {
   if (!inherits(x, 'list')) {
     onesie <- stringi::stri_detect_regex(as.character(x), "^\\[.*\\]$")
     onesie[is.na(onesie)] <- FALSE
-    x <- expand(x)
+    x <- possible_dates(x)
   }
   x <- compact_negative_dates(x)
   x <- compact_ranges(x)

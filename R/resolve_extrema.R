@@ -11,7 +11,7 @@
 #' @details
 #'   `vmin()`/`min()` and `vmax()`/`max()` work directly on the annotated
 #'   string (dropping `~`/`?`/`%` and, for `vmax()`/`max()`, filling in
-#'   unspecified `X` components) rather than via `expand()`, which makes
+#'   unspecified `X` components) rather than via `possible_dates()`, which makes
 #'   them considerably faster than resolving through the full expanded set.
 #'   `min()` and `max()` further resolve a vector to a single, overall
 #'   extremum (matching the usual behaviour of these generics), while

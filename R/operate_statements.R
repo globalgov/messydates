@@ -54,7 +54,7 @@ date_is_subset <- function(x, y) {
   ok <- !is.na(x) & !is.na(y)
   if (!any(ok)) return(out)
   vals <- unique(c(x[ok], y[ok]))
-  days <- expand(as_messydate(vals))
+  days <- possible_dates(as_messydate(vals))
   names(days) <- vals
   out[ok] <- mapply(function(a, b) test(days[[a]], days[[b]]),
                     x[ok], y[ok], USE.NAMES = FALSE)

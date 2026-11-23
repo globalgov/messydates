@@ -30,8 +30,8 @@ NULL
 #' as_messydate("2012-01-01..2012-01-20") %intersect% as_messydate("2012-01")
 #' @export
 `%intersect%.mdate` <- function(e1, e2) {
-  x <- as.character(expand(e1)[[1]])
-  y <- as.character(expand(e2)[[1]])
+  x <- as.character(possible_dates(e1)[[1]])
+  y <- as.character(possible_dates(e2)[[1]])
   intersect(x, y)
 }
 
@@ -49,8 +49,8 @@ evalqOnLoad({
 #' as_messydate("2012-01-01..2012-01-20") %union% as_messydate("2012-01")
 #' @export
 `%union%.mdate` <- function(e1, e2) {
-  x <- as.character(expand(e1)[[1]])
-  y <- as.character(expand(e2)[[1]])
+  x <- as.character(possible_dates(e1)[[1]])
+  y <- as.character(possible_dates(e2)[[1]])
   union(x, y)
 }
 

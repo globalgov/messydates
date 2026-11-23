@@ -11,7 +11,7 @@ dd <- as_messydate(c("2001-01-01", "2001-01-01..2001-01-31",
                      "2001-01-01..2001-01-03",
                      # "{2001-01-01, 2001-01-02, 2001-01-03}",
                      "2001-XX-01"))
-e <- expand(d)
+e <- possible_dates(d)
 
 test_that("contract works properly", {
   expect_equal(contract(e), d)

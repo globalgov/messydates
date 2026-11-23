@@ -25,7 +25,7 @@ As in base R, with \code{na.rm = FALSE} one \code{NA} makes the result of
 
 \item{approx_range}{The range by which to widen approximate values (\code{~} or \verb{\%}).
 The range is in units of the component that each mark is written on,
-as in \code{expand()}.
+as in \code{possible_dates()}.
 With the default of \code{0}, approximate values are not widened.
 With a positive value, the draw uses trapezoidal weights,
 see the section "Approximate and uncertain values".}

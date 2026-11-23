@@ -35,7 +35,7 @@ NULL
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   suppressMessages(mapply(function(.x, .y) mean(.x < min(.y)),
-                          expand(e1), expand(e2), USE.NAMES = FALSE))
+                          possible_dates(e1), possible_dates(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -58,7 +58,7 @@ evalqOnLoad({
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   suppressMessages(mapply(function(.x, .y) mean(.x > max(.y)),
-                          expand(e1), expand(e2), USE.NAMES = FALSE))
+                          possible_dates(e1), possible_dates(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -81,7 +81,7 @@ evalqOnLoad({
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   suppressMessages(mapply(function(.x, .y) mean(.x >= max(.y)),
-                          expand(e1), expand(e2), USE.NAMES = FALSE))
+                          possible_dates(e1), possible_dates(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -104,7 +104,7 @@ evalqOnLoad({
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   suppressMessages(mapply(function(.x, .y) mean(.x <= min(.y)),
-                          expand(e1), expand(e2), USE.NAMES = FALSE))
+                          possible_dates(e1), possible_dates(e2), USE.NAMES = FALSE))
 }
 
 evalqOnLoad({
@@ -127,7 +127,7 @@ evalqOnLoad({
   # Need to fix this for element wise on vectors...
   # Need to create fast way to trim ranges or just get dates within the range
   suppressMessages(mapply(function(.x, .y)
-    length(.x %intersect% .y) / (length(unlist(expand(.x))) + 1),
+    length(.x %intersect% .y) / (length(unlist(possible_dates(.x))) + 1),
     e1, e2, USE.NAMES = FALSE))
 }
 
@@ -150,7 +150,7 @@ evalqOnLoad({
     stop("Can only compare vectors of equal length.")
   # Need to fix this for element wise on vectors...
   suppressMessages(mapply(function(.x, .y)
-    length(.x %intersect% .y) / length(unlist(expand(.x))),
+    length(.x %intersect% .y) / length(unlist(possible_dates(.x))),
     e1, e2, USE.NAMES = FALSE))
 }
 

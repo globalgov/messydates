@@ -62,7 +62,7 @@ the \verb{v*()} versions resolve each element separately and so return a
 vector of the same length as the input.
 }
 \details{
-All of these functions work by calling \code{expand()} to enumerate the
+All of these functions work by calling \code{possible_dates()} to enumerate the
 dates or date-times consistent with each messy value, then summarising
 that expanded set. For \code{median()} and \code{mean()}, an even number of
 expanded values is resolved by averaging the two middle values (via

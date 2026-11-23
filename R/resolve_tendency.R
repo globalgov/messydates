@@ -7,7 +7,7 @@
 #'   the `v*()` versions resolve each element separately and so return a
 #'   vector of the same length as the input.
 #' @details
-#'   All of these functions work by calling `expand()` to enumerate the
+#'   All of these functions work by calling `possible_dates()` to enumerate the
 #'   dates or date-times consistent with each messy value, then summarising
 #'   that expanded set. For `median()` and `mean()`, an even number of
 #'   expanded values is resolved by averaging the two middle values (via
@@ -53,7 +53,7 @@ median.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
   x <- .drop_empty(x)
 
   x <- .handle_uncertain(x, uncertain, elementwise = FALSE)
-  y <- unlist(expand(x))
+  y <- unlist(possible_dates(x))
   y <- .order_messy(y)
   .median_value(y, na.rm = na.rm)
 }
@@ -112,7 +112,7 @@ vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
   out[f$rng] <- format(f$lo + (f$n - 1L) %/% 2L, "%Y-%m-%d")
   out[f$rest] <- vapply(as.list(x[f$rest]), function(y) {
     if (is.na(y)) return(NA_character_)
-    .median_value(.order_messy(unlist(expand(y))), na.rm = na.rm)
+    .median_value(.order_messy(unlist(possible_dates(y))), na.rm = na.rm)
   }, FUN.VALUE = character(1))
   out
 }
@@ -132,7 +132,7 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep"){
   x <- .drop_empty(x)
 
   x <- .handle_uncertain(x, uncertain, elementwise = FALSE)
-  y <- unlist(expand(x))
+  y <- unlist(possible_dates(x))
   .mean_value(y)
 }
 
@@ -162,7 +162,7 @@ vmean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep"){
   out <- f$out
   out[f$rng] <- format(f$lo + (f$n - 1L) %/% 2L, "%Y-%m-%d")
   if (length(f$rest))
-    out[f$rest] <- vapply(expand(x[f$rest]), .mean_value,
+    out[f$rest] <- vapply(possible_dates(x[f$rest]), .mean_value,
                           FUN.VALUE = character(1))
   out
 }
@@ -203,7 +203,7 @@ modal.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
   d <- list(...)[[1]]
   d <- .drop_empty(d)
   d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
-  .getmode(unlist(expand(d)))
+  .getmode(unlist(possible_dates(d)))
 }
 
 .getmode <- function(v) {
@@ -226,6 +226,6 @@ vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep"){
   d <- .empty_to_na(d)
 
   d <- .handle_uncertain(d, uncertain, elementwise = TRUE)
-  d <- vapply(expand(d), function(y) .getmode(y), character(1))
+  d <- vapply(possible_dates(d), function(y) .getmode(y), character(1))
   d
 }

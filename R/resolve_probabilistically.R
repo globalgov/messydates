@@ -21,7 +21,7 @@
 #' @inheritParams resolve_extrema
 #' @param approx_range The range by which to widen approximate values (`~` or `%`).
 #'   The range is in units of the component that each mark is written on,
-#'   as in `expand()`.
+#'   as in `possible_dates()`.
 #'   With the default of `0`, approximate values are not widened.
 #'   With a positive value, the draw uses trapezoidal weights,
 #'   see the section "Approximate and uncertain values".
@@ -81,7 +81,7 @@ random.mdate <- function(..., na.rm = TRUE, approx_range = 0,
   x <- x[!miss]
   if (length(x) == 0) return(NA_character_)
   if (approx_range == 0) {
-    y <- unlist(expand(x))
+    y <- unlist(possible_dates(x))
     w <- NULL
   } else {
     m <- lapply(as.character(x), .weighted_members, approx_range = approx_range)
@@ -101,7 +101,7 @@ random.mdate <- function(..., na.rm = TRUE, approx_range = 0,
 #' @export
 random.character <- function(..., na.rm = TRUE) {
   y <- list(...)[[1]]
-  # y <- suppressMessages(unlist(expand(x)))
+  # y <- suppressMessages(unlist(possible_dates(x)))
   if(na.rm) y <- y[!is.na(y)]
   sample(y, 1)
 }
@@ -131,7 +131,7 @@ vrandom.mdate <- function(..., na.rm = TRUE, approx_range = 0,
   # stay missing, as they do in vmin() and vmax().
   f$rest <- setdiff(f$rest, which(f$missing))
   out[f$rest] <- vapply(as.list(x[f$rest]), function(y){
-    random(expand(y)[[1]], na.rm = na.rm)
+    random(possible_dates(y)[[1]], na.rm = na.rm)
   }, FUN.VALUE = character(1))
   # An approximate value draws from its trapezoidal weights instead.
   if (approx_range > 0) {
@@ -150,7 +150,7 @@ vrandom.mdate <- function(..., na.rm = TRUE, approx_range = 0,
 
 # Approximate values ('~', and '%') -----------------------------------------
 # An approximate value has a core, the dates the record names, and a wider
-# support, the dates that expand(x, approx_range) adds around it. This is
+# support, the dates that possible_dates(x, approx_range) adds around it. This is
 # the "egg-yolk" model of a region with an indeterminate boundary (Cohn and
 # Gotts 1996): the core is the yolk, which certainly belongs to the region,
 # and the support is the whole egg, which possibly belongs to it.
@@ -169,7 +169,7 @@ vrandom.mdate <- function(..., na.rm = TRUE, approx_range = 0,
 # Sets, open-ended ranges, values with unspecified digits, BCE dates, and
 # date-times keep a flat weight for now.
 .weighted_members <- function(y, approx_range = 0) {
-  core <- expand(new_messydate(y))[[1]]
+  core <- possible_dates(new_messydate(y))[[1]]
   flat <- list(dates = core, w = rep(1, length(core)))
   if (approx_range == 0 || length(core) == 0 || !.approx_widens(y))
     return(flat)

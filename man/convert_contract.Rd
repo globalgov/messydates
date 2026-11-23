@@ -18,15 +18,15 @@ If FALSE ranges are returned in compact format.}
 A \code{mdate} vector
 }
 \description{
-This function operates as the opposite of \code{expand()}.
+This function operates as the opposite of \code{possible_dates()}.
 It contracts a list of dates into the abbreviated annotation
 of messy dates.
 }
 \details{
-The ´contract()´ function first \code{expand()} 'mdate' objects
+The ´contract()´ function first \code{possible_dates()} 'mdate' objects
 to then display their most succinct representation.
 
-Because \code{expand()} drops the time of day from ranges (see \code{?expand}),
+Because \code{possible_dates()} drops the time of day from ranges (see \code{?expand}),
 contracting a date-time range and then re-expanding it will not restore
 the original times; \code{contract()} is intended for date-level ranges,
 sets, and unspecified components.
@@ -34,7 +34,7 @@ sets, and unspecified components.
 Sets are returned in the notation they were given in: a \verb{[]} ("one member
 of") set contracts back to \verb{[]} rather than \code{{}}. This is only possible
 when \code{contract()} is passed an \code{mdate} (or something coercible to one),
-since \code{expand()} returns the member dates without recording which kind of
+since \code{possible_dates()} returns the member dates without recording which kind of
 set they came from. A list of dates therefore always contracts to \code{{}}.
 Note that a set whose members happen to be consecutive days contracts to a
 range, \code{..}, whichever notation it was given in.

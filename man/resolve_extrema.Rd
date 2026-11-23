@@ -53,7 +53,7 @@ This can be useful for various descriptive or inferential projects.
 \details{
 \code{vmin()}/\code{min()} and \code{vmax()}/\code{max()} work directly on the annotated
 string (dropping \code{~}/\verb{?}/\verb{\%} and, for \code{vmax()}/\code{max()}, filling in
-unspecified \code{X} components) rather than via \code{expand()}, which makes
+unspecified \code{X} components) rather than via \code{possible_dates()}, which makes
 them considerably faster than resolving through the full expanded set.
 \code{min()} and \code{max()} further resolve a vector to a single, overall
 extremum (matching the usual behaviour of these generics), while

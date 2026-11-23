@@ -230,11 +230,11 @@ See also \code|date_is_precise| \code|date_is_uncertain| \code|date_is_approxima
 
 Each coercion takes two steps:
 \begin{itemize}
-\item \emph{expand} to all compatible dates, also available directly using \code|expand(mdate)|, then
+\item \emph{expand} to all compatible dates, also available directly using \code|possible_dates(mdate)|, then
 \item \emph{resolve} them to a single date according to an explicit \code|FUN| rule
 \end{itemize}
 \begin{center}
-\code|"2021-04"| \pipe{expand()}
+\code|"2021-04"| \pipe{possible_dates()}
 \begin{tabular}[c]{@{}c@{}}
   \code|"2024-04-01"| \\
   \code|"2024-04-02"| \\

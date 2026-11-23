@@ -170,7 +170,7 @@ precision <- function(x) UseMethod("precision")
 #' precision(as_messydate("2012-02-03 14:30"))
 #' @export
 precision.mdate <- function(x) {
-  out <- expand(x)
+  out <- possible_dates(x)
   out <- (1 / lengths(out)) * subday_factor(x)
   # Neither a missing date nor the empty set has a precision.
   out[is.na(x) | is_empty_notation(x)] <- NA

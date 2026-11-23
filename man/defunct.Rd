@@ -15,6 +15,7 @@
 \alias{on_or_after}
 \alias{is_intersecting}
 \alias{is_subset}
+\alias{expand}
 \title{Functions that have been renamed, superseded, or are no longer working}
 \usage{
 as_approximate(x, component = NULL)
@@ -42,11 +43,17 @@ on_or_after(x)
 is_intersecting(x, y)
 
 is_subset(x, y)
+
+expand(x, approx_range = 0, by = "day")
 }
 \arguments{
 \item{x, y}{\code{mdate} objects.}
 
 \item{component}{The component to tag. See \link{parse_tag}.}
+
+\item{approx_range}{See \link{convert_expand}.}
+
+\item{by}{Granularity of enumeration, "day" by default.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -95,6 +102,11 @@ Use \code{date_is_intersecting()}, which is element-wise.
 
 \item \code{is_subset()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{date_is_subset()}, which is element-wise.
+
+\item \code{expand()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{possible_dates()}.
+The argument \code{by} is not in \code{possible_dates()}.
+To make a sequence of times, use \code{seq()}.
 
 }}
 \keyword{internal}

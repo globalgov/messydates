@@ -143,8 +143,8 @@ test_that("vmean() and vmedian() fast paths match the expanded computation", {
   x <- as_messydate(c(paste0(lo, "..", hi), "2001-02", "2004-02",
                       "{2001-01-01,2001-02-02}", "2012-06-02",
                       "2000-12-30..2001-01-02"))
-  expanded_mean <- vapply(expand(x), messydates:::.mean_value, character(1))
-  expanded_median <- vapply(expand(x), function(y)
+  expanded_mean <- vapply(possible_dates(x), messydates:::.mean_value, character(1))
+  expanded_median <- vapply(possible_dates(x), function(y)
     messydates:::.median_value(messydates:::.order_messy(y)), character(1))
   expect_identical(vmean(x), expanded_mean)
   expect_identical(vmedian(x), expanded_median)

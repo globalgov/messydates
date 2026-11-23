@@ -71,7 +71,7 @@ test_that("the empty set is read, kept, and detected", {
 
 test_that("functions accept the empty set", {
   x <- as_messydate(c("{}", "2012-01-05"))
-  expect_identical(expand(x)[[1]], character(0))
+  expect_identical(possible_dates(x)[[1]], character(0))
   expect_identical(as.character(vmin(x)), c(NA, "2012-01-05"))
   expect_identical(as.character(vmax(x)), c(NA, "2012-01-05"))
   expect_identical(vmean(x), c(NA, "2012-01-05"))

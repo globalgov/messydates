@@ -237,9 +237,10 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 | Prefix | Contains |
 |---|---|
 | `class_*.R` | the `mdate` class itself: `class_mdate.R` holds the constructor/validator (`new_messydate()`/`validate_messydate()`/`make_messydate()`) *and* the S3 dispatch methods (`print`/`format`/`Ops`/comparison); `class_methods.R` holds the `vctrs` methods (type names, `vec_ptype2()`, `vec_cast()`) that give `mdate` ordinary vector behaviour for `[`, `[<-`, `c()`, `rep()`, and `unique()`; duration handling lives in `class_mduration.R` |
-| `coerce_to_messydate.R` | the largest file: `as_messydate()`, the main user-facing entry point that parses character strings, numbers, `Date`, `POSIXct`/`POSIXlt` into `mdate`, including the prose parser (Roman numerals, "circa", "the Ides of March", decades/centuries, "before X", comma-separated prose lists, etc.; see the roxygen `@section Parsing prose` there for the full list of supported conventions) |
+| `coerce_to_messydate.R` | `as_messydate()`, the main user-facing entry point, and its methods for character strings, numbers, `Date`, `POSIXct`/`POSIXlt` and lists; the roxygen `@section Parsing prose` there lists the prose conventions that the parser reads |
+| `parse_text.R` | the largest file: the helpers that change text into ISO 8601-2 notation for `as_messydate()`, including two-digit years, separators, the order of components, unspecified components, times of day, eras, zero padding, and the prose parser (Roman numerals, "circa", "the Ides of March", decades/centuries, "before X", comma-separated prose lists, etc.) |
 | `parse_languages.R` | the tables that rewrite prose in other languages (now French) into the English forms that the prose parser reads, for `as_messydate(lang = )` |
-| `coerce_from_messydate.R` | the inverse: `mdate` to `Date`/`POSIXct`/`POSIXlt`, and `as.list.mdate()` |
+| `coerce_from_messydate.R` | the inverse: `mdate` to `Date`/`POSIXct`/`POSIXlt` |
 | `validate_input.R` | input validation shared across the coercion pipeline, and `md_problems()`, which reports what could not be parsed |
 | `resolve_extrema.R`, `resolve_tendency.R`, `resolve_probabilistically.R` | resolution functions that collapse a messy date/range/set to one precise value: the extrema (`vmin()`/`vmax()`), the central tendency (`vmedian()`/`vmean()`/`vmodal()`), and random draws (`random()`/`vrandom()`); `resolve_probabilistically.R` also holds the weights that the draws use for approximate and uncertain values |
 | `parse_tag.R` | the `tag_*()` functions and `untag()`, which add or remove the annotations `~`, `?`, `%`, `X` and open-range `..` on a date or one of its components |
@@ -251,7 +252,7 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 
 ### Prose in other languages
 
-The prose parser in `coerce_to_messydate.R` reads English only.
+The prose parser in `parse_text.R` reads English only.
 `as_messydate(x, lang = "fr")` first rewrites French prose into English prose
 with the table `.prose_fr` in [R/parse_languages.R](../R/parse_languages.R),
 and then parses it as English.
@@ -282,7 +283,7 @@ Because `:` is also a range separator, the parser detects and protects time comp
 before range-splitting occurs, so `2009-01-01:2019-01-01` still parses as a range
 while `2019-03-01 14:30:00` parses as a time.
 Time components accept the same `~`/`?`/`%`/`X` annotations as date components.
-This logic is spread across the coercion pipeline (`coerce_to_messydate.R`),
+This logic is spread across the text parser (`parse_text.R`),
 component extraction, and the arithmetic and sequence files.
 When you change time parsing, check all three.
 

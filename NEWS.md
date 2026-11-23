@@ -6,6 +6,7 @@
 - Added `data-raw/benchmark.R` to time parsing and resolution
 - Improved `pushrelease.yml` to take the version number from `DESCRIPTION`
 - Updated `CONTRIBUTING.md` with naming rules
+- Improved the website reference with Parsing and Plotting sections
 - Added equivalence test to compare parsing, expansion, and resolution with reference
 
 ## Class

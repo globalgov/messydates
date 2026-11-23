@@ -12,10 +12,6 @@
 \alias{modal.mdate}
 \alias{vmodal}
 \alias{vmodal.mdate}
-\alias{random}
-\alias{random.mdate}
-\alias{vrandom}
-\alias{vrandom.mdate}
 \title{Resolves messy dates into a central tendency}
 \usage{
 \method{median}{mdate}(..., na.rm = TRUE, uncertain = "keep")
@@ -37,14 +33,6 @@ modal(..., na.rm = TRUE)
 vmodal(..., na.rm = TRUE)
 
 \method{vmodal}{mdate}(..., na.rm = TRUE, uncertain = "keep")
-
-random(..., na.rm = TRUE)
-
-\method{random}{mdate}(..., na.rm = TRUE, approx_range = 0, uncertain_p = 1)
-
-vrandom(..., na.rm = TRUE)
-
-\method{vrandom}{mdate}(..., na.rm = TRUE, approx_range = 0, uncertain_p = 1)
 }
 \arguments{
 \item{...}{a mdate object}
@@ -64,23 +52,6 @@ For random draws, see \code{uncertain_p} in \code{vrandom()}.}
 \item{trim}{the fraction (0 to 0.5) of observations to be trimmed
 from each end of x before the mean is computed.
 Values of trim outside that range are taken as the nearest endpoint.}
-
-\item{approx_range}{For \code{random()} and \code{vrandom()}, the range by which
-to widen approximate values (\code{~} or \verb{\%}).
-The range is in units of the component that each mark is written on,
-as in \code{expand()}.
-With the default of \code{0}, approximate values are not widened.
-With a positive value, the draw uses trapezoidal weights,
-see the section "Approximate and uncertain values".}
-
-\item{uncertain_p}{For \code{random()} and \code{vrandom()}, the probability that an
-uncertain value (\verb{?} or \verb{\%}) is correct.
-Give one number for all values, or one number for each value,
-for example a column that holds the reliability of each source.
-With probability \code{1 - uncertain_p}, \code{vrandom()} gives \code{NA} for an
-uncertain value, and \code{random()} leaves it out of the draw.
-The default of \code{1} treats uncertain values as correct.
-\code{uncertain_p = 0} is the same as \code{uncertain = "drop"}.}
 }
 \description{
 These functions resolve messydates by their central tendency.
@@ -105,8 +76,7 @@ dates, the central tendency describes where those occurrences sit. For a
 \verb{[]} ("one member of") set, which records that something happened on
 exactly one of those dates but not which, the central tendency is a point
 estimate of that single unknown date, as it is for a range or an
-unspecified component. \code{vrandom()} draws a member uniformly in either
-case, which for a \verb{[]} set is a draw from the candidates themselves.
+unspecified component.
 
 Averaging across the BCE/CE boundary, or between two BCE dates, is not
 currently supported: \code{median()} falls back to the earlier of the two
@@ -114,27 +84,6 @@ middle values in that case, and \code{mean()}/\code{vmean()} may be unreliable f
 solely negative-year inputs (a documented limitation, not a supported
 feature).
 }
-\section{Approximate and uncertain values}{
-
-The two annotations have different effects on a random draw.
-
-An approximate value (\code{~}) can be outside the dates that it names.
-With a positive \code{approx_range}, the dates it names (the core) have a
-weight of 1, and the dates that \code{approx_range} adds on each side
-have a weight that falls linearly to 0.
-A range widens at each end by the marks of that end, so the weight is
-1 across the range and falls to 0 beyond an approximate end.
-The core and the full range are the "yolk" and the "egg" of the egg-yolk
-model of regions with indeterminate boundaries (Cohn and Gotts 1996).
-The linear fall between them is an assumption of this package.
-
-An uncertain value (\verb{?}) is a record that the source itself doubts.
-The doubt is about whether the record is correct at all,
-so it does not change the dates that the value can be.
-Instead, \code{uncertain_p} gives the probability that the record is correct.
-Repeated draws then show how much a result depends on doubtful records.
-}
-
 \examples{
 d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
@@ -150,13 +99,4 @@ mean(d)
 vmean(d)
 modal(d)
 vmodal(d)
-random(d)
-vrandom(d)
-}
-\references{
-Cohn, A. G. and Gotts, N. M. (1996).
-"The 'egg-yolk' representation of regions with indeterminate boundaries".
-In P. A. Burrough and A. U. Frank (eds.),
-\emph{Geographic Objects with Indeterminate Boundaries}, GISDATA 2,
-pp. 171-187. London: Taylor & Francis.
 }

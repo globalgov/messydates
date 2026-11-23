@@ -57,7 +57,7 @@ vmin.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- .handle_uncertain(d, uncertain, elementwise = TRUE)
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
-  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
+  dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- .remove_post(dates)
   dates <- .replace_earliest(dates)
   mdate(dates)
@@ -73,14 +73,14 @@ min.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
   dates <- .na_for_reducer(d, na.rm)
   if (is.null(dates)) return(new_messydate(NA_character_))
-  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
+  dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- .remove_post(dates)
   dates <- .replace_earliest(dates)
   dates <- mdate(dates)
   if(any(date_is_bce(dates)))
     dates[date_is_bce(dates)][order(as.character(dates[date_is_bce(dates)]),
                                decreasing = TRUE)][1] else
-                                 dates[order(as.character(dates))==1]
+                                 dates[order(as.character(dates))[1]]
 }
 
 .remove_post <- function(dates){
@@ -127,7 +127,7 @@ vmax.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- .handle_uncertain(d, uncertain, elementwise = TRUE)
   dates <- d
   if(na.rm) dates <- stats::na.omit(d)
-  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
+  dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- unspecified_months(dates)
   dates <- .remove_pre(dates)
   dates <- .replace_latest(dates)
@@ -144,7 +144,7 @@ max.mdate <- function(..., na.rm = FALSE, uncertain = "keep"){
   d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
   dates <- .na_for_reducer(d, na.rm)
   if (is.null(dates)) return(new_messydate(NA_character_))
-  dates <- stringi::stri_replace_all_regex(dates, "~|\\?", "")
+  dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- unspecified_months(dates)
   dates <- .remove_pre(dates)
   dates <- .replace_latest(dates)

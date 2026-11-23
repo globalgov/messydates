@@ -96,32 +96,37 @@
 
 ## Resolution
 
-- Added `approx_range` to `random()` and `vrandom()` for `~` and `%` values
-  - Draws use trapezoidal weights, as in the egg-yolk model (Cohn and Gotts 1996)
-  - The weight falls linearly to 0 over the dates `approx_range` adds
-  - Widens by the component that each mark is written on, as in `expand()`
-  - Ranges widen at each end by the marks of that end, also in `expand()`
+- Improved `random()` and `vrandom()` for approximate and uncertain values
+  - Added `approx_range` to widen `~` and `%` values with trapezoidal weights
+    - The weight falls linearly to 0 over the dates that `approx_range` adds
+    - This follows the egg-yolk model (Cohn and Gotts 1996)
+    - Each mark widens by its own component, and each range end by its marks
     - `"1990-03-~01..1990-04-~15", approx_range = 3` gives 1990-02-26 to 1990-04-18
-  - Open-ended ranges, sets, `X` digits, BCE dates, and date-times are not widened yet
-- Added `uncertain_p` to `random()` and `vrandom()` for `?` and `%` values
-  - Otherwise `vrandom()` gives `NA` and `random()` leaves the value out
-  - One number, or one for each value, e.g. the reliability of each source
-- Added `uncertain` to `min()`, `max()`, `mean()`, `median()`, and `modal()`
-  - Also to `vmin()`, `vmax()`, `vmean()`, `vmedian()`, and `vmodal()`
+    - Open ranges, sets, `X` digits, BCE dates, and date-times are not widened yet
+  - Added `uncertain_p`, the probability that a `?` or `%` value is correct
+    - One number, or one for each value, e.g. the reliability of each source
+    - Otherwise `vrandom()` gives `NA` and `random()` leaves the value out
+- Added `uncertain` to the other resolution functions
+  - `min()`, `max()`, `mean()`, `median()`, `modal()`, and their `v*()` forms
   - `uncertain = "drop"` gives `NA` in `v*()` and leaves values out of the others
+- Fixed `min()`, `max()`, `vmin()`, and `vmax()`
+  - `min()` gave the wrong value when the first element was not the earliest
+  - `%` stayed in the result
+  - Years with unspecified digits resolved to the wrong year
+    - `vmin("19XX")` gave `"1901-01-01"` and now gives `"1900-01-01"`
+    - `vmax("199X")` gave the value unresolved and now gives `"1999-12-31"`
+    - `vmin("XX29-01-01")` gave `"0129-01-01"` and now gives `"0029-01-01"`
+    - `vmax("-00XX")` gave `"-0000-12-31"` and now gives `"0000-12-31"`
+- Fixed missing values in the resolution functions
+  - The `v*()` functions give `NA`
+  - `min()` and `max()` follow base R: with `na.rm = FALSE`, one `NA` gives `NA`
 - Accelerated `mean()`, `median()`, `modal()`, `random()`, and their `v*()` forms (#105)
+  - A range expands without being parsed again
   - ~15x faster for `mean()` on 1,000 months and ranges
 - Accelerated `vrandom()`, `vmean()`, and `vmedian()` on full dates and ranges
+  - Full dates and ranges resolve directly, without `expand()`
   - ~900x faster for `vrandom()` on 63,606 event dates, a quarter of them ranges
   - ~290x faster for `vmean()` on the same dates
-- Fixed missing values in the `v*()` functions, which now give `NA`
-- Fixed `min()` and `max()` on missing values, which now follow base R
-  - With `na.rm = FALSE`, one `NA` makes the result `NA`
-  - With `na.rm = TRUE`, `NA`'s are skipped
-- Fixed `vmin()` and `vmax()` on years with unspecified digits
-  - `vmin("19XX")` gave `"1901-01-01"` and now gives `"1900-01-01"`
-  - `vmax("199X")` gave the value unresolved and now gives `"1999-12-31"`
-  - `vmin("XX29-01-01")` gave `"0129-01-01"` and now gives `"0029-01-01"`
 
 ## Expand/Contract
 

@@ -114,15 +114,15 @@ Tidy sources are precise; annotate information about messiness:
 \begin{center}
 \renewcommand{\arraystretch}{1.12}
 \begin{tabular}{@{}ll@{}}
-\code|on_or_before("2010")| \arrow \code|"..2010"| &
-\code|on_or_after("2010")| \arrow \code|"2010.."|\\
-\code|approximate("2010")| \arrow \code|"2010~"| &
-\code|uncertain("2010")| \arrow \code|"2010?"|\\
+\code|tag_before("2010")| \arrow \code|"..2010"| &
+\code|tag_after("2010")| \arrow \code|"2010.."|\\
+\code|tag_approximate("2010-06")| \arrow \code|"2010-~06"| &
+\code|tag_uncertain("2010-06")| \arrow \code|"2010-?06"|\\
 \end{tabular}\\[2pt]
 \end{center}
 \code|component=| specifies part e.g.:
 \begin{center}
-\code|uncertain(x, component = "month")| \arrow \code|2026-?07-07|
+\code|tag_uncertain(x, component = "month")| \arrow \code|2026-?07-07|
 \end{center}
 \end{mdbox}
 

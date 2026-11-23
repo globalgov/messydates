@@ -1,4 +1,152 @@
-# Weights for approximate and uncertain values ####
+#' Resolves messy dates by a random draw
+#' @description
+#'   These functions resolve messydates by drawing one precise date at random
+#'   from the dates that each value can be.
+#'   `random()` expands *all* elements of the vector into one combined set of
+#'   dates and draws a single value from it.
+#'   `vrandom()` draws from each element separately, and so returns a vector
+#'   of the same length as the input.
+#'   Repeated draws give a distribution of results, which shows how much an
+#'   analysis depends on the imprecision of the dates.
+#' @details
+#'   By default, each date that a value can be has the same chance of being
+#'   drawn.
+#'   For a `[]` ("one member of") set, this is a draw from the candidates
+#'   themselves.
+#'   For a `{}` ("all members of") set, it is a draw of one of the
+#'   occurrences.
+#'   The arguments `approx_range` and `uncertain_p` change the draw for
+#'   approximate and uncertain values.
+#' @name resolve_probabilistically
+#' @inheritParams resolve_extrema
+#' @param approx_range The range by which to widen approximate values (`~` or `%`).
+#'   The range is in units of the component that each mark is written on,
+#'   as in `expand()`.
+#'   With the default of `0`, approximate values are not widened.
+#'   With a positive value, the draw uses trapezoidal weights,
+#'   see the section "Approximate and uncertain values".
+#' @param uncertain_p The probability that an uncertain value (`?` or `%`) is correct.
+#'   Give one number for all values, or one number for each value,
+#'   for example a column that holds the reliability of each source.
+#'   With probability `1 - uncertain_p`, `vrandom()` gives `NA` for an
+#'   uncertain value, and `random()` leaves it out of the draw.
+#'   The default of `1` treats uncertain values as correct.
+#'   `uncertain_p = 0` is the same as `uncertain = "drop"`.
+#' @section Approximate and uncertain values:
+#'   The two annotations have different effects on a random draw.
+#'
+#'   An approximate value (`~`) can be outside the dates that it names.
+#'   With a positive `approx_range`, the dates it names (the core) have a
+#'   weight of 1, and the dates that `approx_range` adds on each side
+#'   have a weight that falls linearly to 0.
+#'   A range widens at each end by the marks of that end, so the weight is
+#'   1 across the range and falls to 0 beyond an approximate end.
+#'   The core and the full range are the "yolk" and the "egg" of the egg-yolk
+#'   model of regions with indeterminate boundaries (Cohn and Gotts 1996).
+#'   The linear fall between them is an assumption of this package.
+#'
+#'   An uncertain value (`?`) is a record that the source itself doubts.
+#'   The doubt is about whether the record is correct at all,
+#'   so it does not change the dates that the value can be.
+#'   Instead, `uncertain_p` gives the probability that the record is correct.
+#'   Repeated draws then show how much a result depends on doubtful records.
+#' @references
+#'   Cohn, A. G. and Gotts, N. M. (1996).
+#'   "The 'egg-yolk' representation of regions with indeterminate boundaries".
+#'   In P. A. Burrough and A. U. Frank (eds.),
+#'   _Geographic Objects with Indeterminate Boundaries_, GISDATA 2,
+#'   pp. 171-187. London: Taylor & Francis.
+#' @examples
+#' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
+#'   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
+#'   "{2001-01,2001-02-02}", "2008-XX-31", "-0050-01-01"))
+#' d
+NULL
+
+#' @rdname resolve_probabilistically
+#' @export
+random <- function(..., na.rm = TRUE) UseMethod("random")
+
+#' @rdname resolve_probabilistically
+#' @examples
+#' random(d)
+#' @export
+random.mdate <- function(..., na.rm = TRUE, approx_range = 0,
+                         uncertain_p = 1) {
+  x <- list(...)[[1]]
+  x <- .drop_empty(x)
+  # Each uncertain value is left out of this draw with probability
+  # 1 - uncertain_p; the draw is then made from the members of the rest.
+  miss <- .uncertain_misses(x, uncertain_p)
+  x <- x[!miss]
+  if (length(x) == 0) return(NA_character_)
+  if (approx_range == 0) {
+    y <- unlist(expand(x))
+    w <- NULL
+  } else {
+    m <- lapply(as.character(x), .weighted_members, approx_range = approx_range)
+    y <- unlist(lapply(m, `[[`, "dates"))
+    w <- unlist(lapply(m, `[[`, "w"))
+  }
+  if (na.rm) {
+    keep <- !is.na(y)
+    y <- y[keep]
+    if (!is.null(w)) w <- w[keep]
+  }
+  if (length(y) == 0) return(NA_character_)
+  if (length(y) == 1) return(y)
+  sample(y, 1, prob = w)
+}
+
+#' @export
+random.character <- function(..., na.rm = TRUE) {
+  y <- list(...)[[1]]
+  # y <- suppressMessages(unlist(expand(x)))
+  if(na.rm) y <- y[!is.na(y)]
+  sample(y, 1)
+}
+
+#' @rdname resolve_probabilistically
+#' @export
+vrandom <- function(..., na.rm = TRUE) UseMethod("vrandom")
+
+#' @rdname resolve_probabilistically
+#' @examples
+#' vrandom(d)
+#' @export
+vrandom.mdate <- function(..., na.rm = TRUE, approx_range = 0,
+                          uncertain_p = 1) {
+
+  x <- list(...)[[1]]
+
+  x <- .empty_to_na(x)
+  f <- .full_dates(x)
+  out <- f$out
+  # A range draws a uniform day, the same distribution as sampling its
+  # expanded members.
+  out[f$rng] <- format(f$lo + floor(stats::runif(length(f$lo)) * f$n),
+                       "%Y-%m-%d")
+  # Everything else (months, sets, annotations, times, BCE dates) is
+  # expanded and sampled one value at a time, as before. Missing values
+  # stay missing, as they do in vmin() and vmax().
+  f$rest <- setdiff(f$rest, which(f$missing))
+  out[f$rest] <- vapply(as.list(x[f$rest]), function(y){
+    random(expand(y)[[1]], na.rm = na.rm)
+  }, FUN.VALUE = character(1))
+  # An approximate value draws from its trapezoidal weights instead.
+  if (approx_range > 0) {
+    apx <- which(!is.na(x) & date_is_approximate(x))
+    out[apx] <- vapply(as.character(x[apx]), .weighted_draw, character(1),
+                       approx_range = approx_range, USE.NAMES = FALSE)
+  }
+  # An uncertain value is taken to be wrong in this draw, and so gives NA,
+  # with probability 1 - uncertain_p.
+  out[.uncertain_misses(x, uncertain_p)] <- NA
+  out
+
+}
+
+# Weights for approximate and uncertain values ----------------------------
 
 # Approximate values ('~', and '%') -----------------------------------------
 # An approximate value has a core, the dates the record names, and a wider

@@ -59,9 +59,15 @@
   - Range and set members are padded together
   - ~9x faster for 6,000 plain ISO dates
   - ~45x faster for 6,000 mixed ISO, prose, and range values
-- Improved the prose parser of `as_messydate()` (#102)
+- Improved the prose parser of `as_messydate()` (closes #102)
+  - Added `lang = "fr"` to read French prose, e.g. `"vers 1910"` or `"mai 1997"`
+    - Reads the same forms as English: qualifiers, open ranges, and connectives
+    - Also decades, centuries (`"XIXe siècle"`), eras (`"av. J.-C."`), and seasons
+    - Accents may be left out; spelled-out numbers are read in English only
   - Uses one table of English month names
   - Fixed lower-casing by the session locale, e.g. `"APRIL"` under Turkish
+  - Fixed a century before the common era dropping its era
+    - `"the 5th century BC"` gave `"04XX"` and now gives `"-04XX"`
 - Improved `as_messydate()` on numbers from spreadsheets
   - Added `origin` to read serial day counts
     - `origin = "excel"` reads the 1900 date system of Excel

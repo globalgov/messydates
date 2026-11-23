@@ -25,6 +25,8 @@ Update this list whenever a heading below is added, renamed, or moved.
   - [File organization](#file-organization-file-naming--verbpurpose): to find a function,
     or the file for a new one
   - [Time-of-day support](#time-of-day-support): before you change how times are parsed
+  - [Prose in other languages](#prose-in-other-languages): before you add a language,
+    or change a word that the prose parser reads
   - [Tests](#tests): before you add a test, or when a change must not alter output
   - [Deprecation](#deprecation): before you rename or remove a function or an argument, and at each minor release
 - [Documenting](#documenting)
@@ -236,6 +238,7 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 |---|---|
 | `class_*.R` | the `mdate` class itself: `class_mdate.R` holds the constructor/validator (`new_messydate()`/`validate_messydate()`/`make_messydate()`) *and* the S3 dispatch methods (`print`/`format`/`Ops`/comparison); `class_methods.R` holds the `vctrs` methods (type names, `vec_ptype2()`, `vec_cast()`) that give `mdate` ordinary vector behaviour for `[`, `[<-`, `c()`, `rep()`, and `unique()`; duration handling lives in `class_mduration.R` |
 | `coerce_to_messydate.R` | the largest file: `as_messydate()`, the main user-facing entry point that parses character strings, numbers, `Date`, `POSIXct`/`POSIXlt` into `mdate`, including the prose parser (Roman numerals, "circa", "the Ides of March", decades/centuries, "before X", comma-separated prose lists, etc.; see the roxygen `@section Parsing prose` there for the full list of supported conventions) |
+| `parse_languages.R` | the tables that rewrite prose in other languages (now French) into the English forms that the prose parser reads, for `as_messydate(lang = )` |
 | `coerce_from_messydate.R` | the inverse: `mdate` to `Date`/`POSIXct`/`POSIXlt`, and `as.list.mdate()` |
 | `validate_input.R` | input validation shared across the coercion pipeline, and `md_problems()`, which reports what could not be parsed |
 | `resolve_extrema.R`, `resolve_tendency.R`, `resolve_probabilistically.R` | resolution functions that collapse a messy date/range/set to one precise value: the extrema (`vmin()`/`vmax()`), the central tendency (`vmedian()`/`vmean()`/`vmodal()`), and random draws (`random()`/`vrandom()`); `resolve_probabilistically.R` also holds the weights that the draws use for approximate and uncertain values |
@@ -245,6 +248,30 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 | `operate_*.R` | arithmetic on mdates and durations (`operate_arithmetic.R`), inequality/comparison operators (`operate_comparison.R`), set operations on mdate sets/ranges (`operate_set.R`), proportional overlap (`operate_proportional.R`), and the `date_is_*()` predicates (`operate_statements.R`) |
 | `data_battles.R` | a bundled example dataset (`battles`, in `data/battles.rda`) used in docs and examples |
 | `messydates-defunct.R` | deprecated/removed function stubs kept for a graceful transition (see [Deprecation](#deprecation)) |
+
+### Prose in other languages
+
+The prose parser in `coerce_to_messydate.R` reads English only.
+`as_messydate(x, lang = "fr")` first rewrites French prose into English prose
+with the table `.prose_fr` in [R/parse_languages.R](../R/parse_languages.R),
+and then parses it as English.
+English input never goes through a table, so a new language cannot change English results.
+
+To add a language:
+
+1. Add its code to `.prose_languages`.
+2. Add a table of regular expressions and their English replacements,
+   in the order of `.prose_fr`: eras, open ranges, qualifiers, decades,
+   ordinals, units, seasons, connectives, months, and last the short words.
+   A longer phrase must come before any word inside it.
+   Give each pattern with and without accents.
+3. Map each phrase to an English form that the parser already reads.
+   Check the English form first, e.g. `as_messydate("the 5th week of 2026")`.
+   Change the English parser only where it has no form for the phrase.
+4. Add a `test-parse_languages.R` block with one test for each kind of phrase.
+5. Ask a native speaker to review the table.
+
+Spelled-out numbers ("deux mille vingt") are not translated.
 
 ### Time-of-day support
 

@@ -2,11 +2,6 @@
 % Please edit documentation in R/messydates-defunct.R
 \name{defunct}
 \alias{defunct}
-\alias{is_element}
-\alias{md_intersect}
-\alias{md_union}
-\alias{md_multiset}
-\alias{messyduration}
 \alias{as_approximate}
 \alias{as_uncertain}
 \alias{is_precise}
@@ -14,18 +9,14 @@
 \alias{is_approximate}
 \alias{is_bce}
 \alias{is_similar}
+\alias{approximate}
+\alias{uncertain}
+\alias{on_or_before}
+\alias{on_or_after}
+\alias{is_intersecting}
+\alias{is_subset}
 \title{Functions that have been renamed, superseded, or are no longer working}
 \usage{
-is_element(.data)
-
-md_intersect(.data)
-
-md_union(.data)
-
-md_multiset(.data)
-
-messyduration(.data)
-
 as_approximate(x, component = NULL)
 
 as_uncertain(x, component = NULL)
@@ -39,9 +30,23 @@ is_approximate(x)
 is_bce(x)
 
 is_similar(x, y)
+
+approximate(x, component = NULL)
+
+uncertain(x, component = NULL)
+
+on_or_before(x)
+
+on_or_after(x)
+
+is_intersecting(x, y)
+
+is_subset(x, y)
 }
 \arguments{
 \item{x, y}{\code{mdate} objects.}
+
+\item{component}{The component to tag. See \link{parse_tag}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -54,34 +59,42 @@ wherever possible and update your scripts accordingly.
 }
 \section{Functions}{
 \itemize{
-\item \code{is_element()}: Deprecated on 2023-08-25.
+\item \code{as_approximate()}: Deprecated on 2026-07-09. Removed in messydates 1.3.0.
 
-\item \code{md_intersect()}: Deprecated on 2023-08-25.
+\item \code{as_uncertain()}: Deprecated on 2026-07-09. Removed in messydates 1.3.0.
 
-\item \code{md_union()}: Deprecated on 2023-08-25.
-
-\item \code{md_multiset()}: Deprecated on 2023-08-25.
-
-\item \code{messyduration()}: Deprecated on 2023-08-25.
-
-\item \code{as_approximate()}: Deprecated on 2026-07-09.
-
-\item \code{as_uncertain()}: Deprecated on 2026-07-09.
-
-\item \code{is_precise()}: Deprecated in messydates 1.2.0.
+\item \code{is_precise()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{date_is_precise()}.
 
-\item \code{is_uncertain()}: Deprecated in messydates 1.2.0.
+\item \code{is_uncertain()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{date_is_uncertain()}.
 
-\item \code{is_approximate()}: Deprecated in messydates 1.2.0.
+\item \code{is_approximate()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{date_is_approximate()}.
 
-\item \code{is_bce()}: Deprecated in messydates 1.2.0.
+\item \code{is_bce()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{date_is_bce()}.
 
-\item \code{is_similar()}: Deprecated in messydates 1.2.0.
+\item \code{is_similar()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{date_is_similar()}.
+
+\item \code{approximate()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{tag_approximate()}.
+
+\item \code{uncertain()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{tag_uncertain()}.
+
+\item \code{on_or_before()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{tag_before()}.
+
+\item \code{on_or_after()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{tag_after()}.
+
+\item \code{is_intersecting()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{date_is_intersecting()}, which is element-wise.
+
+\item \code{is_subset()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{date_is_subset()}, which is element-wise.
 
 }}
 \keyword{internal}

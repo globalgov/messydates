@@ -39,11 +39,12 @@ reference:
     desc: "These functions construct dates in the `mdate` class and durations in the `mduration` class:"
     contents:
       - starts_with("class_")
-  - title: "Coerce to"
-    desc: "These functions coerce dates from other classes to the `mdate` class:"
+  - title: "Parsing"
+    desc: "These functions parse dates from text and other classes into the `mdate` class, and tag them as approximate, uncertain, unspecified, or open:"
     contents:
       - coerce_to
       - md_problems
+      - starts_with("parse_")
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
     contents:
@@ -54,7 +55,7 @@ reference:
     contents:
       - starts_with("convert_")
   - title: "Components"
-    desc: "These functions annotate or extract components of dates and times:"
+    desc: "These functions extract components of dates and times:"
     contents:
       - starts_with("component_")
   - title: "Operations"

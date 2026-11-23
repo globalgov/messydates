@@ -11,52 +11,17 @@
 #' @keywords internal
 NULL
 
-#' @describeIn defunct Deprecated on 2023-08-25.
-#' @export
-is_element <- function(.data) {
-  .Deprecated(new = "messydates::is_subset()",
-              package = "messydates")
-}
-
-#' @describeIn defunct Deprecated on 2023-08-25.
-#' @export
-md_intersect <- function(.data) {
-  .Deprecated(new = "messydates::`%intersect%`()",
-              package = "messydates")
-}
-
-#' @describeIn defunct Deprecated on 2023-08-25.
-#' @export
-md_union <- function(.data) {
-  .Deprecated(new = "messydates::`%union%`()",
-              package = "messydates")
-}
-
-#' @describeIn defunct Deprecated on 2023-08-25.
-#' @export
-md_multiset <- function(.data) {
-  .Deprecated(new = "messydates::`+`()",
-              package = "messydates")
-}
-
-#' @describeIn defunct Deprecated on 2023-08-25.
-#' @export
-messyduration <- function(.data) {
-  .Deprecated(new = "make_messyduration",
-              package = "messydates")
-}
-
-#' @describeIn defunct Deprecated on 2026-07-09.
+#' @describeIn defunct Deprecated on 2026-07-09. Removed in messydates 1.3.0.
 #' @export
 as_approximate <- function(x, component = NULL) {
-  .Deprecated(new = "messydates::approximate()",
+  .Deprecated(new = "messydates::tag_approximate()",
               package = "messydates")
 }
 
-#' @describeIn defunct Deprecated on 2026-07-09.
+#' @describeIn defunct Deprecated on 2026-07-09. Removed in messydates 1.3.0.
 #' @export
 as_uncertain <- function(x, component = NULL) {
-  .Deprecated(new = "messydates::uncertain()",
+  .Deprecated(new = "messydates::tag_uncertain()",
               package = "messydates")
 }
 
@@ -72,7 +37,7 @@ as_uncertain <- function(x, component = NULL) {
   invisible()
 }
 
-#' @describeIn defunct Deprecated in messydates 1.2.0.
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
 #'   Use `date_is_precise()`.
 #' @param x,y `mdate` objects.
 #' @export
@@ -81,7 +46,7 @@ is_precise <- function(x) {
   date_is_precise(x)
 }
 
-#' @describeIn defunct Deprecated in messydates 1.2.0.
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
 #'   Use `date_is_uncertain()`.
 #' @export
 is_uncertain <- function(x) {
@@ -89,7 +54,7 @@ is_uncertain <- function(x) {
   date_is_uncertain(x)
 }
 
-#' @describeIn defunct Deprecated in messydates 1.2.0.
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
 #'   Use `date_is_approximate()`.
 #' @export
 is_approximate <- function(x) {
@@ -97,7 +62,7 @@ is_approximate <- function(x) {
   date_is_approximate(x)
 }
 
-#' @describeIn defunct Deprecated in messydates 1.2.0.
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
 #'   Use `date_is_bce()`.
 #' @export
 is_bce <- function(x) {
@@ -105,10 +70,59 @@ is_bce <- function(x) {
   date_is_bce(x)
 }
 
-#' @describeIn defunct Deprecated in messydates 1.2.0.
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
 #'   Use `date_is_similar()`.
 #' @export
 is_similar <- function(x, y) {
   .soft_deprecate("is_similar()", "date_is_similar()")
   date_is_similar(x, y)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `tag_approximate()`.
+#' @param component The component to tag. See [parse_tag].
+#' @export
+approximate <- function(x, component = NULL) {
+  .soft_deprecate("approximate()", "tag_approximate()")
+  tag_approximate(x, component)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `tag_uncertain()`.
+#' @export
+uncertain <- function(x, component = NULL) {
+  .soft_deprecate("uncertain()", "tag_uncertain()")
+  tag_uncertain(x, component)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `tag_before()`.
+#' @export
+on_or_before <- function(x) {
+  .soft_deprecate("on_or_before()", "tag_before()")
+  tag_before(x)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `tag_after()`.
+#' @export
+on_or_after <- function(x) {
+  .soft_deprecate("on_or_after()", "tag_after()")
+  tag_after(x)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `date_is_intersecting()`, which is element-wise.
+#' @export
+is_intersecting <- function(x, y) {
+  .soft_deprecate("is_intersecting()", "date_is_intersecting()")
+  date_is_intersecting(x, y)
+}
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `date_is_subset()`, which is element-wise.
+#' @export
+is_subset <- function(x, y) {
+  .soft_deprecate("is_subset()", "date_is_subset()")
+  date_is_subset(x, y)
 }

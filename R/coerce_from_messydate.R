@@ -25,7 +25,7 @@
 #'   each element separately rather than summarising the whole vector.
 #' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
 #' @family coerce
-#' @seealso [resolve_extrema()], [resolve_tendency()]
+#' @seealso [resolve_extrema()], [resolve_tendency()], [resolve_probabilistically()]
 #' @name coerce_from
 NULL
 

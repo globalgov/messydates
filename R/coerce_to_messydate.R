@@ -6,7 +6,7 @@
 #'   there is also a direct method for converting text or character strings to `mdate`.
 #'   The function can also extract dates and times from text,
 #'   including some historical prose conventions,
-#'   though this is a work-in-progress and currently only works in English.
+#'   in English or French (see `lang`).
 #' @param x A scalar or vector of a class that can be coerced into `mdate`,
 #'   such as `Date`, `POSIXct`, `POSIXlt`, or character.
 #' @param resequence Users have the option to choose the order for
@@ -52,6 +52,13 @@
 #'   eight-digit numbers that form a valid date are read as YYYYMMDD,
 #'   and any other number becomes `NA` with a warning,
 #'   since without an origin it cannot be told apart from a serial count.
+#' @param lang For character input, the language of any prose in `x`:
+#'   `"en"` for English (the default) or `"fr"` for French.
+#'   French prose is rewritten into the English forms described in
+#'   "Parsing prose" below, so the same conventions are read in both,
+#'   e.g. `"vers 1910"`, `"le XIXe siècle"`, `"les ides de mars, 44 av. J.-C."`,
+#'   or `"entre le 13 et le 15 février 1977"`.
+#'   Dates written only in digits are read the same in every language.
 #' @param ... Arguments passed to methods.
 #' @return A `mdate` class object
 #' @family coerce
@@ -94,6 +101,11 @@
 #'  seasons, spring running from March to May and winter from December into
 #'  February of the following year. The EDTF season codes (`"2026-22"`) are
 #'  rejected instead of read, being easily read as a mistake for a date.}
+#'  \item{French prose, with `lang = "fr"`. The same conventions are read,
+#'  e.g. `"vers 1910"` becomes `"~1910"`, `"le XIXe siècle"` becomes
+#'  `"18XX"`, and `"du 13 au 15 février 1977"` becomes
+#'  `"1977-02-13..1977-02-15"`. Accents may be left out.
+#'  Spelled-out numbers are read in English only.}
 #'  \item{A comma-separated list of dates in prose, e.g.
 #'  `"13th Feb, 1977, Feb 15 1977, 1910"`, is split into separate dates
 #'  (here, three): a fragment that is only a year is treated as completing
@@ -166,6 +178,9 @@ NULL
 #' as_messydate("summer 2026")
 #' as_messydate("before 1910")
 #' as_messydate("between the 13th and 15th of Feb, 1977")
+#' # French prose
+#' as_messydate(c("vers 1910", "le 15 mars 2019", "les ann\u00e9es 1990"), lang = "fr")
+#' as_messydate("les ides de mars, 44 av. J.-C.", lang = "fr")
 #' @export
 as_messydate <- function(x, resequence = FALSE, ...)
   UseMethod("as_messydate")
@@ -246,7 +261,8 @@ as_messydate.mdate <- function(x, resequence = FALSE, ...) {
 
 #' @describeIn coerce_to Coerce character date objects to `mdate` class
 #' @export
-as_messydate.character <- function(x, resequence = NULL, pivot = NULL, ...) {
+as_messydate.character <- function(x, resequence = NULL, pivot = NULL,
+                                   lang = "en", ...) {
   if(any(is.infinite(x))) x[is.infinite(x)] <- "9999-12-31"
   # Refuse ISO 8601-2 forms this package cannot represent, rather than carrying
   # them along as strings nothing downstream can interpret.
@@ -258,7 +274,11 @@ as_messydate.character <- function(x, resequence = NULL, pivot = NULL, ...) {
   # possible one ("the 53rd week of 2026"), and may return more elements than
   # it was given, so the input is kept for reporting where it still lines up.
   check_pivot(pivot)
+  check_lang(lang)
   orig <- x
+  # Prose in another language is rewritten into English prose first
+  # (see R/parse_languages.R); English is left as it is.
+  x <- translate_prose(x, lang)
   # A month name with a two-digit year ("May-97", Excel's display of a month)
   # is read before the time parser can mistake the year for an hour.
   x <- month_two_digit_year(x, pivot)
@@ -1295,9 +1315,14 @@ interpret_one <- function(s) {
   }
 
   # Century, e.g. "19th century" -> "18XX" (the 19th century is 1800-1899).
+  # A century before the common era keeps its era: the 5th century BC is
+  # 500-401 BC, which is the astronomical years -0499 to -0400, "-04XX".
   cen <- stringi::stri_match_first_regex(low, "([0-9]+)(?:st|nd|rd|th)?\\s+centur")
-  if (!is.na(cen[1, 1]))
-    return(sprintf("%02dXX", as.integer(cen[1, 2]) - 1L))
+  if (!is.na(cen[1, 1])) {
+    bce <- grepl(paste0("\\b(", .bc_rx, ")\\b"), s)
+    return(sprintf("%s%02dXX", if (bce) "-" else "",
+                   as.integer(cen[1, 2]) - 1L))
+  }
 
   # Decade, e.g. "1910s" -> "191X".
   dec <- stringi::stri_match_first_regex(low, "\\b([0-9]{3})0s\\b")

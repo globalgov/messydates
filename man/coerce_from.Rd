@@ -102,7 +102,7 @@ as.data.frame(as_messydate(c("2012-01-01", "2012-02")))
 as.double(as_messydate("2012-01-01"))
 }
 \seealso{
-\code{\link[=resolve_extrema]{resolve_extrema()}}, \code{\link[=resolve_tendency]{resolve_tendency()}}
+\code{\link[=resolve_extrema]{resolve_extrema()}}, \code{\link[=resolve_tendency]{resolve_tendency()}}, \code{\link[=resolve_probabilistically]{resolve_probabilistically()}}
 
 Other coerce:
 \code{\link{coerce_to}}

@@ -21,7 +21,7 @@ as_messydate(x, resequence = FALSE, ...)
 
 \method{as_messydate}{POSIXlt}(x, resequence = FALSE, ...)
 
-\method{as_messydate}{character}(x, resequence = NULL, pivot = NULL, ...)
+\method{as_messydate}{character}(x, resequence = NULL, pivot = NULL, lang = "en", ...)
 
 \method{as_messydate}{factor}(x, resequence = NULL, ...)
 
@@ -69,6 +69,14 @@ For example, \code{pivot = 1930} reads "29" as 2029 and "30" as 1930,
 which is what Excel for Windows does by default,
 and \code{pivot = 1969} reproduces R's own \verb{\%y} convention.}
 
+\item{lang}{For character input, the language of any prose in \code{x}:
+\code{"en"} for English (the default) or \code{"fr"} for French.
+French prose is rewritten into the English forms described in
+"Parsing prose" below, so the same conventions are read in both,
+e.g. \code{"vers 1910"}, \code{"le XIXe siècle"}, \code{"les ides de mars, 44 av. J.-C."},
+or \code{"entre le 13 et le 15 février 1977"}.
+Dates written only in digits are read the same in every language.}
+
 \item{origin}{For numeric input, the origin of a serial day count.
 Spreadsheets store dates as a count of days from an origin,
 and a file that loses its date formatting carries only these counts.
@@ -93,7 +101,7 @@ In addition to the typical date classes in R (\code{Date}, \code{POSIXct}, and \
 there is also a direct method for converting text or character strings to \code{mdate}.
 The function can also extract dates and times from text,
 including some historical prose conventions,
-though this is a work-in-progress and currently only works in English.
+in English or French (see \code{lang}).
 }
 \details{
 Coercion from \code{POSIXct} and \code{POSIXlt} preserves the time of day
@@ -163,6 +171,11 @@ date is read too, as \code{"2026-W05"} or, for one day within the week,
 seasons, spring running from March to May and winter from December into
 February of the following year. The EDTF season codes (\code{"2026-22"}) are
 rejected instead of read, being easily read as a mistake for a date.}
+\item{French prose, with \code{lang = "fr"}. The same conventions are read,
+e.g. \code{"vers 1910"} becomes \code{"~1910"}, \code{"le XIXe siècle"} becomes
+\code{"18XX"}, and \code{"du 13 au 15 février 1977"} becomes
+\code{"1977-02-13..1977-02-15"}. Accents may be left out.
+Spelled-out numbers are read in English only.}
 \item{A comma-separated list of dates in prose, e.g.
 \code{"13th Feb, 1977, Feb 15 1977, 1910"}, is split into separate dates
 (here, three): a fragment that is only a year is treated as completing
@@ -236,6 +249,9 @@ as_messydate("2026-W05")
 as_messydate("summer 2026")
 as_messydate("before 1910")
 as_messydate("between the 13th and 15th of Feb, 1977")
+# French prose
+as_messydate(c("vers 1910", "le 15 mars 2019", "les ann\u00e9es 1990"), lang = "fr")
+as_messydate("les ides de mars, 44 av. J.-C.", lang = "fr")
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))

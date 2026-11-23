@@ -157,7 +157,13 @@
 
 - Renamed the `is_*()` predicates to `date_is_*()`
   - `is_precise()`, `is_uncertain()`, `is_approximate()`, `is_bce()`, `is_similar()`
-  - `is_messydate()`, `is_intersecting()`, and `is_subset()` keep their names
+  - `is_messydate()` keeps its name, because it is a class test
+- Renamed `is_intersecting()` and `is_subset()` to `date_is_intersecting()` and `date_is_subset()`
+  - They are now element-wise: they compare `x[i]` with `y[i]` and recycle as base R does
+  - Missing values give `NA`
+- Fixed `is_subset()` to test that all dates of `x` are in `y`, not only one date
+- Fixed `is_subset()` using only the first element of `x` and `y`
+- Added `date_is_open()` to test for an open range, e.g. `..2012`
 - Fixed missing values in `+` and `-`, which now give `NA`
 
 # messydates 1.1.1

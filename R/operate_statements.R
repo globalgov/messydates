@@ -18,29 +18,47 @@ is_messydate <- function(x) {
   inherits(x, "mdate")
 }
 
-#' @describeIn operate_statements tests whether there is any intersection between
-#'   two messy dates, leveraging `intersect()`.
+#' @describeIn operate_statements tests whether each date in `x` can share
+#'   a day with the matching date in `y`.
+#'   `x` and `y` are recycled to a common length, as in base R.
+#'   The empty set, `{}`, shares no day with any date.
 #' @examples
-#' is_intersecting(as_messydate("2012-01"),
-#' as_messydate("2012-01-01..2012-02-22"))
-#' is_intersecting(as_messydate("2012-01"),
-#' as_messydate("2012-02-01..2012-02-22"))
+#' date_is_intersecting(as_messydate(c("2012-01", "2012-01")),
+#'   as_messydate(c("2012-01-01..2012-02-22", "2012-02-01..2012-02-22")))
 #' @export
-is_intersecting <- function(x, y) {
-  length(intersect(unlist(expand(x)), unlist(expand(y)))) > 0
+date_is_intersecting <- function(x, y) {
+  .pairwise_dates(x, y, function(a, b) length(intersect(a, b)) > 0)
 }
 
-#' @describeIn operate_statements tests whether one or more messy date can be found
-#'   within a messy date range or set.
+#' @describeIn operate_statements tests whether all the dates of each value
+#'   in `x` are also in the matching value in `y`.
+#'   `x` and `y` are recycled to a common length, as in base R.
+#'   The empty set, `{}`, is a subset of every date.
 #' @examples
-#' is_subset(as_messydate("2012-01-01"), as_messydate("2012-01"))
-#' is_subset(as_messydate("2012-01-01..2012-01-03"), as_messydate("2012-01"))
-#' is_subset(as_messydate("2012-01-01"), as_messydate("2012-02"))
+#' date_is_subset(as_messydate(c("2012-01-01", "2012-01-01..2012-01-03",
+#'   "2012-01-01")), as_messydate(c("2012-01", "2012-01", "2012-02")))
 #' @export
-is_subset <- function(x, y) {
-  x <- as.character(expand(x)[[1]])
-  y <- as.character(expand(y)[[1]])
-  any(is.element(x, y))
+date_is_subset <- function(x, y) {
+  .pairwise_dates(x, y, function(a, b) all(a %in% b))
+}
+
+# Applies `test` to the expanded dates of each pair x[i], y[i].
+# Missing values give NA. Each distinct value is expanded once.
+.pairwise_dates <- function(x, y, test) {
+  x <- as.character(as_messydate(x))
+  y <- as.character(as_messydate(y))
+  common <- vctrs::vec_recycle_common(x = x, y = y)
+  x <- common$x
+  y <- common$y
+  out <- rep(NA, length(x))
+  ok <- !is.na(x) & !is.na(y)
+  if (!any(ok)) return(out)
+  vals <- unique(c(x[ok], y[ok]))
+  days <- expand(as_messydate(vals))
+  names(days) <- vals
+  out[ok] <- mapply(function(a, b) test(days[[a]], days[[b]]),
+                    x[ok], y[ok], USE.NAMES = FALSE)
+  out
 }
 
 #' @describeIn operate_statements tests whether two dates contain similar components.
@@ -89,6 +107,18 @@ date_is_uncertain <- function(x) {
 #' @export
 date_is_approximate <- function(x) {
   stringi::stri_detect_regex(x, "\\~|\\%")
+}
+
+#' @describeIn operate_statements tests whether a date is an open range,
+#'   that is, "on or before" a date (e.g. `..2012-06-02`) or
+#'   "on or after" a date (e.g. `2012-06-02..`).
+#'   An open member of a set also makes the set open.
+#' @examples
+#' date_is_open(as_messydate(c("..2012-06-02", "2012-06-02..", "2012-06-02")))
+#' @export
+date_is_open <- function(x) {
+  stringi::stri_detect_regex(
+    as.character(x), "(^|[{\\[,])\\.\\.|\\.\\.($|[}\\],])")
 }
 
 #' @describeIn operate_statements tests whether one or more messy dates are found

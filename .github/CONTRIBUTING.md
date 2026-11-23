@@ -105,8 +105,8 @@ Existing names that do not obey them stay as they are until a deprecation cycle 
    The old names are soft-deprecated aliases in `R/messydates-defunct.R`.
    Inside the package, use only the new names.
    `is_messydate()` is a class test (see rule 6), and it keeps its name.
-   `is_intersecting()` and `is_subset()` are not element-wise yet.
-   They keep their names until the set operations become element-wise.
+   Also in 1.2.0, `is_intersecting()` and `is_subset()` became the element-wise
+   `date_is_intersecting()` and `date_is_subset()`.
 5. **Use `md_` + verb** for a new exported function that has no generic,
    for example `md_problems()`.
    Use this prefix in particular when the bare word is a common English word

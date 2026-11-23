@@ -3,21 +3,22 @@
 \name{operate_statements}
 \alias{operate_statements}
 \alias{is_messydate}
-\alias{is_intersecting}
-\alias{is_subset}
+\alias{date_is_intersecting}
+\alias{date_is_subset}
 \alias{date_is_similar}
 \alias{date_is_precise}
 \alias{date_is_uncertain}
 \alias{date_is_approximate}
+\alias{date_is_open}
 \alias{date_is_bce}
 \alias{date_is_empty}
 \title{Logical statements on messy dates}
 \usage{
 is_messydate(x)
 
-is_intersecting(x, y)
+date_is_intersecting(x, y)
 
-is_subset(x, y)
+date_is_subset(x, y)
 
 date_is_similar(x, y)
 
@@ -26,6 +27,8 @@ date_is_precise(x)
 date_is_uncertain(x)
 
 date_is_approximate(x)
+
+date_is_open(x)
 
 date_is_bce(x)
 
@@ -45,11 +48,15 @@ These functions provide various logical statements about messy date objects.
 \item \code{is_messydate()}: tests whether the object inherits the \code{mdate} class.
 If more rigorous validation is required, see \code{validate_messydate()}.
 
-\item \code{is_intersecting()}: tests whether there is any intersection between
-two messy dates, leveraging \code{intersect()}.
+\item \code{date_is_intersecting()}: tests whether each date in \code{x} can share
+a day with the matching date in \code{y}.
+\code{x} and \code{y} are recycled to a common length, as in base R.
+The empty set, \code{{}}, shares no day with any date.
 
-\item \code{is_subset()}: tests whether one or more messy date can be found
-within a messy date range or set.
+\item \code{date_is_subset()}: tests whether all the dates of each value
+in \code{x} are also in the matching value in \code{y}.
+\code{x} and \code{y} are recycled to a common length, as in base R.
+The empty set, \code{{}}, is a subset of every date.
 
 \item \code{date_is_similar()}: tests whether two dates contain similar components.
 This can be useful for identifying dates that may be typos of one another.
@@ -64,6 +71,11 @@ unspecified \code{X} component), or are date ranges and sets.
 \item \code{date_is_uncertain()}: tests whether a date is uncertain (i.e. contains ?).
 
 \item \code{date_is_approximate()}: tests whether a date is approximate (i.e. contains ~).
+
+\item \code{date_is_open()}: tests whether a date is an open range,
+that is, "on or before" a date (e.g. \code{..2012-06-02}) or
+"on or after" a date (e.g. \verb{2012-06-02..}).
+An open member of a set also makes the set open.
 
 \item \code{date_is_bce()}: tests whether one or more messy dates are found
 before the common era, i.e. carry a negative (astronomical) year.
@@ -85,19 +97,17 @@ known, and \code{{}} is known to contain no date.
 \examples{
 is_messydate(as_messydate("2012-01-01"))
 is_messydate(as.Date("2012-01-01"))
-is_intersecting(as_messydate("2012-01"),
-as_messydate("2012-01-01..2012-02-22"))
-is_intersecting(as_messydate("2012-01"),
-as_messydate("2012-02-01..2012-02-22"))
-is_subset(as_messydate("2012-01-01"), as_messydate("2012-01"))
-is_subset(as_messydate("2012-01-01..2012-01-03"), as_messydate("2012-01"))
-is_subset(as_messydate("2012-01-01"), as_messydate("2012-02"))
+date_is_intersecting(as_messydate(c("2012-01", "2012-01")),
+  as_messydate(c("2012-01-01..2012-02-22", "2012-02-01..2012-02-22")))
+date_is_subset(as_messydate(c("2012-01-01", "2012-01-01..2012-01-03",
+  "2012-01-01")), as_messydate(c("2012-01", "2012-01", "2012-02")))
 date_is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
 date_is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 date_is_precise(as_messydate(c("2012-06-02", "2012-06")))
 date_is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
 date_is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 date_is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+date_is_open(as_messydate(c("..2012-06-02", "2012-06-02..", "2012-06-02")))
 date_is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
 date_is_empty(as_messydate(c("{}", "2012-06-02", NA)))
 }

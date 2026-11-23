@@ -357,6 +357,8 @@ resolve_x_year <- function(v, bound) {
     rest <- if (bound == "min") paste0(rest, "-01") else
       paste0(rest, "-", days_in(as.integer(yr), mth))
   }
+  # Year zero has no sign: the latest year of "-00XX" is "0000", not "-0000".
+  if (yr == "0000") sign <- ""
   paste0(sign, yr, rest)
 }
 

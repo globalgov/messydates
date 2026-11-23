@@ -30,7 +30,7 @@
   - `possible_dates()` gives no dates for it
   - `vmin()`, the other `v*()` functions, and `precision()` give `NA`
   - `min()`, `max()`, `mean()`, `median()`, `modal()`, and `random()` leave it out
-  - `tag_approximate()`, `tag_uncertain()`, `contract()`, `+`, and `-` give `{}` again
+  - `tag_approximate()`, `tag_uncertain()`, `+`, and `-` give `{}` again
 
 ## Parsing
 
@@ -54,6 +54,9 @@
   - `tag_before("2010..2012")` gives `"..2012"`, not `"..2010..2012"`
   - A value that is already open, and a set, stay as they are
 - Fixed missing values in `tag_approximate()` and `tag_uncertain()` to give `NA`
+- Fixed `as_messydate()` on a list to give an `mdate` vector, not a list
+  - An empty element gives `{}`, and an element that is only `NA` gives `NA`
+  - Added `collapse = FALSE` to keep a range that covers a whole month or year
 - Accelerated `as_messydate()` (closes #105)
   - Prose and time steps run only on elements that can hold prose or a time
   - Prose that occurs more than once in a vector is interpreted once
@@ -157,7 +160,7 @@
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
 - Fixed `possible_dates()` reading a year with leading `X` digits as one range
 - Fixed `seq()` and `possible_dates()` on an invalid element, e.g. `""`
-- Fixed missing values in `possible_dates()` and `contract()` to give `NA`
+- Fixed missing values in `possible_dates()` to give `NA`
 
 ## Extraction
 

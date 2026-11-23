@@ -138,3 +138,14 @@ expand <- function(x, approx_range = 0, by = "day") {
   .soft_deprecate("expand()", "possible_dates()")
   .possible(x, approx_range, by)
 }
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `as_messydate()` on a list of dates,
+#'   or `as_messydate(possible_dates(x))` for an `mdate`.
+#' @param collapse Should a range that covers a whole month or year
+#'   become that month or year? `TRUE` by default.
+#' @export
+contract <- function(x, collapse = TRUE) {
+  .soft_deprecate("contract()", "as_messydate()")
+  .contract(x, collapse = collapse)
+}

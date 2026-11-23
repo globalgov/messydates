@@ -75,10 +75,10 @@ test_that("conversion from MDY dates with written month works properly", {
 
 test_that("list conversion works properly", {
   expect_equal(as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03"))),
-               list(as_messydate("2012-06-01..2012-06-03")))
+               as_messydate("2012-06-01..2012-06-03"))
   expect_equal(as_messydate(list(c(as_messydate("2001-01-01"),
                                    as_messydate("2001-01-02..2001-01-04")))),
-               list(as_messydate("2001-01-01..2001-01-04")))
+               as_messydate("2001-01-01..2001-01-04"))
 })
 
 test_that("zero padding is correctly added conversion works properly", {

@@ -11,6 +11,9 @@
 #'   A precise date-time keeps its time.
 #'   A range of date-times gives the days of the range.
 #'   To make a sequence of times, use `seq()`.
+#'
+#'   To change a list of dates back into the shortest messy date,
+#'   use `as_messydate()` on the list.
 #' @param x A `mdate` object.
 #'   If not an 'mdate' object, conversion is handled first with ´as_messydate()´.
 #' @param approx_range Range to expand approximate dates,
@@ -50,6 +53,8 @@
 #' possible_dates(as_messydate("2012-01-01 14:30:00"))
 #' # a date-time range gives its days
 #' possible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
+#' # the possible dates change back into the shortest messy date
+#' as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
 #' @export
 possible_dates <- function(x, approx_range = 0) {
   .possible(x, approx_range, by = "day")

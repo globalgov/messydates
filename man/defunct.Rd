@@ -16,6 +16,7 @@
 \alias{is_intersecting}
 \alias{is_subset}
 \alias{expand}
+\alias{contract}
 \title{Functions that have been renamed, superseded, or are no longer working}
 \usage{
 as_approximate(x, component = NULL)
@@ -45,6 +46,8 @@ is_intersecting(x, y)
 is_subset(x, y)
 
 expand(x, approx_range = 0, by = "day")
+
+contract(x, collapse = TRUE)
 }
 \arguments{
 \item{x, y}{\code{mdate} objects.}
@@ -54,6 +57,9 @@ expand(x, approx_range = 0, by = "day")
 \item{approx_range}{See \link{convert_expand}.}
 
 \item{by}{Granularity of enumeration, "day" by default.}
+
+\item{collapse}{Should a range that covers a whole month or year
+become that month or year? \code{TRUE} by default.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -107,6 +113,10 @@ Use \code{date_is_subset()}, which is element-wise.
 Use \code{possible_dates()}.
 The argument \code{by} is not in \code{possible_dates()}.
 To make a sequence of times, use \code{seq()}.
+
+\item \code{contract()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{as_messydate()} on a list of dates,
+or \code{as_messydate(possible_dates(x))} for an \code{mdate}.
 
 }}
 \keyword{internal}

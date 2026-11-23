@@ -73,7 +73,7 @@ or discarding annotations.
 
 We are aiming for pleasant predictability in terms of user experience.
 To that end, we have a regular syntax that users can rely on producing expected effects.
-Functions in the same family (`as_*()`, `year()`/`month()`/`day()`, `expand()`/`contract()`, etc.)
+Functions in the same family (`as_*()`, `year()`/`month()`/`day()`, `tag_*()`, etc.)
 should share argument order and naming, so that behaviour is guessable across the family.
 
 ### Naming
@@ -152,7 +152,8 @@ Use one term for one idea, and do not swap in a synonym for variety.
   so the empty set is a messydates extension to the standard.
   The element-wise resolution functions (`vmin()` and the others) give `NA` for it,
   because it holds no date to resolve to.
-  Other element-wise functions, such as `approximate()`, `contract()`, and `+`, give `{}` again.
+  Other element-wise functions, such as `tag_approximate()` and `+`, give `{}` again.
+  `possible_dates()` gives no dates for it, and `as_messydate()` on an empty list element gives `{}`.
   Functions that reduce a vector to one value (`min()` and the others) leave it out,
   because it adds no date to the union.
 
@@ -242,7 +243,7 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 | `resolve_extrema.R`, `resolve_tendency.R`, `resolve_probabilistically.R` | resolution functions that collapse a messy date/range/set to one precise value: the extrema (`vmin()`/`vmax()`), the central tendency (`vmedian()`/`vmean()`/`vmodal()`), and random draws (`random()`/`vrandom()`); `resolve_probabilistically.R` also holds the weights that the draws use for approximate and uncertain values |
 | `parse_tag.R` | the `tag_*()` functions and `untag()`, which add or remove the annotations `~`, `?`, `%`, `X` and open-range `..` on a date or one of its components |
 | `component_extract.R` | pulling out individual date/time components (year, month, day, hour, and so on), their annotation state, and `precision()` |
-| `convert_expand.R`, `convert_contract.R`, `convert_sequence.R` | expanding an `mdate` (range/set/approximate window) out to all compatible concrete dates, contracting a vector of dates back into the most compact messy representation, and generating `seq()`-style sequences over `mdate`s |
+| `convert_expand.R`, `convert_contract.R`, `convert_sequence.R` | `possible_dates()`, which gives all the possible dates of an `mdate` (range/set/approximate window); the internal `.contract()`, which `as_messydate()` uses to change a list of dates back into the shortest messy date; and `seq()` over `mdate`s |
 | `operate_*.R` | arithmetic on mdates and durations (`operate_arithmetic.R`), inequality/comparison operators (`operate_comparison.R`), set operations on mdate sets/ranges (`operate_set.R`), proportional overlap (`operate_proportional.R`), and the `date_is_*()` predicates (`operate_statements.R`) |
 | `data_battles.R` | a bundled example dataset (`battles`, in `data/battles.rda`) used in docs and examples |
 | `messydates-defunct.R` | deprecated/removed function stubs kept for a graceful transition (see [Deprecation](#deprecation)) |

@@ -27,7 +27,7 @@ as_messydate(x, resequence = FALSE, ...)
 
 \method{as_messydate}{numeric}(x, resequence = NULL, origin = NULL, ...)
 
-\method{as_messydate}{list}(x, resequence = FALSE, ...)
+\method{as_messydate}{list}(x, resequence = FALSE, collapse = TRUE, ...)
 
 mdate(x, resequence = FALSE, ...)
 }
@@ -90,6 +90,10 @@ By default (\code{NULL}), whole numbers from -9999 to 9999 are read as years,
 eight-digit numbers that form a valid date are read as YYYYMMDD,
 and any other number becomes \code{NA} with a warning,
 since without an origin it cannot be told apart from a serial count.}
+
+\item{collapse}{For a list, should a range that covers a whole month or
+year become that month or year? \code{TRUE} by default, so that
+\code{"2012-06-01..2012-06-30"} becomes \code{"2012-06"}.}
 }
 \value{
 A \code{mdate} class object
@@ -127,8 +131,11 @@ This is the common case when a date column has been read in with
 
 \item \code{as_messydate(numeric)}: Coerce numeric objects to \code{mdate} class
 
-\item \code{as_messydate(list)}: Coerce list date objects to the most concise
-representation of \code{mdate} class
+\item \code{as_messydate(list)}: Coerce a list of dates to the shortest \code{mdate}.
+Each element of the list gives one element of the result.
+This is the inverse of \code{possible_dates()}.
+An empty element gives the empty set, \code{"{}"},
+and an element that is only \code{NA} gives \code{NA}.
 
 }}
 \section{Parsing prose}{
@@ -255,6 +262,10 @@ as_messydate("les ides de mars, 44 av. J.-C.", lang = "fr")
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
+# the shortest form of a messy date
+as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
+as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")),
+  collapse = FALSE)
 }
 \seealso{
 Other coerce:

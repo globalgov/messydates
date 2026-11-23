@@ -435,18 +435,36 @@ serial_to_iso <- function(x, origin) {
 }
 
 
-#' @describeIn coerce_to Coerce list date objects to the most concise
-#' representation of `mdate` class
+#' @describeIn coerce_to Coerce a list of dates to the shortest `mdate`.
+#'   Each element of the list gives one element of the result.
+#'   This is the inverse of `possible_dates()`.
+#'   An empty element gives the empty set, `"{}"`,
+#'   and an element that is only `NA` gives `NA`.
+#' @param collapse For a list, should a range that covers a whole month or
+#'   year become that month or year? `TRUE` by default, so that
+#'   `"2012-06-01..2012-06-30"` becomes `"2012-06"`.
 #' @examples
 #' as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 #' as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 #' "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
+#' # the shortest form of a messy date
+#' as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
+#' as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")),
+#'   collapse = FALSE)
 #' @export
-as_messydate.list <- function(x, resequence = FALSE, ...) {
-  lapply(x, function (y) {
-    suppressMessages(contract(paste(new_messydate(as.character(y)),
-                                    collapse = ",")))
-  })
+as_messydate.list <- function(x, resequence = FALSE, collapse = TRUE, ...) {
+  out <- vapply(x, function(y) {
+    y <- as.character(y)
+    if (length(y) == 0) return("{}")
+    if (all(is.na(y))) return(NA_character_)
+    y <- y[!is.na(y)]
+    as.character(suppressMessages(.contract(paste(new_messydate(y),
+                                                  collapse = ","),
+                                            collapse = collapse)))
+  }, character(1), USE.NAMES = FALSE)
+  out <- new_messydate(out)
+  names(out) <- names(x)
+  out
 }
 
 #' @rdname coerce_to

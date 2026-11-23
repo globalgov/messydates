@@ -48,6 +48,9 @@ The function gives days.
 A precise date-time keeps its time.
 A range of date-times gives the days of the range.
 To make a sequence of times, use \code{seq()}.
+
+To change a list of dates back into the shortest messy date,
+use \code{as_messydate()} on the list.
 }
 \examples{
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
@@ -62,4 +65,6 @@ possible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
 possible_dates(as_messydate("2012-01-01 14:30:00"))
 # a date-time range gives its days
 possible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
+# the possible dates change back into the shortest messy date
+as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
 }

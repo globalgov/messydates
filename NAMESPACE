@@ -142,7 +142,6 @@ export(vrandom)
 export(year)
 exportMethods(as_datetime)
 importFrom(lubridate,
-  NA_Date_,
   as_date,
   as_datetime,
   day,

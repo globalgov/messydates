@@ -153,7 +153,7 @@ add <- function(x, n) {
     if (any(is.element(n, x))) {
       n <- n[which(!is.element(n, x))]
     }
-    x <- suppressMessages(contract(paste(c(x, n), collapse = ", ")))
+    x <- suppressMessages(.contract(paste(c(x, n), collapse = ", ")))
   } else {
     # Step one: get only first and last components for ranges
     # But keep approximation for before or after date
@@ -173,7 +173,7 @@ add <- function(x, n) {
       }
       y
     })
-    x <- suppressMessages(contract(x))
+    x <- suppressMessages(.contract(x))
   }
   x
 }
@@ -207,14 +207,14 @@ subtract <- function(x, n) {
       }
       y
     })
-    x <- suppressMessages(contract(x))
+    x <- suppressMessages(.contract(x))
   }
   x
 }
 
 parse_date_strings <- function(e2) {
   if (is_messydate(e2)) {
-    e2 <- contract(e2)
+    e2 <- .contract(e2)
   } else {
     e2 <- ifelse(stringi::stri_detect_regex(e2, "years|year"),
                  as.numeric(stringi::stri_replace_all_regex(e2, "years|year", "")) * 365, e2)

@@ -26,7 +26,7 @@ Update this list whenever a heading below is added, renamed, or moved.
     or the file for a new one
   - [Time-of-day support](#time-of-day-support): before you change how times are parsed
   - [Tests](#tests): before you add a test, or when a change must not alter output
-  - [Deprecation](#deprecation): before you rename or remove a function or an argument
+  - [Deprecation](#deprecation): before you rename or remove a function or an argument, and at each minor release
 - [Documenting](#documenting)
   - [README, vignettes, and website](#readme-vignettes-and-website): before you edit the README
     or a vignette, and whenever you export a function
@@ -112,8 +112,12 @@ Existing names that do not obey them stay as they are until a deprecation cycle 
 6. **Use the `messydate` or `messyduration` stem** only for class infrastructure:
    `new_messydate()`, `validate_messydate()`, `make_messydate()`, `as_messydate()`, and `is_messydate()`.
    Do not use this stem for an operation on a messy date.
-7. **Use the verb form** for a function that adds an annotation, for example `approximate()` and `uncertain()`.
-   The function returns an `mdate` of the same length.
+7. **Use `tag_` + adjective** for a function that adds ISO 8601-2 notation to a value,
+   for example `tag_approximate()`, `tag_uncertain()`, `tag_unspecified()`, `tag_before()` and `tag_after()`.
+   The function returns an `mdate` of the same length as its input.
+   Give each `tag_` function a matching `date_is_` predicate (rule 4),
+   and make sure that `untag()` can remove the notation where the notation does not discard information.
+   In 1.2.0, `approximate()`, `uncertain()`, `on_or_before()` and `on_or_after()` became `tag_` functions.
 8. **Check each new name** against `base`, `stats`, `lubridate`, the tidyverse, and `rlang`
    before you export it.
    If one of these packages exports the name, use the `md_` prefix (rule 5) or choose a different name.
@@ -234,8 +238,9 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 | `coerce_to_messydate.R` | the largest file: `as_messydate()`, the main user-facing entry point that parses character strings, numbers, `Date`, `POSIXct`/`POSIXlt` into `mdate`, including the prose parser (Roman numerals, "circa", "the Ides of March", decades/centuries, "before X", comma-separated prose lists, etc.; see the roxygen `@section Parsing prose` there for the full list of supported conventions) |
 | `coerce_from_messydate.R` | the inverse: `mdate` to `Date`/`POSIXct`/`POSIXlt`, and `as.list.mdate()` |
 | `validate_input.R` | input validation shared across the coercion pipeline, and `md_problems()`, which reports what could not be parsed |
-| `resolve_extrema.R`, `resolve_tendency.R`, `resolve_weights.R` | resolution functions (`vmin()`/`vmax()`/`vmedian()`/`vmean()`/`random()`, etc.) used to collapse a messy date/range/set to one precise value; `resolve_weights.R` holds the weights that `random()` uses for approximate and uncertain values |
-| `component_extract.R`, `component_annotate.R` | pulling out or tagging individual date/time components (year, month, day, hour, and so on), their annotation state, and `precision()` |
+| `resolve_extrema.R`, `resolve_tendency.R`, `resolve_probabilistically.R` | resolution functions that collapse a messy date/range/set to one precise value: the extrema (`vmin()`/`vmax()`), the central tendency (`vmedian()`/`vmean()`/`vmodal()`), and random draws (`random()`/`vrandom()`); `resolve_probabilistically.R` also holds the weights that the draws use for approximate and uncertain values |
+| `parse_tag.R` | the `tag_*()` functions and `untag()`, which add or remove the annotations `~`, `?`, `%`, `X` and open-range `..` on a date or one of its components |
+| `component_extract.R` | pulling out individual date/time components (year, month, day, hour, and so on), their annotation state, and `precision()` |
 | `convert_expand.R`, `convert_contract.R`, `convert_sequence.R` | expanding an `mdate` (range/set/approximate window) out to all compatible concrete dates, contracting a vector of dates back into the most compact messy representation, and generating `seq()`-style sequences over `mdate`s |
 | `operate_*.R` | arithmetic on mdates and durations (`operate_arithmetic.R`), inequality/comparison operators (`operate_comparison.R`), set operations on mdate sets/ranges (`operate_set.R`), proportional overlap (`operate_proportional.R`), and the `date_is_*()` predicates (`operate_statements.R`) |
 | `data_battles.R` | a bundled example dataset (`battles`, in `data/battles.rda`) used in docs and examples |
@@ -258,7 +263,7 @@ When you change time parsing, check all three.
 
 Tests in `tests/testthat/` mirror the `R/` files closely by topic
 (e.g. `test-coerce_to.R`, `test-convert_expand.R`, `test-operate_set.R`),
-alongside `test-time-*.R` files that cover time-of-day parsing, annotation,
+alongside `test-time-*.R` files that cover time-of-day parsing, tagging,
 expansion and extraction across those same stages.
 When adding a feature to one of the `R/*.R` files above,
 the corresponding `test-*.R` file is almost always the right place to add coverage.
@@ -291,10 +296,23 @@ through a shim in [R/messydates-defunct.R](../R/messydates-defunct.R):
 - Older shims call `.Deprecated()`, which warns each time the old name is used.
   Use `.soft_deprecate()` for a new shim.
 - Inside the package, use only the new name.
-- Record the change as `Renamed ... to ...` or `Removed ...` in `NEWS.md`,
-  and say that the old name still works.
+- Record the change as `Renamed ... to ...` or `Removed ...` in `NEWS.md`.
+  Do not add a line that says that the old name still works or gives a message.
+  The shim cycle below is the default in all the packages of this group, so the reader knows it.
+  Write a line only when a shim does not follow the cycle.
 
-Shims are removed at a later minor release, which `NEWS.md` names.
+A shim goes through three steps, one for each minor release:
+
+1. In the release that renames the function, the shim calls `.soft_deprecate()`.
+   It gives a message once in each session.
+2. In the next minor release, the shim gives a warning each time the old name is used.
+3. In the minor release after that, remove the shim.
+
+Before step 2 and step 3, run the downstream check (see [Checking downstream packages](#checking-downstream-packages))
+and tell the maintainers of any package that still uses the old name.
+At step 1, also remove the shims that completed step 2 in an earlier release.
+Each shim's `@describeIn` line names the release that removes it.
+For example, the names that 1.2.0 deprecates give a warning in 1.3.0 and go in 1.4.0.
 A shim needs no tests beyond one that the old name gives the message and still works.
 
 ## Documenting
@@ -322,10 +340,9 @@ then the function families in the order of the website overview:
 | Heading | Website title | Files |
 |---|---|---|
 | `## Class` | Class construction | `class_*.R` |
-| `## Coercion` | Coerce to | `coerce_to_messydate.R`, `validate_input.R` |
+| `## Parsing` | Parsing | `coerce_to_messydate.R`, `validate_input.R`, `parse_*.R` |
 | `## Resolution` | Coerce from | `coerce_from_messydate.R`, `resolve_*.R` |
 | `## Expand/Contract` | Manipulation | `convert_*.R` |
-| `## Annotation` | Components | `component_annotate.R` |
 | `## Extraction` | Components | `component_extract.R` |
 | `## Operations` | Operations | `operate_*.R` |
 

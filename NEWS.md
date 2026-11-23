@@ -29,10 +29,30 @@
   - `expand()` gives no dates for it
   - `vmin()`, the other `v*()` functions, and `precision()` give `NA`
   - `min()`, `max()`, `mean()`, `median()`, `modal()`, and `random()` leave it out
-  - `approximate()`, `uncertain()`, `contract()`, `+`, and `-` give `{}` again
+  - `tag_approximate()`, `tag_uncertain()`, `contract()`, `+`, and `-` give `{}` again
 
-## Coercion
+## Parsing
 
+- Renamed the annotation functions to `tag_*()`
+  - `approximate()` is now `tag_approximate()`
+  - `uncertain()` is now `tag_uncertain()`
+  - `on_or_before()` is now `tag_before()`
+  - `on_or_after()` is now `tag_after()`
+- Changed `tag_approximate()` and `tag_uncertain()` to tag the finest component by default
+  - `tag_approximate("2012-06-15")` gives `"2012-06-~15"`, not `"2012-06-15~"`
+  - Added `component = "date"` to tag the whole date
+- Improved `tag_approximate()` and `tag_uncertain()` to write the fewest marks
+  - A tag that is already there is not added again: `tag_approximate("~2012")` gives `"~2012"`
+  - A wider tag replaces the marks that it covers: `tag_approximate("2012-~06", "date")` gives `"2012-06~"`
+  - `~` and `?` on the same component become `%`
+  - Each end of a range and each member of a set is tagged
+- Fixed `tag_uncertain("~2012", "day")` giving `"~2012-XX-?NA"`; a missing component is not tagged
+- Added `tag_unspecified()` to replace the digits of a component with `X`
+- Added `untag()` to remove `~`, `?`, `%`, and the `..` of an open range
+- Improved `tag_before()` and `tag_after()` on a closed range to keep the bounding end
+  - `tag_before("2010..2012")` gives `"..2012"`, not `"..2010..2012"`
+  - A value that is already open, and a set, stay as they are
+- Fixed missing values in `tag_approximate()` and `tag_uncertain()` to give `NA`
 - Accelerated `as_messydate()` (closes #105)
   - Prose and time steps run only on elements that can hold prose or a time
   - Prose that occurs more than once in a vector is interpreted once
@@ -117,10 +137,6 @@
 - Fixed `expand()` reading a year with leading `X` digits as one range
 - Fixed `seq()` and `expand()` on an invalid element, e.g. `""`
 - Fixed missing values in `expand()` and `contract()` to give `NA`
-
-## Annotation
-
-- Fixed missing values in `approximate()` and `uncertain()` to give `NA`
 
 ## Extraction
 

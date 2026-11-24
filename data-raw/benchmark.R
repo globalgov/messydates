@@ -28,3 +28,16 @@ time_it("possible_dates(): 1,000 months and ranges", possible_dates(imprecise))
 time_it("min(): 1,000 months and ranges", min(imprecise))
 time_it("mean(): 1,000 months and ranges", mean(imprecise))
 time_it("vmean(): 1,000 months and ranges", vmean(imprecise))
+
+# Larger inputs, near the size of an event dataset
+big_iso <- format(as.Date("1900-01-01") + sample(0:45000, 60000, TRUE))
+big_rng <- as_messydate(paste0(big_iso, "..",
+                               format(as.Date(big_iso) + sample(1:60, 60000, TRUE))))
+d1 <- as.Date("2000-01-01") + 1:100000
+time_it("as_messydate(): 60,000 ISO dates", as_messydate(big_iso))
+time_it("possible_dates(): 60,000 ranges", possible_dates(big_rng))
+time_it("vmin(): 60,000 ranges", vmin(big_rng))
+time_it("vmean(): 60,000 ranges", vmean(big_rng))
+time_it("%l%: 60,000 pairs of ranges", big_rng %l% rev(big_rng))
+time_it("%>=<%: 60,000 pairs of ranges", big_rng %>=<% rev(big_rng))
+time_it("Date < Date: 100,000 pairs, messydates loaded", d1 < rev(d1))

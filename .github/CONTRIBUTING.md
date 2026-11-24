@@ -245,6 +245,7 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 | `component_extract.R` | pulling out individual date/time components (year, month, day, hour, and so on), their annotation state, and `precision()` |
 | `convert_expand.R`, `convert_contract.R`, `convert_sequence.R` | `possible_dates()`, which gives all the possible dates of an `mdate` (range/set/approximate window); the internal `.contract()`, which `as_messydate()` uses to change a list of dates back into the shortest messy date; and `seq()` over `mdate`s |
 | `operate_*.R` | arithmetic on mdates and durations (`operate_arithmetic.R`), inequality/comparison operators (`operate_comparison.R`), set operations on mdate sets/ranges (`operate_set.R`), proportional overlap (`operate_proportional.R`), and the `date_is_*()` predicates (`operate_statements.R`) |
+| `plot_mdate.R` | `plot()` for `mdate`, which draws each messy date by its possible days, with base R graphics only |
 | `data_battles.R` | a bundled example dataset (`battles`, in `data/battles.rda`) used in docs and examples |
 | `messydates-defunct.R` | deprecated/removed function stubs kept for a graceful transition (see [Deprecation](#deprecation)) |
 
@@ -373,9 +374,10 @@ then the function families in the order of the website overview:
 | `## Class` | Class construction | `class_*.R` |
 | `## Parsing` | Parsing | `coerce_to_messydate.R`, `validate_input.R`, `parse_*.R` |
 | `## Resolution` | Coerce from | `coerce_from_messydate.R`, `resolve_*.R` |
-| `## Expand/Contract` | Manipulation | `convert_*.R` |
+| `## Expansion` | Manipulation | `convert_*.R` |
 | `## Extraction` | Components | `component_extract.R` |
 | `## Operations` | Operations | `operate_*.R` |
+| `## Plotting` | Plotting | `plot_*.R` |
 
 Put a change under the heading for the file that holds the function,
 even where the change came from work on another family.

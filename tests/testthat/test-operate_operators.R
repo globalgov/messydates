@@ -85,3 +85,14 @@ test_that("Addition works correctly", {
   expect_identical(as_messydate("2012-02-03T14:30") + "1 year", as_messydate("2013-02-03T14:30"))
 })
 
+
+test_that("comparisons with no mdate give the base R result", {
+  a <- as.Date("2000-01-01") + c(-1, 0, 1, NA)
+  b <- as.Date("2000-01-01")
+  expect_identical(a < b, unclass(a) < unclass(b))
+  expect_identical(a >= "2000-01-01", c(FALSE, TRUE, TRUE, NA))
+  named <- c(x = as.Date("2000-01-01"), y = as.Date("2000-01-05"))
+  expect_identical(named > as.Date("2000-01-03"), c(x = FALSE, y = TRUE))
+  p <- as.POSIXct("2000-01-01 10:00", tz = "UTC") + c(-60, 0, 60)
+  expect_identical(p <= as.POSIXlt(p[2]), c(TRUE, TRUE, FALSE))
+})

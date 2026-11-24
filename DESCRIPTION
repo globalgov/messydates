@@ -36,6 +36,7 @@ LazyData: true
 Depends:
     R (>= 4.1)
 Imports:
+    graphics,
     methods,
     lubridate,
     stringi,

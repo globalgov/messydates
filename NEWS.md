@@ -2,7 +2,7 @@
 
 ## Package
 
-- Added `vctrs` to Imports and `tibble` to Suggests
+- Added `vctrs` and `graphics` to Imports and `tibble` to Suggests
 - Added `data-raw/benchmark.R` to time parsing and resolution
 - Improved `pushrelease.yml` to take the version number from `DESCRIPTION`
 - Updated `CONTRIBUTING.md` with naming rules
@@ -154,7 +154,7 @@
   - ~900x faster for `vrandom()` on 63,606 event dates, a quarter of them ranges
   - ~290x faster for `vmean()` on the same dates
 
-## Expand/Contract
+## Expansion
 
 - Renamed `expand()` to `possible_dates()`, gives days only
   - Use `seq()` for a sequence of times
@@ -201,6 +201,18 @@
   - The two sides are recycled to a common length
   - An intersection with no days gives `{}`, and a missing value gives `NA`
   - A `?` or `~` on either side is carried to the result
+- Fixed `+` and `-` with `"1 year"` or `"1 month"`, which added 365 or 30.42 days
+  - `as_messydate("2012-01-01") + "1 year"` gave `"2012-12-31"`, now `"2013-01-01"`
+  - Months and years shift the calendar with rollback
+  - Whole months stay whole months
+  - Added `"week"` as a unit, which gave an error
+- Fixed `+` and `-` on dates before the common era, which moved them the wrong way
+  - `as_messydate("-0050-01-01") + 1` gave `"-0049-12-31"`, now `"-0050-01-02"`
+- Fixed missing values in `+` and `-`, which now give `NA`
+- Accelerated `<`, `>`, `<=`, and `>=` on two `Date` or `POSIXt` values
+  - Without an `mdate` on either side, they give the base R result
+  - A `Date` with a `POSIXct` is still compared by its time, which base R does not do
+  - >2000x faster for 100,000 `Date` comparisons while messydates is loaded
 - Added `approx_range` to `%l%`, `%g%`, `%le%`, `%ge%`, `%><%`, and `%>=<%`
   - Each day of an approximate value counts by the trapezoidal weight of `vrandom()`
   - Call the operator as a function to set it, e.g. `` `%l%`(x, y, approx_range = 3) ``
@@ -219,14 +231,14 @@
 - Added `date_is_open()` to test for an open range, e.g. `..2012`
 - Added `approx_range` to `date_is_intersecting()` and `date_is_subset()`
   - `date_is_intersecting("2001-05-16~", "2001-05-18", approx_range = 3)` gives `TRUE`
-- Fixed `+` and `-` with `"1 year"` or `"1 month"`, which added 365 or 30.42 days
-  - `as_messydate("2012-01-01") + "1 year"` gave `"2012-12-31"`, now `"2013-01-01"`
-  - Months and years shift the calendar with rollback
-  - Whole months stay whole months
-  - Added `"week"` as a unit, which gave an error
-- Fixed `+` and `-` on dates before the common era, which moved them the wrong way
-  - `as_messydate("-0050-01-01") + 1` gave `"-0049-12-31"`, now `"-0050-01-02"`
-- Fixed missing values in `+` and `-`, which now give `NA`
+
+## Plotting
+
+- Added `plot()` for `mdate` to draw the weight of each possible day
+  - Precise dates are points, and ranges are bars
+  - Sets and `X` digits are separate points
+  - With `approx_range`, approximate values are trapezoids, as in `vrandom()`
+  - Uncertain values have a dashed outline
 
 ## Data
 

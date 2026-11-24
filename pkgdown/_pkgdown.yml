@@ -62,6 +62,10 @@ reference:
     desc: "These methods help operate on objects of the `mdate` class:"
     contents:
       - starts_with("operate_")
+  - title: "Plotting"
+    desc: "This method draws messy dates and the weight of each possible day:"
+    contents:
+      - starts_with("plot_")
   - title: "Data"
     desc: "Working with 'messy' data:"
     contents:

@@ -196,6 +196,18 @@
 
 ## Operations
 
+- Changed `%intersect%` and `%union%` to work element by element and give an `mdate`
+  - The result is in the shortest form, e.g. `"2012-01-03..2012-01-05"`, not days
+  - The two sides are recycled to a common length
+  - An intersection with no days gives `{}`, and a missing value gives `NA`
+  - A `?` or `~` on either side is carried to the result
+- Added `approx_range` to `%l%`, `%g%`, `%le%`, `%ge%`, `%><%`, and `%>=<%`
+  - Each day of an approximate value counts by the trapezoidal weight of `vrandom()`
+  - Call the operator as a function to set it, e.g. `` `%l%`(x, y, approx_range = 3) ``
+- Fixed `%><%` and `%>=<%` giving 0 and not `NA` for a missing value
+- Accelerated `%l%`, `%g%`, `%le%`, `%ge%`, `%><%`, and `%>=<%`
+  - A date, month, year, or range is measured from its first and last day
+  - ~17x faster for 60,000 pairs of ranges
 - Renamed the `is_*()` predicates to `date_is_*()`
   - `is_precise()`, `is_uncertain()`, `is_approximate()`, `is_bce()`, `is_similar()`
   - `is_messydate()` keeps its name, because it is a class test
@@ -208,6 +220,10 @@
 - Added `approx_range` to `date_is_intersecting()` and `date_is_subset()`
   - `date_is_intersecting("2001-05-16~", "2001-05-18", approx_range = 3)` gives `TRUE`
 - Fixed missing values in `+` and `-`, which now give `NA`
+
+## Data
+
+- Fixed `battles$Date`, which was saved before `mdate` used `vctrs`
 
 # messydates 1.1.1
 

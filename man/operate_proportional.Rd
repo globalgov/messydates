@@ -16,32 +16,37 @@
 \alias{\%>=<\%.mdate}
 \title{Proportion of messy dates meeting logical test}
 \usage{
-e1 \%l\% e2
+`\%l\%`(e1, e2, ...)
 
-\method{\%l\%}{mdate}(e1, e2)
+\method{\%l\%}{mdate}(e1, e2, ..., approx_range = 0)
 
-e1 \%g\% e2
+`\%g\%`(e1, e2, ...)
 
-\method{\%g\%}{mdate}(e1, e2)
+\method{\%g\%}{mdate}(e1, e2, ..., approx_range = 0)
 
-e1 \%ge\% e2
+`\%ge\%`(e1, e2, ...)
 
-\method{\%ge\%}{mdate}(e1, e2)
+\method{\%ge\%}{mdate}(e1, e2, ..., approx_range = 0)
 
-e1 \%le\% e2
+`\%le\%`(e1, e2, ...)
 
-\method{\%le\%}{mdate}(e1, e2)
+\method{\%le\%}{mdate}(e1, e2, ..., approx_range = 0)
 
-e1 \%><\% e2
+`\%><\%`(e1, e2, ...)
 
-\method{\%><\%}{mdate}(e1, e2)
+\method{\%><\%}{mdate}(e1, e2, ..., approx_range = 0)
 
-e1 \%>=<\% e2
+`\%>=<\%`(e1, e2, ...)
 
-\method{\%>=<\%}{mdate}(e1, e2)
+\method{\%>=<\%}{mdate}(e1, e2, ..., approx_range = 0)
 }
 \arguments{
 \item{e1, e2}{\code{mdate} or other class objects; must be of equal length.}
+
+\item{...}{Arguments passed to the methods, such as \code{approx_range}.}
+
+\item{approx_range}{The range by which to widen approximate values
+(\code{~} or \verb{\%}). By default 0, so that approximate values are not widened.}
 }
 \value{
 A numeric vector, the same length as \code{e1} and \code{e2}, of
@@ -63,6 +68,13 @@ set that proportion reads as a probability that the comparison holds,
 under the assumption that each candidate is equally likely, in the same
 way as for a range or an unspecified component. For a \code{{}} set it instead
 reads as the share of the recorded occurrences that satisfy it.
+
+With \code{approx_range} more than 0, an approximate value (\code{~} or \verb{\%}) is
+widened as in \code{possible_dates()}, and each of its days counts by the
+trapezoidal weight that \code{vrandom()} uses: 1 across the dates that the
+value names, falling to 0 over the dates that \code{approx_range} adds.
+An operator takes this argument when it is called as a function:
+\code{`\%l\%`(x, y, approx_range = 3)}.
 }
 \section{Functions}{
 \itemize{

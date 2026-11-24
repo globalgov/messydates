@@ -219,6 +219,13 @@
 - Added `date_is_open()` to test for an open range, e.g. `..2012`
 - Added `approx_range` to `date_is_intersecting()` and `date_is_subset()`
   - `date_is_intersecting("2001-05-16~", "2001-05-18", approx_range = 3)` gives `TRUE`
+- Fixed `+` and `-` with `"1 year"` or `"1 month"`, which added 365 or 30.42 days
+  - `as_messydate("2012-01-01") + "1 year"` gave `"2012-12-31"`, now `"2013-01-01"`
+  - Months and years shift the calendar with rollback
+  - Whole months stay whole months
+  - Added `"week"` as a unit, which gave an error
+- Fixed `+` and `-` on dates before the common era, which moved them the wrong way
+  - `as_messydate("-0050-01-01") + 1` gave `"-0049-12-31"`, now `"-0050-01-02"`
 - Fixed missing values in `+` and `-`, which now give `NA`
 
 ## Data

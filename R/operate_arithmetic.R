@@ -14,7 +14,9 @@
 #'    (preserving the day of month and any time of day), rolling back to
 #'    the last valid day where necessary, e.g. adding a month to
 #'    `"2012-01-31"` gives `"2012-02-29"` (2012 being a leap year), not an
-#'    invalid `"2012-02-31"`.}
+#'    invalid `"2012-02-31"`. Each run of days moves by its first and last
+#'    day, and a run that covers whole months stays whole months, so
+#'    `"2012-02"` plus one month gives `"2012-03"`.}
 #'    \item{Sub-day units, or any unit at all when `e1` carries a time of
 #'    day, shift the instant in seconds via `POSIXct`, promoting a
 #'    date-only `e1` to a time if the shift is sub-day.}
@@ -22,7 +24,7 @@
 #'   When `e2` is itself an `mdate`, `+`/`-` instead treat both sides as
 #'   sets of dates: `+` returns their union (as a multiset, in the most
 #'   succinct `mdate` notation; see also `?operate_set` for `%union%`, which
-#'   returns a plain vector of the member dates instead), and `-` removes
+#'   works element by element instead), and `-` removes
 #'   the dates in `e2` from `e1`.
 #' @param e1 An `mdate` or date object.
 #' @param e2 An `mdate`, date, or numeric object. Must be a scalar.
@@ -159,20 +161,7 @@ add <- function(x, n) {
     # But keep approximation for before or after date
     x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, possible_dates(x))
     # Step two, add by component
-    x <- lapply(x, function(y) {
-      if (stringi::stri_detect_regex(y[1], "^-")) {
-        y <- paste0("-", lubridate::as_date(y) - n)
-      } else if (stringi::stri_detect_regex(y[1], "^\\.\\.")) {
-        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
-        y <- paste0("..", lubridate::as_date(y) + n)
-      } else if (stringi::stri_detect_regex(y[1], "\\.\\.$")) {
-        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
-        y <- paste0(lubridate::as_date(y) + n, "..")
-      } else {
-        y <- lubridate::as_date(y) + n
-      }
-      y
-    })
+    x <- lapply(x, .shift_value, n = n, sign = 1)
     x <- suppressMessages(.contract(x))
   }
   x
@@ -193,35 +182,65 @@ subtract <- function(x, n) {
     # But keep approximation for before or after date
     x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, possible_dates(x))
     # Step two, add by component
-    x <- lapply(x, function(y) {
-      if (stringi::stri_detect_regex(y[1], "^-")) {
-        y <- paste0("-", lubridate::as_date(y) + n)
-      } else if (stringi::stri_detect_regex(y[1], "^\\.\\.")) {
-        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
-        y <- paste0("..", lubridate::as_date(y) - n)
-      } else if (stringi::stri_detect_regex(y[1], "\\.\\.$")) {
-        y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
-        y <- paste0(lubridate::as_date(y) - n, "..")
-      } else {
-        y <- lubridate::as_date(y) - n
-      }
-      y
-    })
+    x <- lapply(x, .shift_value, n = n, sign = -1)
     x <- suppressMessages(.contract(x))
   }
   x
 }
 
 parse_date_strings <- function(e2) {
-  if (is_messydate(e2)) {
-    e2 <- .contract(e2)
-  } else {
-    e2 <- ifelse(stringi::stri_detect_regex(e2, "years|year"),
-                 as.numeric(stringi::stri_replace_all_regex(e2, "years|year", "")) * 365, e2)
-    e2 <- ifelse(stringi::stri_detect_regex(e2, "months|month"),
-                 as.numeric(stringi::stri_replace_all_regex(e2, "months|month", "")) * 30.42, e2)
-    e2 <- ifelse(stringi::stri_detect_regex(e2, "days|day"),
-                 as.numeric(stringi::stri_replace_all_regex(e2, "days|day", "")), e2)
-  }
+  if (is_messydate(e2)) return(.contract(e2))
+  if (!is.character(e2)) return(e2)
+  n <- as.numeric(stringi::stri_replace_all_regex(e2, "[^0-9.-]", ""))
+  if (stringi::stri_detect_regex(e2, "year")) return(lubridate::period(n, units = "year"))
+  if (stringi::stri_detect_regex(e2, "month")) return(lubridate::period(n, units = "month"))
+  if (stringi::stri_detect_regex(e2, "week")) return(n * 7)
+  if (stringi::stri_detect_regex(e2, "day")) return(n)
   e2
+}
+
+# Shifts one value, given as its possible days or as an open range, by `n`.
+# The days are read as true day numbers, so that a date before the common
+# era moves forward in time when a positive amount is added:
+# "-0050-01-01" plus one day is "-0050-01-02".
+.shift_value <- function(y, n, sign) {
+  before <- stringi::stri_detect_regex(y[1], "^\\.\\.")
+  after <- stringi::stri_detect_regex(y[1], "\\.\\.$")
+  y <- stringi::stri_replace_all_regex(y, "\\.\\.", "")
+  out <- .from_days(.shift_days(.to_days(y), n, sign))
+  if (before) out <- paste0("..", out)
+  if (after) out <- paste0(out, "..")
+  out
+}
+
+# Reads ISO day strings, including dates before the common era, as Dates.
+.to_days <- function(y) as.Date(new_messydate(y), FUN = identity)
+
+# Writes Dates as ISO day strings, with four digits in each year.
+.from_days <- function(d) zero_padding(format(d, "%Y-%m-%d"))
+
+# Shifts days by a number of days, or by a calendar period of months or
+# years. For a period, each run of consecutive days is shifted by its first
+# and last day. A day keeps its day of the month, and rolls back to the last
+# valid day where that day does not exist: 2012-02-29 plus one year gives
+# 2013-02-28. A run that covers whole months stays whole months, so that
+# "2012-02" plus one month gives all of March.
+.shift_days <- function(d, n, sign) {
+  if (!inherits(n, "Period")) return(d + sign * n)
+  d <- sort(unique(d))
+  if (length(d) == 0) return(d)
+  p <- sign * n
+  runs <- split(d, cumsum(c(1, diff(as.numeric(d)) != 1)))
+  out <- lapply(runs, function(r) {
+    lo <- r[1]
+    hi <- r[length(r)]
+    new_lo <- lubridate::add_with_rollback(lo, p)
+    new_hi <- lubridate::add_with_rollback(hi, p)
+    whole <- length(r) > 1 && lubridate::mday(lo) == 1 &&
+      lubridate::mday(hi) == lubridate::days_in_month(hi)
+    if (whole)
+      new_hi <- new_hi - lubridate::mday(new_hi) + lubridate::days_in_month(new_hi)
+    seq(new_lo, new_hi, by = "day")
+  })
+  sort(unique(do.call(c, unname(out))))
 }

@@ -100,6 +100,17 @@
 
 ## Resolution
 
+- Changed `vmean()`, `vmedian()`, `vmodal()`, and `vrandom()` to give an `mdate`
+  - As `vmin()` and `vmax()` do, so that `as.Date()` works on each result
+  - `mean()`, `median()`, `modal()`, and `random()` also give an `mdate`
+  - Added `test-resolve_contract.R`, with the rules that all resolution functions obey
+- Fixed `mean()` and `vmean()` on dates before the common era
+  - `vmean("-0044-03")` gave `"44-03-16"` and now gives `"-0044-03-16"`
+  - A BCE date with a date-time gave an error; the mean is then of the days
+- Fixed `vmean()` changing a precise date-time
+  - `vmean("2019-01-01 14:30:00+02:00")` gave `"2019-01-01 12:30:00"`
+- Fixed `median()` giving an error for a vector with no dates
+- Fixed `vrandom()` ignoring an argument that it does not know
 - Improved `as.Date()`, `as.POSIXct()`, `as.POSIXlt()`, and `as.double()`
   - Changed them to state the rule for imprecise values when `FUN` is not given
     - They resolve with `vmin()` as before, and say so once in each session
@@ -149,6 +160,12 @@
 - Accelerated `mean()`, `median()`, `modal()`, `random()`, and their `v*()` forms (#105)
   - A range expands without being parsed again
   - ~15x faster for `mean()` on 1,000 months and ranges
+- Accelerated `vmean()`, `vmedian()`, `vmodal()`, and `vrandom()` on months and years
+  - A whole month or year resolves from its first day and its number of days
+  - ~480x faster for `vmean()` on 20,000 months
+- Accelerated the resolution functions on date-times
+  - A precise date-time is its own mean, and a result in canonical notation skips the parser
+  - ~2x faster for `vmean()` on 5,000 date-times
 - Accelerated `vrandom()`, `vmean()`, and `vmedian()` on full dates and ranges
   - Full dates and ranges resolve directly, without `possible_dates()`
   - ~900x faster for `vrandom()` on 63,606 event dates, a quarter of them ranges
@@ -186,6 +203,8 @@
   - `"2012-1X"` stopped with an error, and now gives October to December 2012
   - A value with no valid day, e.g. `"2012-02-3X"`, gives no dates
 - Fixed `possible_dates()` reading a year with leading `X` digits as one range
+- Fixed February in a century year that is not a leap year
+  - `possible_dates("1900-02")` and `vmax("1900-02")` gave an error
 - Fixed `seq()` and `possible_dates()` on an invalid element, e.g. `""`
 - Fixed missing values in `possible_dates()` to give `NA`
 

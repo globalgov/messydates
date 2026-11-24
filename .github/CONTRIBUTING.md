@@ -295,6 +295,14 @@ expansion and extraction across those same stages.
 When adding a feature to one of the `R/*.R` files above,
 the corresponding `test-*.R` file is almost always the right place to add coverage.
 
+`test-resolve_contract.R` holds the rules that every resolution function obeys:
+each `v*()` function gives an `mdate` of the same length as its input,
+with `NA` for a missing value and for `{}`, a precise date within the bounds of each value,
+the era of a date before the common era, a precise value back as it is,
+and an error for an argument that it does not know.
+The reducers (`min()` to `random()`) give one precise `mdate` within the bounds of the vector.
+Add a new resolution function to the lists at the top of that file, so that it must obey the same rules.
+
 `test-equivalence.R` compares the output of parsing, expansion, and resolution
 on a fixed set of inputs to a reference in `tests/testthat/fixtures/equivalence.rds`.
 Its inputs and helpers are in `tests/testthat/helper-equivalence.R`.
@@ -520,9 +528,9 @@ write:
   check, and PR metadata checks (DESCRIPTION version bump, PR title/description conventions).
 - Merges/pushes to `main` trigger [pushrelease.yml](workflows/pushrelease.yml):
   check, auto-bump version tag, GitHub release with binaries, then pkgdown site deploy.
-- Commenting `/document` or `/style` on a PR triggers
-  [prcommands.yml](workflows/prcommands.yml), which runs `roxygen2::roxygenise()`
-  or `styler::style_pkg()` and pushes the result back to the PR branch.
+- No workflow runs on a PR comment, as a comment trigger can run with a write token
+  for any commenter. Run `devtools::document()` and `styler::style_pkg()` locally,
+  and commit the result.
 
 ### Versioning
 

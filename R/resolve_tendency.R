@@ -23,11 +23,15 @@
 #'   estimate of that single unknown date, as it is for a range or an
 #'   unspecified component.
 #'
-#'   Averaging across the BCE/CE boundary, or between two BCE dates, is not
-#'   currently supported: `median()` falls back to the earlier of the two
-#'   middle values in that case, and `mean()`/`vmean()` may be unreliable for
-#'   solely negative-year inputs (a documented limitation, not a supported
-#'   feature).
+#'   `median()` and `vmedian()` do not average two middle values across
+#'   the BCE/CE boundary or between two BCE dates: they give the earlier of
+#'   the two. `mean()` and `vmean()` average dates before the common era by
+#'   day, and drop the time of day where a date before the common era is
+#'   present.
+#' @return An `mdate` of precise dates or date-times.
+#'   The `v*()` functions give one value for each element of `x`,
+#'   with `NA` for a missing value and for the empty set, `{}`.
+#'   The other functions give one value for the whole vector.
 #' @section Approximate values:
 #'   With `approx_range` above 0, an approximate value (`~` or `%`) widens
 #'   by `approx_range` as in `possible_dates()`, and its dates get the
@@ -66,17 +70,19 @@ median.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0
   .check_approx_range(approx_range)
   if (approx_range > 0 && any(.weights_apply(x))) {
     m <- .vector_weights(x, approx_range)
-    return(.weighted_median(m$dates, m$w))
+    return(.as_resolved(.weighted_median(m$dates, m$w)))
   }
   y <- unlist(possible_dates(x))
   y <- .order_messy(y)
-  .median_value(y, na.rm = na.rm)
+  .as_resolved(.median_value(y, na.rm = na.rm))
 }
 
 .order_messy <- function(y){
-  if(any(date_is_bce(y))){
-    bcey <- y[date_is_bce(y)]
-    cey <- y[!date_is_bce(y)]
+  # A missing value is not before the common era, and sorts last.
+  bce <- date_is_bce(y) %in% TRUE
+  if(any(bce)){
+    bcey <- y[bce]
+    cey <- y[!bce]
     c(bcey[order(bcey, decreasing = TRUE)],
            cey[order(cey)])
   } else {
@@ -138,7 +144,7 @@ vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 
       .weighted_median(m$dates, m$w)
     }, character(1), USE.NAMES = FALSE)
   }
-  out
+  .as_resolved(out)
 }
 
 #' @rdname resolve_tendency
@@ -159,20 +165,28 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_r
   .check_approx_range(approx_range)
   if (approx_range > 0 && any(.weights_apply(x))) {
     m <- .vector_weights(x, approx_range)
-    return(.weighted_mean(m$dates, m$w))
+    return(.as_resolved(.weighted_mean(m$dates, m$w)))
   }
   y <- unlist(possible_dates(x))
-  .mean_value(y)
+  .as_resolved(.mean_value(y))
 }
 
 # Computes the mean instant of a vector of canonical date or date-time
 # strings, via POSIXct when a time of day is present (so the time
 # contributes to the average), or via Date otherwise.
 .mean_value <- function(y) {
-  if (any(grepl("[T ]", y)))
+  y <- y[!is.na(y)]
+  if (length(y) == 0) return(NA_character_)
+  # A single value, such as a precise date-time, is its own mean.
+  if (length(unique(y)) == 1) return(y[1])
+  # A time of day counts in the mean, except with a date before the
+  # common era, which POSIXct cannot hold: then the mean is of the days.
+  if (any(grepl("[T ]", y)) && !any(date_is_bce(y) %in% TRUE))
     return(format(mean(mdate_to_posixct(y)),
                   paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S")))
-  as.character(lubridate::as_date(mean(as.double(lubridate::as_date(y)))))
+  # Days are read as true day numbers, so that a date before the common
+  # era keeps its era.
+  .from_days(mean(.to_days(strip_times(y))))
 }
 
 #' @rdname resolve_tendency
@@ -202,31 +216,46 @@ vmean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_
       .weighted_mean(m$dates, m$w)
     }, character(1), USE.NAMES = FALSE)
   }
-  out
+  .as_resolved(out)
 }
 
 # Splits an mdate vector into the shapes that the v*() resolvers can handle
 # without expanding each value: precise full dates, which resolve to
-# themselves, and plain ranges of two full dates (years 1000-9999), which
-# are summarised from their two ends. For a range of n days, the mean and
-# the median both resolve to the start plus floor((n - 1) / 2) days, as the
-# expanded computation does once the fractional day is dropped. All other
-# values, including missing ones, are returned as `rest`, for the expanded
-# computation, so that their behaviour does not change. `out` holds the
-# precise values and NA elsewhere.
+# themselves, and unbroken runs of days that are summarised from their
+# first day and their number of days: plain ranges of two full dates, and
+# whole months and years (years 1000-9999). For a run of n days, the mean
+# and the median both resolve to the start plus floor((n - 1) / 2) days, as
+# the expanded computation does once the fractional day is dropped. All
+# other values, including missing ones, are returned as `rest`, for the
+# expanded computation, so that their behaviour does not change. `out`
+# holds the precise values and NA elsewhere.
 .full_dates <- function(x) {
   v <- as.character(unclass(x))
   day <- "[1-9][0-9]{3}-[0-9]{2}-[0-9]{2}"
   precise <- !is.na(v) & grepl(paste0("^", day, "$"), v)
   rng <- !is.na(v) & grepl(paste0("^", day, "\\.\\.", day, "$"), v)
-  lo <- as.Date(substr(v[rng], 1, 10))
-  n <- as.integer(as.Date(substr(v[rng], 13, 22)) - lo) + 1L
-  ok <- !is.na(n) & n >= 1L
-  rng[which(rng)[!ok]] <- FALSE
+  mon <- !is.na(v) & grepl("^[1-9][0-9]{3}-(0[1-9]|1[0-2])$", v)
+  yr <- !is.na(v) & grepl("^[1-9][0-9]{3}$", v)
+  lo <- rep(as.Date(NA), length(v))
+  n <- rep(NA_integer_, length(v))
+  lo[rng] <- as.Date(substr(v[rng], 1, 10), optional = TRUE)
+  n[rng] <- as.integer(as.Date(substr(v[rng], 13, 22), optional = TRUE) - lo[rng]) + 1L
+  # paste0() on no values gives one value, so each shape is filled only
+  # where it occurs.
+  if (any(mon)) {
+    lo[mon] <- as.Date(paste0(v[mon], "-01"))
+    n[mon] <- as.integer(days_in(as.integer(substr(v[mon], 1, 4)),
+                                 as.integer(substr(v[mon], 6, 7))))
+  }
+  if (any(yr)) {
+    lo[yr] <- as.Date(paste0(v[yr], "-01-01"))
+    n[yr] <- days_in_year(as.integer(v[yr]))
+  }
+  run <- (rng | mon | yr) & !is.na(n) & n >= 1L
   out <- rep(NA_character_, length(v))
   out[precise] <- v[precise]
-  list(out = out, rng = which(rng), lo = lo[ok], n = n[ok],
-       rest = which(!precise & !rng), missing = is.na(v))
+  list(out = out, rng = which(run), lo = lo[run], n = n[run],
+       rest = which(!precise & !run), missing = is.na(v))
 }
 
 #' @rdname resolve_tendency
@@ -242,10 +271,12 @@ modal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
   d <- list(...)[[1]]
   d <- .drop_empty(d)
   d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
-  .getmode(unlist(possible_dates(d)))
+  .as_resolved(.getmode(unlist(possible_dates(d))))
 }
 
 .getmode <- function(v) {
+  v <- v[!is.na(v)]
+  if (length(v) == 0) return(NA_character_)
   uniqv <- unique(v)
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
@@ -267,8 +298,14 @@ vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0
   d <- .empty_to_na(d)
 
   d <- .handle_uncertain(d, uncertain, elementwise = TRUE)
-  d <- vapply(possible_dates(d), function(y) .getmode(y), character(1))
-  d
+  # Every day of an unbroken run is equally likely, so its mode is its
+  # first day, as .getmode() gives for the expanded days.
+  f <- .full_dates(d)
+  out <- f$out
+  out[f$rng] <- format(f$lo, "%Y-%m-%d")
+  out[f$rest] <- vapply(possible_dates(d[f$rest]), function(y) .getmode(y),
+                        character(1))
+  .as_resolved(out)
 }
 
 # Weighted central tendency for approximate values -------------------------

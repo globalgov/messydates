@@ -17,6 +17,10 @@
 #'   occurrences.
 #'   The arguments `approx_range` and `uncertain_p` change the draw for
 #'   approximate and uncertain values.
+#' @return An `mdate` of precise dates or date-times.
+#'   The `v*()` functions give one value for each element of `x`,
+#'   with `NA` for a missing value and for the empty set, `{}`.
+#'   The other functions give one value for the whole vector.
 #' @name resolve_probabilistically
 #' @inheritParams resolve_extrema
 #' @param approx_range The range by which to widen approximate values (`~` or `%`).
@@ -79,7 +83,7 @@ random.mdate <- function(..., na.rm = TRUE, approx_range = 0,
   # 1 - uncertain_p; the draw is then made from the members of the rest.
   miss <- .uncertain_misses(x, uncertain_p)
   x <- x[!miss]
-  if (length(x) == 0) return(NA_character_)
+  if (length(x) == 0) return(new_messydate(NA_character_))
   if (approx_range == 0) {
     y <- unlist(possible_dates(x))
     w <- NULL
@@ -93,9 +97,9 @@ random.mdate <- function(..., na.rm = TRUE, approx_range = 0,
     y <- y[keep]
     if (!is.null(w)) w <- w[keep]
   }
-  if (length(y) == 0) return(NA_character_)
-  if (length(y) == 1) return(y)
-  sample(y, 1, prob = w)
+  if (length(y) == 0) return(new_messydate(NA_character_))
+  if (length(y) == 1) return(.as_resolved(y))
+  .as_resolved(sample(y, 1, prob = w))
 }
 
 #' @export
@@ -117,6 +121,7 @@ vrandom <- function(..., na.rm = TRUE) UseMethod("vrandom")
 vrandom.mdate <- function(..., na.rm = TRUE, approx_range = 0,
                           uncertain_p = 1) {
 
+  .check_dots(...)
   x <- list(...)[[1]]
 
   x <- .empty_to_na(x)
@@ -142,7 +147,7 @@ vrandom.mdate <- function(..., na.rm = TRUE, approx_range = 0,
   # An uncertain value is taken to be wrong in this draw, and so gives NA,
   # with probability 1 - uncertain_p.
   out[.uncertain_misses(x, uncertain_p)] <- NA
-  out
+  .as_resolved(out)
 
 }
 

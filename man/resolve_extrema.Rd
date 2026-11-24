@@ -45,7 +45,10 @@ dates of the widened support, the same dates that \code{possible_dates()}
 gives with the same \code{approx_range}, and that \code{vrandom()} can draw.}
 }
 \value{
-A single scalar or vector of dates
+An \code{mdate} of precise dates or date-times.
+The \verb{v*()} functions give one value for each element of \code{x},
+with \code{NA} for a missing value and for the empty set, \code{{}}.
+The other functions give one value for the whole vector.
 }
 \description{
 This collection of S3 methods 'resolve' messy dates into a single date

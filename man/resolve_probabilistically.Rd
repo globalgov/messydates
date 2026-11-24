@@ -38,6 +38,12 @@ uncertain value, and \code{random()} leaves it out of the draw.
 The default of \code{1} treats uncertain values as correct.
 \code{uncertain_p = 0} is the same as \code{uncertain = "drop"}.}
 }
+\value{
+An \code{mdate} of precise dates or date-times.
+The \verb{v*()} functions give one value for each element of \code{x},
+with \code{NA} for a missing value and for the empty set, \code{{}}.
+The other functions give one value for the whole vector.
+}
 \description{
 These functions resolve messydates by drawing one precise date at random
 from the dates that each value can be.

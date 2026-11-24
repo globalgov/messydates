@@ -38,7 +38,10 @@
 #'   dates of the widened support, the same dates that `possible_dates()`
 #'   gives with the same `approx_range`, and that `vrandom()` can draw.
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
-#' @return A single scalar or vector of dates
+#' @return An `mdate` of precise dates or date-times.
+#'   The `v*()` functions give one value for each element of `x`,
+#'   with `NA` for a missing value and for the empty set, `{}`.
+#'   The other functions give one value for the whole vector.
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
 #'   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
@@ -98,19 +101,45 @@ min.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
                                  dates[order(as.character(dates))[1]]
 }
 
-# Makes an mdate from resolved strings. A valid plain date (yyyy-mm-dd) is
-# already in the notation that the parser writes, so it skips the parser.
-# Every other string, including an impossible date, goes through mdate(),
-# so that it is checked and written as before.
+# Makes an mdate from resolved strings. A value that is already in the
+# canonical notation that the parser writes skips the parser: a valid date
+# (yyyy-mm-dd, also before the common era), optionally with a valid time of
+# day and offset (" hh:mm", " hh:mm:ss", fractional seconds, "Z", "+hh:mm").
+# A missing value stays missing. Every other string, including an
+# impossible date or time, goes through mdate(), so that it is checked and
+# written as before.
 .as_resolved <- function(dates) {
   dates <- as.character(dates)
-  plain <- !is.na(dates) & stringi::stri_detect_regex(dates, "^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
-  if (any(plain))
-    plain[plain] <- !is.na(as.Date(dates[plain], optional = TRUE))
-  if (all(plain)) return(new_messydate(dates))
+  done <- is.na(dates) | .is_canonical_resolved(dates)
+  if (all(done)) return(new_messydate(dates))
   out <- dates
-  out[!plain] <- as.character(mdate(dates[!plain]))
+  out[!done] <- as.character(mdate(dates[!done]))
   new_messydate(out)
+}
+
+.canonical_resolved_rx <- paste0(
+  "^(-?)([0-9]{4})-([0-9]{2})-([0-9]{2})",
+  "(?: ([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]+)?)?",
+  "(Z|[+-]([0-9]{2}):([0-9]{2}))?)?$")
+
+# TRUE for each string in the canonical notation with valid components.
+.is_canonical_resolved <- function(dates) {
+  out <- rep(FALSE, length(dates))
+  m <- stringi::stri_match_first_regex(dates, .canonical_resolved_rx)
+  hit <- !is.na(m[, 1])
+  if (!any(hit)) return(out)
+  m <- m[hit, , drop = FALSE]
+  num <- function(k) suppressWarnings(as.integer(m[, k]))
+  yr <- num(3) * ifelse(m[, 2] == "-", -1L, 1L)
+  mo <- num(4)
+  dy <- num(5)
+  ok <- mo >= 1 & mo <= 12 & dy >= 1
+  ok[ok] <- dy[ok] <= days_in(yr[ok], mo[ok])
+  ok <- ok & (is.na(num(6)) | num(6) <= 23) & (is.na(num(7)) | num(7) <= 59) &
+    (is.na(num(8)) | num(8) <= 59) &
+    (is.na(num(10)) | num(10) <= 14) & (is.na(num(11)) | num(11) <= 59)
+  out[hit] <- ok %in% TRUE
+  out
 }
 
 # Resolves each set ({} or []) to its earliest or latest day. Each member

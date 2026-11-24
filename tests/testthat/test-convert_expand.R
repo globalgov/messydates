@@ -154,3 +154,10 @@ test_that("a month or day with one unspecified digit gives its valid days", {
   expect_equal(as.character(vmax(as_messydate("2012-1X"))), "2012-12-31")
   expect_true(is.na(vmin(as_messydate("2012-02-3X"))))
 })
+
+test_that("February has 29 days only in a Gregorian leap year", {
+  x <- as_messydate(c("1900-02", "2000-02", "2013-02", "-0100-02"))
+  expect_equal(lengths(possible_dates(x)), c(28, 29, 28, 28))
+  expect_equal(as.character(vmax(x)),
+               c("1900-02-28", "2000-02-29", "2013-02-28", "-0100-02-28"))
+})

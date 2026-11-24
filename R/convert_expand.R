@@ -494,8 +494,11 @@ zero_padding <- function(y) {
 }
 
 unspecified_months <- function(dates) {
+  # February has 29 days in a leap year, by the full Gregorian rule:
+  # 1900 is not a leap year, and 2000 is.
+  feb_year <- as.integer(stringi::stri_extract_first_regex(dates, "[:digit:]{4}"))
   dates <- ifelse(stringi::stri_detect_regex(dates, "(^|,)(-?[:digit:]{4})-02($|,)") &
-                    !grepl("\\.", as.numeric(stringi::stri_extract_first_regex(dates, "[:digit:]{4}")) / 4),
+                    days_in(feb_year, 2L) == 29,
                   stringi::stri_replace_all_regex(dates, "(^|,)(-?[:digit:]{4})-02($|,)",
                                            "$1$2-02-01..$2-02-29$3"),
                   stringi::stri_replace_all_regex(dates, "(^|,)(-?[:digit:]{4})-02($|,)",

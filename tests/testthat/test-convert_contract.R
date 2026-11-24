@@ -55,7 +55,6 @@ test_that("the internal contraction of an mdate retains the set type", {
 })
 
 test_that("expand() and contract() still work, with a message", {
-  .deprecated_env <- messydates:::.deprecated_env
   rm(list = intersect(c("expand()", "contract()"), ls(.deprecated_env)),
      envir = .deprecated_env)
   expect_message(old <- expand(d), "possible_dates")

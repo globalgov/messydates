@@ -36,19 +36,10 @@ test_that("vmin and vmax widen approximate dates by approx_range", {
   expect_equal(as.Date(x[1], FUN = vmin, approx_range = 3), as.Date("2001-05-13"))
 })
 
-test_that("element-wise resolvers reject arguments they do not know", {
-  x <- as_messydate("2001-05-16~")
-  expect_error(vmin(x, aprox_range = 3), "aprox_range")
-  expect_error(vmax(x, aprox_range = 3), "aprox_range")
-  expect_error(vmean(x, aprox_range = 3), "aprox_range")
-  expect_error(vmedian(x, aprox_range = 3), "aprox_range")
-  expect_error(vmodal(x, aprox_range = 3), "aprox_range")
-})
-
 test_that("central tendency uses the trapezoidal weights of approximate dates", {
   y <- "2001-03-~01..2001-04-15"
   x <- as_messydate(c(y, "2001-05-16~", "2001-05-16"))
-  m <- messydates:::.weighted_members(y, 3)
+  m <- .weighted_members(y, 3)
   d <- as.numeric(as.Date(m$dates))
   w_mean <- as.character(as.Date(sum(d * m$w) / sum(m$w)))
   expect_equal(as.character(vmean(x, approx_range = 3)),

@@ -60,6 +60,12 @@ gives with the same \code{approx_range}, and that \code{vrandom()} can draw.}
 from each end of x before the mean is computed.
 Values of trim outside that range are taken as the nearest endpoint.}
 }
+\value{
+An \code{mdate} of precise dates or date-times.
+The \verb{v*()} functions give one value for each element of \code{x},
+with \code{NA} for a missing value and for the empty set, \code{{}}.
+The other functions give one value for the whole vector.
+}
 \description{
 These functions resolve messydates by their central tendency.
 While the functions \code{mean()}, \code{median()}, and \code{modal()} expand \emph{all}
@@ -85,11 +91,11 @@ exactly one of those dates but not which, the central tendency is a point
 estimate of that single unknown date, as it is for a range or an
 unspecified component.
 
-Averaging across the BCE/CE boundary, or between two BCE dates, is not
-currently supported: \code{median()} falls back to the earlier of the two
-middle values in that case, and \code{mean()}/\code{vmean()} may be unreliable for
-solely negative-year inputs (a documented limitation, not a supported
-feature).
+\code{median()} and \code{vmedian()} do not average two middle values across
+the BCE/CE boundary or between two BCE dates: they give the earlier of
+the two. \code{mean()} and \code{vmean()} average dates before the common era by
+day, and drop the time of day where a date before the common era is
+present.
 }
 \section{Approximate values}{
 

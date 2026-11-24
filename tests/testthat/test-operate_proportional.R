@@ -89,3 +89,9 @@ test_that("every proportion operator gives NA for a missing value", {
   for (op in c("%l%", "%g%", "%le%", "%ge%", "%><%", "%>=<%"))
     expect_true(is.na(get(op)(x, rev(x))[1]))
 })
+
+test_that("every proportion operator gives numeric(0) for inputs of length 0", {
+  x <- new_messydate(character(0))
+  for (op in c("%l%", "%g%", "%le%", "%ge%", "%><%", "%>=<%"))
+    expect_identical(get(op)(x, x), numeric(0))
+})

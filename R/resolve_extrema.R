@@ -75,7 +75,7 @@ vmin.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
   dates <- .remove_post(dates)
   dates <- .resolve_partial_x(dates, "min")
   dates <- .replace_earliest(dates)
-  .as_resolved(dates)
+  .keep_names(.as_resolved(dates), ...elt(1))
 }
 
 #' @rdname resolve_extrema
@@ -139,6 +139,14 @@ min.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
     (is.na(num(8)) | num(8) <= 59) &
     (is.na(num(10)) | num(10) <= 14) & (is.na(num(11)) | num(11) <= 59)
   out[hit] <- ok %in% TRUE
+  out
+}
+
+# Gives the result of an element-wise resolver the names of its input,
+# as base R does for pmin() and pmax(). With na.rm = TRUE, vmin() and
+# vmax() leave out missing values, and the result then has no names.
+.keep_names <- function(out, x) {
+  if (!is.null(names(x)) && length(out) == length(x)) names(out) <- names(x)
   out
 }
 
@@ -228,7 +236,7 @@ vmax.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
   dates <- .remove_pre(dates)
   dates <- .resolve_partial_x(dates, "max")
   dates <- .replace_latest(dates)
-  .as_resolved(dates)
+  .keep_names(.as_resolved(dates), ...elt(1))
 }
 
 #' @rdname resolve_extrema

@@ -191,7 +191,7 @@ evalqOnLoad({
   if (length(e1) != length(e2))
     stop("Can only compare vectors of equal length.")
   .check_approx_range(approx_range)
-  if (length(e1) == 0) return(list())
+  if (length(e1) == 0) return(numeric(0))
   if (!is_messydate(e1)) e1 <- suppressMessages(as_messydate(e1))
   if (!is_messydate(e2)) e2 <- suppressMessages(as_messydate(e2))
   # With approx_range, a pair with an approximate value uses the weighted

@@ -111,6 +111,7 @@
   - `vmean("2019-01-01 14:30:00+02:00")` gave `"2019-01-01 12:30:00"`
 - Fixed `median()` giving an error for a vector with no dates
 - Fixed `vrandom()` ignoring an argument that it does not know
+- Fixed the `v*()` functions dropping the names of `x`, which `pmin()` keeps
 - Improved `as.Date()`, `as.POSIXct()`, `as.POSIXlt()`, and `as.double()`
   - Changed them to state the rule for imprecise values when `FUN` is not given
     - They resolve with `vmin()` as before, and say so once in each session
@@ -236,6 +237,7 @@
   - Each day of an approximate value counts by the trapezoidal weight of `vrandom()`
   - Call the operator as a function to set it, e.g. `` `%l%`(x, y, approx_range = 3) ``
 - Fixed `%><%` and `%>=<%` giving 0 and not `NA` for a missing value
+- Fixed the proportional operators giving `list()` for inputs of length 0
 - Accelerated `%l%`, `%g%`, `%le%`, `%ge%`, `%><%`, and `%>=<%`
   - A date, month, year, or range is measured from its first and last day
   - ~17x faster for 60,000 pairs of ranges

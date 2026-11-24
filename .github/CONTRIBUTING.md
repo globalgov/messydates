@@ -298,7 +298,7 @@ the corresponding `test-*.R` file is almost always the right place to add covera
 `test-resolve_contract.R` holds the rules that every resolution function obeys:
 each `v*()` function gives an `mdate` of the same length as its input,
 with `NA` for a missing value and for `{}`, a precise date within the bounds of each value,
-the era of a date before the common era, a precise value back as it is,
+the era of a date before the common era, a precise value back as it is, the names of its input,
 and an error for an argument that it does not know.
 The reducers (`min()` to `random()`) give one precise `mdate` within the bounds of the vector.
 Add a new resolution function to the lists at the top of that file, so that it must obey the same rules.

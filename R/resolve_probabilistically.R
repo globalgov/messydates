@@ -147,7 +147,7 @@ vrandom.mdate <- function(..., na.rm = TRUE, approx_range = 0,
   # An uncertain value is taken to be wrong in this draw, and so gives NA,
   # with probability 1 - uncertain_p.
   out[.uncertain_misses(x, uncertain_p)] <- NA
-  .as_resolved(out)
+  .keep_names(.as_resolved(out), ...elt(1))
 
 }
 

@@ -7,28 +7,28 @@ test_dates <- c(range = as_messydate("2014-01-01..2014-01-05"),
 # test_dates <- lapply(test_dates, as_messydate)
 
 test_that("Min resolving works properly", {
-  expect_equal(as.character(vmin(test_dates)),
+  expect_equal(unname(as.character(vmin(test_dates))),
                c("2014-01-01","1999-01-01","-1003-02-01"))
 })
 
 test_that("Max resolving works properly", {
-  expect_equal(as.character(vmax(test_dates)),
+  expect_equal(unname(as.character(vmax(test_dates))),
                c("2014-01-05","1999-12-31","-1003-02-28"))
 })
 
 test_that("Vectorised median resolving works properly", {
-  expect_equal(as.character(vmedian(test_dates)),
+  expect_equal(unname(as.character(vmedian(test_dates))),
                c("2014-01-03","1999-07-02","-1003-02-15"))
 })
 
 test_that("Vectorised mean resolving works properly for CE dates", {
   # Averaging BCE dates is a known limitation (see ?coerce_tendency), so only
   # the two CE elements are checked here.
-  expect_equal(as.character(vmean(test_dates)[1:2]), c("2014-01-03","1999-07-02"))
+  expect_equal(unname(as.character(vmean(test_dates)[1:2])), c("2014-01-03","1999-07-02"))
 })
 
 test_that("Vectorised modal resolving works properly", {
-  expect_equal(as.character(vmodal(test_dates)),
+  expect_equal(unname(as.character(vmodal(test_dates))),
                c("2014-01-01","1999-01-01","-1003-02-01"))
 })
 

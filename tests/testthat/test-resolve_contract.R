@@ -73,6 +73,11 @@ for (nm in names(elementwise)) {
     expect_identical(as.character(f(precise)), as.character(precise))
   })
 
+  test_that(paste(nm, "keeps the names of its input"), {
+    named <- new_messydate(c(a = "2012-01", b = NA, c = "2012-06-~15"))
+    expect_identical(names(f(named)), c("a", "b", "c"))
+  })
+
   test_that(paste(nm, "gives an error for an argument that it does not know"), {
     expect_error(f(contract_x, aprox_range = 3), "aprox_range")
   })

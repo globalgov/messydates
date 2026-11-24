@@ -144,7 +144,7 @@ vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 
       .weighted_median(m$dates, m$w)
     }, character(1), USE.NAMES = FALSE)
   }
-  .as_resolved(out)
+  .keep_names(.as_resolved(out), ...elt(1))
 }
 
 #' @rdname resolve_tendency
@@ -216,7 +216,7 @@ vmean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_
       .weighted_mean(m$dates, m$w)
     }, character(1), USE.NAMES = FALSE)
   }
-  .as_resolved(out)
+  .keep_names(.as_resolved(out), ...elt(1))
 }
 
 # Splits an mdate vector into the shapes that the v*() resolvers can handle
@@ -305,7 +305,7 @@ vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0
   out[f$rng] <- format(f$lo, "%Y-%m-%d")
   out[f$rest] <- vapply(possible_dates(d[f$rest]), function(y) .getmode(y),
                         character(1))
-  .as_resolved(out)
+  .keep_names(.as_resolved(out), ...elt(1))
 }
 
 # Weighted central tendency for approximate values -------------------------

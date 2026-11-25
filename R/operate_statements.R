@@ -8,6 +8,12 @@
 #' @param approx_range Range to widen approximate values (`~` or `%`) by
 #'   before the test, as in `compatible_dates()`. 0 (the default) ignores
 #'   the marks.
+#' @param within A tolerance in days, 0 or more.
+#'   Two dates intersect within `within` days if one of the days of `x` and
+#'   one of the days of `y` are at most `within` days apart.
+#'   The tolerance applies to every date, after any widening by
+#'   `approx_range`. A time of day is ignored, and dates before the common
+#'   era give `NA` when `within` is above 0.
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
 
@@ -22,14 +28,23 @@ is_messydate <- function(x) {
 }
 
 #' @describeIn operate_statements tests whether each date in `x` can share
-#'   a day with the matching date in `y`.
+#'   a day with the matching date in `y`, or, with `within`, can fall within
+#'   `within` days of it.
+#'   It is `TRUE` exactly when `date_by_intersecting()` is above 0.
 #'   `x` and `y` are recycled to a common length, as in base R.
 #'   The empty set, `{}`, shares no day with any date.
 #' @examples
 #' date_is_intersecting(as_messydate(c("2012-01", "2012-01")),
 #'   as_messydate(c("2012-01-01..2012-02-22", "2012-02-01..2012-02-22")))
+#' # two records of an event can match if their dates are within a day
+#' date_is_intersecting(as_messydate("2012-01-31"), as_messydate("2012-02-01"),
+#'   within = 1)
 #' @export
-date_is_intersecting <- function(x, y, approx_range = 0) {
+date_is_intersecting <- function(x, y, within = 0, approx_range = 0) {
+  .check_within(within)
+  if (within > 0)
+    return(date_by_intersecting(x, y, within = within,
+                                  approx_range = approx_range) > 0)
   .pairwise_dates(x, y, function(a, b) length(intersect(a, b)) > 0, approx_range)
 }
 

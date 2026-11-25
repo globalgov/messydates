@@ -95,3 +95,47 @@ test_that("every proportion operator gives numeric(0) for inputs of length 0", {
   for (op in c("%l%", "%g%", "%le%", "%ge%", "%><%", "%>=<%"))
     expect_identical(get(op)(x, x), numeric(0))
 })
+
+test_that("date_by_intersecting() gives the share of day pairs within a tolerance", {
+  x <- as_messydate(c("2001-05-16", "2001-05-13..2001-05-19", "2001-05-13..2001-05-19", NA, "{}"))
+  y <- as_messydate(c("2001-05-17", "2001-05-16", "2001-05-16", "2001-05-01", "2001-05-01"))
+  expect_equal(date_by_intersecting(x, y), c(0, 1 / 7, 1 / 7, NA, 0))
+  expect_equal(date_by_intersecting(x, y, within = 1), c(1, 3 / 7, 3 / 7, NA, 0))
+  # recycling, as in date_is_intersecting()
+  expect_equal(date_by_intersecting(x[2:3], as_messydate("2001-05-16")), c(1 / 7, 1 / 7))
+  # a set and a month list their days
+  expect_equal(date_by_intersecting(as_messydate("{2001-05-01,2001-05-10}"),
+                                      as_messydate("2001-05-02"), within = 1), 1 / 2)
+  expect_equal(date_by_intersecting(as_messydate("2001-05"), as_messydate("2001-05-31")), 1 / 31)
+})
+
+test_that("date_by_intersecting() agrees with a count of all day pairs", {
+  set.seed(1)
+  lo1 <- as.Date("2001-01-01") + sample(0:60, 40, TRUE)
+  hi1 <- lo1 + sample(0:20, 40, TRUE)
+  lo2 <- as.Date("2001-01-01") + sample(0:60, 40, TRUE)
+  hi2 <- lo2 + sample(0:20, 40, TRUE)
+  rng <- function(lo, hi) as_messydate(ifelse(lo == hi, format(lo), paste0(lo, "..", hi)))
+  x <- rng(lo1, hi1); y <- rng(lo2, hi2)
+  for (tau in c(0, 1, 3, 10)) {
+    brute <- mapply(function(a1, b1, a2, b2) {
+      d <- outer(seq(a1, b1), seq(a2, b2), function(u, v) abs(u - v) <= tau)
+      mean(d)
+    }, as.numeric(lo1), as.numeric(hi1), as.numeric(lo2), as.numeric(hi2))
+    expect_equal(date_by_intersecting(x, y, within = tau), brute)
+    expect_equal(date_is_intersecting(x, y, within = tau), brute > 0)
+  }
+})
+
+test_that("date_by_intersecting() weights approximate dates", {
+  a <- "2001-05-16~"
+  b <- "2001-05-18"
+  m <- messydates:::.weighted_members(a, 3)
+  d <- as.numeric(as.Date(m$dates))
+  w_in <- sum(m$w[abs(d - as.numeric(as.Date(b))) <= 1])
+  expect_equal(date_by_intersecting(as_messydate(a), as_messydate(b),
+                                      within = 1, approx_range = 3),
+               w_in / sum(m$w))
+  # without approx_range the mark is ignored
+  expect_equal(date_by_intersecting(as_messydate(a), as_messydate(b), within = 1), 0)
+})

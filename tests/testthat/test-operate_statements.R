@@ -114,3 +114,14 @@ test_that("intersection and subset tests widen approximate dates by approx_range
   expect_equal(date_is_intersecting(x, y, approx_range = 3), c(TRUE, FALSE))
   expect_equal(date_is_subset(y, x, approx_range = 3), c(TRUE, FALSE))
 })
+
+test_that("date_is_intersecting() matches dates within a tolerance", {
+  x <- as_messydate(c("2001-05-16", "2001-05", "2001-05-16~", NA))
+  y <- as_messydate(c("2001-05-17", "2001-06-01", "2001-05-20", "2001-05-01"))
+  expect_equal(date_is_intersecting(x, y), c(FALSE, FALSE, FALSE, NA))
+  expect_equal(date_is_intersecting(x, y, within = 1), c(TRUE, TRUE, FALSE, NA))
+  # the tolerance adds to the widening of an approximate date
+  expect_equal(date_is_intersecting(x[3], y[3], approx_range = 3), FALSE)
+  expect_equal(date_is_intersecting(x[3], y[3], within = 1, approx_range = 3), TRUE)
+  expect_error(date_is_intersecting(x, y, within = -1), "within")
+})

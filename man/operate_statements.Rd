@@ -16,7 +16,7 @@
 \usage{
 is_messydate(x)
 
-date_is_intersecting(x, y, approx_range = 0)
+date_is_intersecting(x, y, within = 0, approx_range = 0)
 
 date_is_subset(x, y, approx_range = 0)
 
@@ -37,6 +37,13 @@ date_is_empty(x)
 \arguments{
 \item{x, y}{\code{mdate} or other class objects}
 
+\item{within}{A tolerance in days, 0 or more.
+Two dates intersect within \code{within} days if one of the days of \code{x} and
+one of the days of \code{y} are at most \code{within} days apart.
+The tolerance applies to every date, after any widening by
+\code{approx_range}. A time of day is ignored, and dates before the common
+era give \code{NA} when \code{within} is above 0.}
+
 \item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by
 before the test, as in \code{compatible_dates()}. 0 (the default) ignores
 the marks.}
@@ -53,7 +60,9 @@ These functions provide various logical statements about messy date objects.
 If more rigorous validation is required, see \code{validate_messydate()}.
 
 \item \code{date_is_intersecting()}: tests whether each date in \code{x} can share
-a day with the matching date in \code{y}.
+a day with the matching date in \code{y}, or, with \code{within}, can fall within
+\code{within} days of it.
+It is \code{TRUE} exactly when \code{date_by_intersecting()} is above 0.
 \code{x} and \code{y} are recycled to a common length, as in base R.
 The empty set, \code{{}}, shares no day with any date.
 
@@ -103,6 +112,9 @@ is_messydate(as_messydate("2012-01-01"))
 is_messydate(as.Date("2012-01-01"))
 date_is_intersecting(as_messydate(c("2012-01", "2012-01")),
   as_messydate(c("2012-01-01..2012-02-22", "2012-02-01..2012-02-22")))
+# two records of an event can match if their dates are within a day
+date_is_intersecting(as_messydate("2012-01-31"), as_messydate("2012-02-01"),
+  within = 1)
 date_is_subset(as_messydate(c("2012-01-01", "2012-01-01..2012-01-03",
   "2012-01-01")), as_messydate(c("2012-01", "2012-01", "2012-02")))
 date_is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))

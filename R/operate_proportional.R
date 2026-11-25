@@ -240,3 +240,137 @@ evalqOnLoad({
   }
   list(ok = ok, lo = lo, hi = hi)
 }
+
+# Proportion within a tolerance ---------------------------------------------
+
+#' Proportion of day pairs within a tolerance
+#' @description
+#'   `date_by_intersecting()` is the proportion that goes with
+#'   `date_is_intersecting()`.
+#'   For each pair of values, it gives the share of pairs of compatible days,
+#'   one from `x[i]` and one from `y[i]`, that are at most `within` days
+#'   apart.
+#'   If the two true dates are independent, and each is equally likely to be
+#'   any of its compatible days, this is the probability that they are within
+#'   `within` days of each other.
+#'   It is 1 when every pair is within the tolerance (a certain match),
+#'   between 0 and 1 when some are (a possible match), and 0 when none is.
+#' @details
+#'   With `approx_range` above 0, an approximate value (`~` or `%`) widens as
+#'   in `compatible_dates()`, and each of its days counts by the trapezoidal
+#'   weight that `vrandom()` uses, so that the share is a weighted share.
+#'   Days, months, years and ranges of common-era dates are computed from
+#'   their first and last days, without a list of days.
+#'   Other values (sets, unspecified digits, open ranges) list their days.
+#'   A missing value gives `NA`, and the empty set, `{}`, gives 0.
+#'   A time of day is ignored, and dates before the common era give `NA`
+#'   when `within` is above 0.
+#' @inheritParams operate_statements
+#' @name operate_within
+#' @return A numeric vector of proportions between 0 and 1, of the common
+#'   length of `x` and `y`.
+#' @examples
+#' # an exact day against a week-long range, and within a day of it
+#' x <- as_messydate("2001-05-13..2001-05-19")
+#' date_by_intersecting(x, as_messydate("2001-05-16"))
+#' date_by_intersecting(x, as_messydate("2001-05-16"), within = 1)
+#' # an approximate date, widened by three days with trapezoidal weights
+#' date_by_intersecting(as_messydate("2001-05-16~"), as_messydate("2001-05-18"),
+#'   within = 1, approx_range = 3)
+#' @export
+date_by_intersecting <- function(x, y, within = 0, approx_range = 0) {
+  .check_within(within)
+  .check_approx_range(approx_range)
+  within <- floor(within)
+  if (!is_messydate(x)) x <- suppressMessages(as_messydate(x))
+  if (!is_messydate(y)) y <- suppressMessages(as_messydate(y))
+  common <- vctrs::vec_recycle_common(x = x, y = y)
+  x <- common$x
+  y <- common$y
+  n <- length(x)
+  if (n == 0) return(numeric(0))
+  out <- rep(NA_real_, n)
+  miss <- is.na(x) | is.na(y)
+  # Approximate values that widen, with approx_range, take the weighted path.
+  wt <- rep(FALSE, n)
+  if (approx_range > 0)
+    wt <- (.approx_widens(as.character(x)) | .approx_widens(as.character(y))) & !miss
+  r1 <- .day_run(x)
+  r2 <- .day_run(y)
+  fast <- r1$ok & r2$ok & !wt & !miss
+  if (any(fast))
+    out[fast] <- .prop_runs(r1$lo[fast], r1$hi[fast], r2$lo[fast], r2$hi[fast], within)
+  rest <- !fast & !miss
+  if (any(rest)) {
+    vals <- unique(c(as.character(x[rest]), as.character(y[rest])))
+    mem <- lapply(vals, .members, approx_range = approx_range)
+    names(mem) <- vals
+    out[rest] <- mapply(function(a, b) .prop_pairs(mem[[a]], mem[[b]], within),
+                        as.character(x[rest]), as.character(y[rest]),
+                        USE.NAMES = FALSE)
+  }
+  out
+}
+
+.check_within <- function(within) {
+  if (!is.numeric(within) || length(within) != 1 || is.na(within) || within < 0)
+    stop("`within` must be a single number of days, 0 or more.", call. = FALSE)
+  invisible(within)
+}
+
+# The days of one value and their weights: trapezoidal weights for an
+# approximate value that widens, and otherwise a weight of 1 for each of
+# the days that compatible_dates() gives. The days with a weight above 0 are
+# always the days of compatible_dates(y, approx_range).
+.members <- function(y, approx_range = 0) {
+  if (approx_range > 0 && isTRUE(.approx_widens(y))) {
+    m <- .weighted_members(y, approx_range)
+    keep <- m$w > 0
+    return(list(dates = m$dates[keep], w = m$w[keep]))
+  }
+  d <- compatible_dates(new_messydate(y), approx_range = approx_range)[[1]]
+  d <- d[!is.na(d)]
+  list(dates = d, w = rep(1, length(d)))
+}
+
+# The weighted share of pairs of days (one from each value) that are at
+# most `within` days apart. A value with no days gives 0.
+.prop_pairs <- function(m1, m2, within) {
+  if (length(m1$dates) == 0 || length(m2$dates) == 0) return(0)
+  tot <- sum(m1$w) * sum(m2$w)
+  if (within == 0) {
+    v <- m2$w[match(m1$dates, m2$dates)]
+    v[is.na(v)] <- 0
+    return(sum(m1$w * v) / tot)
+  }
+  d1 <- suppressWarnings(as.numeric(as.Date(substr(m1$dates, 1, 10), optional = TRUE)))
+  d2 <- suppressWarnings(as.numeric(as.Date(substr(m2$dates, 1, 10), optional = TRUE)))
+  if (anyNA(d1) || anyNA(d2) || any(grepl("^-", c(m1$dates, m2$dates))))
+    return(NA_real_)
+  o <- order(d2)
+  d2 <- d2[o]
+  cw <- c(0, cumsum(m2$w[o]))
+  # for each day of x, the weight of the days of y in [d - within, d + within]
+  hi <- findInterval(d1 + within, d2)
+  lo <- findInterval(d1 - within - 1, d2)
+  sum(m1$w * (cw[hi + 1] - cw[lo + 1])) / tot
+}
+
+# The share of pairs (a, b), a in [l1, h1] and b in [l2, h2], all whole days,
+# with |a - b| <= within, computed without listing the days.
+# The count is H(-within) - H(within + 1), where H(s) counts the pairs with
+# b >= a + s: for each a, all n2 days of y if a + s <= l2, h2 - a - s + 1 days
+# if l2 < a + s <= h2, and none otherwise.
+.prop_runs <- function(l1, h1, l2, h2, within) {
+  n1 <- h1 - l1 + 1
+  n2 <- h2 - l2 + 1
+  H <- function(s) {
+    full <- pmax(0, pmin(h1, l2 - s) - l1 + 1)
+    p <- pmax(l1, l2 - s + 1)
+    q <- pmin(h1, h2 - s)
+    k <- pmax(0, q - p + 1)
+    part <- ifelse(k > 0, k * (h2 - s + 1) - (p + q) * k / 2, 0)
+    full * n2 + part
+  }
+  (H(-within) - H(within + 1)) / (n1 * n2)
+}

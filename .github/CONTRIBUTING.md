@@ -107,6 +107,11 @@ Existing names that do not obey them stay as they are until a deprecation cycle 
    `is_messydate()` is a class test (see rule 5), and it keeps its name.
    Also in 1.2.0, `is_intersecting()` and `is_subset()` became the element-wise
    `date_is_intersecting()` and `date_is_subset()`.
+   **Use `date_by_` + the same adjective** for the measure that goes with a `date_is_` predicate,
+   as `node_by_*()` goes with `node_is_*()` in netrics,
+   for example `date_by_intersecting()`.
+   It is element-wise, returns a number between 0 and 1, and is above 0 exactly when the predicate is `TRUE`.
+   Use it, and not a new letter operator, when the proportion needs further arguments such as `within`.
 5. **Use the `messydate` or `messyduration` stem** only for class infrastructure:
    `new_messydate()`, `validate_messydate()`, `make_messydate()`, `as_messydate()`, and `is_messydate()`.
    Do not use this stem for an operation on a messy date.

@@ -269,6 +269,12 @@
 
 ## Package
 
+- Added `within` to `date_is_intersecting()`, a tolerance in days for matching records
+  - `date_is_intersecting("2012-01-31", "2012-02-01", within = 1)` gives `TRUE`
+- Added `date_by_intersecting()`, the share of day pairs within `within` days
+  - It is the match probability of two records under uniform (or, with `approx_range`, trapezoidal) weights
+  - 1 is a certain match, between 0 and 1 a possible match, and 0 no match
+  - Days, months, and ranges are computed from their ends: 200,000 pairs take about 4 s
 - Added a reverse dependency job to the PR checks workflow
 
 ## Coercion

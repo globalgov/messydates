@@ -67,17 +67,17 @@ test_that("Annotation keeps NA as NA", {
 })
 
 test_that("tag_unspecified replaces the digits of a component", {
-  # A trailing unspecified component is written as a shorter date
-  expect_equal(as.character(tag_unspecified("2012-06-15", "day")), "2012-06")
+  # An unspecified component is kept as XX
+  expect_equal(as.character(tag_unspecified("2012-06-15", "day")), "2012-06-XX")
   expect_equal(as.character(tag_unspecified("2012-06-15", "month")), "2012-XX-15")
   expect_equal(as.character(tag_unspecified("2012-06-15", "year")), "XXXX-06-15")
   expect_equal(as.character(tag_unspecified("2012-06-~15", "day")), "2012-06-~XX")
   expect_equal(as.character(tag_unspecified("2012-06-15 14:30:05", "minute")),
                "2012-06-15 14:XX:05")
   expect_equal(as.character(tag_unspecified("2010-01-01..2012-06-15", "day")),
-               "2010-01..2012-06")
+               "2010-01-XX..2012-06-XX")
   expect_equal(as.character(tag_unspecified(c("{}", NA, "2012-06-15"), "day")),
-               c("{}", NA, "2012-06"))
+               c("{}", NA, "2012-06-XX"))
   expect_error(tag_unspecified("2012-06-15"), "component")
   expect_error(tag_unspecified("2012-06-15", "md"), "component")
   expect_false(date_is_precise(tag_unspecified("2012-06-15", "day")))
@@ -147,4 +147,15 @@ test_that("each member of a range or a set is tagged", {
   expect_equal(as.character(tag_approximate("..2012-06")), "..2012-~06")
   expect_equal(as.character(tag_uncertain("{2010,2012-06}", "date")),
                "{?2010,2012-06?}")
+})
+
+test_that("an unspecified component is not tagged", {
+  x <- as_messydate(c("1993-01-XX", "1993-XX-XX", "1993-XX-15"))
+  expect_equal(as.character(tag_approximate(x)),
+               c("1993-~01-XX", "~1993-XX-XX", "1993-XX-~15"))
+  expect_equal(as.character(tag_approximate(x, "date")),
+               c("1993-01~-XX", "~1993-XX-XX", "~1993-XX-~15"))
+  expect_equal(as.character(tag_uncertain(x, "day")),
+               c("1993-01-XX", "1993-XX-XX", "1993-XX-?15"))
+  expect_equal(untag(tag_approximate(x)), x)
 })

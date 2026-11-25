@@ -31,8 +31,9 @@ test_that("Coercion from other date classes into messydt works", {
 test_that("Coercion of unespecified date components are properly handled", {
   unspecified <- c("1908-??-??", "1908-10-??", "1908/X/X", "1908/?/?",  "XX-1998",
                    "XXXX-01-01", "01-01-XXXX", "XX-10-1998", "XX-XX-1998")
-  b <- as_messydate(c("1908", "1908-10", "1908", "1908", "1998",
-                      "XXXX-01-01", "XXXX-01-01", "1998-10", "1998"))
+  # An unspecified month or day is kept as XX.
+  b <- as_messydate(c("1908-XX-XX", "1908-10-XX", "1908-XX-XX", "1908-XX-XX", "1998-XX",
+                      "XXXX-01-01", "XXXX-01-01", "1998-10-XX", "1998-XX-XX"))
   expect_equal(as_messydate(unspecified), b)
 })
 
@@ -83,7 +84,7 @@ test_that("list conversion works properly", {
 
 test_that("zero padding is correctly added conversion works properly", {
   expect_equal(as_messydate(c("193-3", "193-3..193-5", "193-3, 193-4")),
-               as_messydate(c("0193-03-XX", "0193-03-XX..0193-05", "{0193-03-XX,0193-04-XX}")))
+               as_messydate(c("0193-03", "0193-03..0193-05", "{0193-03,0193-04}")))
 })
 
 test_that("an era marker applies to every date it governs", {
@@ -259,4 +260,37 @@ test_that("a qualifier on a prose range marks both ends", {
   # without a qualifier, nothing changes
   expect_equal(as.character(as_messydate("between the 13th and 15th of February 1977")),
                "1977-02-13..1977-02-15")
+
+test_that("a weekday name in front of a date is read and dropped", {
+  expect_equal(as.character(as_messydate(c("Thu Sep 01 2016", "Thu, 01 Sep 2016",
+                                           "Thursday, September 1, 2016",
+                                           "Mon 5 March 2012", "sun 1 Jan 2012"))),
+               c("2016-09-01", "2016-09-01", "2016-09-01", "2012-03-05", "2012-01-01"))
+  expect_equal(as.character(as_messydate("Thu Sep 01 2016 10:00:00")),
+               "2016-09-01 10:00:00")
+  expect_equal(as.character(as_messydate(c("Sept 1 2016", "Sept. 1, 2016"))),
+               c("2016-09-01", "2016-09-01"))
+})
+
+test_that("an unspecified month or day is kept as XX", {
+  expect_equal(as.character(as_messydate(c("1993-01-XX", "1993-01-00", "1993-01-??",
+                                           "1993-XX-XX", "1993-XX", "XX-01-1993",
+                                           "1993-01-XX..1993-03-XX"))),
+               c("1993-01-XX", "1993-01-XX", "1993-01-XX", "1993-XX-XX", "1993-XX",
+                 "1993-01-XX", "1993-01-XX..1993-03-XX"))
+  expect_false(as_messydate("1993-01-XX") == as_messydate("1993-01"))
+  expect_equal(compatible_dates(as_messydate("1993-01-XX")),
+               compatible_dates(as_messydate("1993-01")))
+})
+
+test_that("a set with one member keeps its braces", {
+  expect_equal(as.character(as_messydate(c("{1993-01-01..1993-01-31}",
+                                           "[1993-01-01..1993-01-31]",
+                                           "{1993-01}", "[1993-01-15]", "{}"))),
+               c("{1993-01-01..1993-01-31}", "[1993-01-01..1993-01-31]",
+                 "{1993-01}", "[1993-01-15]", "{}"))
+  x <- as_messydate("{1993-01-01..1993-01-31}")
+  expect_equal(c(year(x), month(x), day(x)), c(1993, 1, 1))
+  expect_equal(as.character(c(vmin(x), vmax(x))), c("1993-01-01", "1993-01-31"))
+})
 })

@@ -68,7 +68,7 @@ lubridate::tz
 #' year(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @exportS3Method lubridate::year
 year.mdate <- function(x, ...) {
-  x <- as.character(x)
+  x <- .unwrap_single(x)
   x <- stringi::stri_replace_all_regex(x, "\\.\\..+", "")
   x <- stringi::stri_replace_all_regex(x, "-.+", "")
   # A bare time ("14:30") has no year component; return NA rather than warning.
@@ -81,7 +81,7 @@ year.mdate <- function(x, ...) {
 #' month(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @exportS3Method lubridate::month
 month.mdate <- function(x, ...) {
-  m <- stringi::stri_match_first_regex(as.character(x),
+  m <- stringi::stri_match_first_regex(.unwrap_single(x),
                                        "^-?[0-9X]{4}-([0-9X]{1,2})")[, 2]
   suppressWarnings(as.integer(m))
 }
@@ -92,8 +92,15 @@ month.mdate <- function(x, ...) {
 #' @exportS3Method lubridate::mday
 mday.mdate <- function(x, ...) {
   d <- stringi::stri_match_first_regex(
-    as.character(x), "^-?[0-9X]{4}-[0-9X]{1,2}-([0-9X]{1,2})")[, 2]
+    .unwrap_single(x), "^-?[0-9X]{4}-[0-9X]{1,2}-([0-9X]{1,2})")[, 2]
   suppressWarnings(as.integer(d))
+}
+
+# A set with one member ("{1993-01}" or "[1993-01-01..1993-01-31]") has the
+# components of that member, so its braces are removed before a component is
+# read. A set with more than one member keeps them, and gives NA.
+.unwrap_single <- function(x) {
+  stringi::stri_replace_first_regex(as.character(x), "^[{\\[]([^,{}\\[\\]]+)[}\\]]$", "$1")
 }
 
 # The shared time regexes anchor on the '[T ]' date-time separator. A bare

@@ -138,6 +138,24 @@ An empty element gives the empty set, \code{"{}"},
 and an element that is only \code{NA} gives \code{NA}.
 
 }}
+\section{Unspecified components and one-member sets}{
+
+An unspecified month or day is kept as \code{XX}: \code{"1993-01-XX"} says that
+the record has a day that is not known, while \code{"1993-01"} says only
+that it names the month. A month or day written as \code{0}, \code{00}, \verb{??} or
+\code{NA} is read as \code{XX}. Both forms have the same possible dates, and the
+resolution functions give the same results for them.
+
+A set with one member keeps its braces: \code{"{1993-01-01..1993-01-31}"}
+is all the days of January (a spell, such as a monthly count), and
+\code{"[1993-01-01..1993-01-31]"} is one of them. A bare range, and a range
+in prose ("from the 13th to the 15th of February"), is one of its days.
+
+Functions that write a result from its days, such as \code{+},
+\verb{\%intersect\%}, and \code{as_messydate()} on a list, write the shortest form,
+without \code{XX} or braces.
+}
+
 \section{Parsing prose}{
 
 Beyond plain and lightly-formatted dates, \code{as_messydate()} recognises

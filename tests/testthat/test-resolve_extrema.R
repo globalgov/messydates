@@ -76,3 +76,14 @@ test_that("range() gives min() and max() together", {
   expect_equal(as.character(range(as_messydate(c("2012", NA)), na.rm = TRUE)),
                c("2012-01-01", "2012-12-31"))
 })
+
+test_that("a trailing XX resolves as the shorter date", {
+  x <- as_messydate(c("1993-01-XX", "1993-XX-XX", "1993-01-XX..1993-03-XX",
+                      "{1993-01-XX,1993-02-05}", "1993-XX-15"))
+  expect_equal(as.character(vmin(x)),
+               c("1993-01-01", "1993-01-01", "1993-01-01", "1993-01-01", "1993-01-15"))
+  expect_equal(as.character(vmax(x)),
+               c("1993-01-31", "1993-12-31", "1993-03-31", "1993-02-05", "1993-12-15"))
+  expect_true(as_messydate("1993-01-XX") < as_messydate("1993-06-15"))
+  expect_equal(as.Date(as_messydate("1993-XX-XX"), FUN = vmin), as.Date("1993-01-01"))
+})

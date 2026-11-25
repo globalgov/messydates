@@ -35,8 +35,9 @@ test_that("Text parsing works correctly", {
   expect_identical(as_messydate("signed on the last day of February 2004"), as_messydate("2004-02-29"))
   expect_identical(as_messydate("it happened around the 13th of Feb in 1977"), as_messydate("1977-02-~13"))
   expect_identical(as_messydate("it happened between the 13th and 15th of Feb, 1977"), as_messydate("1977-02-13..1977-02-15"))
-  expect_identical(as_messydate("from the 13th to the 15th of Feb, 1977"), as_messydate("{1977-02-13..1977-02-15}"))
-  expect_identical(as_messydate("from February 13 to 15, 1977"), as_messydate("{1977-02-13..1977-02-15}"))
+  # A prose range is a bare range: one of its days, not a {} spell
+  expect_identical(as_messydate("from the 13th to the 15th of Feb, 1977"), as_messydate("1977-02-13..1977-02-15"))
+  expect_identical(as_messydate("from February 13 to 15, 1977"), as_messydate("1977-02-13..1977-02-15"))
   expect_identical(as_messydate("it happened on the 13th or the 15th of Feb, 1977"), as_messydate("{1977-02-13,1977-02-15}"))
   expect_identical(as_messydate("things happened on 13th and 15th of Feb, 1977"), as_messydate(c("1977-02-13","1977-02-15")))
   expect_identical(as_messydate("13th Feb, 1977, Feb 15 1977, 1910"), as_messydate(c("1977-02-13","1977-02-15","1910")))

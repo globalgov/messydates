@@ -18,8 +18,8 @@
 #'   Test with `date_is_uncertain()`.
 #' - `tag_unspecified()` replaces the digits of a component with `X`
 #'   (e.g. `2012-XX-15`). This discards the digits.
-#'   A trailing unspecified component is written as a shorter date,
-#'   so `tag_unspecified("2012-06-15", "day")` gives `2012-06`.
+#'   A trailing unspecified component is kept as `XX`,
+#'   so `tag_unspecified("2012-06-15", "day")` gives `2012-06-XX`.
 #'   Test with `!date_is_precise()`.
 #' - `tag_before()` makes a date into an open range that means
 #'   "on or before" this date (e.g. `..1816-01-01`).
@@ -43,7 +43,9 @@
 #'   (`2012-06-~15`) or the month of `2012-06` (`2012-~06`).
 #'   Use `component = "date"` to tag the whole date (`2012-06-15~`).
 #'   A component that the value does not have is not tagged,
-#'   so `tag_uncertain("2012", "day")` gives `2012`.
+#'   so `tag_uncertain("2012", "day")` gives `2012`,
+#'   and nor is an unspecified component,
+#'   so `tag_approximate("1993-01-XX")` gives `1993-~01-XX`.
 #'   A tag that is already there is not added again,
 #'   and `~` and `?` on the same component become `%`.
 #'   The result uses the fewest marks that tag the same components.
@@ -279,9 +281,12 @@ annotate_component <- function(x, component, mark) {
 
   nd <- length(d$digits)
   nt <- length(t$digits)
+  # An unspecified component ("XX") is not known, so it is not tagged as
+  # approximate or uncertain; the tag goes on the components that are given.
+  given <- which(!grepl("^X+$", d$digits))
   if (is.null(component)) {
-    # The default tags the finest component of the value.
-    target_d <- if (nt == 0) nd else integer(0)
+    # The default tags the finest component that the value gives.
+    target_d <- if (nt == 0 && length(given)) max(given) else integer(0)
     target_t <- if (nt > 0) nt else integer(0)
   } else {
     target_d <- switch(component, year = 1L, month = 2L, day = 3L,
@@ -290,7 +295,7 @@ annotate_component <- function(x, component, mark) {
     target_t <- switch(component, hour = 1L, minute = 2L, second = 3L,
                        time = seq_len(nt), integer(0))
   }
-  target_d <- target_d[target_d <= nd]
+  target_d <- target_d[target_d <= nd & target_d %in% given]
   target_t <- target_t[target_t <= nt]
   if (length(target_d)) d$state[target_d] <- bitwOr(d$state[target_d], bit)
   if (length(target_t)) t$state[target_t] <- bitwOr(t$state[target_t], bit)

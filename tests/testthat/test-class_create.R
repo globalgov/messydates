@@ -7,7 +7,7 @@ test_that("incompleteness works", {
   expect_equal(unclass(as_messydate("NA-01-01")), "XXXX-01-01")
   expect_equal(unclass(as_messydate("NA-NA-01")), "XXXX-XX-01")
   expect_equal(unclass(as_messydate("2012-NA-01")), "2012-XX-01")
-  expect_equal(unclass(as_messydate("2012-01-NA")), "2012-01")
+  expect_equal(unclass(as_messydate("2012-01-NA")), "2012-01-XX")
   expect_equal(unclass(as_messydate("2012-1")), "2012-01")
   expect_equal(unclass(as_messydate("2012")), "2012")
   expect_equal(unclass(as_messydate("1")), "0001")

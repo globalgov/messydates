@@ -35,7 +35,9 @@ component of each value, for example the day of \code{2012-06-15}
 (\code{2012-06-~15}) or the month of \code{2012-06} (\code{2012-~06}).
 Use \code{component = "date"} to tag the whole date (\verb{2012-06-15~}).
 A component that the value does not have is not tagged,
-so \code{tag_uncertain("2012", "day")} gives \code{2012}.
+so \code{tag_uncertain("2012", "day")} gives \code{2012},
+and nor is an unspecified component,
+so \code{tag_approximate("1993-01-XX")} gives \code{1993-~01-XX}.
 A tag that is already there is not added again,
 and \code{~} and \verb{?} on the same component become \verb{\%}.
 The result uses the fewest marks that tag the same components.
@@ -67,8 +69,8 @@ A date that is approximate and uncertain gets \verb{\%}.
 Test with \code{date_is_uncertain()}.
 \item \code{tag_unspecified()} replaces the digits of a component with \code{X}
 (e.g. \code{2012-XX-15}). This discards the digits.
-A trailing unspecified component is written as a shorter date,
-so \code{tag_unspecified("2012-06-15", "day")} gives \code{2012-06}.
+A trailing unspecified component is kept as \code{XX},
+so \code{tag_unspecified("2012-06-15", "day")} gives \code{2012-06-XX}.
 Test with \code{!date_is_precise()}.
 \item \code{tag_before()} makes a date into an open range that means
 "on or before" this date (e.g. \code{..1816-01-01}).

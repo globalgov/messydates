@@ -5,6 +5,25 @@
 # and English prose. Prose in other languages is first rewritten into
 # English in `parse_languages.R`.
 
+## Weekdays ####
+
+# Removes a weekday name, full or short, with any full stop or comma after
+# it, from the start of a value when a day or a month follows:
+# "Thu, 01 Sep 2016", "Thursday, September 1, 2016" and "Thu Sep 01 2016".
+# Also reads the short form "Sept" as "Sep".
+.weekday_rx <- paste0("(?i)^\\s*(mon|tue|tues|wed|weds|thu|thur|thurs|fri|sat|sun)",
+                      "(day|sday|nesday|rsday|urday)?\\.?,?\\s+",
+                      "(?=[0-9]|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)")
+
+strip_weekday <- function(x) {
+  hit <- !is.na(x) & stringi::stri_detect_regex(x, .weekday_rx)
+  if (any(hit)) x[hit] <- stringi::stri_replace_first_regex(x[hit], .weekday_rx, "")
+  sept <- !is.na(x) & stringi::stri_detect_regex(x, "(?i)\\bsept\\b\\.?")
+  if (any(sept))
+    x[sept] <- stringi::stri_replace_all_regex(x[sept], "(?i)\\bsept\\b\\.?", "Sep")
+  x
+}
+
 ## Two-digit years ####
 check_pivot <- function(pivot) {
   if (is.null(pivot)) return(invisible(TRUE))
@@ -233,18 +252,18 @@ standardise_unspecifieds <- function(dates) {
   # NB: a 4-digit year of "0000" denotes ISO 8601-2 astronomical year zero
   # (= 1 BCE), so it is *not* treated as unspecified; an unknown year uses
   # "XXXX" instead.
-  dates <- stringi::stri_replace_all_regex(dates, "-00-|-0-|-0$|-00$|-\\?\\?-", "-XX-")
+  # A month or day written as 0, 00, ?? or X is unspecified, and is written
+  # as "XX". It is kept, not removed: "1993-01-XX" says that the record has a
+  # day that is not known, and "1993-01" says only that it names the month.
+  dates <- stringi::stri_replace_all_regex(dates, "-(00|0|\\?\\?|\\?|X)(?=-|$|\\.\\.|,)", "-XX")
   dates <- stringi::stri_replace_all_regex(dates, "\\?\\?\\?\\?", "XXXX")
-  dates <- stringi::stri_replace_all_regex(dates, "^(XX)-([:digit:]{4}$)", "$2")
-  dates <- stringi::stri_replace_all_regex(dates, "^(XX)-(XX)-([:digit:]{4}$)", "$3")
+  # Unspecified components written before the year move after it.
+  dates <- stringi::stri_replace_all_regex(dates, "^(XX)-([:digit:]{4}$)", "$2-XX")
+  dates <- stringi::stri_replace_all_regex(dates, "^(XX)-(XX)-([:digit:]{4}$)", "$3-XX-XX")
   dates <- stringi::stri_replace_all_regex(dates, "^(XX)-([:digit:]{2})-([:digit:]{4}$)",
-                                    "$3-$2")
+                                    "$3-$2-XX")
   dates <- stringi::stri_replace_all_regex(dates, "^([:digit:]{2})-([:digit:]{2})-(XXXX$)",
                                     "$3-$2-$1")
-  dates <- stringi::stri_replace_all_regex(dates, "-X-X$|-XX-XX$|-XX$|-XX-\\?\\?$|
-                                    |-\\?-\\?$|-\\?\\?$|-\\?\\?-\\?\\?$", "")
-  dates <- stringi::stri_replace_all_regex(dates, "-XX\\,", ",")
-  dates <- stringi::stri_replace_all_regex(dates, "-XX\\.\\.", "..")
   dates <- ifelse(stringi::stri_detect_regex(dates, "^[:digit:]{4}\\~$"),
                   paste0("~", stringi::stri_replace_all_regex(dates, "\\~", "")), dates)
   dates

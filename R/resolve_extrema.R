@@ -90,6 +90,7 @@ vmin.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
   if(na.rm) dates <- stats::na.omit(d)
   dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- .resolve_sets(dates, "min")
+  dates <- .drop_trailing_x(dates)
   dates <- .remove_post(dates)
   dates <- .resolve_partial_x(dates, "min")
   dates <- .replace_earliest(dates)
@@ -109,6 +110,7 @@ min.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
   if (is.null(dates)) return(new_messydate(NA_character_))
   dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- .resolve_sets(dates, "min")
+  dates <- .drop_trailing_x(dates)
   dates <- .remove_post(dates)
   dates <- .resolve_partial_x(dates, "min")
   dates <- .replace_earliest(dates)
@@ -119,8 +121,6 @@ min.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
                                  dates[order(as.character(dates))[1]]
 }
 
-# Makes an mdate from resolved strings. A value that is already in the
-# canonical notation that the parser writes skips the parser: a valid date
 #' @rdname resolve_extrema
 #' @examples
 #' range(d)
@@ -133,6 +133,8 @@ range.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0
   vctrs::vec_c(lo, hi)
 }
 
+# Makes an mdate from resolved strings. A value that is already in the
+# canonical notation that the parser writes skips the parser: a valid date
 # (yyyy-mm-dd, also before the common era), optionally with a valid time of
 # day and offset (" hh:mm", " hh:mm:ss", fractional seconds, "Z", "+hh:mm").
 # A missing value stays missing. Every other string, including an
@@ -178,6 +180,14 @@ range.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0
 .keep_names <- function(out, x) {
   if (!is.null(names(x)) && length(out) == length(x)) names(out) <- names(x)
   out
+}
+
+# Drops an unspecified month or day at the end of a date, at the end of
+# each range end, and at the end of each set member: "1993-01-XX" has the
+# same earliest and latest day as "1993-01", and "1993-XX-XX" as "1993".
+# An unspecified component between known ones ("1993-XX-15") is kept.
+.drop_trailing_x <- function(dates) {
+  stringi::stri_replace_all_regex(dates, "-XX(-XX)?(?=$|\\.\\.|,|\\}|\\]| )", "")
 }
 
 # Resolves each set ({} or []) to its earliest or latest day. Each member
@@ -262,6 +272,7 @@ vmax.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
   if(na.rm) dates <- stats::na.omit(d)
   dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- .resolve_sets(dates, "max")
+  dates <- .drop_trailing_x(dates)
   dates <- unspecified_months(dates)
   dates <- .remove_pre(dates)
   dates <- .resolve_partial_x(dates, "max")
@@ -282,6 +293,7 @@ max.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
   if (is.null(dates)) return(new_messydate(NA_character_))
   dates <- stringi::stri_replace_all_regex(dates, "[~?%]", "")
   dates <- .resolve_sets(dates, "max")
+  dates <- .drop_trailing_x(dates)
   dates <- unspecified_months(dates)
   dates <- .remove_pre(dates)
   dates <- .resolve_partial_x(dates, "max")

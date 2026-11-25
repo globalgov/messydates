@@ -34,6 +34,18 @@
 
 ## Parsing
 
+- Changed `as_messydate()` to keep an unspecified month or day as `XX`
+  - `"1993-01-XX"` was written as `"1993-01"`; the record that a day exists is now kept
+  - `0`, `00`, `??`, and `NA` in a month or day are read as `XX`, e.g. `"1993-01-00"` gave `"1993-01-XX-"`
+  - Both forms have the same possible dates, and the resolution functions give the same results
+  - `tag_approximate()`, `tag_uncertain()`, and `tag_unspecified()` keep `XX`, and do not tag it
+- Changed `as_messydate()` to keep the braces of a set with one member
+  - `"{1993-01-01..1993-01-31}"` (all the days) and `"[1993-01-01..1993-01-31]"` (one of them) were written as a bare range
+  - `year()`, `month()`, and `day()` read a set with one member
+- Fixed `as_messydate()` on a date with a weekday name in front
+  - `"Thu Sep 01 2016"` gave `"2016 thu-09-01"`, and `"Thu, 01 Sep 2016"` gave `"thu 01-09-2016"`
+  - `"Thursday, September 1, 2016"` lost its day, and now gives `"2016-09-01"`
+  - `"Sept"` is read as September
 - Renamed the annotation functions to `tag_*()`
   - `approximate()` is now `tag_approximate()`
   - `uncertain()` is now `tag_uncertain()`
@@ -100,6 +112,7 @@
 
 ## Resolution
 
+- Fixed `vmin()`, `vmax()`, `min()`, and `max()` on a trailing `XX`, e.g. `vmax("1993-01-XX")` gives `"1993-01-31"`
 - Added `range()` for `mdate`, which gives `min()` and `max()` together
   - It gave the earliest and latest elements unresolved, e.g. `"2011-06"`
 - Documented what `min()` and `max()` mean for messy dates, and how they differ from `sort()` and `<`
@@ -255,6 +268,12 @@
 - Added `date_is_open()` to test for an open range, e.g. `..2012`
 - Added `approx_range` to `date_is_intersecting()` and `date_is_subset()`
   - `date_is_intersecting("2001-05-16~", "2001-05-18", approx_range = 3)` gives `TRUE`
+- Added `within` to `date_is_intersecting()`, a tolerance in days for matching records
+  - `date_is_intersecting("2012-01-31", "2012-02-01", within = 1)` gives `TRUE`
+- Added `date_by_intersecting()`, the share of day pairs within `within` days
+  - It is the match probability of two records under uniform (or, with `approx_range`, trapezoidal) weights
+  - 1 is a certain match, between 0 and 1 a possible match, and 0 no match
+  - Days, months, and ranges are computed from their ends: 200,000 pairs take about 4 s
 
 ## Plotting
 
@@ -272,12 +291,6 @@
 
 ## Package
 
-- Added `within` to `date_is_intersecting()`, a tolerance in days for matching records
-  - `date_is_intersecting("2012-01-31", "2012-02-01", within = 1)` gives `TRUE`
-- Added `date_by_intersecting()`, the share of day pairs within `within` days
-  - It is the match probability of two records under uniform (or, with `approx_range`, trapezoidal) weights
-  - 1 is a certain match, between 0 and 1 a possible match, and 0 no match
-  - Days, months, and ranges are computed from their ends: 200,000 pairs take about 4 s
 - Added a reverse dependency job to the PR checks workflow
 
 ## Coercion

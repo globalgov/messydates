@@ -62,6 +62,21 @@
 #' @param ... Arguments passed to methods.
 #' @return A `mdate` class object
 #' @family coerce
+#' @section Unspecified components and one-member sets:
+#'  An unspecified month or day is kept as `XX`: `"1993-01-XX"` says that
+#'  the record has a day that is not known, while `"1993-01"` says only
+#'  that it names the month. A month or day written as `0`, `00`, `??` or
+#'  `NA` is read as `XX`. Both forms have the same possible dates, and the
+#'  resolution functions give the same results for them.
+#'
+#'  A set with one member keeps its braces: `"{1993-01-01..1993-01-31}"`
+#'  is all the days of January (a spell, such as a monthly count), and
+#'  `"[1993-01-01..1993-01-31]"` is one of them. A bare range, and a range
+#'  in prose ("from the 13th to the 15th of February"), is one of its days.
+#'
+#'  Functions that write a result from its days, such as `+`,
+#'  `%intersect%`, and `as_messydate()` on a list, write the shortest form,
+#'  without `XX` or braces.
 #' @section Parsing prose:
 #' Beyond plain and lightly-formatted dates, `as_messydate()` recognises
 #' several conventions common in e.g. historical texts and converts them to
@@ -279,6 +294,9 @@ as_messydate.character <- function(x, resequence = NULL, pivot = NULL,
   # Prose in another language is rewritten into English prose first
   # (see R/parse_languages.R); English is left as it is.
   x <- translate_prose(x, lang)
+  # A weekday name in front of a date ("Thu, 01 Sep 2016") adds nothing that
+  # the date does not say, and its comma would split the value in two.
+  x <- strip_weekday(x)
   # A month name with a two-digit year ("May-97", Excel's display of a month)
   # is read before the time parser can mistake the year for an hour.
   x <- month_two_digit_year(x, pivot)
@@ -288,6 +306,12 @@ as_messydate.character <- function(x, resequence = NULL, pivot = NULL,
   # requires a set to have at least one member). It names no date components,
   # so it is set aside here and restored after the date pipeline.
   empty <- is_empty_notation(x)
+  # A set with one member, such as "{1993-01-01..1993-01-31}" (all the days
+  # of January, e.g. a monthly count) or "[1993-01-01..1993-01-31]" (one of
+  # them), loses its braces below, as a set is rebuilt from its commas.
+  # Note it here, so that the braces can be restored.
+  curly1 <- !is.na(x) & stringi::stri_detect_regex(x, "^\\s*\\{[^,{}\\[\\]]+\\}\\s*$")
+  square1 <- !is.na(x) & stringi::stri_detect_regex(x, "^\\s*\\[[^,{}\\[\\]]+\\]\\s*$")
   d <- standardise_text(x)
   # Protect any time-of-day substrings so the date pipeline (which repurposes
   # ':' as a range separator and '.' as a component separator) cannot mangle
@@ -331,6 +355,9 @@ as_messydate.character <- function(x, resequence = NULL, pivot = NULL,
   d <- restore_times(d, prot$times)
   if (any(onesie))
     d[onesie] <- stringi::stri_replace_all_regex(d[onesie], "^\\{(.*)\\}$", "[$1]")
+  bare <- !is.na(d) & !stringi::stri_detect_regex(d, "^[{\\[]")
+  if (any(curly1 & bare)) d[curly1 & bare] <- paste0("{", d[curly1 & bare], "}")
+  if (any(square1 & bare)) d[square1 & bare] <- paste0("[", d[square1 & bare], "]")
   d[empty] <- "{}"
   check_components(d, source = x)
   warn_unparsed(orig, d)

@@ -380,17 +380,17 @@ The sections follow the file prefixes in [File organization](#file-organization-
 `NEWS.md` groups each version's changes under `##` headings
 so that a reader finds a change where they find the function.
 Lead with `## Package` (dependencies, build, branding, website, infrastructure),
-then the function families in the order of the website overview:
+then the function families in this order:
 
-| Heading | Website title | Files |
+| Heading | Website group | Files |
 |---|---|---|
-| `## Class` | Class construction | `class_*.R` |
-| `## Parsing` | Parsing | `coerce_to_messydate.R`, `validate_input.R`, `parse_*.R` |
-| `## Resolution` | Coerce from | `coerce_from_messydate.R`, `resolve_*.R` |
-| `## Expansion` | Manipulation | `convert_*.R` |
-| `## Extraction` | Components | `component_extract.R` |
-| `## Operations` | Operations | `operate_*.R` |
-| `## Plotting` | Plotting | `plot_*.R` |
+| `## Class` | Class and data: Classes | `class_*.R` |
+| `## Parsing` | Retain: Make, Check, Mark | `coerce_to_messydate.R`, `validate_input.R`, `parse_*.R` |
+| `## Resolution` | Resolve: Resolve, Convert | `coerce_from_messydate.R`, `resolve_*.R` |
+| `## Expansion` | Reason: Describe, Compare and combine | `convert_*.R` |
+| `## Extraction` | Reason: Describe | `component_extract.R` |
+| `## Operations` | Reason: Ask, Measure, Compare and combine | `operate_*.R` |
+| `## Plotting` | Reason: Describe | `plot_*.R` |
 
 Put a change under the heading for the file that holds the function,
 even where the change came from work on another family.

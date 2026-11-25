@@ -35,37 +35,61 @@ navbar:
       href: https://github.com/globalgov/messydates
       aria-label: Take me to the Github repository
 reference:
-  - title: "Class construction"
-    desc: "These functions construct dates in the `mdate` class and durations in the `mduration` class:"
-    contents:
-      - starts_with("class_")
-  - title: "Parsing"
-    desc: "These functions parse dates from text and other classes into the `mdate` class, and tag them as approximate, uncertain, unspecified, or open:"
+  - title: "Retain"
+    desc: "Read imprecise dates into the `mdate` class, and keep their imprecision."
+  - subtitle: "Make"
+    desc: "These functions make messy dates from text, numbers, and other date classes:"
     contents:
       - coerce_to
-      - starts_with("parse_")
-  - title: "Coerce from"
-    desc: "These functions coerce dates from the `mdate` class into a single `Date`:"
+  - subtitle: "Check"
+    desc: "This function reports which values could not be read, and why:"
     contents:
-      - starts_with("as\\.")
-      - starts_with("resolve_")
-  - title: "Manipulation"
-    desc: "These functions expand or contract objects of `mdate` class from/into a list:"
+      - parse_problems
+  - subtitle: "Mark"
+    desc: "These functions add or remove ISO 8601-2 notation, such as approximate, uncertain, unspecified, or open:"
     contents:
-      - starts_with("convert_")
-  - title: "Components"
-    desc: "These functions extract components of dates and times:"
+      - parse_tag
+  - title: "Reason"
+    desc: "Work with the compatible set of each date, without resolving it."
+  - subtitle: "Ask"
+    desc: "These predicates give `TRUE` or `FALSE` for each date (`date_is_*()`):"
     contents:
-      - starts_with("component_")
-  - title: "Operations"
-    desc: "These methods help operate on objects of the `mdate` class:"
+      - operate_statements
+  - subtitle: "Measure"
+    desc: "These functions and operators give a number for each date (`date_by_*()`):"
     contents:
-      - starts_with("operate_")
-  - title: "Plotting"
-    desc: "This method draws messy dates and the weight of each possible day:"
+      - operate_within
+      - operate_proportional
+  - subtitle: "Compare and combine"
+    desc: "These operators compare, combine, and shift messy dates:"
     contents:
-      - starts_with("plot_")
-  - title: "Data"
-    desc: "Working with 'messy' data:"
+      - operate_inequalities
+      - operate_set
+      - operate_arithmetic
+      - convert_sequence
+  - subtitle: "Describe"
+    desc: "These functions list, extract, and draw what a messy date can be:"
+    contents:
+      - convert_expand
+      - component_extract
+      - plot_mdate
+  - title: "Resolve"
+    desc: "Choose one date from each compatible set, by a rule that you state."
+  - subtitle: "Resolve"
+    desc: "These functions resolve messy dates to their extremes, central tendency, or a random draw:"
+    contents:
+      - resolve_extrema
+      - resolve_tendency
+      - resolve_probabilistically
+  - subtitle: "Convert"
+    desc: "These methods convert messy dates to `Date`, `POSIXct`, and `POSIXlt`, with a resolution rule:"
+    contents:
+      - coerce_from
+  - title: "Class and data"
+    desc: "The `mdate` and `mduration` classes, and example data."
+  - subtitle: "Classes"
+    contents:
+      - starts_with("class_")
+  - subtitle: "Data"
     contents:
       - battles

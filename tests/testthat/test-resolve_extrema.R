@@ -68,3 +68,11 @@ test_that("a set resolves to the earliest or latest day of any member", {
   expect_equal(as.character(max(x)), "2013-01-31")
   expect_equal(as.character(min(x[1:4])), "2012-01-15")
 })
+
+test_that("range() gives min() and max() together", {
+  x <- as_messydate(c("2012", "2011-06", "2013-01-05"))
+  expect_equal(range(x), vctrs::vec_c(min(x), max(x)))
+  expect_equal(as.character(range(x)), c("2011-06-01", "2013-01-05"))
+  expect_equal(as.character(range(as_messydate(c("2012", NA)), na.rm = TRUE)),
+               c("2012-01-01", "2012-12-31"))
+})

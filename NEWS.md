@@ -100,6 +100,9 @@
 
 ## Resolution
 
+- Added `range()` for `mdate`, which gives `min()` and `max()` together
+  - It gave the earliest and latest elements unresolved, e.g. `"2011-06"`
+- Documented what `min()` and `max()` mean for messy dates, and how they differ from `sort()` and `<`
 - Changed `vmean()`, `vmedian()`, `vmodal()`, and `vrandom()` to give an `mdate`
   - As `vmin()` and `vmax()` do, so that `as.Date()` works on each result
   - `mean()`, `median()`, `modal()`, and `random()` also give an `mdate`

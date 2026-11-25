@@ -17,6 +17,24 @@
 #'   extremum (matching the usual behaviour of these generics), while
 #'   `vmin()` and `vmax()` resolve each element separately.
 #'
+#' @section What min() and max() mean for messy dates:
+#'   For a number, `min()` and `max()` give the smallest or largest value in
+#'   a vector. For an `mdate`, they are resolution functions: `min()` gives
+#'   the earliest date that any element of the vector can be, and `max()`
+#'   gives the latest. The result is a precise date, and it need not be an
+#'   element of the vector:
+#'   `min(as_messydate(c("2012", "2011-06")))` gives `"2011-06-01"`, the
+#'   first day of the earliest element, not the element `"2011-06"`.
+#'   `range()` gives `min()` and `max()` together.
+#'
+#'   This differs from ordering. `sort()` and `order()` order the elements
+#'   themselves, and `<` gives `NA` when two elements overlap, because it
+#'   cannot say which comes first. `min()` and `max()` do not compare the
+#'   elements; they resolve the union of their possible dates.
+#'   The package keeps the base names, and does not use prefixed names, because
+#'   the meaning agrees with the base generics: each reduces a vector to one
+#'   value of its class.
+#'
 #'   Dates that carry a time of day are already precise and so pass through
 #'   these functions unchanged, keeping their time; a time of day plays no
 #'   further role in choosing the minimum or maximum.
@@ -103,6 +121,18 @@ min.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
 
 # Makes an mdate from resolved strings. A value that is already in the
 # canonical notation that the parser writes skips the parser: a valid date
+#' @rdname resolve_extrema
+#' @examples
+#' range(d)
+#' @export
+range.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0) {
+  lo <- min.mdate(..., na.rm = na.rm, uncertain = uncertain,
+                  approx_range = approx_range)
+  hi <- max.mdate(..., na.rm = na.rm, uncertain = uncertain,
+                  approx_range = approx_range)
+  vctrs::vec_c(lo, hi)
+}
+
 # (yyyy-mm-dd, also before the common era), optionally with a valid time of
 # day and offset (" hh:mm", " hh:mm:ss", fractional seconds, "Z", "+hh:mm").
 # A missing value stays missing. Every other string, including an

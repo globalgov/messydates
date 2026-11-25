@@ -5,6 +5,7 @@
 \alias{vmin}
 \alias{vmin.mdate}
 \alias{min.mdate}
+\alias{range.mdate}
 \alias{vmax}
 \alias{vmax.mdate}
 \alias{max.mdate}
@@ -15,6 +16,8 @@ vmin(..., na.rm = FALSE)
 \method{vmin}{mdate}(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
 
 \method{min}{mdate}(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
+
+\method{range}{mdate}(..., na.rm = FALSE, uncertain = "keep", approx_range = 0)
 
 vmax(..., na.rm = FALSE)
 
@@ -68,11 +71,31 @@ them considerably faster than resolving through the full expanded set.
 \code{min()} and \code{max()} further resolve a vector to a single, overall
 extremum (matching the usual behaviour of these generics), while
 \code{vmin()} and \code{vmax()} resolve each element separately.
+}
+\section{What min() and max() mean for messy dates}{
+
+For a number, \code{min()} and \code{max()} give the smallest or largest value in
+a vector. For an \code{mdate}, they are resolution functions: \code{min()} gives
+the earliest date that any element of the vector can be, and \code{max()}
+gives the latest. The result is a precise date, and it need not be an
+element of the vector:
+\code{min(as_messydate(c("2012", "2011-06")))} gives \code{"2011-06-01"}, the
+first day of the earliest element, not the element \code{"2011-06"}.
+\code{range()} gives \code{min()} and \code{max()} together.
+
+This differs from ordering. \code{sort()} and \code{order()} order the elements
+themselves, and \code{<} gives \code{NA} when two elements overlap, because it
+cannot say which comes first. \code{min()} and \code{max()} do not compare the
+elements; they resolve the union of their possible dates.
+The package keeps the base names, and does not use prefixed names, because
+the meaning agrees with the base generics: each reduces a vector to one
+value of its class.
 
 Dates that carry a time of day are already precise and so pass through
 these functions unchanged, keeping their time; a time of day plays no
 further role in choosing the minimum or maximum.
 }
+
 \examples{
 d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
@@ -84,6 +107,7 @@ vmin(as_messydate("2012-01-01 14:30:00"))
 vmin(as_messydate("2001-05-16~"), approx_range = 3)
 vmin(d)
 min(d)
+range(d)
 vmax(d)
 max(d)
 }

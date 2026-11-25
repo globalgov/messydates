@@ -10,7 +10,7 @@ test_dates <- c(regular = "2010-01-01",
                 # unspecrange = "2010..2010-12",
                 # negincomrange = "200 BC:199 BC",
                 negincomset = "{-200, -199}")
-out <- expand(test_dates)
+out <- compatible_dates(test_dates)
 
 test_that("Expand dates lengths are correct", {
   expect_equal(length(out), length(test_dates))
@@ -32,38 +32,38 @@ negative_incomplete_range <- as_messydate("200 BC:199 BC")
 negative_incomplete_set <- as_messydate("{-200, -199}")
 
 test_that("Expand dates works properly for date ranges and unspecified dates", {
-  expect_equal(expand(regular_date), expand(as_messydate(regular_date)))
-  expect_length(expand(text_date), 1)
-  expect_equal(as.character(expand(range)[[1]]),
+  expect_equal(compatible_dates(regular_date), compatible_dates(as_messydate(regular_date)))
+  expect_length(compatible_dates(text_date), 1)
+  expect_equal(as.character(compatible_dates(range)[[1]]),
                c("2014-01-01", "2014-01-02", "2014-01-03"))
-  expect_equal(as.character(expand(approximate)[[1]][1]), "1999-01-01")
-  expect_equal(as.character(expand(approximate, approx_range = 3)[[2]][1]), "1996-07-01")
-  expect_equal(as.character(expand(approximate, approx_range = 3)[[3]][1]), "1999-10-08")
-  expect_equal(as.character(expand(unspecified)[[1]][1]), "2008-01-03")
-  expect_equal(as.character(expand(set)[[1]][1]), "2012-01-01")
-  expect_length(expand(range), 1)
-  expect_length(expand(unspecified), 1)
+  expect_equal(as.character(compatible_dates(approximate)[[1]][1]), "1999-01-01")
+  expect_equal(as.character(compatible_dates(approximate, approx_range = 3)[[2]][1]), "1999-07-01")
+  expect_equal(as.character(compatible_dates(approximate, approx_range = 3)[[3]][1]), "1999-10-08")
+  expect_equal(as.character(compatible_dates(unspecified)[[1]][1]), "2008-01-03")
+  expect_equal(as.character(compatible_dates(set)[[1]][1]), "2012-01-01")
+  expect_length(compatible_dates(range), 1)
+  expect_length(compatible_dates(unspecified), 1)
   # "20 BC" is astronomical year -0019 (year zero exists in ISO 8601-2), which
   # is not a leap year, so it expands to 365 days.
-  expect_equal(lengths(expand(negative)), 365)
-  expect_equal(as.character(expand(unspecified_range)[[1]][1]), "2010-01-01")
-  expect_equal(lengths(expand(unspecified_range)), 365)
-  expect_equal(lengths(expand(negative_incomplete_range)), 730)
-  expect_equal(lengths(expand(negative_incomplete_set)), 730)
+  expect_equal(lengths(compatible_dates(negative)), 365)
+  expect_equal(as.character(compatible_dates(unspecified_range)[[1]][1]), "2010-01-01")
+  expect_equal(lengths(compatible_dates(unspecified_range)), 365)
+  expect_equal(lengths(compatible_dates(negative_incomplete_range)), 730)
+  expect_equal(lengths(compatible_dates(negative_incomplete_set)), 730)
 })
 
 ly <- as_messydate("~2000-01-01")
 lym <- as_messydate("2000-~02-01")
 test_that("Expand approximate works properly for leap years", {
-  expect_equal(lengths(expand(ly, approx_range = 1)), 732)
-  expect_equal(lengths(expand(lym, approx_range = 1)), 61)
+  expect_equal(lengths(compatible_dates(ly, approx_range = 1)), 732)
+  expect_equal(lengths(compatible_dates(lym, approx_range = 1)), 61)
 })
 
 test_that("Expand does not crash for reduced-precision dates with approx_range", {
   # Regression test: expand_approximate_*() used to call as.Date() on values
   # with no day component (e.g. a bare year-month), which errored instead of
   # leaving the value for a later step to expand normally.
-  expect_equal(expand(as_messydate("2001-01?"), approx_range = 3)[[1]],
+  expect_equal(compatible_dates(as_messydate("2001-01?"), approx_range = 3)[[1]],
                as.character(seq(as.Date("2001-01-01"), as.Date("2001-01-31"),
                                 by = "day")))
 })
@@ -73,25 +73,91 @@ test_that("Expand handles unspecified years", {
   # non-finite value ("192X" errored, "18XX" silently returned one date),
   # even though the prose parser produces exactly these values for decades
   # and centuries.
-  expect_equal(lengths(expand(as_messydate("192X"))), 3653)
-  expect_equal(lengths(expand(as_messydate("18XX"))), 36524)
-  expect_equal(expand(as_messydate("the 1920s")),
-               expand(as_messydate("192X")))
+  expect_equal(lengths(compatible_dates(as_messydate("192X"))), 3653)
+  expect_equal(lengths(compatible_dates(as_messydate("18XX"))), 36524)
+  expect_equal(compatible_dates(as_messydate("the 1920s")),
+               compatible_dates(as_messydate("192X")))
   # A month or day attached to an unspecified year picks out that month or
   # day in each candidate year, not a continuous stretch of time.
-  expect_equal(lengths(expand(as_messydate("192X-05"))), 310)
-  expect_equal(expand(as_messydate("192X-05-04"))[[1]],
+  expect_equal(lengths(compatible_dates(as_messydate("192X-05"))), 310)
+  expect_equal(compatible_dates(as_messydate("192X-05-04"))[[1]],
                paste0(1920:1929, "-05-04"))
-  expect_equal(lengths(expand(as_messydate("192X-XX-03"))), 120)
+  expect_equal(lengths(compatible_dates(as_messydate("192X-XX-03"))), 120)
   # BCE years are bounded the other way round: -1999 is earlier than -1900.
-  expect_equal(expand(as_messydate("-19XX"))[[1]][1], "-1999-01-01")
+  expect_equal(compatible_dates(as_messydate("-19XX"))[[1]][1], "-1999-01-01")
   # A year too vague to enumerate is refused rather than attempted.
-  expect_error(expand(as_messydate("XXXX")), "spans 10,000 years")
+  expect_error(compatible_dates(as_messydate("XXXX")), "spans 10,000 years")
 })
 
 test_that("Expand applies unspecified components per set member", {
   # Regression test: the set rules are anchored, so applying them to a whole
   # comma-joined set matched nothing and over-expanded.
-  expect_equal(lengths(expand(as_messydate("{2008-XX-31,2009-XX-31}"))), 24)
-  expect_equal(lengths(expand(as_messydate("{2008-XX-05,2009-03-03}"))), 13)
+  expect_equal(lengths(compatible_dates(as_messydate("{2008-XX-31,2009-XX-31}"))), 24)
+  expect_equal(lengths(compatible_dates(as_messydate("{2008-XX-05,2009-03-03}"))), 13)
+})
+
+test_that("Expand widens approximate dates on both sides of the dates they name", {
+  ends <- function(v, r = 1) {
+    e <- compatible_dates(as_messydate(v), approx_range = r)[[1]]
+    c(as.character(e[1]), as.character(e[length(e)]))
+  }
+  # a year mark widens from all of the year, not from 1 January
+  expect_equal(ends("~2012"), c("2011-01-01", "2013-12-31"))
+  expect_equal(ends("2012%"), c("2011-01-01", "2013-12-31"))
+  # a mark before a component covers only that component
+  expect_equal(ends("2012-~06-15"), c("2012-05-15", "2012-07-15"))
+  expect_equal(ends("2012-06-~15"), c("2012-06-14", "2012-06-16"))
+  # a mark after the whole date widens by its finest component only
+  expect_equal(ends("2012-06~"), c("2012-05-01", "2012-07-31"))
+  expect_equal(ends("2012-06-15~"), c("2012-06-14", "2012-06-16"))
+  expect_equal(ends("2019-01-01~..2019-01-05"), c("2018-12-31", "2019-01-05"))
+  # marks on two components widen by both
+  expect_equal(ends("2001-~06-~15", 3), c("2001-03-12", "2001-09-18"))
+  # a shift to a day that does not exist rolls back to the end of the month
+  expect_equal(ends("~2012-02-29"), c("2011-02-28", "2013-02-28"))
+})
+
+test_that("Expand widens each end of an approximate range by its own marks", {
+  ends <- function(v, r = 3) {
+    e <- compatible_dates(as_messydate(v), approx_range = r)[[1]]
+    c(as.character(e[1]), as.character(e[length(e)]))
+  }
+  expect_equal(ends("1990-03-~01..1990-04-~15"), c("1990-02-26", "1990-04-18"))
+  expect_equal(ends("1990-03-~01..1990-04-15"), c("1990-02-26", "1990-04-15"))
+  expect_equal(ends("1990-03-01..1990-04-~15"), c("1990-03-01", "1990-04-18"))
+  # a year mark on the start widens only the start, by years
+  expect_equal(ends("~2001..2003", 1), c("2000-01-01", "2003-12-31"))
+  # the default does not widen
+  expect_equal(ends("1990-03-~01..1990-04-~15", 0), c("1990-03-01", "1990-04-15"))
+  # an open-ended range gives its known end
+  expect_equal(compatible_dates(as_messydate("..2001-01-~05"), approx_range = 3)[[1]],
+               "2001-01-05")
+})
+
+test_that("plain ranges and sets give their days in order", {
+  x <- as_messydate(c("2012-02-28..2012-03-01", "{2012-06-01,2012-06-03..2012-06-04}",
+                      "2012-06-15", NA))
+  expect_identical(compatible_dates(x),
+                   list(c("2012-02-28", "2012-02-29", "2012-03-01"),
+                        c("2012-06-01", "2012-06-03", "2012-06-04"),
+                        "2012-06-15", NA_character_))
+})
+
+test_that("a month or day with one unspecified digit gives its valid days", {
+  f <- function(x) compatible_dates(as_messydate(x))[[1]]
+  expect_length(f("2012-1X"), 92)
+  expect_equal(range(f("2012-1X")), c("2012-10-01", "2012-12-31"))
+  expect_equal(f("2012-06-1X"), sprintf("2012-06-%02d", 10:19))
+  expect_equal(f("2012-1X-31"), c("2012-10-31", "2012-12-31"))
+  expect_identical(f("2012-02-3X"), character(0))
+  expect_equal(as.character(vmin(as_messydate("2012-1X"))), "2012-10-01")
+  expect_equal(as.character(vmax(as_messydate("2012-1X"))), "2012-12-31")
+  expect_true(is.na(vmin(as_messydate("2012-02-3X"))))
+})
+
+test_that("February has 29 days only in a Gregorian leap year", {
+  x <- as_messydate(c("1900-02", "2000-02", "2013-02", "-0100-02"))
+  expect_equal(lengths(compatible_dates(x)), c(28, 29, 28, 28))
+  expect_equal(as.character(vmax(x)),
+               c("1900-02-28", "2000-02-29", "2013-02-28", "-0100-02-28"))
 })

@@ -5,6 +5,15 @@
 #'   These functions provide various logical statements about messy date objects.
 #' @name operate_statements
 #' @param x,y `mdate` or other class objects
+#' @param approx_range Range to widen approximate values (`~` or `%`) by
+#'   before the test, as in `compatible_dates()`. 0 (the default) ignores
+#'   the marks.
+#' @param within A tolerance in days, 0 or more.
+#'   Two dates intersect within `within` days if one of the days of `x` and
+#'   one of the days of `y` are at most `within` days apart.
+#'   The tolerance applies to every date, after any widening by
+#'   `approx_range`. A time of day is ignored, and dates before the common
+#'   era give `NA` when `within` is above 0.
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
 
@@ -18,38 +27,66 @@ is_messydate <- function(x) {
   inherits(x, "mdate")
 }
 
-#' @describeIn operate_statements tests whether there is any intersection between
-#'   two messy dates, leveraging `intersect()`.
+#' @describeIn operate_statements tests whether each date in `x` can share
+#'   a day with the matching date in `y`, or, with `within`, can fall within
+#'   `within` days of it.
+#'   It is `TRUE` exactly when `date_by_intersecting()` is above 0.
+#'   `x` and `y` are recycled to a common length, as in base R.
+#'   The empty set, `{}`, shares no day with any date.
 #' @examples
-#' is_intersecting(as_messydate("2012-01"),
-#' as_messydate("2012-01-01..2012-02-22"))
-#' is_intersecting(as_messydate("2012-01"),
-#' as_messydate("2012-02-01..2012-02-22"))
+#' date_is_intersecting(as_messydate(c("2012-01", "2012-01")),
+#'   as_messydate(c("2012-01-01..2012-02-22", "2012-02-01..2012-02-22")))
+#' # two records of an event can match if their dates are within a day
+#' date_is_intersecting(as_messydate("2012-01-31"), as_messydate("2012-02-01"),
+#'   within = 1)
 #' @export
-is_intersecting <- function(x, y) {
-  length(intersect(unlist(expand(x)), unlist(expand(y)))) > 0
+date_is_intersecting <- function(x, y, within = 0, approx_range = 0) {
+  .check_within(within)
+  if (within > 0)
+    return(date_by_intersecting(x, y, within = within,
+                                  approx_range = approx_range) > 0)
+  .pairwise_dates(x, y, function(a, b) length(intersect(a, b)) > 0, approx_range)
 }
 
-#' @describeIn operate_statements tests whether one or more messy date can be found
-#'   within a messy date range or set.
+#' @describeIn operate_statements tests whether all the dates of each value
+#'   in `x` are also in the matching value in `y`.
+#'   `x` and `y` are recycled to a common length, as in base R.
+#'   The empty set, `{}`, is a subset of every date.
 #' @examples
-#' is_subset(as_messydate("2012-01-01"), as_messydate("2012-01"))
-#' is_subset(as_messydate("2012-01-01..2012-01-03"), as_messydate("2012-01"))
-#' is_subset(as_messydate("2012-01-01"), as_messydate("2012-02"))
+#' date_is_subset(as_messydate(c("2012-01-01", "2012-01-01..2012-01-03",
+#'   "2012-01-01")), as_messydate(c("2012-01", "2012-01", "2012-02")))
 #' @export
-is_subset <- function(x, y) {
-  x <- as.character(expand(x)[[1]])
-  y <- as.character(expand(y)[[1]])
-  any(is.element(x, y))
+date_is_subset <- function(x, y, approx_range = 0) {
+  .pairwise_dates(x, y, function(a, b) all(a %in% b), approx_range)
+}
+
+# Applies `test` to the expanded dates of each pair x[i], y[i].
+# Missing values give NA. Each distinct value is expanded once.
+.pairwise_dates <- function(x, y, test, approx_range = 0) {
+  .check_approx_range(approx_range)
+  x <- as.character(as_messydate(x))
+  y <- as.character(as_messydate(y))
+  common <- vctrs::vec_recycle_common(x = x, y = y)
+  x <- common$x
+  y <- common$y
+  out <- rep(NA, length(x))
+  ok <- !is.na(x) & !is.na(y)
+  if (!any(ok)) return(out)
+  vals <- unique(c(x[ok], y[ok]))
+  days <- compatible_dates(as_messydate(vals), approx_range = approx_range)
+  names(days) <- vals
+  out[ok] <- mapply(function(a, b) test(days[[a]], days[[b]]),
+                    x[ok], y[ok], USE.NAMES = FALSE)
+  out
 }
 
 #' @describeIn operate_statements tests whether two dates contain similar components.
 #'   This can be useful for identifying dates that may be typos of one another.
 #' @examples
-#' is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
-#' is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
+#' date_is_similar(as_messydate("2012-06-02"), as_messydate("2012-02-06"))
+#' date_is_similar(as_messydate("2012-06-22"), as_messydate("2012-02-06"))
 #' @export
-is_similar <- function(x, y) {
+date_is_similar <- function(x, y) {
   # Coerce to mdate so the component accessors dispatch to their `.mdate`
   # methods (rather than {lubridate}'s) even when passed bare strings.
   if (!is_messydate(x)) x <- as_messydate(x)
@@ -64,10 +101,10 @@ is_similar <- function(x, y) {
 #'   ?), are incomplete (e.g. year or year-month only, or a date with an
 #'   unspecified `X` component), or are date ranges and sets.
 #' @examples
-#' is_precise(as_messydate(c("2012-06-02", "2012-06")))
-#' is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
+#' date_is_precise(as_messydate(c("2012-06-02", "2012-06")))
+#' date_is_precise(as_messydate(c("2012-06-02 14:30:00", "2012-06-02 ~14")))
 #' @export
-is_precise <- function(x) {
+date_is_precise <- function(x) {
   stringi::stri_detect_regex(
     x,
     paste0("^-?[0-9]{4}-[0-9]{2}-[0-9]{2}",
@@ -77,18 +114,30 @@ is_precise <- function(x) {
 
 #' @describeIn operate_statements tests whether a date is uncertain (i.e. contains ?).
 #' @examples
-#' is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
+#' date_is_uncertain(as_messydate(c("2012-06-02", "2012-06-02?")))
 #' @export
-is_uncertain <- function(x) {
+date_is_uncertain <- function(x) {
   stringi::stri_detect_regex(x, "\\?|\\%")
 }
 
 #' @describeIn operate_statements tests whether a date is approximate (i.e. contains ~).
 #' @examples
-#' is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
+#' date_is_approximate(as_messydate(c("2012-06-02~", "2012-06-02")))
 #' @export
-is_approximate <- function(x) {
+date_is_approximate <- function(x) {
   stringi::stri_detect_regex(x, "\\~|\\%")
+}
+
+#' @describeIn operate_statements tests whether a date is an open range,
+#'   that is, "on or before" a date (e.g. `..2012-06-02`) or
+#'   "on or after" a date (e.g. `2012-06-02..`).
+#'   An open member of a set also makes the set open.
+#' @examples
+#' date_is_open(as_messydate(c("..2012-06-02", "2012-06-02..", "2012-06-02")))
+#' @export
+date_is_open <- function(x) {
+  stringi::stri_detect_regex(
+    as.character(x), "(^|[{\\[,])\\.\\.|\\.\\.($|[}\\],])")
 }
 
 #' @describeIn operate_statements tests whether one or more messy dates are found
@@ -98,9 +147,53 @@ is_approximate <- function(x) {
 #'   non-negative year throughout, which R's proleptic Gregorian `Date`
 #'   supports directly.
 #' @examples
-#' is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
+#' date_is_bce(as_messydate(c("2012-06-02", "-2012-06-02")))
 #' @export
-is_bce <- function(x) {
+date_is_bce <- function(x) {
   stringi::stri_detect_regex(x, "^-")
 }
 
+
+#' @describeIn operate_statements tests whether a messy date is the empty set,
+#'   written `{}`.
+#'   The empty set names no dates. It is the result, for example, of an
+#'   intersection of two dates that do not overlap.
+#'   ISO 8601-2:2019 requires a set to have at least one member,
+#'   so `{}` is a messydates extension to the standard.
+#'   A missing value (`NA`) is not the empty set: `NA` is a date that is not
+#'   known, and `{}` is known to contain no date.
+#' @examples
+#' date_is_empty(as_messydate(c("{}", "2012-06-02", NA)))
+#' @export
+date_is_empty <- function(x) {
+  out <- is_empty_notation(x)
+  out[is.na(x)] <- NA
+  out
+}
+
+# TRUE for each element written as the empty set, '{}'; FALSE for NA.
+is_empty_notation <- function(x) {
+  out <- stringi::stri_detect_regex(as.character(x), "^\\s*\\{\\s*\\}\\s*$")
+  out[is.na(out)] <- FALSE
+  out
+}
+
+# TRUE when any element of `x` is the empty set, '{}', or missing (NA).
+.has_missing <- function(x) {
+  any(is_empty_notation(x) | is.na(x))
+}
+
+# Applies an element-wise function `f` to `x` and gives '{}' or NA again where
+# `x` was the empty set or missing. A stand-in date takes the place of each
+# such element while `f` runs, so that `f` sees only dates and the recycling
+# of other arguments does not change.
+.with_missing <- function(x, f, ...) {
+  empty <- is_empty_notation(x)
+  miss <- is.na(x)
+  y <- x
+  y[empty | miss] <- "2000-01-01"
+  out <- f(y, ...)
+  out[empty] <- "{}"
+  out[miss] <- NA
+  out
+}

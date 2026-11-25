@@ -34,7 +34,9 @@ days.}
 (preserving the day of month and any time of day), rolling back to
 the last valid day where necessary, e.g. adding a month to
 \code{"2012-01-31"} gives \code{"2012-02-29"} (2012 being a leap year), not an
-invalid \code{"2012-02-31"}.}
+invalid \code{"2012-02-31"}. Each run of days moves by its first and last
+day, and a run that covers whole months stays whole months, so
+\code{"2012-02"} plus one month gives \code{"2012-03"}.}
 \item{Sub-day units, or any unit at all when \code{e1} carries a time of
 day, shift the instant in seconds via \code{POSIXct}, promoting a
 date-only \code{e1} to a time if the shift is sub-day.}
@@ -42,7 +44,7 @@ date-only \code{e1} to a time if the shift is sub-day.}
 When \code{e2} is itself an \code{mdate}, \code{+}/\code{-} instead treat both sides as
 sets of dates: \code{+} returns their union (as a multiset, in the most
 succinct \code{mdate} notation; see also \code{?operate_set} for \verb{\%union\%}, which
-returns a plain vector of the member dates instead), and \code{-} removes
+works element by element instead), and \code{-} removes
 the dates in \code{e2} from \code{e1}.
 }
 \examples{

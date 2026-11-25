@@ -114,15 +114,15 @@ Tidy sources are precise; annotate information about messiness:
 \begin{center}
 \renewcommand{\arraystretch}{1.12}
 \begin{tabular}{@{}ll@{}}
-\code|on_or_before("2010")| \arrow \code|"..2010"| &
-\code|on_or_after("2010")| \arrow \code|"2010.."|\\
-\code|approximate("2010")| \arrow \code|"2010~"| &
-\code|uncertain("2010")| \arrow \code|"2010?"|\\
+\code|tag_before("2010")| \arrow \code|"..2010"| &
+\code|tag_after("2010")| \arrow \code|"2010.."|\\
+\code|tag_approximate("2010-06")| \arrow \code|"2010-~06"| &
+\code|tag_uncertain("2010-06")| \arrow \code|"2010-?06"|\\
 \end{tabular}\\[2pt]
 \end{center}
 \code|component=| specifies part e.g.:
 \begin{center}
-\code|uncertain(x, component = "month")| \arrow \code|2026-?07-07|
+\code|tag_uncertain(x, component = "month")| \arrow \code|2026-?07-07|
 \end{center}
 \end{mdbox}
 
@@ -145,8 +145,8 @@ Messydates parser converts prose into annotated \code|mdate|:
 \end{tabular}
 \end{center}
 
-See also \code|is_bce()|.
-\code|contract(md)| finds most concise messy form:\\[-12pt]
+See also \code|date_is_bce()|.
+\code|as_messydate(compatible_dates(md))| finds the most concise messy form:\\[-12pt]
 \begin{center}
 \code|"2021-04-01..2021-04-30"| \arrow \code|"2021-04"|
 \end{center}
@@ -175,7 +175,7 @@ Finding multisets/ranges (with \code|=|, \code|-|, \code|%intersect%|, \code|%un
 & \code|"2012-01" %intersect% "2012-01-31"| \arrow \code|"2012-01-31"|\\[2pt]
 \end{tabular}
 
-See also \code|is_intersecting(x,y)|, \code|is_subset(x,y)|, \code|is_similar(x,y)|.
+See also \code|date_is_intersecting(x,y)|, \code|date_is_subset(x,y)|, \code|date_is_similar(x,y)|.
 \end{mdbox}
 
 % ------------- MDURATION -------------
@@ -215,7 +215,7 @@ Precision of date-times in parts per day:
 \code|precision("2012-01-01")| = \code|1|\\
 \code|precision("2012-01-01 14:30")| = \code|1440|
 \end{quote}
-See also \code|is_precise| \code|is_uncertain| \code|is_approximate|
+See also \code|date_is_precise| \code|date_is_uncertain| \code|date_is_approximate|
 \end{mdbox}
 
 \end{minipage}\hfill
@@ -230,11 +230,11 @@ See also \code|is_precise| \code|is_uncertain| \code|is_approximate|
 
 Each coercion takes two steps:
 \begin{itemize}
-\item \emph{expand} to all compatible dates, also available directly using \code|expand(mdate)|, then
+\item \emph{expand} to all compatible dates, also available directly using \code|compatible_dates(mdate)|, then
 \item \emph{resolve} them to a single date according to an explicit \code|FUN| rule
 \end{itemize}
 \begin{center}
-\code|"2021-04"| \pipe{expand()}
+\code|"2021-04"| \pipe{compatible_dates()}
 \begin{tabular}[c]{@{}c@{}}
   \code|"2024-04-01"| \\
   \code|"2024-04-02"| \\
@@ -279,7 +279,7 @@ Since resolution is an explicit step, varying it opens up opportunities to:
 
 \begin{itemize}
   \item describe according to \code|vmean|/\code|vmodal| most likely dates
-  \item drop uncertain dates using \code|!is_uncertain|
+  \item drop uncertain dates using \code|!date_is_uncertain|
   \item treat \code|vrandom| draws as multiple imputation for dates
   \item weight observations by \code|precision|
   \item bound result under \code|vmin| and \code|vmax|

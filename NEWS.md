@@ -1,3 +1,293 @@
+# messydates 1.2.0
+
+## Package
+
+- Added `vctrs` and `graphics` to Imports and `tibble` to Suggests
+- Added `data-raw/benchmark.R` to time parsing and resolution
+- Improved `pushrelease.yml` to take the version number from `DESCRIPTION`
+- Updated `CONTRIBUTING.md` with naming rules
+- Grouped the website reference by the three steps of the workflow: retain, reason, and resolve
+- Added equivalence test to compare parsing, expansion, and resolution with reference
+
+## Class
+
+- Improved `mdate` and `mduration` to be built on `vctrs`
+  - `class(x)` is now `c("mdate", "vctrs_vctr")`
+  - Columns keep their class in data frames, tibbles, `dplyr`, and `tidyr`
+  - Tibbles show the column type as `<mdate>` or `<mdur>`
+  - `c()` combines `mdate` with character, `Date`, and `POSIXct` values
+  - `c(x)` on a single `mdate` keeps its class
+  - Text that names no date is still an error in `c()` and `[<-`
+- Accelerated `[`, `[[`, `[<-`, `[[<-`, `c()`, `rep()`, and `unique()`
+  - The `vctrs` methods replace hand-written ones that parsed each value again
+  - `as.list()` and `duplicated()` also come from `vctrs` now
+  - More than 1000x faster for `c(x, x)` and `rep(x, 3)` on 10,000 values
+  - ~175x faster for `x[1:100] <- y` on 10,000 values
+  - More than 3x faster for `x[i]` and `unique(x)` on 10,000 values
+- Added `{}` as the empty set, a value that is known to contain no date
+  - ISO 8601-2 requires a set to have a member; `{}` extends the standard
+  - Added `date_is_empty()` to test for it; `NA` is not the empty set
+  - `compatible_dates()` gives no dates for it
+  - `vmin()`, the other `v*()` functions, and `precision()` give `NA`
+  - `min()`, `max()`, `mean()`, `median()`, `modal()`, and `random()` leave it out
+  - `tag_approximate()`, `tag_uncertain()`, `+`, and `-` give `{}` again
+
+## Parsing
+
+- Renamed `md_problems()` to `parse_problems()`
+- Changed `as_messydate()` to keep an unspecified month or day as `XX`
+  - `"1993-01-XX"` was written as `"1993-01"`; the record that a day exists is now kept
+  - `0`, `00`, `??`, and `NA` in a month or day are read as `XX`, e.g. `"1993-01-00"` gave `"1993-01-XX-"`
+  - Both forms have the same possible dates, and the resolution functions give the same results
+  - `tag_approximate()`, `tag_uncertain()`, and `tag_unspecified()` keep `XX`, and do not tag it
+- Changed `as_messydate()` to keep the braces of a set with one member
+  - `"{1993-01-01..1993-01-31}"` (all the days) and `"[1993-01-01..1993-01-31]"` (one of them) were written as a bare range
+  - `year()`, `month()`, and `day()` read a set with one member
+- Fixed `as_messydate()` on a date with a weekday name in front
+  - `"Thu Sep 01 2016"` gave `"2016 thu-09-01"`, and `"Thu, 01 Sep 2016"` gave `"thu 01-09-2016"`
+  - `"Thursday, September 1, 2016"` lost its day, and now gives `"2016-09-01"`
+  - `"Sept"` is read as September
+- Renamed the annotation functions to `tag_*()`
+  - `approximate()` is now `tag_approximate()`
+  - `uncertain()` is now `tag_uncertain()`
+  - `on_or_before()` is now `tag_before()`
+  - `on_or_after()` is now `tag_after()`
+- Changed `tag_approximate()` and `tag_uncertain()` to tag the finest component by default
+  - `tag_approximate("2012-06-15")` gives `"2012-06-~15"`, not `"2012-06-15~"`
+  - Added `component = "date"` to tag the whole date
+- Improved `tag_approximate()` and `tag_uncertain()` to write the fewest marks
+  - A tag that is already there is not added again: `tag_approximate("~2012")` gives `"~2012"`
+  - A wider tag replaces the marks that it covers: `tag_approximate("2012-~06", "date")` gives `"2012-06~"`
+  - `~` and `?` on the same component become `%`
+  - Each end of a range and each member of a set is tagged
+- Fixed `tag_uncertain("~2012", "day")` giving `"~2012-XX-?NA"`; a missing component is not tagged
+- Added `tag_unspecified()` to replace the digits of a component with `X`
+- Added `untag()` to remove `~`, `?`, `%`, and the `..` of an open range
+- Improved `tag_before()` and `tag_after()` on a closed range to keep the bounding end
+  - `tag_before("2010..2012")` gives `"..2012"`, not `"..2010..2012"`
+  - A value that is already open, and a set, stay as they are
+- Fixed missing values in `tag_approximate()` and `tag_uncertain()` to give `NA`
+- Fixed `as_messydate()` on a list to give an `mdate` vector, not a list
+  - An empty element gives `{}`, and an element that is only `NA` gives `NA`
+  - Added `collapse = FALSE` to keep a range that covers a whole month or year
+- Accelerated `as_messydate()` (closes #105)
+  - Prose and time steps run only on elements that can hold prose or a time
+  - Prose that occurs more than once in a vector is interpreted once
+  - Range and set members are padded together
+  - ~9x faster for 6,000 plain ISO dates
+  - ~45x faster for 6,000 mixed ISO, prose, and range values
+- Improved the prose parser of `as_messydate()` (closes #102)
+  - Added `lang = "fr"` to read French prose, e.g. `"vers 1910"` or `"mai 1997"`
+    - Reads the same forms as English: qualifiers, open ranges, and connectives
+    - Also decades, centuries (`"XIXe siècle"`), eras (`"av. J.-C."`), and seasons
+    - Accents may be left out; spelled-out numbers are read in English only
+  - Uses one table of English month names
+  - Fixed lower-casing by the session locale, e.g. `"APRIL"` under Turkish
+  - Fixed a century before the common era dropping its era
+    - `"the 5th century BC"` gave `"04XX"` and now gives `"-04XX"`
+- Improved `as_messydate()` on numbers from spreadsheets
+  - Added `origin` to read serial day counts
+    - `origin = "excel"` reads the 1900 date system of Excel
+    - `origin = "excel1904"` reads the 1904 system of older Excel for Mac
+    - Any other date is the day that counts as zero
+    - A fractional part becomes a time of day
+    - Serial 60, the 29 February 1900 of Excel, becomes `NA` with a warning
+  - Fixed serial numbers kept as text: `as_messydate(36892)` gave `"36892"`
+    - Without `origin`, whole numbers up to 9999 are still years
+    - Valid eight-digit numbers are read as YYYYMMDD
+    - Other numbers become `NA` with a warning that names `origin`
+- Improved `as_messydate()` on two-digit years
+  - Fixed two-digit years placed in the first century
+    - `"1/1/29"` gave `"0001-01-29"` and now gives `"XX29-01-01"`
+    - `"010221"` with `resequence = "dmy"` gave `"0021-02-01"`
+  - Added `pivot` to place two-digit years in a 100-year window, e.g. `1930`
+  - Fixed a month name with a two-digit year, as Excel shows a month
+    - `"May-97"` gave an error and now gives `"XX97-05"`
+  - Dates with slashes and a two-digit last component are read year last
+  - A two-digit year written first (`"39-01-01"`) is still read as written
+- Fixed a qualifier on a prose range marking only the last end
+  - `"approximately 2019-01-01..2019-01-05"` gave `"2019-01-01..2019-01-05~"`
+  - `"circa 1990..1995"` gave `"~1995"` and now gives `"~1990..~1995"`
+  - A qualifier before two days now marks both days
+    - `"approximately between 1 and 5 January 2019"` lost its qualifier
+
+## Resolution
+
+- Fixed `vmin()`, `vmax()`, `min()`, and `max()` on a trailing `XX`, e.g. `vmax("1993-01-XX")` gives `"1993-01-31"`
+- Added `range()` for `mdate`, which gives `min()` and `max()` together
+  - It gave the earliest and latest elements unresolved, e.g. `"2011-06"`
+- Documented what `min()` and `max()` mean for messy dates, and how they differ from `sort()` and `<`
+- Changed `vmean()`, `vmedian()`, `vmodal()`, and `vrandom()` to give an `mdate`
+  - As `vmin()` and `vmax()` do, so that `as.Date()` works on each result
+  - `mean()`, `median()`, `modal()`, and `random()` also give an `mdate`
+  - Added `test-resolve_contract.R`, with the rules that all resolution functions obey
+- Fixed `mean()` and `vmean()` on dates before the common era
+  - `vmean("-0044-03")` gave `"44-03-16"` and now gives `"-0044-03-16"`
+  - A BCE date with a date-time gave an error; the mean is then of the days
+- Fixed `vmean()` changing a precise date-time
+  - `vmean("2019-01-01 14:30:00+02:00")` gave `"2019-01-01 12:30:00"`
+- Fixed `median()` giving an error for a vector with no dates
+- Fixed `vrandom()` ignoring an argument that it does not know
+- Fixed the `v*()` functions dropping the names of `x`, which `pmin()` keeps
+- Improved `as.Date()`, `as.POSIXct()`, `as.POSIXlt()`, and `as.double()`
+  - Changed them to state the rule for imprecise values when `FUN` is not given
+    - They resolve with `vmin()` as before, and say so once in each session
+    - In 1.3.0 this becomes a warning, and in 1.4.0 an error
+    - Precise values need no `FUN`
+  - Fixed them dropping further arguments to `FUN`
+    - `as.Date(x, FUN = vmin, approx_range = 3)` now widens approximate values
+  - Added `FUN` to `as.double()`, and fixed it giving an error for `NA`
+- Improved `random()` and `vrandom()` for approximate and uncertain values
+  - Added `approx_range` to widen `~` and `%` values with trapezoidal weights
+    - The weight falls linearly to 0 over the dates that `approx_range` adds
+    - This follows the egg-yolk model (Cohn and Gotts 1996)
+    - Each mark widens by its own component, and each range end by its marks
+    - `"1990-03-~01..1990-04-~15", approx_range = 3` gives 1990-02-26 to 1990-04-18
+    - Open ranges, sets, `X` digits, BCE dates, and date-times are not widened yet
+  - Added `uncertain_p`, the probability that a `?` or `%` value is correct
+    - One number, or one for each value, e.g. the reliability of each source
+    - Otherwise `vrandom()` gives `NA` and `random()` leaves the value out
+  - Updated their documentation to a help page of its own
+- Added `approx_range` to the other resolution functions
+  - `vmin()`, `vmax()`, `min()`, and `max()` give the ends of the widened support
+    - `vmin("2001-05-16~", approx_range = 3)` gives `"2001-05-13"`
+  - `mean()`, `median()`, `vmean()`, and `vmedian()` use the weights of `vrandom()`
+  - `modal()` and `vmodal()` give the same result, as the core has the most weight
+- Added `uncertain` to the other resolution functions
+  - `min()`, `max()`, `mean()`, `median()`, `modal()`, and their `v*()` forms
+  - `uncertain = "drop"` gives `NA` in `v*()` and leaves values out of the others
+- Fixed `min()`, `max()`, `vmin()`, and `vmax()`
+  - A set resolves to the first or last day of any member, in any order
+    - `vmax("{2013-01,2012-06}")` gave `"2012-06"` and now gives `"2013-01-31"`
+  - `min()` gave the wrong value when the first element was not the earliest
+  - `%` stayed in the result
+  - Years with unspecified digits resolved to the wrong year
+    - `vmin("19XX")` gave `"1901-01-01"` and now gives `"1900-01-01"`
+    - `vmax("199X")` gave the value unresolved and now gives `"1999-12-31"`
+    - `vmin("XX29-01-01")` gave `"0129-01-01"` and now gives `"0029-01-01"`
+    - `vmax("-00XX")` gave `"-0000-12-31"` and now gives `"0000-12-31"`
+- Fixed missing values in the resolution functions
+  - The `v*()` functions give `NA`
+  - `min()` and `max()` follow base R: with `na.rm = FALSE`, one `NA` gives `NA`
+- Fixed the `v*()` functions ignoring an argument that they do not know
+  - `vmin(x, approx_range = 3)` gave the date without widening, and no warning
+  - A misspelled argument, e.g. `aprox_range`, is now an error
+- Accelerated `vmin()`, `vmax()`, `min()`, and `max()`
+  - A resolved plain date does not go through the parser again
+  - ~6x faster for `vmin()` on 60,000 ranges
+- Accelerated `mean()`, `median()`, `modal()`, `random()`, and their `v*()` forms (#105)
+  - A range expands without being parsed again
+  - ~15x faster for `mean()` on 1,000 months and ranges
+- Accelerated `vmean()`, `vmedian()`, `vmodal()`, and `vrandom()` on months and years
+  - A whole month or year resolves from its first day and its number of days
+  - ~480x faster for `vmean()` on 20,000 months
+- Accelerated the resolution functions on date-times
+  - A precise date-time is its own mean, and a result in canonical notation skips the parser
+  - ~2x faster for `vmean()` on 5,000 date-times
+- Accelerated `vrandom()`, `vmean()`, and `vmedian()` on full dates and ranges
+  - Full dates and ranges resolve directly, without `compatible_dates()`
+  - ~900x faster for `vrandom()` on 63,606 event dates, a quarter of them ranges
+  - ~290x faster for `vmean()` on the same dates
+
+## Expansion
+
+- Renamed `expand()` to `compatible_dates()`, gives days only
+  - Use `seq()` for a sequence of times
+- Removed `contract()`; use `as_messydate()` to give the shortest form of `x`
+  - Fixed the shortest form of a range that does not cover whole months or years
+    - `"2012-02-01..2013-01-31"` was written as `"2012-02"`
+    - `"2012-01-01..2013-12-31"` was written as `"2012"`
+    - `"2012-02-01..2012-02-28"` was written as `"2012-02"`; February 2012 has 29 days
+  - Fixed the shortest form of a set of dates before the common era
+    - `{-0050-01-01,-0050-03-01}` was written as `-0050-01-01..-0050-03-01`
+- Accelerated `compatible_dates()` on ranges of two full dates (#105)
+  - Plain ranges and set members are expanded in one step
+  - ~20x faster for 1,000 months and ranges
+  - ~8x faster for 60,000 ranges
+- Improved `compatible_dates()` with `approx_range`
+  - Fixed widening an approximate year from 1 January only
+    - `"~2012"` with `approx_range = 1` ended on 2013-01-01, now 2013-12-31
+    - Widening starts from the first and the last date that the value names
+  - Fixed ranges with `~` that were not widened
+  - Fixed open-ended ranges with `~`, which now give their known end
+    - `"..2001-01-~05"` with `approx_range = 3` gave 1998-01-06 to 2001-01-05
+  - Each mark widens by the component that it is written on
+    - `"2019-01-01~"` widens by days and `"2019-01~"` by months
+    - `"~2019-01-01"` and `"~2019"` widen by years
+    - `"2019-~01-~01"` widens by months and days
+  - Fixed `%` being ignored; it marks a value as approximate and uncertain
+- Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
+- Fixed `compatible_dates()`, `vmin()`, and `vmax()` on a month or day with one unspecified digit
+  - `"2012-1X"` stopped with an error, and now gives October to December 2012
+  - A value with no valid day, e.g. `"2012-02-3X"`, gives no dates
+- Fixed `compatible_dates()` reading a year with leading `X` digits as one range
+- Fixed February in a century year that is not a leap year
+  - `compatible_dates("1900-02")` and `vmax("1900-02")` gave an error
+- Fixed `seq()` and `compatible_dates()` on an invalid element, e.g. `""`
+- Fixed missing values in `compatible_dates()` to give `NA`
+
+## Extraction
+
+- Fixed missing values in `precision()` to give `NA`
+- Added `approx_range` to `precision()` to count the widened days
+
+## Operations
+
+- Changed `%intersect%` and `%union%` to work element by element and give an `mdate`
+  - The result is in the shortest form, e.g. `"2012-01-03..2012-01-05"`, not days
+  - The two sides are recycled to a common length
+  - An intersection with no days gives `{}`, and a missing value gives `NA`
+  - A `?` or `~` on either side is carried to the result
+- Fixed `+` and `-` with `"1 year"` or `"1 month"`, which added 365 or 30.42 days
+  - `as_messydate("2012-01-01") + "1 year"` gave `"2012-12-31"`, now `"2013-01-01"`
+  - Months and years shift the calendar with rollback
+  - Whole months stay whole months
+  - Added `"week"` as a unit, which gave an error
+- Fixed `+` and `-` on dates before the common era, which moved them the wrong way
+  - `as_messydate("-0050-01-01") + 1` gave `"-0049-12-31"`, now `"-0050-01-02"`
+- Fixed missing values in `+` and `-`, which now give `NA`
+- Accelerated `<`, `>`, `<=`, and `>=` on two `Date` or `POSIXt` values
+  - Without an `mdate` on either side, they give the base R result
+  - A `Date` with a `POSIXct` is still compared by its time, which base R does not do
+  - >2000x faster for 100,000 `Date` comparisons while messydates is loaded
+- Added `approx_range` to `%l%`, `%g%`, `%le%`, `%ge%`, `%><%`, and `%>=<%`
+  - Each day of an approximate value counts by the trapezoidal weight of `vrandom()`
+  - Call the operator as a function to set it, e.g. `` `%l%`(x, y, approx_range = 3) ``
+- Fixed `%><%` and `%>=<%` giving 0 and not `NA` for a missing value
+- Fixed the proportional operators giving `list()` for inputs of length 0
+- Accelerated `%l%`, `%g%`, `%le%`, `%ge%`, `%><%`, and `%>=<%`
+  - A date, month, year, or range is measured from its first and last day
+  - ~17x faster for 60,000 pairs of ranges
+- Renamed the `is_*()` predicates to `date_is_*()`
+  - `is_precise()`, `is_uncertain()`, `is_approximate()`, `is_bce()`, `is_similar()`
+  - `is_messydate()` keeps its name, because it is a class test
+- Renamed `is_intersecting()` and `is_subset()` to `date_is_intersecting()` and `date_is_subset()`
+  - They are now element-wise: they compare `x[i]` with `y[i]` and recycle as base R does
+  - Missing values give `NA`
+- Fixed `is_subset()` to test that all dates of `x` are in `y`, not only one date
+- Fixed `is_subset()` using only the first element of `x` and `y`
+- Added `date_is_open()` to test for an open range, e.g. `..2012`
+- Added `approx_range` to `date_is_intersecting()` and `date_is_subset()`
+  - `date_is_intersecting("2001-05-16~", "2001-05-18", approx_range = 3)` gives `TRUE`
+- Added `within` to `date_is_intersecting()`, a tolerance in days for matching records
+  - `date_is_intersecting("2012-01-31", "2012-02-01", within = 1)` gives `TRUE`
+- Added `date_by_intersecting()`, the share of day pairs within `within` days
+  - It is the match probability of two records under uniform (or, with `approx_range`, trapezoidal) weights
+  - 1 is a certain match, between 0 and 1 a possible match, and 0 no match
+  - Days, months, and ranges are computed from their ends: 200,000 pairs take about 4 s
+
+## Plotting
+
+- Added `plot()` for `mdate` to draw the weight of each possible day
+  - Precise dates are points, and ranges are bars
+  - Sets and `X` digits are separate points
+  - With `approx_range`, approximate values are trapezoids, as in `vrandom()`
+  - Uncertain values have a dashed outline
+
+## Data
+
+- Fixed `battles$Date`, which was saved before `mdate` used `vctrs`
+
 # messydates 1.1.1
 
 ## Package

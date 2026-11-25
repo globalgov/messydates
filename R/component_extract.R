@@ -68,7 +68,7 @@ lubridate::tz
 #' year(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @exportS3Method lubridate::year
 year.mdate <- function(x, ...) {
-  x <- as.character(x)
+  x <- .unwrap_single(x)
   x <- stringi::stri_replace_all_regex(x, "\\.\\..+", "")
   x <- stringi::stri_replace_all_regex(x, "-.+", "")
   # A bare time ("14:30") has no year component; return NA rather than warning.
@@ -81,7 +81,7 @@ year.mdate <- function(x, ...) {
 #' month(as_messydate(c("2012-02-03","2012","2012-02")))
 #' @exportS3Method lubridate::month
 month.mdate <- function(x, ...) {
-  m <- stringi::stri_match_first_regex(as.character(x),
+  m <- stringi::stri_match_first_regex(.unwrap_single(x),
                                        "^-?[0-9X]{4}-([0-9X]{1,2})")[, 2]
   suppressWarnings(as.integer(m))
 }
@@ -92,8 +92,15 @@ month.mdate <- function(x, ...) {
 #' @exportS3Method lubridate::mday
 mday.mdate <- function(x, ...) {
   d <- stringi::stri_match_first_regex(
-    as.character(x), "^-?[0-9X]{4}-[0-9X]{1,2}-([0-9X]{1,2})")[, 2]
+    .unwrap_single(x), "^-?[0-9X]{4}-[0-9X]{1,2}-([0-9X]{1,2})")[, 2]
   suppressWarnings(as.integer(d))
+}
+
+# A set with one member ("{1993-01}" or "[1993-01-01..1993-01-31]") has the
+# components of that member, so its braces are removed before a component is
+# read. A set with more than one member keeps them, and gives NA.
+.unwrap_single <- function(x) {
+  stringi::stri_replace_first_regex(as.character(x), "^[{\\[]([^,{}\\[\\]]+)[}\\]]$", "$1")
 }
 
 # The shared time regexes anchor on the '[T ]' date-time separator. A bare
@@ -154,7 +161,7 @@ tz.mdate <- function(x, ...) {
 
 #' @rdname component_extract
 #' @export
-precision <- function(x) UseMethod("precision")
+precision <- function(x, ...) UseMethod("precision")
 
 #' @rdname component_extract
 #' @section Precision:
@@ -165,13 +172,26 @@ precision <- function(x) UseMethod("precision")
 #'   a precision of between \eqn{1/365} and \eqn{1/366}.
 #'   Times of day extend the same scale below the day: a date-time measured
 #'   to the hour returns 24, to the minute 1440, and to the second 86400.
+#'   With `approx_range` above 0, an approximate value counts the dates
+#'   that the widening adds, as in `compatible_dates()`.
+#' @param approx_range For `precision()`, the range to widen approximate
+#'   values (`~` or `%`) by, as in `compatible_dates()`.
+#'   0 (the default) ignores the marks.
+#' @param ... Not used. Any further argument is an error.
 #' @examples
 #' precision(as_messydate(c("2012-02-03","2012","2012-02")))
+#' precision(as_messydate("2012-02-03~"), approx_range = 3)
 #' precision(as_messydate("2012-02-03 14:30"))
 #' @export
-precision.mdate <- function(x) {
-  out <- expand(x)
-  (1 / lengths(out)) * subday_factor(x)
+precision.mdate <- function(x, approx_range = 0, ...) {
+  if (...length()) stop("Unused argument: ", paste(names(list(...)), collapse = ", "),
+                        call. = FALSE)
+  .check_approx_range(approx_range)
+  out <- compatible_dates(x, approx_range = approx_range)
+  out <- (1 / lengths(out)) * subday_factor(x)
+  # Neither a missing date nor the empty set has a precision.
+  out[is.na(x) | is_empty_notation(x)] <- NA
+  out
 }
 
 # Multiplier extending the 1/days precision scale below the day: 24 for hour,

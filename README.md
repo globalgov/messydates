@@ -268,6 +268,28 @@ so `2009-01-01:2019-01-01` is still read as a range. Sub-day arithmetic,
 sequences, and coercion to and from `POSIXct`/`POSIXlt` all preserve the
 time of day.
 
+### Dates from spreadsheets
+
+Spreadsheets cause two problems for dates. First, Excel stores a date as
+a serial number of days from an origin. The origin is 1899-12-30 for
+Excel on Windows and 1904-01-01 for older Excel on Mac. When a file
+loses its date format, the dates arrive in R as plain numbers.
+`as_messydate()` does not know the origin, so convert the numbers to
+`Date` first:
+
+``` r
+serials <- c(36892, 41000)
+as_messydate(as.Date(serials, origin = "1899-12-30"))
+#>  'mdate' chr [1:2] "2001-01-01" "2012-04-01"
+```
+
+Second, Excel converts partial dates to full dates when you type them.
+An entry of “May 1997” becomes 1997-05-01, and the information that only
+the month is known is lost. To keep the imprecision, store dates in a
+text column, or enter them in ISO 8601-2 notation, such as `1997-05` or
+`1997-05-XX`. See also [Taming Excel dates in
+R](https://www.r-bloggers.com/2024/02/taming-excel-dates-in-r-from-numbers-to-meaningful-dates/).
+
 ## Cheat Sheet
 
 Please see the cheat sheet and [the messydates

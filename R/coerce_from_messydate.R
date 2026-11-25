@@ -11,7 +11,7 @@
 #'   some notion of a central tendency (`mean`, `median`, or `modal`),
 #'   or even a `random` selection from among the candidate dates.
 #'
-#'   These functions then, building on `expand()` and the resolve functions,
+#'   These functions then, building on `compatible_dates()` and the resolve functions,
 #'   are particularly useful in converting back out of the `mdate` class
 #'   for use with existing methods and models,
 #'   especially for checking the robustness of results.
@@ -23,9 +23,17 @@
 #'   `modal()`, and `random()`. `vmin()`, `vmax()`, `vmean()`, `vmedian()`,
 #'   `vmodal()`, and `vrandom()` are the vectorised equivalents, resolving
 #'   each element separately rather than summarising the whole vector.
+#'
+#'   A precise value needs no `FUN`.
+#'   If `x` holds an imprecise value and you do not give `FUN`,
+#'   the function uses `vmin()`, the earliest possible date,
+#'   and states this rule in a message once in each session.
+#'   In messydates 1.3.0, the message becomes a warning.
+#'   In messydates 1.4.0, it becomes an error:
+#'   then you must give `FUN` to convert an imprecise value.
 #' @return A date object of `Date`, `POSIXct`, or `POSIXlt` class
 #' @family coerce
-#' @seealso [resolve_extrema()], [resolve_tendency()]
+#' @seealso [resolve_extrema()], [resolve_tendency()], [resolve_probabilistically()]
 #' @name coerce_from
 NULL
 
@@ -49,14 +57,8 @@ NULL
 #' # the time of day, if any, is dropped
 #' as.Date(as_messydate("2012-01-01 14:30"), FUN = vmin)
 #' @export
-as.Date.mdate <- function(x, FUN = vmin, ...) {
-  # # fix argument ordering issues
-  # if (missing(FUN)){
-  #   if(length(list(...)) > 0) FUN <- list(...)[[1]] else
-  #     FUN <- messydates::min.mdate
-  # }
-  # if(missing(FUN)) FUN <- min
-  x <- FUN(x)
+as.Date.mdate <- function(x, FUN, ...) {
+  x <- .resolve_for(x, FUN, missing(FUN), "as.Date", ...)
   # A calendar date has no time of day, so drop any time components.
   x <- strip_times(as.character(x))
   x <- suppressWarnings(ifelse(stringi::stri_detect_regex(x, "^-"),
@@ -80,9 +82,8 @@ as.Date.mdate <- function(x, FUN = vmin, ...) {
 #' as.POSIXct(as_messydate("2012-01-01 14:30:00+02:00"), FUN = vmin)
 #' as.POSIXlt(as_messydate("2012-01-01 14:30:00"), FUN = vmin)
 #' @export
-as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
-  # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
-  x <- FUN(x)
+as.POSIXct.mdate <- function(x, tz = "UTC", FUN, ...) {
+  x <- .resolve_for(x, FUN, missing(FUN), "as.POSIXct", ...)
   # Vectorised guard: any() rather than a bare if(), which errors on a
   # length > 1 condition (R >= 4.2) and so broke conversion of vectors.
   if (any(stringi::stri_detect_regex(as.character(x), "^-"), na.rm = TRUE)) {
@@ -93,9 +94,8 @@ as.POSIXct.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
 
 #' @rdname coerce_from
 #' @export
-as.POSIXlt.mdate <- function(x, tz = "UTC", FUN = vmin, ...) {
-  # if (missing(FUN) & length(list(...)) > 0) FUN <- list(...)[[1]]
-  x <- FUN(x)
+as.POSIXlt.mdate <- function(x, tz = "UTC", FUN, ...) {
+  x <- .resolve_for(x, FUN, missing(FUN), "as.POSIXlt", ...)
   # Vectorised guard: any() rather than a bare if(), which errors on a
   # length > 1 condition (R >= 4.2) and so broke conversion of vectors.
   if (any(stringi::stri_detect_regex(as.character(x), "^-"), na.rm = TRUE)) {
@@ -152,27 +152,51 @@ as.data.frame.mdate <- function(x, ...) {
 
 #' @rdname coerce_from
 #' @details
-#'   `as.list()` splits `x` into a list of length-one `mdate` objects,
-#'   one per element, without resolving any of them.
-#' @examples
-#' as.list(as_messydate(c("2012-01-01", "2012-02")))
-#' @export
-as.list.mdate <- function(x, ...) {
-  lapply(unclass(x), as_messydate)
-}
-
-#' @rdname coerce_from
-#' @details
-#'   `as.double()` converts `x` to the number of days since 1970-01-01 (as
-#'   for `as.double(as.Date(x))`), without resolving ranges, sets, or
-#'   unspecified components first; it is mostly useful for already-precise
-#'   dates.
+#'   `as.double()` converts `x` to the number of days since 1970-01-01,
+#'   as `as.double(as.Date(x, FUN))` does.
+#'   An imprecise value is first resolved with `FUN`, as for `as.Date()`.
 #' @examples
 #' as.double(as_messydate("2012-01-01"))
+#' as.double(as_messydate("2012-01"), FUN = vmax)
 #' @export
-as.double.mdate <- function(x, ...) {
-  if(any(is_bce(x))) x[is_bce(x)] <- negative_dates(x)[is_bce(x)]
-  as.double(lubridate::as_date(x))
+as.double.mdate <- function(x, FUN, ...) {
+  x <- .resolve_for(x, FUN, missing(FUN), "as.double", ...)
+  as.double(as.Date(x, FUN = identity))
+}
+
+# Resolves `x` with `FUN` before a conversion to an exact class.
+# Further arguments (`...`) are passed to `FUN`.
+# Without `FUN`, a precise value needs no rule. If an imprecise value is
+# present, the function uses vmin() and states the rule once in each session.
+# In 1.3.0, this message becomes a warning each time, and in 1.4.0 an error.
+.resolve_for <- function(x, FUN, fun_missing, caller, ...) {
+  # Further arguments, such as approx_range, go to the rule.
+  if (!fun_missing) return(FUN(x, ...))
+  n <- sum(.needs_resolution(x))
+  if (n > 0) .declare_resolution(caller, n)
+  vmin(x)
+}
+
+# Which elements of `x` are imprecise and so need a rule to resolve them?
+# A missing value and the empty set resolve to NA with any rule.
+.needs_resolution <- function(x) {
+  out <- !date_is_precise(x) & !is_empty_notation(x)
+  out[is.na(out) | is.na(as.character(x))] <- FALSE
+  out
+}
+
+.declare_resolution <- function(caller, n) {
+  key <- paste0("resolve:", caller)
+  if (isTRUE(.deprecated_env[[key]])) return(invisible())
+  .deprecated_env[[key]] <- TRUE
+  message("`", caller, "()` resolved ", n, " imprecise value",
+          if (n > 1) "s", " with `vmin()`, the earliest possible date.\n",
+          "Give `FUN` to choose the rule, ",
+          "for example `", caller, "(x, FUN = vmax)`.\n",
+          "In messydates 1.3.0, this message becomes a warning, ",
+          "and in 1.4.0, an error.\n",
+          "This message is shown once in each session.")
+  invisible()
 }
 
 # {lubridate}'s as_date() is an S4 generic whose fallback calls base::as.Date(),

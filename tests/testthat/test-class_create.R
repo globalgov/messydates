@@ -7,11 +7,11 @@ test_that("incompleteness works", {
   expect_equal(unclass(as_messydate("NA-01-01")), "XXXX-01-01")
   expect_equal(unclass(as_messydate("NA-NA-01")), "XXXX-XX-01")
   expect_equal(unclass(as_messydate("2012-NA-01")), "2012-XX-01")
-  expect_equal(unclass(as_messydate("2012-01-NA")), "2012-01")
+  expect_equal(unclass(as_messydate("2012-01-NA")), "2012-01-XX")
   expect_equal(unclass(as_messydate("2012-1")), "2012-01")
   expect_equal(unclass(as_messydate("2012")), "2012")
   expect_equal(unclass(as_messydate("1")), "0001")
-  expect_equal(unclass(as_messydate("12-10-93")), "0093-10-12")
+  expect_equal(unclass(as_messydate("12-10-93")), "XX93-10-12")
 })
 
 test_that("uncertainty works", {
@@ -64,8 +64,32 @@ test_that("print method works", {
 test_that("c method works", {
   expect_identical(as_messydate(c("2012-01-01", "2012-06-01")),
                    c(as_messydate("2012-01-01"), as_messydate("2012-06-01")))
-  # a single object is stripped of its class rather than validated/rebuilt
-  expect_identical(c(as_messydate("2012-01-01")), "2012-01-01")
+  # a single object keeps its class
+  expect_identical(c(as_messydate("2012-01-01")), as_messydate("2012-01-01"))
+  # character, Date and POSIXct values combine into mdate
+  expect_identical(c(as_messydate("2012-01-01"), "2012-06"),
+                   as_messydate(c("2012-01-01", "2012-06")))
+  expect_identical(c(as_messydate("2012-01-01"), as.Date("2012-06-01")),
+                   as_messydate(c("2012-01-01", "2012-06-01")))
+  expect_s3_class(vctrs::vec_c(as.Date("2012-06-01"), as_messydate("2012-01")),
+                  "mdate")
+  # text that names no date is an error, not a silent NA
+  expect_error(vctrs::vec_c(as_messydate("2012-01-01"), "not a date"),
+               "could not be parsed")
+})
+
+test_that("mdate works in data frames and tibbles", {
+  d <- as_messydate(c("2012-01-01", "2012-XX-01", "2012-01-01..2012-01-05"))
+  df <- data.frame(id = 1:3, date = d)
+  expect_s3_class(df$date, "mdate")
+  expect_s3_class(rbind(df, df)$date, "mdate")
+  expect_identical(vctrs::vec_ptype_abbr(d), "mdate")
+  expect_identical(as.character(d), c("2012-01-01", "2012-XX-01",
+                                      "2012-01-01..2012-01-05"))
+  skip_if_not_installed("tibble")
+  tb <- tibble::tibble(id = 1:3, date = d)
+  expect_s3_class(vctrs::vec_rbind(tb, tb)$date, "mdate")
+  expect_match(paste(format(tb), collapse = "\n"), "<mdate>", fixed = TRUE)
 })
 
 test_that("subset and subset-assign methods work", {

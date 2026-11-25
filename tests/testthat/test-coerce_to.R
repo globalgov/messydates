@@ -31,18 +31,20 @@ test_that("Coercion from other date classes into messydt works", {
 test_that("Coercion of unespecified date components are properly handled", {
   unspecified <- c("1908-??-??", "1908-10-??", "1908/X/X", "1908/?/?",  "XX-1998",
                    "XXXX-01-01", "01-01-XXXX", "XX-10-1998", "XX-XX-1998")
-  b <- as_messydate(c("1908", "1908-10", "1908", "1908", "1998",
-                      "XXXX-01-01", "XXXX-01-01", "1998-10", "1998"))
+  # An unspecified month or day is kept as XX.
+  b <- as_messydate(c("1908-XX-XX", "1908-10-XX", "1908-XX-XX", "1908-XX-XX", "1998-XX",
+                      "XXXX-01-01", "XXXX-01-01", "1998-10-XX", "1998-XX-XX"))
   expect_equal(as_messydate(unspecified), b)
 })
 
 test_that("resequence argument works properly", {
-  expect_equal(as_messydate(c("121008", "20121008"), resequence = "ymd"),
-               as_messydate(c("12-10-08", "2012-10-08")))
-  expect_equal(as_messydate(c("081012", "08102012", "08-10-12"), resequence = "dmy"),
-               as_messydate(c("12-10-08", "2012-10-08", "12-10-08")))
-  expect_equal(as_messydate(c("03312022", "043097"), resequence = "mdy"),
-               as_messydate(c("2022-03-31", "97-04-30")))
+  # A two-digit year leaves the century unspecified (see `pivot`).
+  expect_equal(as.character(as_messydate(c("121008", "20121008"), resequence = "ymd")),
+               c("XX12-10-08", "2012-10-08"))
+  expect_equal(as.character(as_messydate(c("081012", "08102012", "08-10-12"), resequence = "dmy")),
+               c("XX12-10-08", "2012-10-08", "XX12-10-08"))
+  expect_equal(as.character(as_messydate(c("03312022", "043097"), resequence = "mdy")),
+               c("2022-03-31", "XX97-04-30"))
   expect_equal(as_messydate("201212", resequence = "ym"),
                as_messydate("2012-12"))
   # "201212" read as month-year gives month 20, which does not exist
@@ -74,15 +76,15 @@ test_that("conversion from MDY dates with written month works properly", {
 
 test_that("list conversion works properly", {
   expect_equal(as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03"))),
-               list(as_messydate("2012-06-01..2012-06-03")))
+               as_messydate("2012-06-01..2012-06-03"))
   expect_equal(as_messydate(list(c(as_messydate("2001-01-01"),
                                    as_messydate("2001-01-02..2001-01-04")))),
-               list(as_messydate("2001-01-01..2001-01-04")))
+               as_messydate("2001-01-01..2001-01-04"))
 })
 
 test_that("zero padding is correctly added conversion works properly", {
   expect_equal(as_messydate(c("193-3", "193-3..193-5", "193-3, 193-4")),
-               as_messydate(c("0193-03-XX", "0193-03-XX..0193-05", "{0193-03-XX,0193-04-XX}")))
+               as_messydate(c("0193-03", "0193-03..0193-05", "{0193-03,0193-04}")))
 })
 
 test_that("an era marker applies to every date it governs", {
@@ -162,15 +164,15 @@ test_that("unparseable text warns rather than failing silently", {
   expect_silent(as_messydate(c("2019-01-01", NA)))
 })
 
-test_that("md_problems() reports why elements fail", {
-  p <- md_problems(c("2019-01-01", "2019-02-30", "2019-123", "not a date"))
+test_that("parse_problems() reports why elements fail", {
+  p <- parse_problems(c("2019-01-01", "2019-02-30", "2019-123", "not a date"))
   expect_equal(p$index, c(2L, 3L, 4L))
   expect_match(p$reason[1], "only 28 days")
   expect_match(p$reason[2], "ordinal dates")
   expect_match(p$reason[3], "could not be parsed")
   # A clean vector produces no rows.
-  expect_equal(nrow(md_problems(c("2019-01-01", "2019-01"))), 0L)
-  expect_equal(nrow(md_problems(character(0))), 0L)
+  expect_equal(nrow(parse_problems(c("2019-01-01", "2019-01"))), 0L)
+  expect_equal(nrow(parse_problems(character(0))), 0L)
 })
 
 test_that("a day of the year is converted to its calendar date", {
@@ -239,4 +241,63 @@ test_that("ordinary dates and durations are not read as weeks or days", {
   # The year has to be introduced by "of" or "in", so a duration is left alone.
   expect_warning(as_messydate("5 weeks"), "could not be parsed")
   expect_warning(as_messydate("103 days"), "could not be parsed")
+})
+
+test_that("a qualifier on a prose range marks both ends", {
+  expect_equal(as.character(as_messydate("approximately 2019-01-01..2019-01-05")),
+               "2019-01-01~..2019-01-05~")
+  expect_equal(as.character(as_messydate("possibly 2019-01..2019-03")),
+               "2019-01?..2019-03?")
+  expect_equal(as.character(as_messydate("circa 1990..1995")), "~1990..~1995")
+  # an open end stays open
+  expect_equal(as.character(as_messydate("approximately ..2019-01-05")),
+               "..2019-01-05~")
+  # a qualifier before two days marks both days
+  expect_equal(as.character(as_messydate("approximately between 1 and 5 January 2019")),
+               "2019-01-~01..2019-01-~05")
+  expect_equal(as.character(as_messydate("around the 13th or 15th of Feb 1977")),
+               "{1977-02-~13,1977-02-~15}")
+  # without a qualifier, nothing changes
+  expect_equal(as.character(as_messydate("between the 13th and 15th of February 1977")),
+               "1977-02-13..1977-02-15")
+})
+
+test_that("a weekday name in front of a date is read and dropped", {
+  expect_equal(as.character(as_messydate(c("Thu Sep 01 2016", "Thu, 01 Sep 2016",
+                                           "Thursday, September 1, 2016",
+                                           "Mon 5 March 2012", "sun 1 Jan 2012"))),
+               c("2016-09-01", "2016-09-01", "2016-09-01", "2012-03-05", "2012-01-01"))
+  expect_equal(as.character(as_messydate("Thu Sep 01 2016 10:00:00")),
+               "2016-09-01 10:00:00")
+  expect_equal(as.character(as_messydate(c("Sept 1 2016", "Sept. 1, 2016"))),
+               c("2016-09-01", "2016-09-01"))
+})
+
+test_that("an unspecified month or day is kept as XX", {
+  expect_equal(as.character(as_messydate(c("1993-01-XX", "1993-01-00", "1993-01-??",
+                                           "1993-XX-XX", "1993-XX", "XX-01-1993",
+                                           "1993-01-XX..1993-03-XX"))),
+               c("1993-01-XX", "1993-01-XX", "1993-01-XX", "1993-XX-XX", "1993-XX",
+                 "1993-01-XX", "1993-01-XX..1993-03-XX"))
+  expect_false(as_messydate("1993-01-XX") == as_messydate("1993-01"))
+  expect_equal(compatible_dates(as_messydate("1993-01-XX")),
+               compatible_dates(as_messydate("1993-01")))
+})
+
+test_that("a set with one member keeps its braces", {
+  expect_equal(as.character(as_messydate(c("{1993-01-01..1993-01-31}",
+                                           "[1993-01-01..1993-01-31]",
+                                           "{1993-01}", "[1993-01-15]", "{}"))),
+               c("{1993-01-01..1993-01-31}", "[1993-01-01..1993-01-31]",
+                 "{1993-01}", "[1993-01-15]", "{}"))
+  x <- as_messydate("{1993-01-01..1993-01-31}")
+  expect_equal(c(year(x), month(x), day(x)), c(1993, 1, 1))
+  expect_equal(as.character(c(vmin(x), vmax(x))), c("1993-01-01", "1993-01-31"))
+})
+
+test_that("md_problems() still works, with a message", {
+  rm(list = intersect("md_problems()", ls(.deprecated_env)), envir = .deprecated_env)
+  x <- c("2019-01-01", "2019-02-30")
+  expect_message(old <- md_problems(x), "parse_problems")
+  expect_equal(old, parse_problems(x))
 })

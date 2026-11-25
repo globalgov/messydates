@@ -143,7 +143,7 @@ test_that("validation accepts time characters and rejects other letters", {
 })
 
 test_that("datetimes are precise, partial dates are not", {
-  expect_true(is_precise(as_messydate("2019-03-01 14:30:00")))
-  expect_true(is_precise(as_messydate("2019-03-01")))
-  expect_false(is_precise(as_messydate("2019-03")))
+  expect_true(date_is_precise(as_messydate("2019-03-01 14:30:00")))
+  expect_true(date_is_precise(as_messydate("2019-03-01")))
+  expect_false(date_is_precise(as_messydate("2019-03")))
 })

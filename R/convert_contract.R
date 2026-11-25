@@ -1,49 +1,24 @@
-#' Contract lists of dates into messy dates
-#' @description
-#'   This function operates as the opposite of `expand()`.
-#'   It contracts a list of dates into the abbreviated annotation
-#'   of messy dates.
-#' @name convert_contract
-#' @details The ´contract()´ function first `expand()` 'mdate' objects
-#' to then display their most succinct representation.
-#'
-#' Because `expand()` drops the time of day from ranges (see `?expand`),
-#' contracting a date-time range and then re-expanding it will not restore
-#' the original times; `contract()` is intended for date-level ranges,
-#' sets, and unspecified components.
-#'
-#' Sets are returned in the notation they were given in: a `[]` ("one member
-#' of") set contracts back to `[]` rather than `{}`. This is only possible
-#' when `contract()` is passed an `mdate` (or something coercible to one),
-#' since `expand()` returns the member dates without recording which kind of
-#' set they came from. A list of dates therefore always contracts to `{}`.
-#' Note that a set whose members happen to be consecutive days contracts to a
-#' range, `..`, whichever notation it was given in.
-#' @param x A list of dates
-#' @param collapse Do you want ranges to be collapsed?
-#'   TRUE by default.
-#'   If FALSE ranges are returned in compact format.
-#' @return A `mdate` vector
-#' @importFrom lubridate NA_Date_
-#' @examples
-#' d <- as_messydate(c("2001-01-01", "2001-01", "2001",
-#' "2001-01-01..2001-02-02", "{2001-10-01,2001-10-04}",
-#' "{2001-01,2001-02-02}", "28 BC", "-2000-01-01",
-#' "{2001-01-01, 2001-01-02, 2001-01-03}"))
-#' data.frame(d, contracted = contract(d))
-#' # a full-month range collapses to a year-month by default...
-#' contract(as_messydate("2012-06-01..2012-06-30"))
-#' # ...unless collapse = FALSE keeps it as an explicit start..end range
-#' contract(as_messydate("2012-06-01..2012-06-30"), collapse = FALSE)
-#' # a '[]' set stays a '[]' set
-#' contract(as_messydate("[2001-01-01,2001-02-02]"))
-#' @export
-contract <- function(x, collapse = TRUE) {
+# Contracts lists of dates into the shortest messy dates.
+# This is the inverse of compatible_dates(). Users reach it through
+# as_messydate() on a list. The deprecated contract() also calls it.
+#
+# With an mdate, the function first gives the possible dates of each element,
+# and then contracts them. A '[]' set ("one member of") then stays a '[]' set.
+# A list of dates always contracts to a '{}' set, as the list does not record
+# the kind of set. A set whose members are consecutive days contracts to a
+# range, '..', whichever notation it was given in.
+# compatible_dates() drops the time of day from ranges, so a date-time range
+# does not keep its times.
+# With collapse = FALSE, a range that covers a whole month or year stays a
+# range, "2012-06-01..2012-06-30", and does not become "2012-06".
+.contract <- function(x, collapse = TRUE) {
+  if (!inherits(x, 'list') && .has_missing(x))
+    return(.with_missing(x, .contract, collapse = collapse))
   onesie <- rep(FALSE, length(x))
   if (!inherits(x, 'list')) {
     onesie <- stringi::stri_detect_regex(as.character(x), "^\\[.*\\]$")
     onesie[is.na(onesie)] <- FALSE
-    x <- expand(x)
+    x <- compatible_dates(x)
   }
   x <- compact_negative_dates(x)
   x <- compact_ranges(x)
@@ -68,18 +43,29 @@ restore_onesies <- function(x, onesie) {
   x
 }
 
+# Joins each run of consecutive days before the common era into a range.
+# Days with gaps between them stay apart, so that a set stays a set.
 compact_negative_dates <- function(x) {
   lapply(x, function(d) {
-    if (stringi::stri_detect_regex(d[1], "^-") & length(d) > 1) {
-      d <- paste0(d[1], "..", d[length(d)])
-    }
-    d
+    if (length(d) < 2 || !isTRUE(stringi::stri_detect_regex(d[1], "^-")))
+      return(d)
+    num <- as.numeric(as.Date(new_messydate(d), FUN = identity))
+    if (anyNA(num)) return(d)
+    o <- order(num)
+    d <- d[o]
+    num <- num[o]
+    run <- cumsum(c(1, diff(num) != 1))
+    vapply(split(d, run), function(r)
+      if (length(r) > 1) paste0(r[1], "..", r[length(r)]) else r,
+      character(1), USE.NAMES = FALSE)
   })
 }
 
 compact_ranges <- function(x) {
   lapply(x, function(d) {
-    if (length(d) > 1) {
+    # Days before the common era are already joined by
+    # compact_negative_dates().
+    if (length(d) > 1 && !any(stringi::stri_detect_regex(d, "^-|\\.\\."))) {
       sequ <- is_sequence(d)
       if (any(sequ)) {
         starts <- d[which(sequ == FALSE)]
@@ -106,17 +92,29 @@ collapse_sets <- function(x) {
 }
 
 collapse_ranges <- function(x) {
-  x <- stringi::stri_replace_all_regex(x, "([:digit:]{4})-01-01\\.\\.([:digit:]{4})-12-31", "$1")
-  x <- stringi::stri_replace_all_regex(x, "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-28", "$1")
-  x <- stringi::stri_replace_all_regex(x, "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-29", "$1")
-  x <- stringi::stri_replace_all_regex(x, "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-30", "$1")
-  x <- stringi::stri_replace_all_regex(x, "([:digit:]{4}-[:digit:]{2})-01\\.\\.([:digit:]{4}-[:digit:]{2})-31", "$1")
-  x <- stringi::stri_replace_all_regex(x, "(-[:digit:]{4})-01-01\\.\\.(-[:digit:]{4})-12-31", "$1")
-  x <- stringi::stri_replace_all_regex(x, "(-[:digit:]{3})-01-01\\.\\.(-[:digit:]{3})-12-31", "$1")
-  x <- stringi::stri_replace_all_regex(x, "(-[:digit:]{4}-[:digit:]{2})-01\\.\\.(-[:digit:]{4}-[:digit:]{2})-28", "$1")
-  x <- stringi::stri_replace_all_regex(x, "(-[:digit:]{4}-[:digit:]{2})-01\\.\\.(-[:digit:]{4}-[:digit:]{2})-29", "$1")
-  x <- stringi::stri_replace_all_regex(x, "(-[:digit:]{4}-[:digit:]{2})-01\\.\\.(-[:digit:]{4}-[:digit:]{2})-30", "$1")
-  x <- stringi::stri_replace_all_regex(x, "(-[:digit:]{4}-[:digit:]{2})-01\\.\\.(-[:digit:]{4}-[:digit:]{2})-31", "$1")
+  # A range collapses only when both ends are in the same year (for a whole
+  # year) or the same month (for a whole month): "\\1" is the year or month
+  # of the first end.
+  x <- stringi::stri_replace_all_regex(x, "(-?[:digit:]{3,4})-01-01\\.\\.\\1-12-31", "$1")
+  .collapse_months(x)
+}
+
+# Collapses a range from the first to the last day of one month into that
+# month. The last day must be the true last day of the month, so that
+# "2012-02-01..2012-02-28" stays a range, as February 2012 has 29 days.
+.collapse_months <- function(x) {
+  rx <- "(-?[0-9]{4})-([0-9]{2})-01\\.\\.\\1-\\2-([0-9]{2})"
+  hit <- !is.na(x) & stringi::stri_detect_regex(x, rx)
+  x[hit] <- vapply(x[hit], function(s) {
+    m <- stringi::stri_match_all_regex(s, rx)[[1]]
+    for (k in seq_len(nrow(m))) {
+      last <- days_in(as.integer(m[k, 2]), as.integer(m[k, 3]))
+      if (as.integer(m[k, 4]) == last)
+        s <- sub(m[k, 1], paste0(m[k, 2], "-", m[k, 3]), s, fixed = TRUE)
+    }
+    s
+  }, character(1), USE.NAMES = FALSE)
+  x
 }
 
 is_sequence <- function(x) {

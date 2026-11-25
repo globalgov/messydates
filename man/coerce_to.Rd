@@ -13,23 +13,23 @@
 \alias{mdate}
 \title{Coercion from common date classes to \code{mdate}}
 \usage{
-as_messydate(x, resequence = FALSE)
+as_messydate(x, resequence = FALSE, ...)
 
-\method{as_messydate}{Date}(x, resequence = FALSE)
+\method{as_messydate}{Date}(x, resequence = FALSE, ...)
 
-\method{as_messydate}{POSIXct}(x, resequence = FALSE)
+\method{as_messydate}{POSIXct}(x, resequence = FALSE, ...)
 
-\method{as_messydate}{POSIXlt}(x, resequence = FALSE)
+\method{as_messydate}{POSIXlt}(x, resequence = FALSE, ...)
 
-\method{as_messydate}{character}(x, resequence = NULL)
+\method{as_messydate}{character}(x, resequence = NULL, pivot = NULL, lang = "en", ...)
 
-\method{as_messydate}{factor}(x, resequence = NULL)
+\method{as_messydate}{factor}(x, resequence = NULL, ...)
 
-\method{as_messydate}{numeric}(x, resequence = NULL)
+\method{as_messydate}{numeric}(x, resequence = NULL, origin = NULL, ...)
 
-\method{as_messydate}{list}(x, resequence = FALSE)
+\method{as_messydate}{list}(x, resequence = FALSE, collapse = TRUE, ...)
 
-mdate(x, resequence = FALSE)
+mdate(x, resequence = FALSE, ...)
 }
 \arguments{
 \item{x}{A scalar or vector of a class that can be coerced into \code{mdate},
@@ -53,7 +53,47 @@ If 'ym', ambiguous 6 digit dates are converted to YYYY-MM format.
 If 'interactive', it prompts users to select the existing
 component order of ambiguous dates,
 based on which the date is reordered into YYYY-MM-DD format
-and further completed to YYYY-MM-DD format if they choose to do so.}
+and further completed to YYYY-MM-DD format if they choose to do so.
+A two-digit year, in any of these orders, does not say which century
+it belongs to; see \code{pivot}.}
+
+\item{...}{Arguments passed to methods.}
+
+\item{pivot}{For character input, how to read two-digit years, such as
+the "29" in "1/1/29" or the "97" in "May-97".
+By default (\code{NULL}) the century is left unspecified,
+so "1/1/29" becomes \code{"XX29-01-01"}, and no century is invented.
+Alternatively, a four-digit year that starts a 100-year window:
+two-digit years are placed in that window.
+For example, \code{pivot = 1930} reads "29" as 2029 and "30" as 1930,
+which is what Excel for Windows does by default,
+and \code{pivot = 1969} reproduces R's own \verb{\%y} convention.}
+
+\item{lang}{For character input, the language of any prose in \code{x}:
+\code{"en"} for English (the default) or \code{"fr"} for French.
+French prose is rewritten into the English forms described in
+"Parsing prose" below, so the same conventions are read in both,
+e.g. \code{"vers 1910"}, \code{"le XIXe siècle"}, \code{"les ides de mars, 44 av. J.-C."},
+or \code{"entre le 13 et le 15 février 1977"}.
+Dates written only in digits are read the same in every language.}
+
+\item{origin}{For numeric input, the origin of a serial day count.
+Spreadsheets store dates as a count of days from an origin,
+and a file that loses its date formatting carries only these counts.
+Use \code{"excel"} for Excel's default (Windows) date system, which counts
+serial 1 as 1900-01-01 and, for compatibility with Lotus 1-2-3, also
+counts the non-existent 29 February 1900 as serial 60;
+use \code{"excel1904"} for the 1904 date system of older Excel for Mac;
+or give any date, such as \code{"1970-01-01"}, as the day that counts as zero.
+A fractional part is read as a time of day.
+By default (\code{NULL}), whole numbers from -9999 to 9999 are read as years,
+eight-digit numbers that form a valid date are read as YYYYMMDD,
+and any other number becomes \code{NA} with a warning,
+since without an origin it cannot be told apart from a serial count.}
+
+\item{collapse}{For a list, should a range that covers a whole month or
+year become that month or year? \code{TRUE} by default, so that
+\code{"2012-06-01..2012-06-30"} becomes \code{"2012-06"}.}
 }
 \value{
 A \code{mdate} class object
@@ -65,7 +105,7 @@ In addition to the typical date classes in R (\code{Date}, \code{POSIXct}, and \
 there is also a direct method for converting text or character strings to \code{mdate}.
 The function can also extract dates and times from text,
 including some historical prose conventions,
-though this is a work-in-progress and currently only works in English.
+in English or French (see \code{lang}).
 }
 \details{
 Coercion from \code{POSIXct} and \code{POSIXlt} preserves the time of day
@@ -91,10 +131,31 @@ This is the common case when a date column has been read in with
 
 \item \code{as_messydate(numeric)}: Coerce numeric objects to \code{mdate} class
 
-\item \code{as_messydate(list)}: Coerce list date objects to the most concise
-representation of \code{mdate} class
+\item \code{as_messydate(list)}: Coerce a list of dates to the shortest \code{mdate}.
+Each element of the list gives one element of the result.
+This is the inverse of \code{compatible_dates()}.
+An empty element gives the empty set, \code{"{}"},
+and an element that is only \code{NA} gives \code{NA}.
 
 }}
+\section{Unspecified components and one-member sets}{
+
+An unspecified month or day is kept as \code{XX}: \code{"1993-01-XX"} says that
+the record has a day that is not known, while \code{"1993-01"} says only
+that it names the month. A month or day written as \code{0}, \code{00}, \verb{??} or
+\code{NA} is read as \code{XX}. Both forms have the same possible dates, and the
+resolution functions give the same results for them.
+
+A set with one member keeps its braces: \code{"{1993-01-01..1993-01-31}"}
+is all the days of January (a spell, such as a monthly count), and
+\code{"[1993-01-01..1993-01-31]"} is one of them. A bare range, and a range
+in prose ("from the 13th to the 15th of February"), is one of its days.
+
+Functions that write a result from its days, such as \code{+},
+\verb{\%intersect\%}, and \code{as_messydate()} on a list, write the shortest form,
+without \code{XX} or braces.
+}
+
 \section{Parsing prose}{
 
 Beyond plain and lightly-formatted dates, \code{as_messydate()} recognises
@@ -135,6 +196,11 @@ date is read too, as \code{"2026-W05"} or, for one day within the week,
 seasons, spring running from March to May and winter from December into
 February of the following year. The EDTF season codes (\code{"2026-22"}) are
 rejected instead of read, being easily read as a mistake for a date.}
+\item{French prose, with \code{lang = "fr"}. The same conventions are read,
+e.g. \code{"vers 1910"} becomes \code{"~1910"}, \code{"le XIXe siècle"} becomes
+\code{"18XX"}, and \code{"du 13 au 15 février 1977"} becomes
+\code{"1977-02-13..1977-02-15"}. Accents may be left out.
+Spelled-out numbers are read in English only.}
 \item{A comma-separated list of dates in prose, e.g.
 \code{"13th Feb, 1977, Feb 15 1977, 1910"}, is split into separate dates
 (here, three): a fragment that is only a year is treated as completing
@@ -180,6 +246,13 @@ as_messydate("{2021-02-01,2021-02-28}")
 as_messydate(c("-2021", "2021 BC", "-2021-02-01"))
 as_messydate(c("210201", "20210201"), resequence = "ymd")
 as_messydate(c("010221", "01022021"), resequence = "dmy")
+# two-digit years leave the century unspecified, unless a pivot is given
+as_messydate(c("1/1/29", "May-97"))
+as_messydate(c("1/1/29", "May-97"), pivot = 1930)
+# serial day counts from spreadsheets need their origin
+as_messydate(c(36892, 45000.5), origin = "excel")
+as_messydate(c(35430, 1462), origin = "excel1904")
+as_messydate(c(2021, 20210201))
 # as_messydate(c("01-02-21", "01-02-2021", "01-02-91", "01-02-1991"),
 # resequence = "interactive")
 # ISO 8601-2 times, with the same annotations available on time components
@@ -201,9 +274,16 @@ as_messydate("2026-W05")
 as_messydate("summer 2026")
 as_messydate("before 1910")
 as_messydate("between the 13th and 15th of Feb, 1977")
+# French prose
+as_messydate(c("vers 1910", "le 15 mars 2019", "les ann\u00e9es 1990"), lang = "fr")
+as_messydate("les ides de mars, 44 av. J.-C.", lang = "fr")
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
+# the shortest form of a messy date
+as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")))
+as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")),
+  collapse = FALSE)
 }
 \seealso{
 Other coerce:

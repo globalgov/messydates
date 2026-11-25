@@ -2,57 +2,39 @@
 % Please edit documentation in R/class_methods.R
 \name{class_methods}
 \alias{class_methods}
-\alias{[.mdate}
-\alias{[<-.mdate}
-\alias{[[.mdate}
-\alias{[[<-.mdate}
-\alias{c.mdate}
-\alias{rep.mdate}
-\alias{unique.mdate}
-\alias{duplicated.mdate}
-\title{Basic vector methods for \code{mdate} objects}
+\alias{vec_ptype2.mdate.mdate}
+\alias{vec_cast.mdate.mdate}
+\title{Vector methods for \code{mdate} objects}
 \usage{
-\method{[}{mdate}(x, ..., drop = TRUE)
+\method{vec_ptype2}{mdate.mdate}(x, y, ...)
 
-\method{[}{mdate}(x, i, ...) <- value
-
-\method{[[}{mdate}(x, ...)
-
-\method{[[}{mdate}(x, i, ...) <- value
-
-\method{c}{mdate}(...)
-
-\method{rep}{mdate}(x, ...)
-
-\method{unique}{mdate}(x, incomparables = FALSE, ...)
-
-\method{duplicated}{mdate}(x, incomparables = FALSE, ...)
+\method{vec_cast}{mdate.mdate}(x, to, ...)
 }
 \arguments{
-\item{x}{An \code{mdate} object.}
+\item{x, y}{Vectors to combine or convert.}
 
-\item{drop}{Included for consistency with the default \code{[} method;
-has no effect since \code{mdate} objects are always vectors.}
+\item{...}{Passed on to other methods.}
 
-\item{i, ...}{Index or indices, as for the default methods; for \code{c()},
-one or more objects to concatenate (coerced to \code{mdate} first).}
-
-\item{value}{A replacement value, coerced to \code{mdate} and validated
-before assignment.}
-
-\item{incomparables}{Values that cannot be compared, as for the default
-methods; \code{FALSE} by default.}
+\item{to}{The type to convert to.}
 }
 \value{
-An \code{mdate} object, except for \code{duplicated()}, which returns a
-logical vector, and \code{c()}, which returns the (unclassed) result when
-called on a single object.
+An \code{mdate} object, except where the method converts to
+another type.
 }
 \description{
-These methods let \code{mdate} vectors behave like ordinary character vectors
-for subsetting, replacement, concatenation, repetition, and
-deduplication,
-while ensuring the result remains a validated \code{mdate} object.
+\code{mdate} and \code{mduration} objects are built on the
+\href{https://vctrs.r-lib.org}{vctrs} package.
+They therefore subset, replace, concatenate, repeat, and deduplicate
+like ordinary vectors, and keep their class in \code{data.frame}s, tibbles,
+and \code{dplyr} or \code{tidyr} pipelines (e.g. \code{bind_rows()}, \code{unnest()}).
+
+Character strings, \code{Date}, and \code{POSIXct} values combine with \code{mdate}
+objects and are converted to \code{mdate}.
+A replacement value that cannot be read as a date raises an error,
+instead of a silent \code{NA}.
+An \code{mdate} converts to a character vector without loss,
+but conversion to an exact class, such as \code{Date},
+needs an explicit resolution, see \code{as.Date()}.
 }
 \details{
 \code{unique()} and \code{duplicated()} compare the annotated strings, not the
@@ -65,6 +47,8 @@ d <- as_messydate(c("2012-01-01", "2012-02-01", "2012-03-01"))
 d[2]
 d[2] <- "2012-02-02"
 c(d, as_messydate("2012-04-01"))
+c(d, as.Date("2012-05-01"))
 rep(d, 2)
 unique(as_messydate(c("2012-01-01", "2012-01-01", "2012-02-01")))
+data.frame(event = c("a", "b", "c"), date = d)
 }

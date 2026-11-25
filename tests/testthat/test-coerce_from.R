@@ -35,8 +35,9 @@ test_that("Text parsing works correctly", {
   expect_identical(as_messydate("signed on the last day of February 2004"), as_messydate("2004-02-29"))
   expect_identical(as_messydate("it happened around the 13th of Feb in 1977"), as_messydate("1977-02-~13"))
   expect_identical(as_messydate("it happened between the 13th and 15th of Feb, 1977"), as_messydate("1977-02-13..1977-02-15"))
-  expect_identical(as_messydate("from the 13th to the 15th of Feb, 1977"), as_messydate("{1977-02-13..1977-02-15}"))
-  expect_identical(as_messydate("from February 13 to 15, 1977"), as_messydate("{1977-02-13..1977-02-15}"))
+  # A prose range is a bare range: one of its days, not a {} spell
+  expect_identical(as_messydate("from the 13th to the 15th of Feb, 1977"), as_messydate("1977-02-13..1977-02-15"))
+  expect_identical(as_messydate("from February 13 to 15, 1977"), as_messydate("1977-02-13..1977-02-15"))
   expect_identical(as_messydate("it happened on the 13th or the 15th of Feb, 1977"), as_messydate("{1977-02-13,1977-02-15}"))
   expect_identical(as_messydate("things happened on 13th and 15th of Feb, 1977"), as_messydate(c("1977-02-13","1977-02-15")))
   expect_identical(as_messydate("13th Feb, 1977, Feb 15 1977, 1910"), as_messydate(c("1977-02-13","1977-02-15","1910")))
@@ -102,4 +103,32 @@ test_that("as.double.mdate converts to days since 1970-01-01, including BCE", {
   expect_equal(as.double(as_messydate("-1000-01-01")),
                as.double(lubridate::as_date(lubridate::ymd("0000-01-01") -
                                               lubridate::years(1000))))
+})
+
+test_that("a conversion without FUN states the rule for imprecise values once", {
+  rm(list = grep("^resolve:", ls(.deprecated_env), value = TRUE),
+     envir = .deprecated_env)
+  x <- as_messydate(c("2012-06-15", "2012-06", "~2012", NA, "{}"))
+  expect_message(d <- as.Date(x), "resolved 2 imprecise values with `vmin\\(\\)`")
+  expect_equal(d, as.Date(x, FUN = vmin))
+  expect_silent(as.Date(x))
+  expect_message(as.POSIXct(x), "as.POSIXct\\(x, FUN = vmax\\)")
+  expect_message(as.POSIXlt(x), "as.POSIXlt")
+  expect_message(as.double(x), "as.double")
+})
+
+test_that("a conversion is silent for precise values or with FUN", {
+  rm(list = grep("^resolve:", ls(.deprecated_env), value = TRUE),
+     envir = .deprecated_env)
+  expect_silent(as.Date(as_messydate(c("2012-06-15", NA, "{}"))))
+  expect_silent(as.POSIXct(as_messydate("2012-06-15 14:30")))
+  expect_silent(as.Date(as_messydate("2012-06"), FUN = vmax))
+  expect_silent(as.Date(as_messydate("2012-06"), vmax))
+  expect_silent(seq(as_messydate("2012-06-01"), as_messydate("2012-06")))
+})
+
+test_that("as.double() resolves with FUN and keeps NA", {
+  x <- as_messydate(c("2012-06", NA))
+  expect_equal(as.double(x, FUN = vmax),
+               c(as.double(as.Date("2012-06-30")), NA))
 })

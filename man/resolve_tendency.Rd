@@ -12,48 +12,59 @@
 \alias{modal.mdate}
 \alias{vmodal}
 \alias{vmodal.mdate}
-\alias{random}
-\alias{random.mdate}
-\alias{vrandom}
-\alias{vrandom.mdate}
 \title{Resolves messy dates into a central tendency}
 \usage{
-\method{median}{mdate}(..., na.rm = TRUE)
+\method{median}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 vmedian(..., na.rm = TRUE)
 
-\method{vmedian}{mdate}(..., na.rm = TRUE)
+\method{vmedian}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
-\method{mean}{mdate}(..., trim = 0, na.rm = TRUE)
+\method{mean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 vmean(..., na.rm = TRUE)
 
-\method{vmean}{mdate}(..., trim = 0, na.rm = TRUE)
+\method{vmean}{mdate}(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 modal(..., na.rm = TRUE)
 
-\method{modal}{mdate}(..., na.rm = TRUE)
+\method{modal}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 
 vmodal(..., na.rm = TRUE)
 
-\method{vmodal}{mdate}(..., na.rm = TRUE)
-
-random(..., na.rm = TRUE)
-
-\method{random}{mdate}(..., na.rm = TRUE)
-
-vrandom(..., na.rm = TRUE)
-
-\method{vrandom}{mdate}(..., na.rm = TRUE)
+\method{vmodal}{mdate}(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
 }
 \arguments{
 \item{...}{a mdate object}
 
-\item{na.rm}{Should NAs be removed? FALSE by default.}
+\item{na.rm}{Should NAs be removed? FALSE by default.
+As in base R, with \code{na.rm = FALSE} one \code{NA} makes the result of
+\code{min()} or \code{max()} \code{NA}.}
+
+\item{uncertain}{What to do with uncertain values (\verb{?} or \verb{\%}), which the
+source itself doubts.
+\code{"keep"} (the default) resolves them as other values.
+\code{"drop"} gives \code{NA} for them in the element-wise \verb{v*()} functions,
+and leaves them out of the functions that resolve the whole vector,
+such as \code{min()}.
+For random draws, see \code{uncertain_p} in \code{vrandom()}.}
+
+\item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by,
+in units of the component that each mark covers, as in
+\code{compatible_dates()}. 0 (the default) ignores the marks.
+With a positive value, \code{vmin()} and \code{vmax()} give the first and last
+dates of the widened support, the same dates that \code{compatible_dates()}
+gives with the same \code{approx_range}, and that \code{vrandom()} can draw.}
 
 \item{trim}{the fraction (0 to 0.5) of observations to be trimmed
 from each end of x before the mean is computed.
 Values of trim outside that range are taken as the nearest endpoint.}
+}
+\value{
+An \code{mdate} of precise dates or date-times.
+The \verb{v*()} functions give one value for each element of \code{x},
+with \code{NA} for a missing value and for the empty set, \code{{}}.
+The other functions give one value for the whole vector.
 }
 \description{
 These functions resolve messydates by their central tendency.
@@ -64,7 +75,7 @@ the \verb{v*()} versions resolve each element separately and so return a
 vector of the same length as the input.
 }
 \details{
-All of these functions work by calling \code{expand()} to enumerate the
+All of these functions work by calling \code{compatible_dates()} to enumerate the
 dates or date-times consistent with each messy value, then summarising
 that expanded set. For \code{median()} and \code{mean()}, an even number of
 expanded values is resolved by averaging the two middle values (via
@@ -78,15 +89,27 @@ dates, the central tendency describes where those occurrences sit. For a
 \verb{[]} ("one member of") set, which records that something happened on
 exactly one of those dates but not which, the central tendency is a point
 estimate of that single unknown date, as it is for a range or an
-unspecified component. \code{vrandom()} draws a member uniformly in either
-case, which for a \verb{[]} set is a draw from the candidates themselves.
+unspecified component.
 
-Averaging across the BCE/CE boundary, or between two BCE dates, is not
-currently supported: \code{median()} falls back to the earlier of the two
-middle values in that case, and \code{mean()}/\code{vmean()} may be unreliable for
-solely negative-year inputs (a documented limitation, not a supported
-feature).
+\code{median()} and \code{vmedian()} do not average two middle values across
+the BCE/CE boundary or between two BCE dates: they give the earlier of
+the two. \code{mean()} and \code{vmean()} average dates before the common era by
+day, and drop the time of day where a date before the common era is
+present.
 }
+\section{Approximate values}{
+
+With \code{approx_range} above 0, an approximate value (\code{~} or \verb{\%}) widens
+by \code{approx_range} as in \code{compatible_dates()}, and its dates get the
+trapezoidal weights that \code{vrandom()} draws from: a weight of 1 across
+the dates that the value names, falling linearly to 0 over the
+widening. \code{mean()}, \code{vmean()}, \code{median()} and \code{vmedian()} then give the
+weighted mean and median.
+The dates with the highest weight are always those that the value
+names, so \code{modal()} and \code{vmodal()} give the same result with any
+\code{approx_range}.
+}
+
 \examples{
 d <- as_messydate(c("2008-03-25", "?2012-02-27", "2001-01?", "2001~",
   "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}",
@@ -102,6 +125,4 @@ mean(d)
 vmean(d)
 modal(d)
 vmodal(d)
-random(d)
-vrandom(d)
 }

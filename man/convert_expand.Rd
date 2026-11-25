@@ -2,57 +2,70 @@
 % Please edit documentation in R/convert_expand.R
 \name{convert_expand}
 \alias{convert_expand}
-\alias{expand}
-\title{Expand messy dates to lists of dates}
+\alias{compatible_dates}
+\title{The compatible dates of messy dates}
 \usage{
-expand(x, approx_range = 0, by = "day")
+compatible_dates(x, approx_range = 0)
 }
 \arguments{
 \item{x}{A \code{mdate} object.
 If not an 'mdate' object, conversion is handled first with ´as_messydate()´.}
 
 \item{approx_range}{Range to expand approximate dates,
-or date components, annotated with '~', by default 0.
+or date components, annotated with '~' or '\%', by default 0.
 That is, removes signs for approximate dates and
 treats these dates as precise dates.
-If 3, for example, adds 3 days for day approximation,
-3 months for month approximation,
-3 years for year/whole date approximation,
-3 years and 3 months for year-month approximation,
-and 3 months and 3 days for month-day approximation.}
-
-\item{by}{Granularity of enumeration, "day" by default.
-To avoid combinatorial explosion, ranges are enumerated at day
-granularity and any time-of-day components on ranges are dropped.
-Precise date-times (i.e. non-ranges) keep their time.
-Set \code{by} to a sub-day unit ("hour", "min", or "sec") to opt in to finer
-enumeration of precise date-time ranges.}
+With a positive value, the dates widen on each side by \code{approx_range}
+units of the component that each mark is written on.
+A mark after the whole date says that the date is approximate
+at the precision written, so it widens by the finest component.
+If 3, for example, \code{"~2001"} and \code{"~2001-06-15"} widen by 3 years,
+\code{"2001-~06-15"} and \code{"2001-06~"} by 3 months,
+and \code{"2001-06-~15"} and \code{"2001-06-15~"} by 3 days.
+Marks on more than one component widen by each of them,
+so \code{"2001-~06-~15"} widens by 3 months and 3 days.
+The widening starts from the first and the last date that the value
+names, so that \code{"~2001"} with 1 gives all of 2000 to 2002.
+A range widens at each end by the marks of that end,
+so that \code{"2001-03-~01..2001-04-15"} with 3 starts on 26 February
+and still ends on 15 April.
+Sets, values with unspecified digits,
+and open-ended ranges with a mark are not widened.}
 }
 \value{
-A list of dates, including all dates in each range or set.
+A list with one character vector for each element of \code{x}.
+Each vector holds the compatible dates of that element.
 }
 \description{
-These functions expand on date ranges, sets of dates, and unspecified or
-approximate dates (annotated with '..', '{}', 'XX' or '~').
-As these messydates may refer to several possible dates,
-the function "opens" these values to reveal a vector of all the possible
-dates implied.
-Imprecise dates (dates only containing information on year and/or month)
-are also expanded to include possible dates within that year and/or month.
-The function removes the annotation from dates with unreliable sources ('?'),
-before being expanded normally as though they were incomplete.
+\code{compatible_dates()} gives the compatible set of each messy date:
+every date that is consistent with the record.
+A range (\code{..}) gives each day from its start to its end.
+A set (\code{{}} or \verb{[]}) gives each of its members.
+A value with unspecified or absent components (\code{X}, or a year or a
+year and month only) gives each day that it can be.
+An uncertain value (\verb{?}) gives the same dates as the value
+without the mark.
+The function gives days.
+A precise date-time keeps its time.
+A range of date-times gives the days of the range.
+To make a sequence of times, use \code{seq()}.
+
+To change a list of dates back into the shortest messy date,
+use \code{as_messydate()} on the list.
 }
 \examples{
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-expand(d)
+compatible_dates(d)
 # widen an approximate day (the '~' before the day) by 3 days either side
-expand(as_messydate("2001-01-~15"), approx_range = 3)
+compatible_dates(as_messydate("2001-01-~15"), approx_range = 3)
+# widen only the approximate start of a range
+compatible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
 # a precise date-time is returned unchanged, keeping its time
-expand(as_messydate("2012-01-01 14:30:00"))
-# a date-time range drops its time by default (day granularity)...
-expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"))
-# ...unless a sub-day 'by' is requested
-expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"), by = "hour")
+compatible_dates(as_messydate("2012-01-01 14:30:00"))
+# a date-time range gives its days
+compatible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
+# the possible dates change back into the shortest messy date
+as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")))
 }

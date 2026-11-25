@@ -1,65 +1,120 @@
-#' Expand messy dates to lists of dates
+#' The compatible dates of messy dates
 #' @description
-#'   These functions expand on date ranges, sets of dates, and unspecified or
-#'   approximate dates (annotated with '..', '{}', 'XX' or '~').
-#'   As these messydates may refer to several possible dates,
-#'   the function "opens" these values to reveal a vector of all the possible
-#'   dates implied.
-#'   Imprecise dates (dates only containing information on year and/or month)
-#'   are also expanded to include possible dates within that year and/or month.
-#'   The function removes the annotation from dates with unreliable sources ('?'),
-#'   before being expanded normally as though they were incomplete.
+#'   `compatible_dates()` gives the compatible set of each messy date:
+#'   every date that is consistent with the record.
+#'   A range (`..`) gives each day from its start to its end.
+#'   A set (`{}` or `[]`) gives each of its members.
+#'   A value with unspecified or absent components (`X`, or a year or a
+#'   year and month only) gives each day that it can be.
+#'   An uncertain value (`?`) gives the same dates as the value
+#'   without the mark.
+#'   The function gives days.
+#'   A precise date-time keeps its time.
+#'   A range of date-times gives the days of the range.
+#'   To make a sequence of times, use `seq()`.
+#'
+#'   To change a list of dates back into the shortest messy date,
+#'   use `as_messydate()` on the list.
 #' @param x A `mdate` object.
 #'   If not an 'mdate' object, conversion is handled first with ´as_messydate()´.
 #' @param approx_range Range to expand approximate dates,
-#'   or date components, annotated with '~', by default 0.
+#'   or date components, annotated with '~' or '%', by default 0.
 #'   That is, removes signs for approximate dates and
 #'   treats these dates as precise dates.
-#'   If 3, for example, adds 3 days for day approximation,
-#'   3 months for month approximation,
-#'   3 years for year/whole date approximation,
-#'   3 years and 3 months for year-month approximation,
-#'   and 3 months and 3 days for month-day approximation.
-#' @param by Granularity of enumeration, "day" by default.
-#'   To avoid combinatorial explosion, ranges are enumerated at day
-#'   granularity and any time-of-day components on ranges are dropped.
-#'   Precise date-times (i.e. non-ranges) keep their time.
-#'   Set `by` to a sub-day unit ("hour", "min", or "sec") to opt in to finer
-#'   enumeration of precise date-time ranges.
-#' @return A list of dates, including all dates in each range or set.
+#'   With a positive value, the dates widen on each side by `approx_range`
+#'   units of the component that each mark is written on.
+#'   A mark after the whole date says that the date is approximate
+#'   at the precision written, so it widens by the finest component.
+#'   If 3, for example, `"~2001"` and `"~2001-06-15"` widen by 3 years,
+#'   `"2001-~06-15"` and `"2001-06~"` by 3 months,
+#'   and `"2001-06-~15"` and `"2001-06-15~"` by 3 days.
+#'   Marks on more than one component widen by each of them,
+#'   so `"2001-~06-~15"` widens by 3 months and 3 days.
+#'   The widening starts from the first and the last date that the value
+#'   names, so that `"~2001"` with 1 gives all of 2000 to 2002.
+#'   A range widens at each end by the marks of that end,
+#'   so that `"2001-03-~01..2001-04-15"` with 3 starts on 26 February
+#'   and still ends on 15 April.
+#'   Sets, values with unspecified digits,
+#'   and open-ended ranges with a mark are not widened.
+#' @return A list with one character vector for each element of `x`.
+#'   Each vector holds the compatible dates of that element.
 #' @importFrom lubridate as_date ymd years
 #' @name convert_expand
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-#' expand(d)
+#' compatible_dates(d)
 #' # widen an approximate day (the '~' before the day) by 3 days either side
-#' expand(as_messydate("2001-01-~15"), approx_range = 3)
+#' compatible_dates(as_messydate("2001-01-~15"), approx_range = 3)
+#' # widen only the approximate start of a range
+#' compatible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
 #' # a precise date-time is returned unchanged, keeping its time
-#' expand(as_messydate("2012-01-01 14:30:00"))
-#' # a date-time range drops its time by default (day granularity)...
-#' expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"))
-#' # ...unless a sub-day 'by' is requested
-#' expand(as_messydate("2019-03-01 09:00..2019-03-01 12:00"), by = "hour")
+#' compatible_dates(as_messydate("2012-01-01 14:30:00"))
+#' # a date-time range gives its days
+#' compatible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
+#' # the possible dates change back into the shortest messy date
+#' as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")))
 #' @export
-expand <- function(x, approx_range = 0, by = "day") {
+compatible_dates <- function(x, approx_range = 0) {
+  .compatible(x, approx_range, by = "day")
+}
+
+# Does the work of compatible_dates(). The deprecated expand() also calls it,
+# with a sub-day `by`, until expand() is removed in 1.4.0.
+.compatible <- function(x, approx_range = 0, by = "day") {
   if (!is_messydate(x)) {
     message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
+  }
+  # The empty set, '{}', expands to no dates, and so does a value with an
+  # unspecified digit that leaves no valid day, such as "2012-02-3X".
+  empty <- is_empty_notation(x)
+  px <- which(.has_partial_x(as.character(x)))
+  if (length(px))
+    empty[px] <- lengths(lapply(as.character(x)[px], .partial_x_days)) == 0
+  if (any(empty)) {
+    out <- vector("list", length(x))
+    out[empty] <- list(character(0))
+    if (any(!empty)) out[!empty] <- .compatible(x[!empty], approx_range, by)
+    names(out) <- names(x)
+    return(out)
   }
   # Remove braces and uncertainty. A canonical mdate string is only ever
   # squished/trimmed of incidental whitespace during parsing, so any space
   # remaining here is the date-time separator, not stripped alongside braces.
   # '[]' members are enumerated just as '{}' members are; the two differ in
   # what the set *means*, not in which dates it contains.
-  x <- stringi::stri_replace_all_regex(x, "\\{|\\}|\\[|\\]|\\%|\\?", "")
+  # '%' is approximate and uncertain: it keeps the approximate part as '~'.
+  x <- stringi::stri_replace_all_regex(x, "\\%", "~")
+  x <- stringi::stri_replace_all_regex(x, "\\{|\\}|\\[|\\]|\\?", "")
   if (approx_range == 0) {
     # if no approx_range, then can just ignore these annotations
     x <- stringi::stri_replace_all_regex(x, "\\~|^\\.\\.|\\.\\.$", "")
   } else {
-    # otherwise we need to expand approximate dates
-    x <- expand_approximate(x, approx_range)
+    # otherwise we need to expand approximate dates.
+    # A simple approximate date widens by approx_range units of each
+    # component that its marks cover, on each side of all the dates it names,
+    # with the same support as the weights in vrandom().
+    # A closed range widens at each end by the marks of that end.
+    # An open-ended range with a mark is not widened: it gives its known
+    # end, as it does with approx_range = 0.
+    open <- stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$") &
+      stringi::stri_detect_regex(x, "[~%]")
+    open[is.na(open)] <- FALSE
+    if (any(open))
+      x[open] <- stringi::stri_replace_all_regex(x[open],
+                                                 "\\~|^\\.\\.|\\.\\.$", "")
+    simple <- .approx_widens(x)
+    if (any(simple)) {
+      x[simple] <- vapply(x[simple], function(y) {
+        core <- compatible_dates(new_messydate(y))[[1]]
+        sup <- .approx_support(core, y, approx_range)
+        paste0(sup$from, "..", sup$to)
+      }, character(1), USE.NAMES = FALSE)
+    }
+    if (any(!simple)) x[!simple] <- expand_approximate(x[!simple], approx_range)
   }
   if (grepl("^(hour|min|sec)", by)) {
     return(expand_datetime(x, by))
@@ -71,7 +126,7 @@ expand <- function(x, approx_range = 0, by = "day") {
   bare[is.na(bare)] <- FALSE
   # Day granularity: keep the time on precise date-times, but drop it from
   # ranges and imprecise values so the date-level logic below applies.
-  keep <- is_precise(x) & grepl("[T ]", x)
+  keep <- date_is_precise(x) & grepl("[T ]", x)
   strip <- !keep & !bare
   if (any(strip)) x[strip] <- strip_times(x[strip])
   out <- as.list(x)
@@ -88,19 +143,45 @@ expand <- function(x, approx_range = 0, by = "day") {
 
 # Enumerates precise date-time ranges at sub-day granularity using POSIXct.
 # Non-range and imprecise values fall back to day-level expansion.
+# Only the deprecated expand() uses this, with a sub-day `by`.
+# Remove it with expand() in 1.4.0.
 expand_datetime <- function(x, by) {
   unit <- c(hour = "hour", min = "min", sec = "sec")[
     sub("s$", "", sub("^(hour|min|sec).*", "\\1", by))]
+  fmt <- paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S")
   lapply(x, function(y) {
     if (grepl("\\.\\.", y) && grepl("[T ]", y)) {
       ends <- strsplit(y, "\\.\\.")[[1]]
-      s <- as.POSIXct(sub("T", " ", ends[1], fixed = TRUE), tz = "UTC")
-      e <- as.POSIXct(sub("T", " ", ends[2], fixed = TRUE), tz = "UTC")
-      format(seq(s, e, by = unit), paste0("%Y-%m-%d", .dt_sep, "%H:%M:%S"))
+      off <- stringi::stri_extract_first_regex(ends, .offset_rx)
+      if (all(is.na(off))) {
+        s <- as.POSIXct(sub("T", " ", ends[1], fixed = TRUE), tz = "UTC")
+        e <- as.POSIXct(sub("T", " ", ends[2], fixed = TRUE), tz = "UTC")
+        return(format(seq(s, e, by = unit), fmt))
+      }
+      # Keep the offset on each time. The ends are read as instants, so ends
+      # with different offsets are still sequenced correctly, and every time
+      # is then written in the offset of the first end that has one. An end
+      # with no offset is taken to have that same offset.
+      o <- off[!is.na(off)][1]
+      ends[is.na(off)] <- paste0(ends[is.na(off)], o)
+      inst <- mdate_to_posixct(ends)
+      wall <- seq(inst[1], inst[2], by = unit) + .offset_seconds(o)
+      paste0(format(wall, fmt, tz = "UTC"), o)
     } else {
-      unlist(expand(as_messydate(y)))
+      unlist(compatible_dates(as_messydate(y)))
     }
   })
+}
+
+# A UTC offset at the end of a canonical date-time, as `as_messydate()`
+# writes it ("Z" or "+hh:mm").
+.offset_rx <- "(Z|[+-][0-9]{2}:[0-9]{2})$"
+
+# The number of seconds that an offset such as "+02:00" adds to UTC.
+.offset_seconds <- function(o) {
+  if (o == "Z") return(0)
+  sgn <- if (substr(o, 1, 1) == "-") -1 else 1
+  sgn * (as.numeric(substr(o, 2, 3)) * 3600 + as.numeric(substr(o, 5, 6)) * 60)
 }
 
 ## expand approx ####
@@ -246,12 +327,66 @@ expand_unspecified <- function(dates) {
   # Years carrying 'X' must be resolved before the rules below, all of which
   # expect four literal digits in the year position.
   dates <- expand_unspecified_years(dates)
+  # A month or a day with one unspecified digit ("2012-1X", "2012-06-1X")
+  # names only some months or days, so each such member is written out.
+  dates <- .expand_partial_x(dates)
   # Separate ranges and sets of dates
   dates <- stringi::stri_replace_all_fixed(dates, ",", ",,")
   dates <- stringi::stri_replace_all_regex(dates, "(^|,)(-?[:digit:]{4})($|,)",
                                     "$1$2-01-01..$2-12-31$3")
   dates <- unspecified_months(dates)
   dates <- stringi::stri_replace_all_fixed(dates, ",,", ",")
+  dates
+}
+
+# Partly unspecified months and days ------------------------------------------
+# A value whose month or day has one unspecified digit, such as "2012-1X"
+# (October to December) or "2012-06-1X" (10 to 19 June).
+.partial_x_rx <- paste0("^-?[0-9]{4}-([0-9]X|X[0-9])(-[0-9X]{2})?$|",
+                        "^-?[0-9]{4}-[0-9X]{2}-([0-9]X|X[0-9])$")
+
+.has_partial_x <- function(v) {
+  out <- !is.na(v) & stringi::stri_detect_regex(v, .partial_x_rx)
+  out[is.na(out)] <- FALSE
+  out
+}
+
+# The valid days that one such value can be, in order.
+.partial_x_days <- function(v) {
+  m <- stringi::stri_match_first_regex(v, "^(-?[0-9]{4})-([0-9X]{2})(?:-([0-9X]{2}))?$")
+  yr <- as.integer(m[, 2])
+  fits <- function(cands, pattern)
+    cands[grepl(paste0("^", gsub("X", "[0-9]", pattern), "$"), cands)]
+  months <- fits(sprintf("%02d", 1:12), m[, 3])
+  out <- character(0)
+  for (mo in months) {
+    days <- sprintf("%02d", seq_len(days_in(yr, as.integer(mo))))
+    if (!is.na(m[, 4])) days <- fits(days, m[, 4])
+    if (length(days)) out <- c(out, paste(m[, 2], mo, days, sep = "-"))
+  }
+  out
+}
+
+# Writes each such member of a value as its runs of consecutive days:
+# "2012-1X" becomes "2012-10-01..2012-12-31", and "2012-0X-15" becomes the
+# set of the 15th of January to September.
+.expand_partial_x <- function(dates) {
+  hit <- !is.na(dates) & stringi::stri_detect_regex(dates, "[0-9]X|X[0-9]")
+  if (!any(hit)) return(dates)
+  dates[hit] <- vapply(dates[hit], function(d) {
+    members <- stringi::stri_split_fixed(d, ",")[[1]]
+    members <- vapply(members, function(v) {
+      if (!.has_partial_x(v)) return(v)
+      days <- .partial_x_days(v)
+      if (!length(days)) return(NA_character_)
+      num <- as.numeric(as.Date(new_messydate(days), FUN = identity))
+      run <- cumsum(c(1, diff(num) != 1))
+      paste(vapply(split(days, run), function(r)
+        if (length(r) > 1) paste0(r[1], "..", r[length(r)]) else r,
+        character(1)), collapse = ",")
+    }, character(1), USE.NAMES = FALSE)
+    paste(members, collapse = ",")
+  }, character(1), USE.NAMES = FALSE)
   dates
 }
 
@@ -289,6 +424,8 @@ resolve_x_year <- function(v, bound) {
     rest <- if (bound == "min") paste0(rest, "-01") else
       paste0(rest, "-", days_in(as.integer(yr), mth))
   }
+  # Year zero has no sign: the latest year of "-00XX" is "0000", not "-0000".
+  if (yr == "0000") sign <- ""
   paste0(sign, yr, rest)
 }
 
@@ -315,18 +452,25 @@ expand_unspecified_years <- function(dates) {
       nyears <- 10^stringi::stri_count_fixed(m[, 3], "X")
       if (nyears > .max_unspecified_years) {
         stop("Cannot expand '", v, "': it spans ", format(nyears, big.mark = ","),
-             " years. Use a more specified year, expand(x, by = \"year\"), ",
+             " years. Use a more specified year, ",
              "or resolve it with vmin()/vmax() instead.", call. = FALSE)
       }
+      # Only trailing 'X's ("192X") make the candidate years contiguous.
+      # Leading or inner ones ("XX29", a two-digit year with an unknown
+      # century) pick out every hundredth or tenth year instead.
+      lo <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "0"))
+      hi <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "9"))
+      years <- formatC(seq(lo, hi), width = 4, flag = "0")
+      years <- years[grepl(paste0("^", gsub("X", "[0-9]", m[, 3]), "$"), years)]
       if (m[, 4] != "") {
         # A month or day is attached, so the value picks out that month or day
         # in each candidate year rather than a contiguous stretch of time.
         # Enumerate the years, leaving any remaining 'X' to the rules below.
-        lo <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "0"))
-        hi <- as.integer(stringi::stri_replace_all_fixed(m[, 3], "X", "9"))
-        return(paste(paste0(m[, 2], formatC(seq(lo, hi), width = 4, flag = "0"),
-                            m[, 4]), collapse = ","))
+        return(paste(paste0(m[, 2], years, m[, 4]), collapse = ","))
       }
+      if (!grepl("^[0-9]*X+$", m[, 3]))
+        return(paste(paste0(m[, 2], years, "-01-01..", m[, 2], years, "-12-31"),
+                     collapse = ","))
       paste0(resolve_x_year(v, "min"), "..", resolve_x_year(v, "max"))
     }, character(1), USE.NAMES = FALSE)
     paste(members, collapse = ",")
@@ -351,8 +495,11 @@ zero_padding <- function(y) {
 }
 
 unspecified_months <- function(dates) {
+  # February has 29 days in a leap year, by the full Gregorian rule:
+  # 1900 is not a leap year, and 2000 is.
+  feb_year <- as.integer(stringi::stri_extract_first_regex(dates, "[:digit:]{4}"))
   dates <- ifelse(stringi::stri_detect_regex(dates, "(^|,)(-?[:digit:]{4})-02($|,)") &
-                    !grepl("\\.", as.numeric(stringi::stri_extract_first_regex(dates, "[:digit:]{4}")) / 4),
+                    days_in(feb_year, 2L) == 29,
                   stringi::stri_replace_all_regex(dates, "(^|,)(-?[:digit:]{4})-02($|,)",
                                            "$1$2-02-01..$2-02-29$3"),
                   stringi::stri_replace_all_regex(dates, "(^|,)(-?[:digit:]{4})-02($|,)",
@@ -417,9 +564,14 @@ expand_negative <- function(dates) {
 expand_sets <- function(dates) {
   # Each member of a set is expanded on its own: the rules below are anchored,
   # so applying them to a whole comma-joined set would match nothing.
-  lapply(stringi::stri_split_regex(dates, "\\,"),
-         function(members) unlist(expand_set_members(members),
-                                  use.names = FALSE))
+  # All the members of all the values are expanded in one call, and then
+  # put back together by the value that they came from.
+  parts <- stringi::stri_split_regex(dates, "\\,")
+  id <- rep(seq_along(parts), lengths(parts))
+  members <- expand_set_members(unlist(parts, use.names = FALSE))
+  grp <- rep(id, lengths(members))
+  unname(split(unlist(members, use.names = FALSE),
+               factor(grp, levels = seq_along(parts))))
 }
 
 expand_set_members <- function(dates) {
@@ -452,16 +604,62 @@ expand_set_members <- function(dates) {
 
 ## expand ranges ####
 
+# A range of two full common-era dates, which `seq.Date()` can enumerate
+# directly. Other forms take the slower path through `seq.mdate()`.
+.plain_range <- "^[0-9]{4}-[0-9]{2}-[0-9]{2}\\.\\.[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+
 expand_ranges <- function(dates) {
+  out <- vector("list", length(dates))
+  # A value that is one plain range of two full common-era dates, in order,
+  # gives its days in one vectorised step for all such values.
+  single <- lengths(dates) == 1L
+  s <- rep(NA_character_, length(dates))
+  s[single] <- vapply(dates[single], function(d) as.character(d[1]),
+                      character(1), USE.NAMES = FALSE)
+  plain <- !is.na(s) & stringi::stri_detect_regex(s, .plain_range)
+  fast <- integer(0)
+  if (any(plain)) {
+    from <- suppressWarnings(as.Date(substr(s[plain], 1, 10), optional = TRUE))
+    to <- suppressWarnings(as.Date(substr(s[plain], 13, 22), optional = TRUE))
+    fwd <- !is.na(from) & !is.na(to) & from <= to
+    fast <- which(plain)[fwd]
+    if (length(fast)) {
+      lens <- as.integer(to[fwd] - from[fwd]) + 1L
+      days <- rep(as.numeric(from[fwd]), lens) + sequence(lens) - 1
+      days <- as.character(structure(days, class = "Date"))
+      out[fast] <- unname(split(days, factor(rep(seq_along(fast), lens),
+                                             levels = seq_along(fast))))
+    }
+  }
+  rest <- setdiff(seq_along(dates), fast)
+  if (length(rest)) out[rest] <- .expand_ranges_each(dates[rest])
+  out
+}
 
-  lapply(dates, function(x)
-    unlist(lapply(x, function(y)
-      if(is_precise(y)) as.character(y) else
-        as.character(seq(mdate(y)))))
-  )
+# Expands each value on its own, for the values that are not one plain range.
+.expand_ranges_each <- function(dates) {
 
-  # unlist(purrr::map(x[[7]], function(y) if(is_precise(y)) as.character(y) else as.character(seq(mdate(y)))))
-  # lapply(x, function(y) if(any(is_precise(y))) else y)
+  lapply(dates, function(x) {
+    precise <- date_is_precise(x)
+    plain <- stringi::stri_detect_regex(x, .plain_range)
+    unlist(lapply(seq_along(x), function(i) {
+      y <- x[i]
+      if (is.na(y)) return(NA_character_)
+      if (precise[i]) return(as.character(y))
+      # Same result as `seq(mdate(y))`, without parsing each end again.
+      # A reversed range is left to `seq.mdate()`, which orders the ends.
+      if (isTRUE(plain[i])) {
+        from <- substr(y, 1, 10)
+        to <- substr(y, 13, 22)
+        if (from <= to)
+          return(as.character(seq(as.Date(from), as.Date(to), by = "days")))
+      }
+      as.character(seq(mdate(y)))
+    }))
+  })
+
+  # unlist(purrr::map(x[[7]], function(y) if(date_is_precise(y)) as.character(y) else as.character(seq(mdate(y)))))
+  # lapply(x, function(y) if(any(date_is_precise(y))) else y)
 
 
   # dates <- dplyr::case_when(
@@ -482,7 +680,7 @@ expand_ranges <- function(dates) {
 
   # dates <- suppressWarnings(lapply(dates, function(x) {
   #   x <- stringi::stri_split_regex(x, "\\.\\.")
-  #   if(any(is_bce(x))){
+  #   if(any(date_is_bce(x))){
   #     x <- ifelse(stringi::stri_detect_regex(x, "\\%"),
   #                 expand_negative_dates(x), x)
   #   } else {

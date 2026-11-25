@@ -1,6 +1,6 @@
 Package: messydates
 Title: A Flexible Class for Messy Dates
-Version: 1.1.1
+Version: 1.2.0
 Description: Contains a set of tools for constructing and coercing
   into and from the "mdate" class. 
   This date class implements ISO 8601-2:2019(E) and
@@ -36,13 +36,16 @@ LazyData: true
 Depends:
     R (>= 4.1)
 Imports:
+    graphics,
     methods,
     lubridate,
-    stringi
+    stringi,
+    vctrs (>= 0.6.0)
 Suggests:
     testthat (>= 3.0.0),
     rmarkdown,
     anytime,
+    tibble,
     clock
 URL: https://globalgov.github.io/messydates/
 BugReports: https://github.com/globalgov/messydates/issues
@@ -57,4 +60,4 @@ Config/Needs/website:
     pkgdown
 Config/testthat/edition: 3
 Config/testthat/parallel: true
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

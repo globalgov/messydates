@@ -28,6 +28,8 @@ NULL
 #' as_messydate("2012-06-02 09:00") < as_messydate("2012-06-02 17:00") # TRUE
 #' @export
 `<.mdate` <- function(e1, e2) {
+  if (.use_base_compare(e1, e2))
+    return(.base_compare("<", e1, e2))
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
@@ -45,6 +47,33 @@ evalqOnLoad({
   registerS3method("<", "Date", `<.mdate`)
   registerS3method("<", "POSIXt", `<.mdate`)
 })
+
+# Base R compares a Date with a POSIXct as raw numbers, days against
+# seconds, so that mixed case keeps the mdate path, which compares them
+# correctly. Any other comparison with no mdate on either side uses base R.
+.use_base_compare <- function(e1, e2) {
+  if (is_messydate(e1) || is_messydate(e2)) return(FALSE)
+  !((inherits(e1, "Date") && inherits(e2, "POSIXt")) ||
+      (inherits(e1, "POSIXt") && inherits(e2, "Date")))
+}
+
+# The package registers these methods for Date and POSIXt, so that a Date
+# compared with an mdate dispatches here. When neither side is an mdate,
+# and the two sides are not a Date and a POSIXt, compare as base R does: a character side is read as a Date or a POSIXct,
+# and a POSIXlt side becomes a POSIXct.
+.base_compare <- function(op, e1, e2) {
+  posix <- inherits(e1, "POSIXt") || inherits(e2, "POSIXt")
+  num <- function(x) {
+    if (is.character(x)) x <- if (posix) as.POSIXct(x) else as.Date(x)
+    if (inherits(x, "POSIXlt")) x <- as.POSIXct(x)
+    as.vector(unclass(x))
+  }
+  out <- match.fun(op)(num(e1), num(e2))
+  nm <- names(e1)
+  if (is.null(nm) && length(e2) == length(out)) nm <- names(e2)
+  if (!is.null(nm) && length(nm) == length(out)) names(out) <- nm
+  out
+}
 
 numeric_time_ranges <- function(e1, e2) {
   # Both sides must be measured in the *same* unit, decided once for the
@@ -68,7 +97,7 @@ numeric_time_ranges <- function(e1, e2) {
 # make `if (bce)` in .time_bounds() error instead of just treating it as CE.
 .involves_bce <- function(x) {
   if (!is_messydate(x)) return(FALSE)
-  any(is_bce(c(as.character(vmin(x)), as.character(vmax(x)))), na.rm = TRUE)
+  any(date_is_bce(c(as.character(vmin(x)), as.character(vmax(x)))), na.rm = TRUE)
 }
 
 # The numeric minimum and maximum instant implied by one side of a
@@ -102,6 +131,8 @@ numeric_time_ranges <- function(e1, e2) {
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `>.mdate` <- function(e1, e2) {
+  if (.use_base_compare(e1, e2))
+    return(.base_compare(">", e1, e2))
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
@@ -123,6 +154,8 @@ evalqOnLoad({
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `<=.mdate` <- function(e1, e2) {
+  if (.use_base_compare(e1, e2))
+    return(.base_compare("<=", e1, e2))
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)
@@ -142,6 +175,8 @@ evalqOnLoad({
 #'   Returns `NA` when the date order can't be determined.
 #' @export
 `>=.mdate` <- function(e1, e2) {
+  if (.use_base_compare(e1, e2))
+    return(.base_compare(">=", e1, e2))
   if (!is_messydate(e1)) e1 <- as_messydate(e1)
   if (!is_messydate(e2)) e2 <- as_messydate(e2)
   ranges <- numeric_time_ranges(e1, e2)

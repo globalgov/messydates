@@ -92,7 +92,7 @@ NULL
 #' @export
 new_messydate <- function(x = character()) {
   stopifnot(is.character(x))
-  structure(x, class = "mdate")
+  vctrs::new_vctr(unclass(x), class = "mdate", inherit_base_type = FALSE)
 }
 
 #' @rdname class_mdate
@@ -110,7 +110,7 @@ validate_messydate <- function(x) {
   fail(grepl("[A-SU-WYa-wyz]", values),
        "The only alpha characters allowed in messy dates are 'X' for
       unspecified components, and 'T'/'Z' for times")
-  fail(!grepl("[0-9]", values),
+  fail(!grepl("[0-9]", values) & !is_empty_notation(values),
        "mdate object requires at least one specified date component.")
   fail(grepl("!|\\(|\\)|\\=|;|>|<|_|\\^|'|&|\\$|#", values),
        "mdate object can only consist of numbers and
@@ -155,7 +155,11 @@ make_messydate <- function(..., resequence = FALSE) {
 #' @importFrom utils str
 #' @export
 print.mdate <- function(x, ...) {
-  str(x)
+  # The plain str() display of earlier versions, without the vctrs class.
+  y <- unclass_vctr(x)
+  class(y) <- "mdate"
+  str(y, ...)
+  invisible(x)
 }
 
 #' @rdname class_mdate

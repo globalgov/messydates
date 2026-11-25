@@ -17,29 +17,38 @@ e1 \%union\% e2
 \method{\%union\%}{mdate}(e1, e2)
 }
 \arguments{
-\item{e1, e2}{Messy date or other class objects}
+\item{e1, e2}{\code{mdate} objects, or objects that \code{as_messydate()} can read.}
 }
 \value{
-A vector of the same mode for \verb{\%intersect\%},
-or a common mode for \verb{\%union\%}.
+An \code{mdate} vector with the common length of \code{e1} and \code{e2}.
 }
 \description{
-Performs intersection (\verb{\%intersect\%}) and union (\verb{\%union\%}) on the
-dates or date-times implied by messy date class objects, treating each
-as the (day-granularity) set of dates it expands to. Both return a
-plain character vector of the individual member dates.
-
-For a union that instead returns an \code{mdate} object in its most
-succinct (contracted) notation, e.g. a range rather than a list of
-every day within it, use \code{+} (see \code{?operate_arithmetic}) instead.
+\verb{\%intersect\%} and \verb{\%union\%} combine two messy dates element by element.
+Each element is taken as the set of days that it can be
+(see \code{compatible_dates()}), and the result is an \code{mdate} in the shortest
+notation for the days in the intersection or the union.
+For example, the intersection of \code{"2012-01-01..2012-01-05"} and
+\code{"2012-01-03..2012-01-08"} is \code{"2012-01-03..2012-01-05"}.
+\itemize{
+\item The two vectors are recycled to a common length, as for the
+\verb{date_is_*()} predicates.
+\item An intersection with no days gives the empty set, \code{{}}.
+\item A missing value on either side gives \code{NA}.
+\item If either element is uncertain (\verb{?}) or approximate (\code{~}), the result
+carries the same mark on the whole date, because the result is no
+more certain than its inputs.
+\item Days that are not consecutive give a set, \code{{}}. A \verb{[]} set
+("one member of") gives a \code{{}} set, because the result lists the days
+that remain, not one choice among them.
+}
 }
 \details{
-Both kinds of set expand to the same members, so these operators return
-the same dates for \code{{}} ("all members of") and \verb{[]} ("one member of")
-alike. What differs is the reading: for a \code{{}} set the result lists dates
-that are shared with (or covered by) the other operand, whereas for a
-\verb{[]} set it lists the \emph{candidates} that remain possible, so an empty
-intersection rules the other operand out rather than showing no overlap.
+Both kinds of set expand to the same members. For a \code{{}} set the result
+lists the dates that are shared with (or covered by) the other operand.
+For a \verb{[]} set it lists the \emph{candidates} that remain possible, so an
+empty intersection rules the other operand out rather than showing no
+overlap.
+The operators work on days, so a time of day is dropped.
 }
 \section{Functions}{
 \itemize{

@@ -129,7 +129,7 @@ check_components <- function(dates, source = dates) {
 #' @description
 #'   Reports which elements of a vector `as_messydate()` cannot represent, and
 #'   why. Where `as_messydate()` stops at the first problem, or returns `NA`
-#'   for text it could not read, `md_problems()` inspects every element and
+#'   for text it could not read, `parse_problems()` inspects every element and
 #'   returns one row per failure. This is intended for checking a column of
 #'   dates before coercing it.
 #' @param x A vector of dates, usually character.
@@ -137,11 +137,11 @@ check_components <- function(dates, source = dates) {
 #'   `index` (its position in `x`), `input` (the offending value), and
 #'   `reason`. A zero-row data frame means every element can be coerced.
 #' @examples
-#' md_problems(c("2019-01-01", "2019-02-30", "2019-W12", "not a date"))
+#' parse_problems(c("2019-01-01", "2019-02-30", "2019-W12", "not a date"))
 #' # a clean vector returns no rows
-#' md_problems(c("2019-01-01", "2019-01"))
+#' parse_problems(c("2019-01-01", "2019-01"))
 #' @export
-md_problems <- function(x) {
+parse_problems <- function(x) {
   x <- as.character(x)
   none <- data.frame(index = integer(), input = character(),
                      reason = character(), stringsAsFactors = FALSE)

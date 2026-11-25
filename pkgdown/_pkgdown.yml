@@ -43,7 +43,6 @@ reference:
     desc: "These functions parse dates from text and other classes into the `mdate` class, and tag them as approximate, uncertain, unspecified, or open:"
     contents:
       - coerce_to
-      - md_problems
       - starts_with("parse_")
   - title: "Coerce from"
     desc: "These functions coerce dates from the `mdate` class into a single `Date`:"

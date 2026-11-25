@@ -244,7 +244,7 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 | `parse_text.R` | the largest file: the helpers that change text into ISO 8601-2 notation for `as_messydate()`, including two-digit years, separators, the order of components, unspecified components, times of day, eras, zero padding, and the prose parser (Roman numerals, "circa", "the Ides of March", decades/centuries, "before X", comma-separated prose lists, etc.) |
 | `parse_languages.R` | the tables that rewrite prose in other languages (now French) into the English forms that the prose parser reads, for `as_messydate(lang = )` |
 | `coerce_from_messydate.R` | the inverse: `mdate` to `Date`/`POSIXct`/`POSIXlt` |
-| `validate_input.R` | input validation shared across the coercion pipeline, and `md_problems()`, which reports what could not be parsed |
+| `validate_input.R` | input validation shared across the coercion pipeline, and `parse_problems()`, which reports what could not be parsed |
 | `resolve_extrema.R`, `resolve_tendency.R`, `resolve_probabilistically.R` | resolution functions that collapse a messy date/range/set to one precise value: the extrema (`vmin()`/`vmax()`), the central tendency (`vmedian()`/`vmean()`/`vmodal()`), and random draws (`random()`/`vrandom()`); `resolve_probabilistically.R` also holds the weights that the draws use for approximate and uncertain values |
 | `parse_tag.R` | the `tag_*()` functions and `untag()`, which add or remove the annotations `~`, `?`, `%`, `X` and open-range `..` on a date or one of its components |
 | `component_extract.R` | pulling out individual date/time components (year, month, day, hour, and so on), their annotation state, and `precision()` |

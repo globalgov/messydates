@@ -34,6 +34,7 @@
 
 ## Parsing
 
+- Renamed `md_problems()` to `parse_problems()`
 - Changed `as_messydate()` to keep an unspecified month or day as `XX`
   - `"1993-01-XX"` was written as `"1993-01"`; the record that a day exists is now kept
   - `0`, `00`, `??`, and `NA` in a month or day are read as `XX`, e.g. `"1993-01-00"` gave `"1993-01-XX-"`

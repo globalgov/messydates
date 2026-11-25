@@ -149,3 +149,11 @@ contract <- function(x, collapse = TRUE) {
   .soft_deprecate("contract()", "as_messydate()")
   .contract(x, collapse = collapse)
 }
+
+#' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
+#'   Use `parse_problems()`.
+#' @export
+md_problems <- function(x) {
+  .soft_deprecate("md_problems()", "parse_problems()")
+  parse_problems(x)
+}

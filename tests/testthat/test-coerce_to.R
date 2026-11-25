@@ -164,15 +164,15 @@ test_that("unparseable text warns rather than failing silently", {
   expect_silent(as_messydate(c("2019-01-01", NA)))
 })
 
-test_that("md_problems() reports why elements fail", {
-  p <- md_problems(c("2019-01-01", "2019-02-30", "2019-123", "not a date"))
+test_that("parse_problems() reports why elements fail", {
+  p <- parse_problems(c("2019-01-01", "2019-02-30", "2019-123", "not a date"))
   expect_equal(p$index, c(2L, 3L, 4L))
   expect_match(p$reason[1], "only 28 days")
   expect_match(p$reason[2], "ordinal dates")
   expect_match(p$reason[3], "could not be parsed")
   # A clean vector produces no rows.
-  expect_equal(nrow(md_problems(c("2019-01-01", "2019-01"))), 0L)
-  expect_equal(nrow(md_problems(character(0))), 0L)
+  expect_equal(nrow(parse_problems(c("2019-01-01", "2019-01"))), 0L)
+  expect_equal(nrow(parse_problems(character(0))), 0L)
 })
 
 test_that("a day of the year is converted to its calendar date", {
@@ -260,6 +260,7 @@ test_that("a qualifier on a prose range marks both ends", {
   # without a qualifier, nothing changes
   expect_equal(as.character(as_messydate("between the 13th and 15th of February 1977")),
                "1977-02-13..1977-02-15")
+})
 
 test_that("a weekday name in front of a date is read and dropped", {
   expect_equal(as.character(as_messydate(c("Thu Sep 01 2016", "Thu, 01 Sep 2016",
@@ -293,4 +294,10 @@ test_that("a set with one member keeps its braces", {
   expect_equal(c(year(x), month(x), day(x)), c(1993, 1, 1))
   expect_equal(as.character(c(vmin(x), vmax(x))), c("1993-01-01", "1993-01-31"))
 })
+
+test_that("md_problems() still works, with a message", {
+  rm(list = intersect("md_problems()", ls(.deprecated_env)), envir = .deprecated_env)
+  x <- c("2019-01-01", "2019-02-30")
+  expect_message(old <- md_problems(x), "parse_problems")
+  expect_equal(old, parse_problems(x))
 })

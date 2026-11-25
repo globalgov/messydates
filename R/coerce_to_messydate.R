@@ -372,7 +372,7 @@ warn_unparsed <- function(x, d) {
   warning(length(failed), " value", if (length(failed) > 1) "s" else "",
           " could not be parsed as a date and became NA:\n",
           report_elements(failed, x[failed]),
-          "\nCall md_problems() to see all parsing problems.", call. = FALSE)
+          "\nCall parse_problems() to see all parsing problems.", call. = FALSE)
 }
 
 #' @describeIn coerce_to Coerce factors to `mdate` class, via their labels.

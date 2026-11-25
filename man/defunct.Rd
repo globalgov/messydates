@@ -17,6 +17,7 @@
 \alias{is_subset}
 \alias{expand}
 \alias{contract}
+\alias{md_problems}
 \title{Functions that have been renamed, superseded, or are no longer working}
 \usage{
 as_approximate(x, component = NULL)
@@ -48,6 +49,8 @@ is_subset(x, y)
 expand(x, approx_range = 0, by = "day")
 
 contract(x, collapse = TRUE)
+
+md_problems(x)
 }
 \arguments{
 \item{x, y}{\code{mdate} objects.}
@@ -117,6 +120,9 @@ To make a sequence of times, use \code{seq()}.
 \item \code{contract()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{as_messydate()} on a list of dates,
 or \code{as_messydate(compatible_dates(x))} for an \code{mdate}.
+
+\item \code{md_problems()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
+Use \code{parse_problems()}.
 
 }}
 \keyword{internal}

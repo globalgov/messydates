@@ -150,8 +150,8 @@ parse_seconds <- function(e2) {
 
 add <- function(x, n) {
   if (is_messydate(n)) {
-    x <- suppressMessages(possible_dates(x)[[1]])
-    n <- suppressMessages(possible_dates(n)[[1]])
+    x <- suppressMessages(compatible_dates(x)[[1]])
+    n <- suppressMessages(compatible_dates(n)[[1]])
     if (any(is.element(n, x))) {
       n <- n[which(!is.element(n, x))]
     }
@@ -159,7 +159,7 @@ add <- function(x, n) {
   } else {
     # Step one: get only first and last components for ranges
     # But keep approximation for before or after date
-    x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, possible_dates(x))
+    x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, compatible_dates(x))
     # Step two, add by component
     x <- lapply(x, .shift_value, n = n, sign = 1)
     x <- suppressMessages(.contract(x))
@@ -169,8 +169,8 @@ add <- function(x, n) {
 
 subtract <- function(x, n) {
   if (is_messydate(n)) {
-    x <- as.character(possible_dates(x)[[1]])
-    n <- as.character(possible_dates(n)[[1]])
+    x <- as.character(compatible_dates(x)[[1]])
+    n <- as.character(compatible_dates(n)[[1]])
     if (any(is.element(x, n))) {
       x <- as_messydate(list(x[which(!is.element(x,n))]))
     } else {
@@ -180,7 +180,7 @@ subtract <- function(x, n) {
   } else {
     # Step one: get only first and last components for ranges
     # But keep approximation for before or after date
-    x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, possible_dates(x))
+    x <- ifelse(stringi::stri_detect_regex(x, "^\\.\\.|\\.\\.$"), x, compatible_dates(x))
     # Step two, add by component
     x <- lapply(x, .shift_value, n = n, sign = -1)
     x <- suppressMessages(.contract(x))

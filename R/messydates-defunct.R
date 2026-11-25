@@ -128,20 +128,20 @@ is_subset <- function(x, y) {
 }
 
 #' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
-#'   Use `possible_dates()`.
-#'   The argument `by` is not in `possible_dates()`.
+#'   Use `compatible_dates()`.
+#'   The argument `by` is not in `compatible_dates()`.
 #'   To make a sequence of times, use `seq()`.
 #' @param approx_range See [convert_expand].
 #' @param by Granularity of enumeration, "day" by default.
 #' @export
 expand <- function(x, approx_range = 0, by = "day") {
-  .soft_deprecate("expand()", "possible_dates()")
-  .possible(x, approx_range, by)
+  .soft_deprecate("expand()", "compatible_dates()")
+  .compatible(x, approx_range, by)
 }
 
 #' @describeIn defunct Deprecated in messydates 1.2.0. Removed in 1.4.0.
 #'   Use `as_messydate()` on a list of dates,
-#'   or `as_messydate(possible_dates(x))` for an `mdate`.
+#'   or `as_messydate(compatible_dates(x))` for an `mdate`.
 #' @param collapse Should a range that covers a whole month or year
 #'   become that month or year? `TRUE` by default.
 #' @export

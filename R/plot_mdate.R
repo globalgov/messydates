@@ -22,7 +22,7 @@
 #' @param labels A character vector of labels, one for each element of `x`.
 #'   By default, the messy dates themselves.
 #' @param approx_range The number of units that an approximate value widens
-#'   by on each side, as in `possible_dates()`. By default 0, so that
+#'   by on each side, as in `compatible_dates()`. By default 0, so that
 #'   approximate values are drawn as if they were not approximate.
 #' @param sort Should the lines be sorted by the earliest possible date?
 #'   `TRUE` by default. If `FALSE`, the lines are in the order of `x`.
@@ -53,13 +53,13 @@ plot.mdate <- function(x, labels = NULL, approx_range = 0, sort = TRUE,
   lo[ok] <- as.numeric(as.Date(vmin(x[ok]), FUN = identity))
   hi[ok] <- as.numeric(as.Date(vmax(x[ok]), FUN = identity))
   members <- vector("list", length(x))
-  members[ok] <- lapply(possible_dates(x[ok]), .plot_days)
+  members[ok] <- lapply(compatible_dates(x[ok]), .plot_days)
   # A value whose possible dates have gaps is drawn as separate points.
   gaps <- vapply(members, function(m) length(m) > 1 && any(diff(sort(m)) > 1),
                  logical(1))
   apx <- ok & approx_range > 0 & (date_is_approximate(x) %in% TRUE)
   if (any(apx)) {
-    wide <- lapply(possible_dates(x[apx], approx_range = approx_range),
+    wide <- lapply(compatible_dates(x[apx], approx_range = approx_range),
                    .plot_days)
     wlo[apx] <- vapply(wide, min, numeric(1))
     whi[apx] <- vapply(wide, max, numeric(1))

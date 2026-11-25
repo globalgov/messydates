@@ -133,7 +133,7 @@ This is the common case when a date column has been read in with
 
 \item \code{as_messydate(list)}: Coerce a list of dates to the shortest \code{mdate}.
 Each element of the list gives one element of the result.
-This is the inverse of \code{possible_dates()}.
+This is the inverse of \code{compatible_dates()}.
 An empty element gives the empty set, \code{"{}"},
 and an element that is only \code{NA} gives \code{NA}.
 
@@ -263,8 +263,8 @@ as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03")))
 as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 # the shortest form of a messy date
-as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
-as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")),
+as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")))
+as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")),
   collapse = FALSE)
 }
 \seealso{

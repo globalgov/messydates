@@ -27,7 +27,7 @@
 - Added `{}` as the empty set, a value that is known to contain no date
   - ISO 8601-2 requires a set to have a member; `{}` extends the standard
   - Added `date_is_empty()` to test for it; `NA` is not the empty set
-  - `possible_dates()` gives no dates for it
+  - `compatible_dates()` gives no dates for it
   - `vmin()`, the other `v*()` functions, and `precision()` give `NA`
   - `min()`, `max()`, `mean()`, `median()`, `modal()`, and `random()` leave it out
   - `tag_approximate()`, `tag_uncertain()`, `+`, and `-` give `{}` again
@@ -168,13 +168,13 @@
   - A precise date-time is its own mean, and a result in canonical notation skips the parser
   - ~2x faster for `vmean()` on 5,000 date-times
 - Accelerated `vrandom()`, `vmean()`, and `vmedian()` on full dates and ranges
-  - Full dates and ranges resolve directly, without `possible_dates()`
+  - Full dates and ranges resolve directly, without `compatible_dates()`
   - ~900x faster for `vrandom()` on 63,606 event dates, a quarter of them ranges
   - ~290x faster for `vmean()` on the same dates
 
 ## Expansion
 
-- Renamed `expand()` to `possible_dates()`, gives days only
+- Renamed `expand()` to `compatible_dates()`, gives days only
   - Use `seq()` for a sequence of times
 - Removed `contract()`; use `as_messydate()` to give the shortest form of `x`
   - Fixed the shortest form of a range that does not cover whole months or years
@@ -183,11 +183,11 @@
     - `"2012-02-01..2012-02-28"` was written as `"2012-02"`; February 2012 has 29 days
   - Fixed the shortest form of a set of dates before the common era
     - `{-0050-01-01,-0050-03-01}` was written as `-0050-01-01..-0050-03-01`
-- Accelerated `possible_dates()` on ranges of two full dates (#105)
+- Accelerated `compatible_dates()` on ranges of two full dates (#105)
   - Plain ranges and set members are expanded in one step
   - ~20x faster for 1,000 months and ranges
   - ~8x faster for 60,000 ranges
-- Improved `possible_dates()` with `approx_range`
+- Improved `compatible_dates()` with `approx_range`
   - Fixed widening an approximate year from 1 January only
     - `"~2012"` with `approx_range = 1` ended on 2013-01-01, now 2013-12-31
     - Widening starts from the first and the last date that the value names
@@ -200,14 +200,14 @@
     - `"2019-~01-~01"` widens by months and days
   - Fixed `%` being ignored; it marks a value as approximate and uncertain
 - Fixed `expand()` with a sub-day `by` dropping the UTC offset of a range (#107)
-- Fixed `possible_dates()`, `vmin()`, and `vmax()` on a month or day with one unspecified digit
+- Fixed `compatible_dates()`, `vmin()`, and `vmax()` on a month or day with one unspecified digit
   - `"2012-1X"` stopped with an error, and now gives October to December 2012
   - A value with no valid day, e.g. `"2012-02-3X"`, gives no dates
-- Fixed `possible_dates()` reading a year with leading `X` digits as one range
+- Fixed `compatible_dates()` reading a year with leading `X` digits as one range
 - Fixed February in a century year that is not a leap year
-  - `possible_dates("1900-02")` and `vmax("1900-02")` gave an error
-- Fixed `seq()` and `possible_dates()` on an invalid element, e.g. `""`
-- Fixed missing values in `possible_dates()` to give `NA`
+  - `compatible_dates("1900-02")` and `vmax("1900-02")` gave an error
+- Fixed `seq()` and `compatible_dates()` on an invalid element, e.g. `""`
+- Fixed missing values in `compatible_dates()` to give `NA`
 
 ## Extraction
 

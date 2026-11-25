@@ -110,13 +110,13 @@ Use \code{date_is_intersecting()}, which is element-wise.
 Use \code{date_is_subset()}, which is element-wise.
 
 \item \code{expand()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
-Use \code{possible_dates()}.
-The argument \code{by} is not in \code{possible_dates()}.
+Use \code{compatible_dates()}.
+The argument \code{by} is not in \code{compatible_dates()}.
 To make a sequence of times, use \code{seq()}.
 
 \item \code{contract()}: Deprecated in messydates 1.2.0. Removed in 1.4.0.
 Use \code{as_messydate()} on a list of dates,
-or \code{as_messydate(possible_dates(x))} for an \code{mdate}.
+or \code{as_messydate(compatible_dates(x))} for an \code{mdate}.
 
 }}
 \keyword{internal}

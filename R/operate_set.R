@@ -2,7 +2,7 @@
 #' @description
 #'   `%intersect%` and `%union%` combine two messy dates element by element.
 #'   Each element is taken as the set of days that it can be
-#'   (see `possible_dates()`), and the result is an `mdate` in the shortest
+#'   (see `compatible_dates()`), and the result is an `mdate` in the shortest
 #'   notation for the days in the intersection or the union.
 #'   For example, the intersection of `"2012-01-01..2012-01-05"` and
 #'   `"2012-01-03..2012-01-08"` is `"2012-01-03..2012-01-05"`.
@@ -72,7 +72,7 @@ evalqOnLoad({
   ok <- !is.na(e1) & !is.na(e2)
   if (!any(ok)) return(new_messydate(out))
   days <- mapply(function(a, b) .sort_days(op(strip_times(a), strip_times(b))),
-                 possible_dates(e1[ok]), possible_dates(e2[ok]),
+                 compatible_dates(e1[ok]), compatible_dates(e2[ok]),
                  SIMPLIFY = FALSE, USE.NAMES = FALSE)
   res <- as_messydate(days)
   unc <- (date_is_uncertain(e1[ok]) | date_is_uncertain(e2[ok])) %in% TRUE

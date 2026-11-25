@@ -38,7 +38,7 @@ date_is_empty(x)
 \item{x, y}{\code{mdate} or other class objects}
 
 \item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by
-before the test, as in \code{possible_dates()}. 0 (the default) ignores
+before the test, as in \code{compatible_dates()}. 0 (the default) ignores
 the marks.}
 }
 \value{

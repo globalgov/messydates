@@ -85,7 +85,7 @@ test_that("weeks and days shift by days", {
 })
 
 test_that("a range collapses only to a whole month or year", {
-  f <- function(x) as.character(as_messydate(possible_dates(as_messydate(x))))
+  f <- function(x) as.character(as_messydate(compatible_dates(as_messydate(x))))
   expect_equal(f("2012-02-01..2012-02-29"), "2012-02")
   expect_equal(f("2012-02-01..2012-02-28"), "2012-02-01..2012-02-28")
   expect_equal(f("2012-01-01..2013-12-31"), "2012-01-01..2013-12-31")
@@ -107,7 +107,7 @@ test_that("dates before the common era move in the right direction", {
 test_that("a set before the common era stays a set", {
   expect_equal(as.character(as_messydate("{-0050-01-01,-0050-03-01}") + 1),
                "{-0050-01-02,-0050-03-02}")
-  f <- function(x) as.character(as_messydate(possible_dates(as_messydate(x))))
+  f <- function(x) as.character(as_messydate(compatible_dates(as_messydate(x))))
   expect_equal(f("{-0050-01-01,-0050-03-01}"), "{-0050-01-01,-0050-03-01}")
   expect_equal(f("{-0050-01,-0050-03-01}"), "{-0050-01,-0050-03-01}")
 })

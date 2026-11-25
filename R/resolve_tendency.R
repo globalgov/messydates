@@ -7,7 +7,7 @@
 #'   the `v*()` versions resolve each element separately and so return a
 #'   vector of the same length as the input.
 #' @details
-#'   All of these functions work by calling `possible_dates()` to enumerate the
+#'   All of these functions work by calling `compatible_dates()` to enumerate the
 #'   dates or date-times consistent with each messy value, then summarising
 #'   that expanded set. For `median()` and `mean()`, an even number of
 #'   expanded values is resolved by averaging the two middle values (via
@@ -34,7 +34,7 @@
 #'   The other functions give one value for the whole vector.
 #' @section Approximate values:
 #'   With `approx_range` above 0, an approximate value (`~` or `%`) widens
-#'   by `approx_range` as in `possible_dates()`, and its dates get the
+#'   by `approx_range` as in `compatible_dates()`, and its dates get the
 #'   trapezoidal weights that `vrandom()` draws from: a weight of 1 across
 #'   the dates that the value names, falling linearly to 0 over the
 #'   widening. `mean()`, `vmean()`, `median()` and `vmedian()` then give the
@@ -72,7 +72,7 @@ median.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0
     m <- .vector_weights(x, approx_range)
     return(.as_resolved(.weighted_median(m$dates, m$w)))
   }
-  y <- unlist(possible_dates(x))
+  y <- unlist(compatible_dates(x))
   y <- .order_messy(y)
   .as_resolved(.median_value(y, na.rm = na.rm))
 }
@@ -134,7 +134,7 @@ vmedian.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 
   out[f$rng] <- format(f$lo + (f$n - 1L) %/% 2L, "%Y-%m-%d")
   out[f$rest] <- vapply(as.list(x[f$rest]), function(y) {
     if (is.na(y)) return(NA_character_)
-    .median_value(.order_messy(unlist(possible_dates(y))), na.rm = na.rm)
+    .median_value(.order_messy(unlist(compatible_dates(y))), na.rm = na.rm)
   }, FUN.VALUE = character(1))
   .check_approx_range(approx_range)
   if (approx_range > 0) {
@@ -167,7 +167,7 @@ mean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_r
     m <- .vector_weights(x, approx_range)
     return(.as_resolved(.weighted_mean(m$dates, m$w)))
   }
-  y <- unlist(possible_dates(x))
+  y <- unlist(compatible_dates(x))
   .as_resolved(.mean_value(y))
 }
 
@@ -206,7 +206,7 @@ vmean.mdate <- function(..., trim = 0, na.rm = TRUE, uncertain = "keep", approx_
   out <- f$out
   out[f$rng] <- format(f$lo + (f$n - 1L) %/% 2L, "%Y-%m-%d")
   if (length(f$rest))
-    out[f$rest] <- vapply(possible_dates(x[f$rest]), .mean_value,
+    out[f$rest] <- vapply(compatible_dates(x[f$rest]), .mean_value,
                           FUN.VALUE = character(1))
   .check_approx_range(approx_range)
   if (approx_range > 0) {
@@ -271,7 +271,7 @@ modal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0)
   d <- list(...)[[1]]
   d <- .drop_empty(d)
   d <- .handle_uncertain(d, uncertain, elementwise = FALSE)
-  .as_resolved(.getmode(unlist(possible_dates(d))))
+  .as_resolved(.getmode(unlist(compatible_dates(d))))
 }
 
 .getmode <- function(v) {
@@ -303,7 +303,7 @@ vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0
   f <- .full_dates(d)
   out <- f$out
   out[f$rng] <- format(f$lo, "%Y-%m-%d")
-  out[f$rest] <- vapply(possible_dates(d[f$rest]), function(y) .getmode(y),
+  out[f$rest] <- vapply(compatible_dates(d[f$rest]), function(y) .getmode(y),
                         character(1))
   .keep_names(.as_resolved(out), ...elt(1))
 }
@@ -324,7 +324,7 @@ vmodal.mdate <- function(..., na.rm = TRUE, uncertain = "keep", approx_range = 0
   m <- lapply(as.character(x), function(y) {
     if (is.na(y)) return(list(dates = character(0), w = numeric(0)))
     if (isTRUE(.weights_apply(y))) return(.weighted_members(y, approx_range))
-    d <- possible_dates(new_messydate(y))[[1]]
+    d <- compatible_dates(new_messydate(y))[[1]]
     list(dates = d, w = rep(1, length(d)))
   })
   list(dates = unlist(lapply(m, `[[`, "dates")), w = unlist(lapply(m, `[[`, "w")))

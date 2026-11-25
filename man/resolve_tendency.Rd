@@ -51,9 +51,9 @@ For random draws, see \code{uncertain_p} in \code{vrandom()}.}
 
 \item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by,
 in units of the component that each mark covers, as in
-\code{possible_dates()}. 0 (the default) ignores the marks.
+\code{compatible_dates()}. 0 (the default) ignores the marks.
 With a positive value, \code{vmin()} and \code{vmax()} give the first and last
-dates of the widened support, the same dates that \code{possible_dates()}
+dates of the widened support, the same dates that \code{compatible_dates()}
 gives with the same \code{approx_range}, and that \code{vrandom()} can draw.}
 
 \item{trim}{the fraction (0 to 0.5) of observations to be trimmed
@@ -75,7 +75,7 @@ the \verb{v*()} versions resolve each element separately and so return a
 vector of the same length as the input.
 }
 \details{
-All of these functions work by calling \code{possible_dates()} to enumerate the
+All of these functions work by calling \code{compatible_dates()} to enumerate the
 dates or date-times consistent with each messy value, then summarising
 that expanded set. For \code{median()} and \code{mean()}, an even number of
 expanded values is resolved by averaging the two middle values (via
@@ -100,7 +100,7 @@ present.
 \section{Approximate values}{
 
 With \code{approx_range} above 0, an approximate value (\code{~} or \verb{\%}) widens
-by \code{approx_range} as in \code{possible_dates()}, and its dates get the
+by \code{approx_range} as in \code{compatible_dates()}, and its dates get the
 trapezoidal weights that \code{vrandom()} draws from: a weight of 1 across
 the dates that the value names, falling linearly to 0 over the
 widening. \code{mean()}, \code{vmean()}, \code{median()} and \code{vmedian()} then give the

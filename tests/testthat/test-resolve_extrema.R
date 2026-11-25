@@ -25,8 +25,8 @@ test_that("vmin and vmax widen approximate dates by approx_range", {
   # approx_range = 0, the default, ignores the marks as before
   expect_equal(vmin(x, approx_range = 0), vmin(x))
   expect_equal(as.character(vmin(x))[1], "2001-05-16")
-  # the bounds are those of possible_dates() and of vrandom()
-  pd <- possible_dates(x[1:4], approx_range = 3)
+  # the bounds are those of compatible_dates() and of vrandom()
+  pd <- compatible_dates(x[1:4], approx_range = 3)
   expect_equal(as.character(vmin(x[1:4], approx_range = 3)), vapply(pd, min, ""))
   expect_equal(as.character(vmax(x[1:4], approx_range = 3)), vapply(pd, max, ""))
   # min() and max() over the whole vector

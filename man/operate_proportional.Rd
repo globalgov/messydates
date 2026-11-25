@@ -70,7 +70,7 @@ way as for a range or an unspecified component. For a \code{{}} set it instead
 reads as the share of the recorded occurrences that satisfy it.
 
 With \code{approx_range} more than 0, an approximate value (\code{~} or \verb{\%}) is
-widened as in \code{possible_dates()}, and each of its days counts by the
+widened as in \code{compatible_dates()}, and each of its days counts by the
 trapezoidal weight that \code{vrandom()} uses: 1 across the dates that the
 value names, falling to 0 over the dates that \code{approx_range} adds.
 An operator takes this argument when it is called as a function:

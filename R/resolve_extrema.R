@@ -11,7 +11,7 @@
 #' @details
 #'   `vmin()`/`min()` and `vmax()`/`max()` work directly on the annotated
 #'   string (dropping `~`/`?`/`%` and, for `vmax()`/`max()`, filling in
-#'   unspecified `X` components) rather than via `possible_dates()`, which makes
+#'   unspecified `X` components) rather than via `compatible_dates()`, which makes
 #'   them considerably faster than resolving through the full expanded set.
 #'   `min()` and `max()` further resolve a vector to a single, overall
 #'   extremum (matching the usual behaviour of these generics), while
@@ -33,9 +33,9 @@
 #'   For random draws, see `uncertain_p` in `vrandom()`.
 #' @param approx_range Range to widen approximate values (`~` or `%`) by,
 #'   in units of the component that each mark covers, as in
-#'   `possible_dates()`. 0 (the default) ignores the marks.
+#'   `compatible_dates()`. 0 (the default) ignores the marks.
 #'   With a positive value, `vmin()` and `vmax()` give the first and last
-#'   dates of the widened support, the same dates that `possible_dates()`
+#'   dates of the widened support, the same dates that `compatible_dates()`
 #'   gives with the same `approx_range`, and that `vrandom()` can draw.
 #' @importFrom stringi stri_detect_regex stri_replace_all_regex
 #' @return An `mdate` of precise dates or date-times.
@@ -314,8 +314,8 @@ max.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
 
 # Replaces each approximate value (with '~' or '%') by the range of its
 # support under approx_range, so that the resolvers that work on the
-# annotated string give the same bounds as possible_dates() and vrandom().
-# Date-times are left alone, as possible_dates() does not widen them by
+# annotated string give the same bounds as compatible_dates() and vrandom().
+# Date-times are left alone, as compatible_dates() does not widen them by
 # days. With approx_range = 0, `x` is returned unchanged.
 .approx_to_range <- function(x, approx_range) {
   .check_approx_range(approx_range)
@@ -324,7 +324,7 @@ max.mdate <- function(..., na.rm = FALSE, uncertain = "keep", approx_range = 0){
   apx <- which(!is.na(v) & stringi::stri_detect_regex(v, "[~%]") &
                  !stringi::stri_detect_regex(v, "[T ][0-9X]{2}"))
   if (length(apx) == 0) return(x)
-  pd <- possible_dates(new_messydate(v[apx]), approx_range = approx_range)
+  pd <- compatible_dates(new_messydate(v[apx]), approx_range = approx_range)
   v[apx] <- vapply(pd, function(d) {
     d <- .order_messy(d[!is.na(d)])
     if (length(d) == 0) return(NA_character_)

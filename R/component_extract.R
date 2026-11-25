@@ -166,9 +166,9 @@ precision <- function(x, ...) UseMethod("precision")
 #'   Times of day extend the same scale below the day: a date-time measured
 #'   to the hour returns 24, to the minute 1440, and to the second 86400.
 #'   With `approx_range` above 0, an approximate value counts the dates
-#'   that the widening adds, as in `possible_dates()`.
+#'   that the widening adds, as in `compatible_dates()`.
 #' @param approx_range For `precision()`, the range to widen approximate
-#'   values (`~` or `%`) by, as in `possible_dates()`.
+#'   values (`~` or `%`) by, as in `compatible_dates()`.
 #'   0 (the default) ignores the marks.
 #' @param ... Not used. Any further argument is an error.
 #' @examples
@@ -180,7 +180,7 @@ precision.mdate <- function(x, approx_range = 0, ...) {
   if (...length()) stop("Unused argument: ", paste(names(list(...)), collapse = ", "),
                         call. = FALSE)
   .check_approx_range(approx_range)
-  out <- possible_dates(x, approx_range = approx_range)
+  out <- compatible_dates(x, approx_range = approx_range)
   out <- (1 / lengths(out)) * subday_factor(x)
   # Neither a missing date nor the empty set has a precision.
   out[is.na(x) | is_empty_notation(x)] <- NA

@@ -1,6 +1,7 @@
-#' The possible dates of messy dates
+#' The compatible dates of messy dates
 #' @description
-#'   `possible_dates()` gives all the dates that each messy date can be.
+#'   `compatible_dates()` gives the compatible set of each messy date:
+#'   every date that is consistent with the record.
 #'   A range (`..`) gives each day from its start to its end.
 #'   A set (`{}` or `[]`) gives each of its members.
 #'   A value with unspecified or absent components (`X`, or a year or a
@@ -37,32 +38,32 @@
 #'   Sets, values with unspecified digits,
 #'   and open-ended ranges with a mark are not widened.
 #' @return A list with one character vector for each element of `x`.
-#'   Each vector holds the possible dates of that element.
+#'   Each vector holds the compatible dates of that element.
 #' @importFrom lubridate as_date ymd years
 #' @name convert_expand
 #' @examples
 #' d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 #' "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 #' "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-#' possible_dates(d)
+#' compatible_dates(d)
 #' # widen an approximate day (the '~' before the day) by 3 days either side
-#' possible_dates(as_messydate("2001-01-~15"), approx_range = 3)
+#' compatible_dates(as_messydate("2001-01-~15"), approx_range = 3)
 #' # widen only the approximate start of a range
-#' possible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
+#' compatible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
 #' # a precise date-time is returned unchanged, keeping its time
-#' possible_dates(as_messydate("2012-01-01 14:30:00"))
+#' compatible_dates(as_messydate("2012-01-01 14:30:00"))
 #' # a date-time range gives its days
-#' possible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
+#' compatible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
 #' # the possible dates change back into the shortest messy date
-#' as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
+#' as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")))
 #' @export
-possible_dates <- function(x, approx_range = 0) {
-  .possible(x, approx_range, by = "day")
+compatible_dates <- function(x, approx_range = 0) {
+  .compatible(x, approx_range, by = "day")
 }
 
-# Does the work of possible_dates(). The deprecated expand() also calls it,
+# Does the work of compatible_dates(). The deprecated expand() also calls it,
 # with a sub-day `by`, until expand() is removed in 1.4.0.
-.possible <- function(x, approx_range = 0, by = "day") {
+.compatible <- function(x, approx_range = 0, by = "day") {
   if (!is_messydate(x)) {
     message("Date object(s) converted to 'mdate' class")
     x <- as_messydate(x)
@@ -76,7 +77,7 @@ possible_dates <- function(x, approx_range = 0) {
   if (any(empty)) {
     out <- vector("list", length(x))
     out[empty] <- list(character(0))
-    if (any(!empty)) out[!empty] <- .possible(x[!empty], approx_range, by)
+    if (any(!empty)) out[!empty] <- .compatible(x[!empty], approx_range, by)
     names(out) <- names(x)
     return(out)
   }
@@ -108,7 +109,7 @@ possible_dates <- function(x, approx_range = 0) {
     simple <- .approx_widens(x)
     if (any(simple)) {
       x[simple] <- vapply(x[simple], function(y) {
-        core <- possible_dates(new_messydate(y))[[1]]
+        core <- compatible_dates(new_messydate(y))[[1]]
         sup <- .approx_support(core, y, approx_range)
         paste0(sup$from, "..", sup$to)
       }, character(1), USE.NAMES = FALSE)
@@ -167,7 +168,7 @@ expand_datetime <- function(x, by) {
       wall <- seq(inst[1], inst[2], by = unit) + .offset_seconds(o)
       paste0(format(wall, fmt, tz = "UTC"), o)
     } else {
-      unlist(possible_dates(as_messydate(y)))
+      unlist(compatible_dates(as_messydate(y)))
     }
   })
 }

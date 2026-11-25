@@ -10,7 +10,7 @@ dd <- as_messydate(c("2001-01-01", "2001-01-01..2001-01-31",
                      "-2000-01-01",
                      "2001-01-01..2001-01-03",
                      "2001-XX-01"))
-e <- possible_dates(d)
+e <- compatible_dates(d)
 
 test_that("as_messydate() on a list gives the shortest mdate vector", {
   expect_equal(as_messydate(e), d)
@@ -29,15 +29,15 @@ test_that("as_messydate() on a list gives {} for an empty element and NA for NA"
                c("{}", NA, "{2001-01-01,2001-02-02}"))
 })
 
-test_that("possible_dates() and as_messydate() make a round trip", {
+test_that("compatible_dates() and as_messydate() make a round trip", {
   x <- as_messydate(c("2012-01-01..2012-01-03", "2012-06",
                       "{2012-01-01,2012-01-05}", NA, "{}",
                       "-0050-01-01..-0050-01-03"))
-  expect_equal(as_messydate(possible_dates(x)), x)
+  expect_equal(as_messydate(compatible_dates(x)), x)
 })
 
 test_that("a list of dates carries no set type, so it contracts to {}", {
-  expect_equal(as_messydate(possible_dates(as_messydate("[2001-01-01,2001-02-02]"))),
+  expect_equal(as_messydate(compatible_dates(as_messydate("[2001-01-01,2001-02-02]"))),
                as_messydate("{2001-01-01,2001-02-02}"))
 })
 
@@ -57,15 +57,15 @@ test_that("the internal contraction of an mdate retains the set type", {
 test_that("expand() and contract() still work, with a message", {
   rm(list = intersect(c("expand()", "contract()"), ls(.deprecated_env)),
      envir = .deprecated_env)
-  expect_message(old <- expand(d), "possible_dates")
-  expect_equal(old, possible_dates(d))
+  expect_message(old <- expand(d), "compatible_dates")
+  expect_equal(old, compatible_dates(d))
   expect_message(back <- contract(old), "as_messydate")
   expect_equal(back, d)
   expect_equal(suppressMessages(contract(as_messydate("[2001-01-01,2001-02-02]"))),
                as_messydate("[2001-01-01,2001-02-02]"))
 })
 
-test_that("possible_dates() has no 'by' argument", {
-  expect_false("by" %in% names(formals(possible_dates)))
-  expect_error(possible_dates(d, by = "hour"))
+test_that("compatible_dates() has no 'by' argument", {
+  expect_false("by" %in% names(formals(compatible_dates)))
+  expect_error(compatible_dates(d, by = "hour"))
 })

@@ -11,7 +11,7 @@
 #'   some notion of a central tendency (`mean`, `median`, or `modal`),
 #'   or even a `random` selection from among the candidate dates.
 #'
-#'   These functions then, building on `possible_dates()` and the resolve functions,
+#'   These functions then, building on `compatible_dates()` and the resolve functions,
 #'   are particularly useful in converting back out of the `mdate` class
 #'   for use with existing methods and models,
 #'   especially for checking the robustness of results.

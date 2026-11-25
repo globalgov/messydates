@@ -38,7 +38,7 @@ test_that("proportional methods dispatch for Date and POSIXt", {
   expect_equal(as.POSIXct("2012-12-31", tz = "UTC") %g% as_messydate("2012-06-10"), 1)
   expect_equal(as.Date("2012-06-20") %ge% as_messydate("2012-06-01..2012-06-20"), 1)
   expect_equal(as.Date("2012-06-01") %le% as_messydate("2012-06-01..2012-06-20"), 1)
-  # %><% divides by length(possible_dates(e1)) + 1, so even a single contained day
+  # %><% divides by length(compatible_dates(e1)) + 1, so even a single contained day
   # cannot reach a full 1
   expect_equal(as.Date("2012-06-10") %><% as_messydate("2012-06-01..2012-06-20"), 0.5)
   expect_equal(as.Date("2012-06-10") %>=<% as_messydate("2012-06-01..2012-06-20"), 1)

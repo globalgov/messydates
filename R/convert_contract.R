@@ -1,5 +1,5 @@
 # Contracts lists of dates into the shortest messy dates.
-# This is the inverse of possible_dates(). Users reach it through
+# This is the inverse of compatible_dates(). Users reach it through
 # as_messydate() on a list. The deprecated contract() also calls it.
 #
 # With an mdate, the function first gives the possible dates of each element,
@@ -7,7 +7,7 @@
 # A list of dates always contracts to a '{}' set, as the list does not record
 # the kind of set. A set whose members are consecutive days contracts to a
 # range, '..', whichever notation it was given in.
-# possible_dates() drops the time of day from ranges, so a date-time range
+# compatible_dates() drops the time of day from ranges, so a date-time range
 # does not keep its times.
 # With collapse = FALSE, a range that covers a whole month or year stays a
 # range, "2012-06-01..2012-06-30", and does not become "2012-06".
@@ -18,7 +18,7 @@
   if (!inherits(x, 'list')) {
     onesie <- stringi::stri_detect_regex(as.character(x), "^\\[.*\\]$")
     onesie[is.na(onesie)] <- FALSE
-    x <- possible_dates(x)
+    x <- compatible_dates(x)
   }
   x <- compact_negative_dates(x)
   x <- compact_ranges(x)

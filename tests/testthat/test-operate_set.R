@@ -63,7 +63,7 @@ test_that("'[]' sets are distinguished from '{}' sets", {
                "{2019-01-01,2019-02-02}")
   # Both enumerate and resolve to the same dates; they differ in meaning.
   onesie <- as_messydate("[2019-01-01,2019-02-02]")
-  expect_equal(possible_dates(onesie)[[1]], c("2019-01-01", "2019-02-02"))
+  expect_equal(compatible_dates(onesie)[[1]], c("2019-01-01", "2019-02-02"))
   expect_equal(unclass(vmin(onesie)), "2019-01-01")
   expect_equal(unclass(vmax(onesie)), "2019-02-02")
 })

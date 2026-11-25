@@ -71,7 +71,7 @@ test_that("the empty set is read, kept, and detected", {
 
 test_that("functions accept the empty set", {
   x <- as_messydate(c("{}", "2012-01-05"))
-  expect_identical(possible_dates(x)[[1]], character(0))
+  expect_identical(compatible_dates(x)[[1]], character(0))
   expect_identical(as.character(vmin(x)), c(NA, "2012-01-05"))
   expect_identical(as.character(vmax(x)), c(NA, "2012-01-05"))
   # reducers resolve the union, to which '{}' adds nothing
@@ -84,7 +84,7 @@ test_that("functions accept the empty set", {
   expect_identical(as.character(x + 1), c("{}", "2012-01-06"))
   expect_identical(as.character(x - 1), c("{}", "2012-01-04"))
   expect_identical(as.character(tag_approximate(x)), c("{}", "2012-01-~05"))
-  expect_identical(as.character(as_messydate(possible_dates(x))), c("{}", "2012-01-05"))
+  expect_identical(as.character(as_messydate(compatible_dates(x))), c("{}", "2012-01-05"))
 })
 
 test_that("The old is_*() names give a message once and the same result", {

@@ -437,7 +437,7 @@ serial_to_iso <- function(x, origin) {
 
 #' @describeIn coerce_to Coerce a list of dates to the shortest `mdate`.
 #'   Each element of the list gives one element of the result.
-#'   This is the inverse of `possible_dates()`.
+#'   This is the inverse of `compatible_dates()`.
 #'   An empty element gives the empty set, `"{}"`,
 #'   and an element that is only `NA` gives `NA`.
 #' @param collapse For a list, should a range that covers a whole month or
@@ -448,8 +448,8 @@ serial_to_iso <- function(x, origin) {
 #' as_messydate(list(c("2012-06-01", "2012-06-02", "2012-06-03",
 #' "{2012-06-01, 2012-06-02, 2012-06-03}", "2012-06-01", "2012-06-03")))
 #' # the shortest form of a messy date
-#' as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
-#' as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")),
+#' as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")))
+#' as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")),
 #'   collapse = FALSE)
 #' @export
 as_messydate.list <- function(x, resequence = FALSE, collapse = TRUE, ...) {

@@ -6,7 +6,7 @@
 #' @name operate_statements
 #' @param x,y `mdate` or other class objects
 #' @param approx_range Range to widen approximate values (`~` or `%`) by
-#'   before the test, as in `possible_dates()`. 0 (the default) ignores
+#'   before the test, as in `compatible_dates()`. 0 (the default) ignores
 #'   the marks.
 #' @return A logical vector the same length as the `mdate` passed.
 NULL
@@ -58,7 +58,7 @@ date_is_subset <- function(x, y, approx_range = 0) {
   ok <- !is.na(x) & !is.na(y)
   if (!any(ok)) return(out)
   vals <- unique(c(x[ok], y[ok]))
-  days <- possible_dates(as_messydate(vals), approx_range = approx_range)
+  days <- compatible_dates(as_messydate(vals), approx_range = approx_range)
   names(days) <- vals
   out[ok] <- mapply(function(a, b) test(days[[a]], days[[b]]),
                     x[ok], y[ok], USE.NAMES = FALSE)

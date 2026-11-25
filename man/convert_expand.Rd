@@ -2,10 +2,10 @@
 % Please edit documentation in R/convert_expand.R
 \name{convert_expand}
 \alias{convert_expand}
-\alias{possible_dates}
-\title{The possible dates of messy dates}
+\alias{compatible_dates}
+\title{The compatible dates of messy dates}
 \usage{
-possible_dates(x, approx_range = 0)
+compatible_dates(x, approx_range = 0)
 }
 \arguments{
 \item{x}{A \code{mdate} object.
@@ -34,10 +34,11 @@ and open-ended ranges with a mark are not widened.}
 }
 \value{
 A list with one character vector for each element of \code{x}.
-Each vector holds the possible dates of that element.
+Each vector holds the compatible dates of that element.
 }
 \description{
-\code{possible_dates()} gives all the dates that each messy date can be.
+\code{compatible_dates()} gives the compatible set of each messy date:
+every date that is consistent with the record.
 A range (\code{..}) gives each day from its start to its end.
 A set (\code{{}} or \verb{[]}) gives each of its members.
 A value with unspecified or absent components (\code{X}, or a year or a
@@ -56,15 +57,15 @@ use \code{as_messydate()} on the list.
 d <- as_messydate(c("2008-03-25", "-2012-02-27", "2001-01?", "~2001",
 "2001-01-01..2001-02-02", "{2001-01-01,2001-02-02}", "{2001-01,2001-02-02}",
 "2008-XX-31", "..2002-02-03", "2001-01-03..", "28 BC"))
-possible_dates(d)
+compatible_dates(d)
 # widen an approximate day (the '~' before the day) by 3 days either side
-possible_dates(as_messydate("2001-01-~15"), approx_range = 3)
+compatible_dates(as_messydate("2001-01-~15"), approx_range = 3)
 # widen only the approximate start of a range
-possible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
+compatible_dates(as_messydate("2001-03-~01..2001-04-15"), approx_range = 3)
 # a precise date-time is returned unchanged, keeping its time
-possible_dates(as_messydate("2012-01-01 14:30:00"))
+compatible_dates(as_messydate("2012-01-01 14:30:00"))
 # a date-time range gives its days
-possible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
+compatible_dates(as_messydate("2019-03-01 09:00..2019-03-02 12:00"))
 # the possible dates change back into the shortest messy date
-as_messydate(possible_dates(as_messydate("2012-06-01..2012-06-30")))
+as_messydate(compatible_dates(as_messydate("2012-06-01..2012-06-30")))
 }

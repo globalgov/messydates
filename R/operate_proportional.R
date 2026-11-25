@@ -16,7 +16,7 @@
 #'   reads as the share of the recorded occurrences that satisfy it.
 #'
 #'   With `approx_range` more than 0, an approximate value (`~` or `%`) is
-#'   widened as in `possible_dates()`, and each of its days counts by the
+#'   widened as in `compatible_dates()`, and each of its days counts by the
 #'   trapezoidal weight that `vrandom()` uses: 1 across the dates that the
 #'   value names, falling to 0 over the dates that `approx_range` adds.
 #'   An operator takes this argument when it is called as a function:
@@ -46,7 +46,7 @@ NULL
     weighted = function(d, w, d2) sum(w[d < min(d2)]) / sum(w),
     fast = function(lo1, hi1, lo2, hi2, n) pmin(pmax(lo2 - lo1, 0), n) / n,
     slow = function(e1, e2) mapply(function(.x, .y) mean(.x < min(.y)),
-                                   possible_dates(e1), possible_dates(e2),
+                                   compatible_dates(e1), compatible_dates(e2),
                                    USE.NAMES = FALSE))
 }
 
@@ -71,7 +71,7 @@ evalqOnLoad({
     weighted = function(d, w, d2) sum(w[d > max(d2)]) / sum(w),
     fast = function(lo1, hi1, lo2, hi2, n) pmin(pmax(hi1 - hi2, 0), n) / n,
     slow = function(e1, e2) mapply(function(.x, .y) mean(.x > max(.y)),
-                                   possible_dates(e1), possible_dates(e2),
+                                   compatible_dates(e1), compatible_dates(e2),
                                    USE.NAMES = FALSE))
 }
 
@@ -96,7 +96,7 @@ evalqOnLoad({
     weighted = function(d, w, d2) sum(w[d >= max(d2)]) / sum(w),
     fast = function(lo1, hi1, lo2, hi2, n) pmin(pmax(hi1 - hi2 + 1, 0), n) / n,
     slow = function(e1, e2) mapply(function(.x, .y) mean(.x >= max(.y)),
-                                   possible_dates(e1), possible_dates(e2),
+                                   compatible_dates(e1), compatible_dates(e2),
                                    USE.NAMES = FALSE))
 }
 
@@ -121,7 +121,7 @@ evalqOnLoad({
     weighted = function(d, w, d2) sum(w[d <= min(d2)]) / sum(w),
     fast = function(lo1, hi1, lo2, hi2, n) pmin(pmax(lo2 - lo1 + 1, 0), n) / n,
     slow = function(e1, e2) mapply(function(.x, .y) mean(.x <= min(.y)),
-                                   possible_dates(e1), possible_dates(e2),
+                                   compatible_dates(e1), compatible_dates(e2),
                                    USE.NAMES = FALSE))
 }
 
@@ -146,7 +146,7 @@ evalqOnLoad({
     fast = function(lo1, hi1, lo2, hi2, n)
       pmax(pmin(hi1, hi2) - pmax(lo1, lo2) + 1, 0) / (n + 1),
     slow = function(e1, e2) mapply(function(.x, .y)
-      length(intersect(possible_dates(.x)[[1]], possible_dates(.y)[[1]])) / (length(unlist(possible_dates(.x))) + 1),
+      length(intersect(compatible_dates(.x)[[1]], compatible_dates(.y)[[1]])) / (length(unlist(compatible_dates(.x))) + 1),
       e1, e2, USE.NAMES = FALSE))
 }
 
@@ -171,7 +171,7 @@ evalqOnLoad({
     fast = function(lo1, hi1, lo2, hi2, n)
       pmax(pmin(hi1, hi2) - pmax(lo1, lo2) + 1, 0) / n,
     slow = function(e1, e2) mapply(function(.x, .y)
-      length(intersect(possible_dates(.x)[[1]], possible_dates(.y)[[1]])) / length(unlist(possible_dates(.x))),
+      length(intersect(compatible_dates(.x)[[1]], compatible_dates(.y)[[1]])) / length(unlist(compatible_dates(.x))),
       e1, e2, USE.NAMES = FALSE))
 }
 

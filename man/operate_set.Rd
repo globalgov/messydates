@@ -25,7 +25,7 @@ An \code{mdate} vector with the common length of \code{e1} and \code{e2}.
 \description{
 \verb{\%intersect\%} and \verb{\%union\%} combine two messy dates element by element.
 Each element is taken as the set of days that it can be
-(see \code{possible_dates()}), and the result is an \code{mdate} in the shortest
+(see \code{compatible_dates()}), and the result is an \code{mdate} in the shortest
 notation for the days in the intersection or the union.
 For example, the intersection of \code{"2012-01-01..2012-01-05"} and
 \code{"2012-01-03..2012-01-08"} is \code{"2012-01-03..2012-01-05"}.

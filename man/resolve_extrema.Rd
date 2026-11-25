@@ -39,9 +39,9 @@ For random draws, see \code{uncertain_p} in \code{vrandom()}.}
 
 \item{approx_range}{Range to widen approximate values (\code{~} or \verb{\%}) by,
 in units of the component that each mark covers, as in
-\code{possible_dates()}. 0 (the default) ignores the marks.
+\code{compatible_dates()}. 0 (the default) ignores the marks.
 With a positive value, \code{vmin()} and \code{vmax()} give the first and last
-dates of the widened support, the same dates that \code{possible_dates()}
+dates of the widened support, the same dates that \code{compatible_dates()}
 gives with the same \code{approx_range}, and that \code{vrandom()} can draw.}
 }
 \value{
@@ -63,7 +63,7 @@ This can be useful for various descriptive or inferential projects.
 \details{
 \code{vmin()}/\code{min()} and \code{vmax()}/\code{max()} work directly on the annotated
 string (dropping \code{~}/\verb{?}/\verb{\%} and, for \code{vmax()}/\code{max()}, filling in
-unspecified \code{X} components) rather than via \code{possible_dates()}, which makes
+unspecified \code{X} components) rather than via \code{compatible_dates()}, which makes
 them considerably faster than resolving through the full expanded set.
 \code{min()} and \code{max()} further resolve a vector to a single, overall
 extremum (matching the usual behaviour of these generics), while

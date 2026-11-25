@@ -14,7 +14,7 @@
 By default, the messy dates themselves.}
 
 \item{approx_range}{The number of units that an approximate value widens
-by on each side, as in \code{possible_dates()}. By default 0, so that
+by on each side, as in \code{compatible_dates()}. By default 0, so that
 approximate values are drawn as if they were not approximate.}
 
 \item{sort}{Should the lines be sorted by the earliest possible date?

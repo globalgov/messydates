@@ -62,7 +62,7 @@ in any ranges of dates (\code{min}), the latest possible date (\code{max}),
 some notion of a central tendency (\code{mean}, \code{median}, or \code{modal}),
 or even a \code{random} selection from among the candidate dates.
 
-These functions then, building on \code{possible_dates()} and the resolve functions,
+These functions then, building on \code{compatible_dates()} and the resolve functions,
 are particularly useful in converting back out of the \code{mdate} class
 for use with existing methods and models,
 especially for checking the robustness of results.

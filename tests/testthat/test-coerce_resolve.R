@@ -136,8 +136,8 @@ test_that("vmean() and vmedian() fast paths match the expanded computation", {
                       "2001-12", "2001", "2000", "1900",
                       "{2001-01-01,2001-02-02}", "2012-06-02",
                       "2000-12-30..2001-01-02"))
-  expanded_mean <- vapply(possible_dates(x), .mean_value, character(1))
-  expanded_median <- vapply(possible_dates(x), function(y)
+  expanded_mean <- vapply(compatible_dates(x), .mean_value, character(1))
+  expanded_median <- vapply(compatible_dates(x), function(y)
     .median_value(.order_messy(y)), character(1))
   expect_identical(as.character(vmean(x)), expanded_mean)
   expect_identical(as.character(vmedian(x)), expanded_median)
@@ -147,7 +147,7 @@ test_that("vmodal() fast path matches the expanded computation", {
   x <- as_messydate(c("2001-02", "2001", "2000-12-30..2001-01-02",
                       "{2001-03-01,2001-02-02}", "2001-XX-15"))
   expect_identical(as.character(vmodal(x)),
-                   vapply(possible_dates(x), .getmode, character(1)))
+                   vapply(compatible_dates(x), .getmode, character(1)))
 })
 
 test_that("resolved values in the canonical notation skip the parser unchanged", {

@@ -119,7 +119,7 @@ Existing names that do not obey them stay as they are until a deprecation cycle 
 7. **Check each new name** against `base`, `stats`, `lubridate`, the tidyverse, and `rlang`
    before you export it.
    If one of these packages exports the name, choose a different name.
-   For example, `possible_dates()` replaced `expand()` in 1.2.0, because `tidyr` exports `expand()` with a different meaning.
+   For example, `compatible_dates()` replaced `expand()` in 1.2.0, because `tidyr` exports `expand()` with a different meaning.
 
 ### Vocabulary
 
@@ -131,7 +131,7 @@ Use one term for one idea, and do not swap in a synonym for variety.
 - **True date**: when the event happened. Usually unknown.
 - **Record**: what the source says about the date.
 - **Compatible set**: every date consistent with the record.
-  `possible_dates()` returns it; `vmin()` and `vmax()` return its ends.
+  `compatible_dates()` returns it; `vmin()` and `vmax()` return its ends.
 - **Messy date**: a record whose compatible set holds more than one date.
   Messiness is a property of the record alone.
 - **Imprecision**: the general phenomenon, in prose only.
@@ -153,7 +153,7 @@ Use one term for one idea, and do not swap in a synonym for variety.
   The element-wise resolution functions (`vmin()` and the others) give `NA` for it,
   because it holds no date to resolve to.
   Other element-wise functions, such as `tag_approximate()` and `+`, give `{}` again.
-  `possible_dates()` gives no dates for it, and `as_messydate()` on an empty list element gives `{}`.
+  `compatible_dates()` gives no dates for it, and `as_messydate()` on an empty list element gives `{}`.
   Functions that reduce a vector to one value (`min()` and the others) leave it out,
   because it adds no date to the union.
 
@@ -243,7 +243,7 @@ The prefix also gives the `NEWS.md` heading for a change (see [Grouping](#groupi
 | `resolve_extrema.R`, `resolve_tendency.R`, `resolve_probabilistically.R` | resolution functions that collapse a messy date/range/set to one precise value: the extrema (`vmin()`/`vmax()`), the central tendency (`vmedian()`/`vmean()`/`vmodal()`), and random draws (`random()`/`vrandom()`); `resolve_probabilistically.R` also holds the weights that the draws use for approximate and uncertain values |
 | `parse_tag.R` | the `tag_*()` functions and `untag()`, which add or remove the annotations `~`, `?`, `%`, `X` and open-range `..` on a date or one of its components |
 | `component_extract.R` | pulling out individual date/time components (year, month, day, hour, and so on), their annotation state, and `precision()` |
-| `convert_expand.R`, `convert_contract.R`, `convert_sequence.R` | `possible_dates()`, which gives all the possible dates of an `mdate` (range/set/approximate window); the internal `.contract()`, which `as_messydate()` uses to change a list of dates back into the shortest messy date; and `seq()` over `mdate`s |
+| `convert_expand.R`, `convert_contract.R`, `convert_sequence.R` | `compatible_dates()`, which gives all the possible dates of an `mdate` (range/set/approximate window); the internal `.contract()`, which `as_messydate()` uses to change a list of dates back into the shortest messy date; and `seq()` over `mdate`s |
 | `operate_*.R` | arithmetic on mdates and durations (`operate_arithmetic.R`), inequality/comparison operators (`operate_comparison.R`), set operations on mdate sets/ranges (`operate_set.R`), proportional overlap (`operate_proportional.R`), and the `date_is_*()` predicates (`operate_statements.R`) |
 | `plot_mdate.R` | `plot()` for `mdate`, which draws each messy date by its possible days, with base R graphics only |
 | `data_battles.R` | a bundled example dataset (`battles`, in `data/battles.rda`) used in docs and examples |
@@ -463,7 +463,7 @@ The more entries a version holds, the more this matters.
 - Under such a lead bullet, do not name the function again in the sub-bullets,
   since the lead bullet already carries it.
 - Where one decision runs across many functions in one family, lead with the decision
-  rather than with each function, e.g. "Fixed missing values in `possible_dates()` and `seq()`".
+  rather than with each function, e.g. "Fixed missing values in `compatible_dates()` and `seq()`".
   Where it runs across families, give each heading its own bullet with the same wording.
 - Sub-bullets indent by two spaces, and nest at most one level further (four spaces).
 

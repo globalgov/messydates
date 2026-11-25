@@ -37,7 +37,7 @@ precision(x, ...)
 \item{...}{Not used. Any further argument is an error.}
 
 \item{approx_range}{For \code{precision()}, the range to widen approximate
-values (\code{~} or \verb{\%}) by, as in \code{possible_dates()}.
+values (\code{~} or \verb{\%}) by, as in \code{compatible_dates()}.
 0 (the default) ignores the marks.}
 }
 \value{
@@ -79,7 +79,7 @@ a precision of between \eqn{1/365} and \eqn{1/366}.
 Times of day extend the same scale below the day: a date-time measured
 to the hour returns 24, to the minute 1440, and to the second 86400.
 With \code{approx_range} above 0, an approximate value counts the dates
-that the widening adds, as in \code{possible_dates()}.
+that the widening adds, as in \code{compatible_dates()}.
 }
 
 \examples{
